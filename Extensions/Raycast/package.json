@@ -1,0 +1,47 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "splynek",
+  "title": "Splynek",
+  "description": "Control the Splynek macOS download manager from Raycast.",
+  "version": "0.27.0",
+  "icon": "icon.png",
+  "author": "splynek",
+  "license": "MIT",
+  "categories": ["Productivity", "Developer Tools"],
+  "keywords": ["download", "downloader", "splynek", "multi-interface"],
+  "commands": [
+    {
+      "name": "download",
+      "title": "Download URL with Splynek",
+      "description": "Start a new download for the URL on your clipboard.",
+      "mode": "no-view"
+    },
+    {
+      "name": "queue",
+      "title": "Queue URL in Splynek",
+      "description": "Append the URL on your clipboard to Splynek's queue.",
+      "mode": "no-view"
+    },
+    {
+      "name": "status",
+      "title": "Splynek Downloads",
+      "description": "Live list of active Splynek downloads.",
+      "mode": "view"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.75.0",
+    "@raycast/utils": "^1.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "typescript": "^5.4.0"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix"
+  }
+}

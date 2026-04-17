@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Splynek</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --accent: #0a84ff;
+      --border: rgba(0, 0, 0, 0.12);
+      --mute: rgba(0, 0, 0, 0.55);
+      --panel: rgba(0, 0, 0, 0.04);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --border: rgba(255, 255, 255, 0.15);
+        --mute: rgba(255, 255, 255, 0.6);
+        --panel: rgba(255, 255, 255, 0.06);
+      }
+    }
+    body {
+      font: 13px -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+            system-ui, sans-serif;
+      margin: 0;
+      padding: 14px;
+      width: 280px;
+    }
+    h1 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0 0 2px;
+    }
+    .sub {
+      font-size: 11px;
+      color: var(--mute);
+      margin: 0 0 10px;
+    }
+    .url {
+      font: 11px / 1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--mute);
+      background: var(--panel);
+      padding: 8px;
+      border-radius: 6px;
+      word-break: break-all;
+      max-height: 64px;
+      overflow: hidden;
+      margin: 0 0 10px;
+      border: 1px solid var(--border);
+    }
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      margin: 4px 0;
+      font: inherit;
+      cursor: pointer;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: inherit;
+      transition: background 0.1s;
+    }
+    button:hover { background: rgba(127, 127, 127, 0.12); }
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border: 1px solid transparent;
+      font-weight: 600;
+    }
+    button.primary:hover { filter: brightness(1.05); }
+    .hint {
+      font-size: 11px;
+      color: var(--mute);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+    kbd {
+      display: inline-block;
+      padding: 1px 5px;
+      font: 11px ui-monospace, SFMono-Regular, Menlo, monospace;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--panel);
+    }
+  </style>
+</head>
+<body>
+  <h1>Splynek</h1>
+  <p class="sub">Send this page to Splynek for multi-interface download.</p>
+  <div id="url" class="url">—</div>
+  <button id="download" class="primary">
+    ↓ Download this page
+  </button>
+  <button id="queue">
+    ＋ Add to queue
+  </button>
+  <p class="hint">
+    Right-click any link on a page for a <em>Download with Splynek</em>
+    shortcut. Or press <kbd>⌘⇧Y</kbd> on any tab.
+  </p>
+  <script src="popup.js"></script>
+</body>
+</html>

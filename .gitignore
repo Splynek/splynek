@@ -1,0 +1,37 @@
+## Build artefacts
+.build/
+build/
+Packages/
+*.xcodeproj
+*.xcworkspace
+Package.resolved
+
+## macOS noise
+.DS_Store
+._*
+
+## Swift Package Manager
+.swiftpm/
+
+## Branding intermediates
+Branding/icon.iconset/
+Branding/flat/
+Branding/Splynek-square.png
+Branding/Splynek-logo-clean.png
+
+## Local caches and logs
+*.log
+*.xcresult
+
+## Generated DMGs
+build/*.dmg
+build/Splynek.zip
+
+## Node / Raycast dev
+Extensions/Raycast/node_modules/
+Extensions/Raycast/dist/
+
+## Editor state
+.vscode/
+.idea/
+*.swp

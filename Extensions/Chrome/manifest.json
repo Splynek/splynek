@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Splynek — Download with Splynek",
+  "short_name": "Splynek",
+  "version": "0.21.0",
+  "description": "Send links and current pages to Splynek, the macOS multi-interface download aggregator.",
+  "permissions": ["contextMenus", "activeTab", "tabs", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Send to Splynek",
+    "default_icon": {
+      "16":  "icons/icon-16.png",
+      "32":  "icons/icon-32.png",
+      "48":  "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16":  "icons/icon-16.png",
+    "32":  "icons/icon-32.png",
+    "48":  "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "commands": {
+    "splynek-download-active-tab": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Download the current tab in Splynek"
+    }
+  }
+}

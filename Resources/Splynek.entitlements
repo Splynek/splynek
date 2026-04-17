@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      Enable the App Sandbox. Splynek only needs:
+        - Outgoing network access (client)
+        - Write access to files the user explicitly picked via NSOpenPanel
+          (security-scoped bookmarks are handled by AppKit)
+      Everything else stays denied.
+
+      To build with this entitlement file:
+        SIGN_IDENTITY="Developer ID Application: …" \
+          ENTITLEMENTS=Resources/Splynek.entitlements \
+          ./Scripts/build.sh
+
+      Ad-hoc signing with an entitlement file works for local testing but
+      some sandbox features require a real identity for full enforcement.
+    -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+</dict>
+</plist>

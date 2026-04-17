@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Splynek — Safari bookmarklets</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --accent: #0a84ff;
+      --border: rgba(0, 0, 0, 0.12);
+      --mute: rgba(0, 0, 0, 0.55);
+      --panel: rgba(0, 0, 0, 0.03);
+      --code: rgba(0, 0, 0, 0.06);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --border: rgba(255, 255, 255, 0.15);
+        --mute: rgba(255, 255, 255, 0.62);
+        --panel: rgba(255, 255, 255, 0.04);
+        --code: rgba(255, 255, 255, 0.08);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      font: 15px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text",
+            system-ui, sans-serif;
+      margin: 0;
+      padding: 40px 20px 80px;
+      display: flex;
+      justify-content: center;
+    }
+    main { width: 100%; max-width: 640px; }
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 4px;
+    }
+    .sub {
+      font-size: 14px;
+      color: var(--mute);
+      margin: 0 0 28px;
+    }
+    h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 28px 0 10px;
+    }
+    .card {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+      margin: 10px 0;
+    }
+    a.bookmarklet {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      cursor: grab;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    }
+    a.bookmarklet:active { cursor: grabbing; }
+    a.bookmarklet.secondary {
+      background: var(--panel);
+      color: inherit;
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    ol { padding-left: 20px; }
+    ol li { margin: 6px 0; }
+    code, pre {
+      font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--code);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    pre {
+      padding: 10px 12px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    kbd {
+      display: inline-block;
+      padding: 1px 6px;
+      font: 12px ui-monospace, SFMono-Regular, Menlo, monospace;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--code);
+    }
+    .hint { font-size: 13px; color: var(--mute); margin-top: 6px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Splynek — Safari bookmarklets</h1>
+  <p class="sub">
+    Drag the buttons below onto Safari's Bookmarks Bar. Click one on any
+    page to hand its URL to the Splynek macOS app.
+  </p>
+
+  <h2>1 — Download with Splynek</h2>
+  <div class="card">
+    <a class="bookmarklet" draggable="true"
+       href="javascript:void(window.location.href='splynek://download?url='+encodeURIComponent(window.location.href)+'%26start=1')">
+      ↓ Splynek
+    </a>
+    <p class="hint">
+      Drag this to the bookmarks bar. Click it while viewing any page
+      whose URL you want to hand to Splynek. Safari prompts the first
+      time to confirm opening the app.
+    </p>
+  </div>
+
+  <h2>2 — Add page to Splynek queue</h2>
+  <div class="card">
+    <a class="bookmarklet secondary" draggable="true"
+       href="javascript:void(window.location.href='splynek://queue?url='+encodeURIComponent(window.location.href))">
+      ＋ Splynek queue
+    </a>
+    <p class="hint">
+      Same as above, but appends to the persistent queue instead of
+      starting immediately.
+    </p>
+  </div>
+
+  <h2>3 — Download the link under the cursor</h2>
+  <div class="card">
+    <a class="bookmarklet secondary" draggable="true"
+       href="javascript:(function(){var%20s=window.getSelection();var%20a=document.activeElement;var%20href=(a%26%26a.href)||(s%26%26s.anchorNode%26%26s.anchorNode.parentElement%26%26s.anchorNode.parentElement.closest('a')%26%26s.anchorNode.parentElement.closest('a').href);if(!href){var%20p=prompt('URL%20to%20send%20to%20Splynek:',window.location.href);if(!p)return;href=p;}window.location.href='splynek://download?url='+encodeURIComponent(href)+'%26start=1';})()">
+      ↓ Splynek (link)
+    </a>
+    <p class="hint">
+      Click this with text selected or after tab-focusing a link; it
+      picks up the nearest anchor's href. Falls back to a prompt.
+    </p>
+  </div>
+
+  <h2>Install</h2>
+  <ol>
+    <li>Enable Safari's Bookmarks Bar: <strong>View → Show Favorites
+        Bar</strong> (<kbd>⌘⇧B</kbd>).</li>
+    <li>Drag any button above onto the bar.</li>
+    <li>Rename it if you like (right-click → Rename).</li>
+    <li>Click it on any page to invoke Splynek. Safari asks once per
+        scheme; tick <strong>Always allow</strong> to silence the
+        prompt permanently.</li>
+  </ol>
+
+  <h2>Why not a Safari App Extension?</h2>
+  <p>
+    A proper Safari extension would live in the Splynek app bundle as
+    a <code>.appex</code>. That requires an Xcode project, which the
+    current Swift-Package-Manager-only build target doesn't produce.
+    Bookmarklets are zero-install, work everywhere, and cover the
+    same 90% of use cases (one-click hand-off of the current page).
+  </p>
+
+  <h2>What gets sent</h2>
+  <pre>splynek://download?url=&lt;percent-encoded&gt;&amp;start=1
+splynek://queue?url=&lt;percent-encoded&gt;</pre>
+  <p class="hint">
+    Splynek treats these identically to drag-and-drop, App Intents, or
+    the Chrome extension — same code path, same interface selection,
+    same integrity checks.
+  </p>
+</main>
+</body>
+</html>

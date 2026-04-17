@@ -1,0 +1,36 @@
+{
+  "version": "0.0.1",
+  "_comment": "Splynek is a native macOS SwiftUI app, not a web dev server. The schema's `port` field has no meaning here; 0 is used as a placeholder for all configurations.",
+  "configurations": [
+    {
+      "name": "Swift build (debug)",
+      "runtimeExecutable": "swift",
+      "runtimeArgs": ["build"],
+      "port": 0
+    },
+    {
+      "name": "Swift build (release)",
+      "runtimeExecutable": "swift",
+      "runtimeArgs": ["build", "-c", "release"],
+      "port": 0
+    },
+    {
+      "name": "Build Splynek.app bundle",
+      "runtimeExecutable": "./Scripts/build.sh",
+      "runtimeArgs": [],
+      "port": 0
+    },
+    {
+      "name": "Launch Splynek.app",
+      "runtimeExecutable": "open",
+      "runtimeArgs": ["build/Splynek.app"],
+      "port": 0
+    },
+    {
+      "name": "Swift run (debug, headless entry)",
+      "runtimeExecutable": "swift",
+      "runtimeArgs": ["run", "Splynek"],
+      "port": 0
+    }
+  ]
+}

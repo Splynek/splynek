@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>bundleid</key>
+    <string>app.splynek.alfred</string>
+    <key>category</key>
+    <string>Productivity</string>
+    <key>connections</key>
+    <dict>
+        <key>DOWNLOAD_KEYWORD</key>
+        <array>
+            <dict>
+                <key>destinationuid</key>
+                <string>DOWNLOAD_ACTION</string>
+                <key>modifiers</key>
+                <integer>0</integer>
+                <key>modifiersubtext</key>
+                <string></string>
+                <key>vitoclose</key>
+                <false/>
+            </dict>
+        </array>
+        <key>QUEUE_KEYWORD</key>
+        <array>
+            <dict>
+                <key>destinationuid</key>
+                <string>QUEUE_ACTION</string>
+                <key>modifiers</key>
+                <integer>0</integer>
+                <key>modifiersubtext</key>
+                <string></string>
+                <key>vitoclose</key>
+                <false/>
+            </dict>
+        </array>
+        <key>STATUS_KEYWORD</key>
+        <array>
+            <dict>
+                <key>destinationuid</key>
+                <string>STATUS_ACTION</string>
+                <key>modifiers</key>
+                <integer>0</integer>
+                <key>modifiersubtext</key>
+                <string></string>
+                <key>vitoclose</key>
+                <false/>
+            </dict>
+        </array>
+    </dict>
+    <key>createdby</key>
+    <string>Splynek</string>
+    <key>description</key>
+    <string>Send URLs to the Splynek macOS download manager, and see live status.</string>
+    <key>disabled</key>
+    <false/>
+    <key>name</key>
+    <string>Splynek</string>
+    <key>objects</key>
+    <array>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>argumenttype</key>
+                <integer>0</integer>
+                <key>keyword</key>
+                <string>dl</string>
+                <key>subtext</key>
+                <string>Download the URL in Splynek.</string>
+                <key>text</key>
+                <string>Download with Splynek</string>
+                <key>withspace</key>
+                <true/>
+            </dict>
+            <key>type</key>
+            <string>alfred.workflow.input.keyword</string>
+            <key>uid</key>
+            <string>DOWNLOAD_KEYWORD</string>
+            <key>version</key>
+            <integer>1</integer>
+        </dict>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>concurrently</key>
+                <false/>
+                <key>escaping</key>
+                <integer>102</integer>
+                <key>script</key>
+                <string>bash splynek.sh download "$1"</string>
+                <key>scriptargtype</key>
+                <integer>0</integer>
+                <key>scriptfile</key>
+                <string></string>
+                <key>type</key>
+                <integer>0</integer>
+            </dict>
+            <key>type</key>
+            <string>alfred.workflow.action.script</string>
+            <key>uid</key>
+            <string>DOWNLOAD_ACTION</string>
+            <key>version</key>
+            <integer>2</integer>
+        </dict>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>argumenttype</key>
+                <integer>0</integer>
+                <key>keyword</key>
+                <string>dlq</string>
+                <key>subtext</key>
+                <string>Append the URL to Splynek's queue.</string>
+                <key>text</key>
+                <string>Queue in Splynek</string>
+                <key>withspace</key>
+                <true/>
+            </dict>
+            <key>type</key>
+            <string>alfred.workflow.input.keyword</string>
+            <key>uid</key>
+            <string>QUEUE_KEYWORD</string>
+            <key>version</key>
+            <integer>1</integer>
+        </dict>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>concurrently</key>
+                <false/>
+                <key>escaping</key>
+                <integer>102</integer>
+                <key>script</key>
+                <string>bash splynek.sh queue "$1"</string>
+                <key>scriptargtype</key>
+                <integer>0</integer>
+                <key>scriptfile</key>
+                <string></string>
+                <key>type</key>
+                <integer>0</integer>
+            </dict>
+            <key>type</key>
+            <string>alfred.workflow.action.script</string>
+            <key>uid</key>
+            <string>QUEUE_ACTION</string>
+            <key>version</key>
+            <integer>2</integer>
+        </dict>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>argumenttype</key>
+                <integer>1</integer>
+                <key>keyword</key>
+                <string>dlstatus</string>
+                <key>subtext</key>
+                <string>Show Splynek's active downloads.</string>
+                <key>text</key>
+                <string>Splynek status</string>
+                <key>withspace</key>
+                <false/>
+            </dict>
+            <key>type</key>
+            <string>alfred.workflow.input.keyword</string>
+            <key>uid</key>
+            <string>STATUS_KEYWORD</string>
+            <key>version</key>
+            <integer>1</integer>
+        </dict>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>concurrently</key>
+                <false/>
+                <key>escaping</key>
+                <integer>102</integer>
+                <key>script</key>
+                <string>bash splynek.sh status</string>
+                <key>scriptargtype</key>
+                <integer>0</integer>
+                <key>scriptfile</key>
+                <string></string>
+                <key>type</key>
+                <integer>0</integer>
+            </dict>
+            <key>type</key>
+            <string>alfred.workflow.action.script</string>
+            <key>uid</key>
+            <string>STATUS_ACTION</string>
+            <key>version</key>
+            <integer>2</integer>
+        </dict>
+    </array>
+    <key>readme</key>
+    <string>Splynek workflow.
+
+Keywords:
+  dl &lt;url&gt;        — download the URL via Splynek
+  dlq &lt;url&gt;       — append to the Splynek queue
+  dlstatus        — list active downloads
+
+Requires Splynek.app to be running. The workflow calls splynek.sh
+which reads ~/Library/Application Support/Splynek/fleet.json for the
+port + token, then hits the local HTTP API.</string>
+    <key>uidata</key>
+    <dict/>
+    <key>version</key>
+    <string>0.27.0</string>
+    <key>webaddress</key>
+    <string>https://splynek.app</string>
+</dict>
+</plist>
