@@ -23,6 +23,64 @@ Install system-wide:
 cp -R build/Splynek.app /Applications/
 ```
 
+## What's new in v0.32 (distribution pass — the repo goes public-ready)
+
+The first release where "Splynek" is a thing that can actually leave
+`~/Claude Code/`. All app code was already built; this pass is the
+repo-shaped wrapper around it.
+
+### What landed
+- **Git repo initialised** on `main` with a single "initial public
+  commit" + a **second commit** containing distribution artefacts
+  + a **tag `v0.31`** on the last in-app feature release (Live
+  dashboard, history detail, projection chip).
+- **`LICENSE`** — MIT.
+- **`CONTRIBUTING.md`** — onramp + architecture invariants copied
+  forward from `HANDOFF.md` + style rules + "what we won't accept."
+- **`.gitignore`** — excludes `.build/`, `build/`, Branding
+  intermediates, Raycast `node_modules`, editor noise.
+- **`docs/index.html`** — single-file GitHub Pages landing. Dark
+  hero with the v0.31 logo at 128 px, six pitch cards, a
+  single-vs-multi bandwidth-bar proof section, feature grid,
+  install CTAs. GitHub Pages will serve it straight from `docs/`
+  once the remote is added.
+- **`SHOW_HN.md`** — launch-post draft with three title candidates,
+  timing guidance, body copy, and **pre-seeded comment replies**
+  for the HN questions that will inevitably land (aria2, FDM,
+  2–3× claim, hostile-peer handling, public P2P, Mac App Store).
+- **`build/Splynek.dmg`** — 2.1 MB compressed DMG of the v0.31
+  `.app`, produced via `Scripts/dmg.sh`. SHA-256:
+  `706aaee036b4a82e6daaef5663c55c1fdc80a8edff4ca020ba76739f22ea24d9`
+  — paste into the Homebrew cask template once the release is
+  hosted.
+
+### Still local — no push yet
+Nothing has been pushed. `git remote` is empty. To publish:
+
+```sh
+# on GitHub: create an empty "splynek/splynek" repo
+cd /Users/pcgm/Claude\ Code
+git remote add origin git@github.com:splynek/splynek.git
+git push -u origin main
+git push origin v0.31
+# upload build/Splynek.dmg as an asset on the v0.31 Release
+# Settings → Pages → Source: Deploy from branch → main / docs
+```
+
+### What's NOT in this release (tracked for v0.33+)
+The "do them all" plan from the previous session had five items:
+
+| Bet | Status |
+|---|---|
+| A — Distribution pass                    | **v0.32 ✓** (this release) |
+| B — Torrent side of Live dashboard       | NOT started |
+| C — Scheduled downloads                   | NOT started |
+| D — Integration tests (REST API + local server) | NOT started |
+| E — Watched-folder ingestion (FSEvents)   | NOT started |
+
+Each is a fresh top-of-stack todo for the next session. See
+`HANDOFF.md § Natural next bites`.
+
 ## What's new in v0.31 (the three Mush-inspired wins)
 
 After a side-by-side look at a competitor (Mush), three of its UX
