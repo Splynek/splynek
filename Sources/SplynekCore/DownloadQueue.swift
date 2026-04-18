@@ -17,6 +17,10 @@ struct QueueEntry: Codable, Identifiable, Hashable {
     var status: Status
     var finishedAt: Date?
     var errorMessage: String?
+    /// When the entry flipped from `.pending` → `.running`. Optional
+    /// so pre-v0.43 queues still decode; populated on every new
+    /// start. Drives the "took 2s" label on completed rows.
+    var startedAt: Date?
 }
 
 /// Codable disk shape.

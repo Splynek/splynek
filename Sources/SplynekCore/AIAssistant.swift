@@ -268,4 +268,184 @@ actor AIAssistant {
         let answer = try JSONDecoder().decode(Answer.self, from: inner)
         return answer.indices.filter { $0 >= 0 && $0 < entries.count }
     }
+
+    // MARK: - Recipe generation (v0.42)
+
+    /// Agentic download recipe. Turns a plain-English goal into a
+    /// structured batch of verifiable downloads the user can review
+    /// and queue.
+    ///
+    /// Prompt engineering decisions:
+    /// - **Few-shot examples** rather than just a JSON schema — LLMs
+    ///   under 7B parameters follow examples far more reliably than
+    ///   abstract schemas for this output shape.
+    /// - **Temperature 0.2** — we want deterministic-ish structured
+    ///   output, not creative variety. A higher temp makes the LLM
+    ///   invent URLs more enthusiastically.
+    /// - **Explicit anti-hallucination rules**: prefer
+    ///   `/releases/latest` URLs, include homepage for every item,
+    ///   lower confidence when guessing URL format. A confidence
+    ///   below 0.7 flashes a warning in the UI.
+    /// - **5–10 item cap** keeps the output parseable and the user's
+    ///   review time manageable.
+    /// - **Long timeout** (90 s default): small CPU-bound models on
+    ///   Apple Silicon can take 20–60 s for structured output at
+    ///   this length.
+    ///
+    /// The model is still an LLM — it WILL occasionally invent URLs.
+    /// That's why the UI shows every item with a homepage link, a
+    /// confidence score, and a checkbox. The user's approval is the
+    /// authoritative validation step; this function is the proposer.
+    func generateRecipe(goal: String, timeout: TimeInterval = 90) async throws -> DownloadRecipe {
+        guard case .ready(let modelName) = state else {
+            throw AIError.unavailable
+        }
+        let trimmedGoal = goal.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedGoal.isEmpty else {
+            throw AIError.badResponse("empty goal")
+        }
+
+        let system = """
+        You are a download-recipe planner for Splynek, a native macOS \
+        download manager that pulls files over every network interface \
+        in parallel and verifies them with SHA-256. Given a plain-English \
+        goal, you propose a JSON recipe listing the downloads that \
+        achieve it.
+
+        STRICT RULES:
+        1. Output ONLY a JSON object, no prose before or after, no \
+           markdown fences.
+        2. Every item MUST have: name, url, homepage, rationale, \
+           confidence (0.0–1.0). sha256 and sizeHint are optional.
+        3. `url` MUST be a **direct-download binary URL** — a file the \
+           user could `curl` to disk and run. NEVER return Mac App Store \
+           URLs (apps.apple.com/...), iTunes Store URLs, or any URL \
+           whose server returns an HTML marketing page. For Apple-only \
+           apps that have no direct download (Xcode, Pages, etc.), skip \
+           the item entirely and note it in the rationale of a nearby \
+           item — do NOT add an item whose url points at the App Store.
+        4. Prefer URLs that resolve to the latest version without \
+           updates (`…/releases/latest/download/…` on GitHub, \
+           `releases.ubuntu.com/24.04/ubuntu-*-desktop-amd64.iso`, \
+           `cdn.kernel.org/...`, `mirror.hetzner.com/...`).
+        5. If you don't know the exact direct-download URL but you \
+           know the project's homepage, return the homepage as the \
+           url AND set confidence ≤ 0.5. User sees low confidence and \
+           verifies before queuing.
+        6. NEVER invent URLs from scratch. Better to skip an item than \
+           to hallucinate a plausible-looking URL.
+        7. Cap the recipe at 10 items unless the goal explicitly asks \
+           for more. Quality over breadth.
+        8. rationale is ONE short sentence explaining why the item is \
+           in the recipe.
+        9. url and homepage MUST be http(s) URLs.
+
+        OUTPUT SHAPE (JSON):
+        {
+          "title": "Short 3-to-5-word recipe title",
+          "items": [
+            {
+              "name": "Human-readable name",
+              "url": "https://direct-download-or-homepage",
+              "homepage": "https://project-page",
+              "sha256": "64-hex-chars or null",
+              "sizeHint": "~500 MB or null",
+              "rationale": "One sentence why this is in the recipe.",
+              "confidence": 0.85
+            }
+          ]
+        }
+
+        EXAMPLE 1 —
+        Goal: "set up my Mac for iOS development"
+        Response:
+        {
+          "title": "iOS development setup",
+          "items": [
+            {
+              "name": "Homebrew installer",
+              "url": "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh",
+              "homepage": "https://brew.sh",
+              "sha256": null,
+              "sizeHint": "~50 KB",
+              "rationale": "Package manager for most dev tooling. Xcode itself must be installed manually from the Mac App Store — it has no direct-download URL.",
+              "confidence": 0.95
+            },
+            {
+              "name": "Visual Studio Code",
+              "url": "https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal",
+              "homepage": "https://code.visualstudio.com",
+              "sha256": null,
+              "sizeHint": "~200 MB",
+              "rationale": "Cross-language editor frequently used alongside Xcode.",
+              "confidence": 0.9
+            }
+          ]
+        }
+
+        EXAMPLE 2 —
+        Goal: "latest Ubuntu desktop ISO"
+        Response:
+        {
+          "title": "Ubuntu desktop",
+          "items": [
+            {
+              "name": "Ubuntu 24.04 LTS Desktop",
+              "url": "https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso",
+              "homepage": "https://ubuntu.com/download/desktop",
+              "sha256": null,
+              "sizeHint": "~6 GB",
+              "rationale": "Current LTS desktop image from the canonical Ubuntu mirror.",
+              "confidence": 0.9
+            }
+          ]
+        }
+        """
+
+        struct Req: Encodable {
+            let model: String
+            let prompt: String
+            let system: String
+            let stream: Bool
+            let format: String
+            let options: Options
+            struct Options: Encodable {
+                let temperature: Double
+                let num_predict: Int
+            }
+        }
+        let body = Req(
+            model: modelName,
+            prompt: "Goal: \"\(trimmedGoal)\"",
+            system: system,
+            stream: false,
+            format: "json",
+            options: .init(temperature: 0.2, num_predict: 2048)
+        )
+
+        var urlReq = URLRequest(url: Self.endpoint.appendingPathComponent("api/generate"))
+        urlReq.httpMethod = "POST"
+        urlReq.timeoutInterval = timeout
+        urlReq.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlReq.httpBody = try JSONEncoder().encode(body)
+
+        let (data, resp) = try await URLSession.shared.data(for: urlReq)
+        guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else {
+            throw AIError.badResponse("HTTP \((resp as? HTTPURLResponse)?.statusCode ?? 0) from Ollama")
+        }
+        struct OllamaResp: Decodable { let response: String }
+        let outer = try JSONDecoder().decode(OllamaResp.self, from: data)
+
+        do {
+            return try RecipeParser.parse(
+                response: outer.response,
+                goal: trimmedGoal,
+                modelUsed: modelName
+            )
+        } catch let err as RecipeParser.ParseError {
+            throw AIError.modelRefused(err.description)
+        } catch {
+            throw AIError.badResponse(error.localizedDescription)
+        }
+    }
 }

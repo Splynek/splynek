@@ -173,6 +173,9 @@ struct DownloadView: View {
 
     @ToolbarContentBuilder
     private var downloadToolbar: some ToolbarContent {
+        // QA P2 #13 (v0.43): toolbar icons previously had no
+        // tooltip. Adding .help(...) per button surfaces their
+        // function on hover — users no longer have to guess.
         ToolbarItemGroup(placement: .primaryAction) {
             Button { vm.start() } label: {
                 Label("Start", systemImage: "arrow.down.circle.fill")
@@ -180,26 +183,32 @@ struct DownloadView: View {
             .keyboardShortcut(.return)
             .disabled(vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty)
             .buttonStyle(.borderedProminent)
+            .help("Start download now (⏎). Pulls the URL across every selected interface in parallel.")
 
             Button { vm.addCurrentToQueue() } label: {
                 Label("Queue", systemImage: "line.3.horizontal.decrease.circle.fill")
             }
             .keyboardShortcut("q", modifiers: [.command, .shift])
             .disabled(vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty)
+            .help("Add to queue (⌘⇧Q). Runs when the current download finishes.")
 
             if vm.isRunning {
                 Button(role: .destructive) { vm.cancelAll() } label: {
                     Label("Cancel All", systemImage: "stop.fill")
                 }
                 .keyboardShortcut(".", modifiers: .command)
+                .help("Cancel every running download (⌘.).")
             }
             Button { vm.copyCurlCommand() } label: {
                 Label("Copy curl", systemImage: "terminal")
             }
             .disabled(vm.urlText.isEmpty)
+            .help("Copy a curl equivalent to the clipboard.")
+
             Button { showAdvanced.toggle() } label: {
                 Label("Advanced", systemImage: showAdvanced ? "chevron.up" : "chevron.down")
             }
+            .help(showAdvanced ? "Hide advanced options" : "Show advanced options (Merkle / Metalink / headers)")
         }
     }
 
@@ -269,7 +278,7 @@ struct DownloadView: View {
                         AnyView(StatusPill(text: "SHA-256", style: .success))
                     } else { nil }
                 })
-                if vm.aiAvailable {
+                if vm.aiAvailable && vm.license.isPro {
                     aiRow
                 }
                 if !vm.enrichment.badges.isEmpty {
@@ -277,6 +286,32 @@ struct DownloadView: View {
                 }
                 if let dup = vm.duplicate {
                     duplicateBanner(dup)
+                }
+                // QA P2 #14 (v0.43): inline Start / Queue row so
+                // users don't have to hunt for the toolbar. The
+                // toolbar buttons remain as the keyboard-shortcut
+                // home; these duplicate the primary actions where
+                // the eye is already looking.
+                HStack(spacing: 10) {
+                    Button { vm.start() } label: {
+                        Label("Start download", systemImage: "arrow.down.circle.fill")
+                            .frame(minWidth: 140)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .disabled(vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty
+                              || vm.isRunning)
+                    Button { vm.addCurrentToQueue() } label: {
+                        Label("Add to queue",
+                              systemImage: "line.3.horizontal.decrease.circle.fill")
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .disabled(vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty)
+                    Spacer()
+                    if vm.isRunning {
+                        StatusPill(text: "RUNNING", style: .info)
+                    }
                 }
                 HStack(spacing: 8) {
                     Image(systemName: "folder").foregroundStyle(.secondary)
@@ -692,6 +727,11 @@ struct DownloadView: View {
             if vm.cellularBudgetExceeded {
                 StatusPill(text: "OVER", style: .danger)
             }
+            Button { vm.exportCellularBudgetCSV() } label: {
+                Image(systemName: "square.and.arrow.up")
+            }
+            .buttonStyle(.borderless)
+            .help("Export today + historical daily totals as CSV.")
         }
         .padding(10)
         .background(

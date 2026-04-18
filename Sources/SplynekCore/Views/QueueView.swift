@@ -54,7 +54,11 @@ struct QueueView: View {
         let running = vm.queue.filter { $0.status == .running }.count
         let done = vm.queue.filter { $0.status == .completed }.count
         let failed = vm.queue.filter { $0.status == .failed }.count
-        return TitledCard(title: "Summary", systemImage: "chart.bar") {
+        // QA P2 #6 (v0.43): `chart.bar` reads as Wi-Fi signal
+        // strength at small sizes. `rectangle.stack.badge.person.crop`
+        // is too thematic; `list.clipboard` conveys "queue summary"
+        // without the signal-bars ambiguity.
+        return TitledCard(title: "Summary", systemImage: "list.clipboard") {
             HStack(spacing: 24) {
                 MetricView(value: "\(running)", caption: "Running", tint: .accentColor)
                 MetricView(value: "\(pending)", caption: "Pending")
@@ -66,10 +70,22 @@ struct QueueView: View {
     }
 
     private var listCard: some View {
-        TitledCard(title: "Entries", systemImage: "list.bullet.rectangle") {
+        // First pending entry is the one the scheduler would start next;
+        // if the schedule is blocking, we badge it with "WAITING" so the
+        // user understands why nothing is running.
+        let headPendingID = vm.queue.first(where: { $0.status == .pending })?.id
+        let blocked: DownloadSchedule.Evaluation? = {
+            if case .blocked = vm.scheduleEvaluation { return vm.scheduleEvaluation }
+            return nil
+        }()
+        return TitledCard(title: "Entries", systemImage: "list.bullet.rectangle") {
             VStack(spacing: 6) {
                 ForEach(vm.queue, id: \.id) { entry in
-                    QueueRow(entry: entry, vm: vm)
+                    QueueRow(
+                        entry: entry,
+                        vm: vm,
+                        scheduleBlock: entry.id == headPendingID ? blocked : nil
+                    )
                 }
             }
         }
@@ -79,6 +95,10 @@ struct QueueView: View {
 private struct QueueRow: View {
     let entry: QueueEntry
     let vm: SplynekViewModel
+    /// If non-nil, this row is the head-of-queue and the schedule is
+    /// currently blocking starts. Shown as a "WAITING" pill + relative
+    /// "next opening 2h" caption under the filename.
+    let scheduleBlock: DownloadSchedule.Evaluation?
 
     var body: some View {
         HStack(spacing: 12) {
@@ -99,18 +119,41 @@ private struct QueueRow: View {
                     Text(msg).font(.caption).foregroundStyle(.red)
                         .lineLimit(1).truncationMode(.tail)
                 }
+                if let block = scheduleBlock,
+                   case .blocked(_, let nextAllowed) = block,
+                   let next = nextAllowed {
+                    Text("Next opening \(Self.relative(next)).")
+                        .font(.caption).foregroundStyle(.orange)
+                }
             }
 
             Spacer(minLength: 8)
 
+            if scheduleBlock != nil {
+                StatusPill(text: "WAITING", style: .warning)
+            }
             StatusPill(text: entry.status.rawValue.uppercased(), style: pillStyle)
 
-            if let finished = entry.finishedAt {
-                Text(finished, style: .relative)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(width: 90, alignment: .trailing)
-            } else {
+            // QA P2 #4/#5 (v0.43): on terminal states the "time ago"
+            // clock is noise. For COMPLETED we show the actual
+            // download duration (took Xs) when we have a startedAt.
+            // For FAILED / CANCELLED we hide the clock entirely —
+            // the error message carries the timing context that
+            // matters. PENDING / RUNNING keep the addedAt clock so
+            // users can see staleness.
+            switch entry.status {
+            case .completed:
+                if let started = entry.startedAt, let finished = entry.finishedAt {
+                    Text("took \(formatDuration(finished.timeIntervalSince(started)))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 90, alignment: .trailing)
+                } else {
+                    Spacer().frame(width: 90)
+                }
+            case .failed, .cancelled:
+                Spacer().frame(width: 90)
+            case .pending, .running:
                 Text(entry.addedAt, style: .relative)
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -172,4 +215,6 @@ private struct QueueRow: View {
         case .cancelled: return .warning
         }
     }
+
+    private static func relative(_ date: Date) -> String { formatRelative(date) }
 }

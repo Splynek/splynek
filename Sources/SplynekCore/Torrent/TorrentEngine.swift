@@ -149,6 +149,64 @@ final class TorrentEngine {
         self.writer = writer
         defer { writer.close() }
 
+        // Session-restore scan. Verifies every piece against the
+        // bytes already on disk (v0.40+) and feeds verified indices
+        // into the picker so we don't re-download them. Skipped for
+        // v2 magnets that haven't yet received their piece layers —
+        // `PieceVerifier` refuses in that state because the bytes
+        // can't be authenticated, and the verifier itself short-
+        // circuits if piece-hash data isn't available.
+        if haveV1 || haveV2 {
+            await MainActor.run { progress.phase = "Verifying existing pieces…" }
+            let resumeRoot = self.rootDirectory
+            let resume = await withCheckedContinuation { (cont: CheckedContinuation<TorrentResume.Result, Never>) in
+                DispatchQueue.global(qos: .userInitiated).async { [cancelFlag, info] in
+                    let result = TorrentResume.scan(
+                        info: info, rootDirectory: resumeRoot,
+                        progressInterval: 32,
+                        onProgress: nil,
+                        isCancelled: { cancelFlag.isCancelled }
+                    )
+                    cont.resume(returning: result)
+                }
+            }
+            if !resume.verifiedPieces.isEmpty {
+                for idx in resume.verifiedPieces {
+                    picker.markDone(idx)
+                    seedingService?.markPieceComplete(idx)
+                }
+                await MainActor.run {
+                    progress.piecesDone = resume.verifiedPieces.count
+                    progress.downloaded = resume.bytesRecovered
+                    progress.phase = "Restored \(resume.verifiedPieces.count)/\(info.numPieces) pieces from disk."
+                }
+            }
+        }
+
+        // If the resume scan already completed the torrent, skip the
+        // swarm entirely and jump to the completion branch.
+        if picker.allDone() {
+            for f in info.files {
+                let url = rootDirectory.appendingPathComponent(info.relativePath(for: f))
+                Quarantine.mark(url)
+            }
+            await MainActor.run {
+                progress.finished = true
+                progress.phase = "Done (fully restored)."
+            }
+            await MainActor.run { DockBadge.set(nil) }
+            Notifier.post(
+                title: "Torrent complete",
+                body: info.name,
+                subtitle: ByteCountFormatter.string(fromByteCount: info.totalLength,
+                                                    countStyle: .binary)
+            )
+            if seedAfterCompletion {
+                await startSeeding()
+            }
+            return
+        }
+
         // Optionally stand up the seeder now so completed pieces are
         // served to other peers as they arrive (partial-seed-while-leech).
         if seedWhileLeeching {
@@ -613,34 +671,11 @@ actor PeerCoordinator {
     fileprivate nonisolated func acceptPiece(
         data: Data, index: Int, info: TorrentInfo
     ) -> Bool {
-        let v1Ok: Bool?
-        if !info.pieceHashes.isEmpty, index < info.pieceHashes.count {
-            let digest = Data(Insecure.SHA1.hash(data: data))
-            v1Ok = (digest == info.pieceHashes[index])
-        } else {
-            v1Ok = nil
-        }
-        let v2Ok: Bool?
-        if info.metaVersion != .v1,
-           let located = TorrentV2Verify.locatePiece(info: info, globalIdx: index) {
-            v2Ok = TorrentV2Verify.verifyPiece(
-                pieceData: data, pieceIndex: located.localIndex,
-                pieceLength: info.pieceLength, layer: located.layer
-            )
-        } else {
-            v2Ok = nil
-        }
-        switch (v1Ok, v2Ok) {
-        case (.some(true), .some(true)):   return true
-        case (.some(true), nil):           return true
-        case (nil, .some(true)):           return true
-        case (.some(false), _):            return false
-        case (_, .some(false)):            return false
-        case (nil, nil):
-            // v2 magnet with no shipped layers. Accept on faith; the caller
-            // has no better option until ut_metadata + hash_request land.
-            return info.metaVersion == .v2
-        }
+        // Live-swarm path — stays lenient on v2 magnets without
+        // layers (`resumeMode: false`), unlike the resume scanner.
+        return PieceVerifier.verify(
+            data: data, index: index, info: info, resumeMode: false
+        )
     }
 
     func work(peer: TorrentPeer, infoHash: Data, ourPeerID: Data, interface: NWInterface) async {

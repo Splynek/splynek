@@ -45,7 +45,14 @@ enum Magnet {
         for pair in query.split(separator: "&") {
             let kv = pair.split(separator: "=", maxSplits: 1).map(String.init)
             if kv.count == 2 {
-                parts.append((kv[0], kv[1].removingPercentEncoding ?? kv[1]))
+                // QA P2 #9 (v0.43): `application/x-www-form-urlencoded`
+                // uses `+` for space. `removingPercentEncoding` only
+                // handles `%20`, leaving magnet display names like
+                // `Ubuntu+Test` with a literal `+`. Decode `+` → space
+                // BEFORE percent-decoding so real `%2B` (an actual `+`
+                // in the value) still round-trips correctly.
+                let plusDecoded = kv[1].replacingOccurrences(of: "+", with: " ")
+                parts.append((kv[0], plusDecoded.removingPercentEncoding ?? plusDecoded))
             }
         }
 

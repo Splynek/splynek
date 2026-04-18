@@ -18,8 +18,18 @@ final class TorrentWriter {
         self.rootDirectory = rootDirectory
     }
 
-    /// Create all files pre-allocated to their correct size. Necessary so
-    /// seeks into not-yet-written regions succeed.
+    /// Idempotently ensure every declared file exists at its expected
+    /// size, so seeks into not-yet-written regions succeed. v0.40+
+    /// preserves any bytes already on disk — previously this function
+    /// removed existing files, which silently discarded partial-
+    /// download progress across app restarts and blocked session
+    /// restore for torrents.
+    ///
+    /// Behaviour per file:
+    ///   - Missing:              create empty + truncate up to expected length.
+    ///   - Exists, correct size: leave bytes alone.
+    ///   - Exists, smaller:      truncate up (zero-fills the tail).
+    ///   - Exists, bigger:       truncate down (user-editing-weirdness recovery).
     func preallocate() throws {
         let fm = FileManager.default
         for f in info.files {
@@ -29,8 +39,16 @@ final class TorrentWriter {
                 at: url.deletingLastPathComponent(),
                 withIntermediateDirectories: true
             )
-            try? fm.removeItem(at: url)
-            fm.createFile(atPath: url.path, contents: nil)
+            let existingSize: Int64? = {
+                guard let attrs = try? fm.attributesOfItem(atPath: url.path) else { return nil }
+                return (attrs[.size] as? NSNumber)?.int64Value
+            }()
+            if existingSize == f.length {
+                continue   // already-allocated file, bytes may be in-progress — don't touch
+            }
+            if existingSize == nil {
+                fm.createFile(atPath: url.path, contents: nil)
+            }
             let h = try FileHandle(forWritingTo: url)
             try h.truncate(atOffset: UInt64(f.length))
             try h.close()
@@ -63,6 +81,43 @@ final class TorrentWriter {
             remaining = remaining.subdata(in: consumed..<remaining.count)
             cursor = writeTo
         }
+    }
+
+    /// Static, Sendable-friendly variant of `readAt` used by the
+    /// session-restore scanner. Uses only `info` + `rootDirectory`
+    /// so it can be dispatched onto a background queue without
+    /// capturing the (non-Sendable) writer instance.
+    static func read(
+        info: TorrentInfo,
+        rootDirectory: URL,
+        virtualOffset: Int64,
+        length: Int64
+    ) throws -> Data {
+        var out = Data()
+        var cursor = virtualOffset
+        var remaining = length
+        for f in info.files where remaining > 0 {
+            let fileStart = f.offset
+            let fileEnd = f.offset + f.length
+            if cursor >= fileEnd { continue }
+            if cursor + remaining <= fileStart { continue }
+            let readFrom = max(cursor, fileStart)
+            let readTo = min(cursor + remaining, fileEnd)
+            if readFrom >= readTo { continue }
+            let want = Int(readTo - readFrom)
+            let rel = info.relativePath(for: f)
+            let url = rootDirectory.appendingPathComponent(rel)
+            let h = try FileHandle(forReadingFrom: url)
+            defer { try? h.close() }
+            try h.seek(toOffset: UInt64(readFrom - fileStart))
+            let chunk = try h.read(upToCount: want) ?? Data()
+            out.append(chunk)
+            let took = Int64(chunk.count)
+            remaining -= took
+            cursor += took
+            if took == 0 { break }
+        }
+        return out
     }
 
     /// Read `length` bytes starting at `virtualOffset` in the contiguous

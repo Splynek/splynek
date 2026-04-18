@@ -22,6 +22,22 @@ struct CellularBudgetState: Codable {
     static let empty = CellularBudgetState(bytesToday: 0, dateString: "", dailyCap: 0)
 }
 
+/// One frozen day's worth of cellular usage, appended to the history
+/// log on midnight roll-over so the CSV exporter can emit a timeline.
+struct CellularBudgetDaily: Codable, Hashable, Identifiable, Sendable {
+    var dateString: String
+    var bytesTotal: Int64
+    /// The cap that was in effect on this day (0 = uncapped). Useful for
+    /// post-hoc analysis of whether the user hit the ceiling.
+    var dailyCap: Int64
+    var id: String { dateString }
+}
+
+private struct CellularBudgetHistory: Codable {
+    var days: [CellularBudgetDaily]
+    static let empty = CellularBudgetHistory(days: [])
+}
+
 enum CellularBudget {
 
     static var storeURL: URL {
@@ -34,6 +50,13 @@ enum CellularBudget {
         try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir.appendingPathComponent("cellular-budget.json")
     }
+
+    static var historyURL: URL {
+        storeURL.deletingLastPathComponent()
+                .appendingPathComponent("cellular-budget-history.json")
+    }
+
+    static let historyDayCap = 365
 
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -50,10 +73,48 @@ enum CellularBudget {
         else { return .empty }
         // Reset if day has rolled over since the saved snapshot.
         if state.dateString != today() {
-            return CellularBudgetState(bytesToday: 0, dateString: today(),
-                                       dailyCap: state.dailyCap)
+            // Snapshot yesterday into history before discarding, so the
+            // CSV exporter sees a continuous timeline. Skip zero-byte
+            // days that had no cap either — they're noise.
+            if !state.dateString.isEmpty,
+               state.bytesToday > 0 || state.dailyCap > 0 {
+                appendHistory(CellularBudgetDaily(
+                    dateString: state.dateString,
+                    bytesTotal: state.bytesToday,
+                    dailyCap: state.dailyCap
+                ))
+            }
+            let rolled = CellularBudgetState(
+                bytesToday: 0, dateString: today(), dailyCap: state.dailyCap
+            )
+            save(rolled)
+            return rolled
         }
         return state
+    }
+
+    /// Read the frozen-day history, most-recent-first.
+    static func loadHistory() -> [CellularBudgetDaily] {
+        guard let data = try? Data(contentsOf: historyURL),
+              let history = try? JSONDecoder().decode(CellularBudgetHistory.self, from: data)
+        else { return [] }
+        return history.days.sorted { $0.dateString > $1.dateString }
+    }
+
+    private static func appendHistory(_ day: CellularBudgetDaily) {
+        var history = (try? JSONDecoder().decode(
+            CellularBudgetHistory.self,
+            from: (try? Data(contentsOf: historyURL)) ?? Data()
+        )) ?? .empty
+        history.days.removeAll { $0.dateString == day.dateString }
+        history.days.append(day)
+        history.days.sort { $0.dateString > $1.dateString }
+        if history.days.count > historyDayCap {
+            history.days = Array(history.days.prefix(historyDayCap))
+        }
+        if let data = try? JSONEncoder().encode(history) {
+            try? data.write(to: historyURL, options: .atomic)
+        }
     }
 
     static func save(_ state: CellularBudgetState) {

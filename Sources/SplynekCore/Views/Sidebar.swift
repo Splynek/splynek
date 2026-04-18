@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Which top-level section the sidebar is currently displaying.
 enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
-    case downloads, live, torrents, concierge, queue, fleet, benchmark,
+    case downloads, live, torrents, concierge, recipes, queue, fleet, benchmark,
          history, settings, legal, about
 
     var id: String { rawValue }
@@ -13,6 +13,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .live:      return "Live"
         case .torrents:  return "Torrents"
         case .concierge: return "Assistant"
+        case .recipes:   return "Recipes"
         case .queue:     return "Queue"
         case .fleet:     return "Fleet"
         case .benchmark: return "Benchmark"
@@ -29,6 +30,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .live:      return "waveform.circle.fill"
         case .torrents:  return "antenna.radiowaves.left.and.right"
         case .concierge: return "sparkles"
+        case .recipes:   return "list.star"
         case .queue:     return "line.3.horizontal.decrease.circle"
         case .fleet:     return "laptopcomputer.and.arrow.down"
         case .benchmark: return "bolt.fill"
@@ -91,18 +93,74 @@ struct Sidebar: View {
                 Text("Active")
             }
 
-            Section {
-                NavigationLink(value: SidebarSection.concierge) {
-                    sidebarRow(
-                        title: "Assistant",
-                        systemImage: "sparkles",
-                        accessory: vm.aiAvailable
-                            ? AnyView(StatusPill(text: "AI", style: .info))
-                            : nil
-                    )
+            // QA P1 root-cause fix (v0.43): the Assistant + Recipes
+            // views are Pro-gated. Every attempt to put the Pro gate
+            // INSIDE the view body broke NavigationSplitView's sidebar
+            // layout on macOS 14 (detail blank + sidebar items above
+            // the selected tab disappear, requires full app restart
+            // to recover). Root cause: SwiftUI's NSSplitView-backed
+            // layout engine miscomputes when a destination view's
+            // shape changes between renders of the same tab — a
+            // known class of bug we can't work around at the view
+            // level.
+            //
+            // The clean fix: don't show the tabs at all when not Pro.
+            // If Pro isn't active the user has no way to navigate to
+            // a view with a conditional body, so the bug can't trigger.
+            // Pro discovery still happens via the Settings card. This
+            // is the solution used by most Mac indies (Bear, iA
+            // Writer) for Pro-only tabs: subscription-gated areas
+            // simply don't appear in the sidebar until unlocked.
+            if vm.license.isPro {
+                Section {
+                    NavigationLink(value: SidebarSection.concierge) {
+                        sidebarRow(
+                            title: "Assistant",
+                            systemImage: "sparkles",
+                            accessory: vm.aiAvailable
+                                ? AnyView(StatusPill(text: "AI", style: .info))
+                                : nil
+                        )
+                    }
+                    NavigationLink(value: SidebarSection.recipes) {
+                        sidebarRow(
+                            title: "Recipes",
+                            systemImage: "list.star",
+                            accessory: vm.currentRecipe != nil
+                                ? AnyView(StatusPill(text: "DRAFT", style: .warning))
+                                : (vm.recipeGenerating
+                                    ? AnyView(ProgressView().controlSize(.mini))
+                                    : nil)
+                        )
+                    }
+                } header: {
+                    Text("Ask")
                 }
-            } header: {
-                Text("Ask")
+            } else {
+                // Free-tier Pro discovery: a single non-navigating
+                // row that points at Settings → Splynek Pro. Clicking
+                // it jumps to Settings so the user can unlock
+                // without leaving the sidebar context. Much cleaner
+                // than a broken Pro-gated tab.
+                Section {
+                    Button {
+                        selection = .settings
+                        vm.showingProUnlock = true
+                    } label: {
+                        sidebarRow(
+                            title: "Unlock AI tools",
+                            systemImage: "sparkles",
+                            accessory: AnyView(StatusPill(text: "PRO", style: .warning))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                } header: {
+                    Text("Ask")
+                } footer: {
+                    Text("Assistant + Recipes unlock with Splynek Pro.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Section {

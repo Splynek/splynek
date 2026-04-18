@@ -72,6 +72,12 @@ public final class FleetCoordinator: ObservableObject {
             var downloaded: Int64
             var chunkSize: Int64
             var completedChunks: [Int]
+            /// Current pipeline stage, sourced from
+            /// `DownloadProgress.Phase.rawValue`. Present on v0.36+;
+            /// older API consumers that don't know this field are
+            /// unaffected because `Decodable` treats missing keys on
+            /// a defaulted property as absent.
+            var phase: String = ""
         }
         struct CompletedFile: Sendable, Codable, Hashable {
             var url: String
@@ -159,6 +165,20 @@ public final class FleetCoordinator: ObservableObject {
         didSet {
             UserDefaults.standard.set(loopbackOnly, forKey: "fleetLoopbackOnly")
         }
+    }
+
+    /// Pro-gate override (v0.41+). When true, the listener binds
+    /// only to 127.0.0.1 regardless of `loopbackOnly`, so the
+    /// free tier never exposes the web dashboard or REST API to
+    /// the LAN. The VM sets this based on `license.isPro` before
+    /// `start()` runs. Same next-launch semantics as
+    /// `loopbackOnly` — flipping mid-session doesn't rebind.
+    public var proGateForcesLoopback: Bool = true
+
+    /// What the listener should actually use when deciding to
+    /// loopback-bind. Exposed internal for tests.
+    var effectiveLoopbackOnly: Bool {
+        loopbackOnly || proGateForcesLoopback
     }
 
     // MARK: Rate limiting
@@ -269,7 +289,7 @@ public final class FleetCoordinator: ObservableObject {
             // `requiredLocalEndpoint` to 127.0.0.1 makes NWListener
             // bind there; Bonjour advertisement becomes a no-op.
             let params: NWParameters = .tcp
-            if loopbackOnly {
+            if effectiveLoopbackOnly {
                 params.requiredLocalEndpoint = NWEndpoint.hostPort(
                     host: "127.0.0.1",
                     port: .any

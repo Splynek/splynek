@@ -159,7 +159,7 @@ enum OpenAPI {
           items: { $ref: "#/components/schemas/CompletedFile" }
         ActiveJob:
           type: object
-          required: [url, filename, outputPath, totalBytes, downloaded, chunkSize, completedChunks]
+          required: [url, filename, outputPath, totalBytes, downloaded, chunkSize, completedChunks, phase]
           properties:
             url:              { type: string, format: uri }
             filename:         { type: string }
@@ -168,6 +168,13 @@ enum OpenAPI {
             downloaded:       { type: integer, format: int64 }
             chunkSize:        { type: integer, format: int64 }
             completedChunks:  { type: array, items: { type: integer } }
+            phase:
+              type: string
+              description: >-
+                Current pipeline stage. Enumerated for the v0.36+ engine;
+                an empty string means the field hasn't been populated
+                yet (e.g., a job that hasn't moved past `pending`).
+              enum: ["", Queued, Probing, Planning, Connecting, Downloading, Verifying, Gatekeeper, Done]
         CompletedFile:
           type: object
           required: [url, filename, outputPath, totalBytes, finishedAt]

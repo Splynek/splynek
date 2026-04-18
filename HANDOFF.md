@@ -15,10 +15,23 @@ every session.
 **Tests:** `swift run splynek-test` (58+ tests, all green)
 **CLI:** `swift run splynek-cli version`
 
-**Current version:** 0.32 — distribution pass (git + LICENSE +
-CONTRIBUTING + `docs/index.html` + `SHOW_HN.md` + DMG + tag). See
-README.md for the full reverse-chronological feature log from
-v0.1 to v0.32.
+**Current version:** 0.43 — QA-pass release. No new features;
+fixes the P1 rendering bug uncovered by a full user walkthrough
+of v0.42 + twelve P2 UX issues (magnet name decoding, queue
+time display, chart legend IP labelling, etc.). Critical fix:
+Pro-gated tabs (Assistant + Recipes) no longer render their
+Pro-gate INSIDE the view body — moved to the sidebar instead,
+because the in-view gate triggered a SwiftUI
+NavigationSplitView layout bug on macOS 14 that wedged the
+whole app. 165 tests. See README.md for the full
+reverse-chronological feature log from v0.1 to v0.43.
+
+**Architectural invariant (v0.43+):** Do NOT put a top-level
+conditional `if/else` that returns structurally different view
+subtrees inside a `some View` body used as a `NavigationSplitView`
+destination. macOS 14's split-view layout fails in a way that
+requires full-restart recovery. Gate at the sidebar level
+instead (show/hide the tab) or use a fully stable outer shape.
 
 ---
 
@@ -62,6 +75,10 @@ Load-bearing; don't break them without explicit intent.
    - `host-usage.json` — per-host bytes-today tally
    - `cellular-budget.json` — cellular daily budget
    - `fleet.json` — CLI/Raycast/Alfred discovery descriptor (port + token)
+   - `schedule.json` — global download schedule (window + weekdays)
+   - `recipes.json` — recent agentic recipes (capped at 20, v0.42+)
+   - `host-usage-history.json` — frozen daily snapshots (v0.37+)
+   - `cellular-budget-history.json` — frozen daily cellular totals (v0.37+)
    - Per-download: `<output>.splynek` sidecar
 5. **`splynek://` is the one ingress.** Drag-drop, Shortcuts,
    browser extensions, menu-bar popover, Chrome extension, CLI,
@@ -218,53 +235,14 @@ changes, re-read MONETIZATION.md § "First 90 days plan."
 
 ## Natural next bites (ordered queue)
 
-Everything below is CLEARLY SCOPED and can be picked up without
-context from the current session. The top four (B/C/D/E) were
-enumerated as the "do them all" plan; only A landed in v0.32.
-
-### B — Torrent side of the Live dashboard  *(tractable, ~30 min)*
-`LiveView` currently iterates `vm.activeJobs` (HTTP only).
-`vm.isTorrenting` + `vm.torrentProgress` are orthogonal. Add a
-`TorrentLiveCard` that appears when `isTorrenting`, with torrent-
-appropriate metrics (peers, pieces done, endgame pill) and a
-phase strip fed by the existing `TorrentProgress.phase: String`.
-Shared pipeline vocabulary: Announcing → Fetching metadata →
-Connecting to peers → Downloading → Seeding → Done.
-
-### C — Scheduled downloads  *(~2 hrs)*
-New `DownloadSchedule` model — time window rules (start hour,
-end hour, days-of-week) + interface-gated rules ("only when Wi-Fi
-is selected", "never on cellular > 500 MB"). Persist to
-`schedules.json`. VM scheduler loop polls pending jobs, starts
-those whose window has opened. UI: Settings card for rule
-editor; "Waiting until 02:00" state on pending queue entries.
-Justifies the Pro-tier gate in MONETIZATION.md.
-
-### D — Integration tests  *(~1.5 hrs)*
-Python script that: (1) spins up a local HTTP server serving a
-known-bytes file, (2) launches `Splynek.app`, (3) submits the
-download via the REST API (`POST /api/download?t=<token>`),
-(4) polls `/api/jobs` until complete, (5) compares output bytes,
-(6) asserts phase transitions fired in order (Probing → Planning
-→ Connecting → Downloading → Verifying → Gatekeeper → Done).
-Would have caught v0.27's silent-stale-binary regression.
-`Scripts/integration-test.sh` as the entry point.
-
-### E — Watched-folder ingestion  *(~1 hr)*
-`~/Splynek/Watch/` monitored via `DispatchSourceTimer` (5s poll —
-simpler than FSEvents and good enough). Parse dropped `.txt`
-(line-by-line URLs), `.torrent`, `.metalink`. UI: Settings card
-for enable + folder picker. Skip RSS in this pass — watched
-folders alone is the 80/20.
+The "do them all" plan (A + B + C + D + E) fully landed across
+v0.32 → v0.35. v0.36 added phase-over-REST on top. The rest of
+this section is the lower-priority tail.
 
 ### Lower-priority items from earlier natural-next-bites
 
-- Session restore for torrents (HTTP works; BT needs piece scan on resume)
 - Unified peer pool for BT (merge outbound `PeerCoordinator` with
   inbound `SeedingService` for cross-direction tit-for-tat)
-- Finer Gatekeeper signature panel (Developer ID, team, notarisation
-  status as individual fields)
-- CSV export of `HostUsage` / `CellularBudget` history
 - Full auto-update installer (mount DMG + copy + relaunch;
   requires notarization)
 - `hash_request` / `hashes` peer messages for pure-v2 magnet

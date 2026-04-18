@@ -13,6 +13,13 @@ struct HistoryDetailSheet: View {
     let entry: HistoryEntry
     let onDismiss: () -> Void
 
+    /// Lazy signature evaluation. Populated on appear (only for
+    /// evaluable file types) so opening the sheet is instant; the
+    /// card shows a spinner while the three tools run.
+    @State private var gatekeeperDetail: GatekeeperDetail?
+    @State private var gatekeeperLoading: Bool = false
+    @State private var showRawGatekeeper: Bool = false
+
     var body: some View {
         VStack(spacing: 0) {
             header
@@ -20,6 +27,9 @@ struct HistoryDetailSheet: View {
                 VStack(spacing: 16) {
                     speedupCard
                     interfaceBreakdownCard
+                    if isGatekeeperEvaluable {
+                        signatureCard
+                    }
                     metaCard
                 }
                 .padding(20)
@@ -28,6 +38,101 @@ struct HistoryDetailSheet: View {
             footer
         }
         .frame(minWidth: 560, minHeight: 520)
+        .task { await evaluateSignatureIfNeeded() }
+    }
+
+    // MARK: Signature
+
+    private var isGatekeeperEvaluable: Bool {
+        let ext = (entry.outputPath as NSString).pathExtension.lowercased()
+        return ["app", "pkg", "dmg", "mpkg"].contains(ext)
+            && FileManager.default.fileExists(atPath: entry.outputPath)
+    }
+
+    private var signatureCard: some View {
+        TitledCard(
+            title: "Signature",
+            systemImage: "lock.shield.fill",
+            accessory: AnyView(signatureAccessory)
+        ) {
+            if gatekeeperLoading, gatekeeperDetail == nil {
+                HStack(spacing: 8) {
+                    ProgressView().controlSize(.small)
+                    Text("Evaluating signature…")
+                        .font(.callout).foregroundStyle(.secondary)
+                    Spacer()
+                }
+            } else if let detail = gatekeeperDetail {
+                VStack(alignment: .leading, spacing: 8) {
+                    row("Source",   detail.source ?? "—")
+                    if let origin = detail.origin {
+                        row("Origin", origin)
+                    }
+                    row("Developer ID", detail.authorities.first ?? "—")
+                    row("Team ID",  detail.teamID ?? "—")
+                    if let cd = detail.cdHashSHA256 {
+                        row("CDHash", String(cd.prefix(16)) + "…")
+                    }
+                    row("Notarization", notarizationLabel(detail.notarizationStapled))
+                    if showRawGatekeeper {
+                        Divider().opacity(0.3)
+                        ScrollView(.vertical) {
+                            Text(detail.raw)
+                                .font(.system(.caption2, design: .monospaced))
+                                .textSelection(.enabled)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .frame(height: 160)
+                        .padding(8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .fill(Color.primary.opacity(0.04))
+                        )
+                    }
+                }
+            } else {
+                Text("Unavailable.")
+                    .font(.callout).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    @ViewBuilder private var signatureAccessory: some View {
+        HStack(spacing: 6) {
+            if let detail = gatekeeperDetail {
+                StatusPill(
+                    text: detail.accepted ? "ACCEPTED" : "REJECTED",
+                    style: detail.accepted ? .success : .danger
+                )
+            }
+            Button { showRawGatekeeper.toggle() } label: {
+                Image(systemName: showRawGatekeeper ? "chevron.up" : "terminal")
+            }
+            .buttonStyle(.borderless)
+            .help(showRawGatekeeper ? "Hide raw tool output" : "Show raw tool output")
+            .disabled(gatekeeperDetail == nil)
+        }
+    }
+
+    private func notarizationLabel(_ stapled: Bool?) -> String {
+        switch stapled {
+        case .some(true):  return "Stapled (verified offline)"
+        case .some(false): return "Not stapled"
+        case .none:        return "Unknown"
+        }
+    }
+
+    private func evaluateSignatureIfNeeded() async {
+        guard isGatekeeperEvaluable, gatekeeperDetail == nil, !gatekeeperLoading else {
+            return
+        }
+        gatekeeperLoading = true
+        let url = URL(fileURLWithPath: entry.outputPath)
+        let detail = await GatekeeperVerify.evaluateDetail(url)
+        await MainActor.run {
+            self.gatekeeperDetail = detail
+            self.gatekeeperLoading = false
+        }
     }
 
     // MARK: Header

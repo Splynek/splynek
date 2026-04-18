@@ -247,3 +247,19 @@ func formatDuration(_ seconds: Double) -> String {
     if s < 3600 { return "\(s / 60)m \(s % 60)s" }
     return "\(s / 3600)h \((s % 3600) / 60)m"
 }
+
+/// App-wide "X ago" formatter. QA P2 #7 + #8 (v0.43):
+/// - Clamps sub-minute intervals so a 2-second delta doesn't render
+///   as "-2 min" — `RelativeDateTimeFormatter` can produce negative
+///   strings around its floor. We show "just now" instead.
+/// - Forces `en_US_POSIX` locale so the abbreviated units don't mix
+///   with the system locale's connector (previously "3 min e 14 seg"
+///   on Portuguese-set Macs; now "3 min 14 sec" consistently).
+func formatRelative(_ date: Date, now: Date = Date()) -> String {
+    let delta = now.timeIntervalSince(date)
+    if delta < 60 { return "just now" }
+    let f = RelativeDateTimeFormatter()
+    f.unitsStyle = .abbreviated
+    f.locale = Locale(identifier: "en_US_POSIX")
+    return f.localizedString(for: date, relativeTo: now)
+}

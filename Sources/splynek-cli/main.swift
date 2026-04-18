@@ -80,6 +80,9 @@ struct CLI {
             let filename: String
             let totalBytes: Int64
             let downloaded: Int64
+            // Defaulted so we stay compatible with pre-v0.36 Splyneks
+            // that don't publish `phase` over the API.
+            let phase: String?
         }
         guard let jobs = try? JSONDecoder().decode([Job].self, from: data) else {
             print("error: could not decode response")
@@ -89,13 +92,15 @@ struct CLI {
             print("No active downloads.")
             return
         }
-        print("ACTIVE  |  %      |  SIZE      |  FILENAME")
+        print("PHASE        |  %      |  SIZE      |  FILENAME")
         print(String(repeating: "-", count: 64))
         for j in jobs {
             let pct = j.totalBytes > 0
                 ? String(format: "%5.1f%%", (Double(j.downloaded) / Double(j.totalBytes)) * 100)
                 : "    —"
-            print("        |  \(pct) |  \(bytes(j.totalBytes).padding(toLength: 10, withPad: " ", startingAt: 0))|  \(j.filename)")
+            let phase = (j.phase?.isEmpty == false ? j.phase! : "—")
+                .padding(toLength: 11, withPad: " ", startingAt: 0)
+            print("\(phase)  |  \(pct) |  \(bytes(j.totalBytes).padding(toLength: 10, withPad: " ", startingAt: 0))|  \(j.filename)")
         }
     }
 

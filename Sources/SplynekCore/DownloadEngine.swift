@@ -397,6 +397,28 @@ final class DownloadEngine {
                     secondsSaved: report.secondsSaved
                 )
             )
+            // QA P2 #10 (v0.43): the lane-level HostUsage.credit
+            // call lives inside LaneConnection.streamRange. Tiny
+            // files and single-shot paths occasionally skip that
+            // code (e.g., the whole payload arrives in the first
+            // probe read), leaving the host row blank. Reconcile
+            // on completion — if the per-host tally is less than
+            // what the download actually pulled, top up the
+            // difference so "Today by host" never silently
+            // undercounts a real completion.
+            if let host = url.host, !host.isEmpty, totalBytes > 0 {
+                let alreadyCredited = HostUsage.entry(for: host)?.bytesToday ?? 0
+                // Heuristic: credit the shortfall. This can over-
+                // count by a little if the user downloads the same
+                // host's files in rapid succession between the
+                // credit and this reconciliation, but never by a
+                // whole download — and under-counting is the
+                // bigger UX wart.
+                let shortfall = totalBytes - alreadyCredited
+                if shortfall > 0 && alreadyCredited < totalBytes / 2 {
+                    HostUsage.credit(host: host, bytes: shortfall)
+                }
+            }
         } catch {
             historyTimerTask?.cancel()
             await report(error.localizedDescription)

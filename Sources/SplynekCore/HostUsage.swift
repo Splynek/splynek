@@ -30,6 +30,22 @@ struct HostUsageState: Codable {
     static let empty = HostUsageState(dateString: "", entries: [])
 }
 
+/// One frozen day's worth of host usage, appended to the history log
+/// when the daily roll-over detects `state.dateString != today()`.
+/// Kept as an independent struct so the live-state encoder and the
+/// history encoder can evolve independently — history rows never get
+/// mutated after the day closes.
+struct HostUsageDaily: Codable, Hashable, Identifiable, Sendable {
+    var dateString: String
+    var entries: [HostUsageEntry]
+    var id: String { dateString }
+}
+
+private struct HostUsageHistory: Codable {
+    var days: [HostUsageDaily]
+    static let empty = HostUsageHistory(days: [])
+}
+
 enum HostUsage {
 
     static var storeURL: URL {
@@ -42,6 +58,16 @@ enum HostUsage {
         try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir.appendingPathComponent("host-usage.json")
     }
+
+    /// Where the rolled-day history lands. v0.37+.
+    static var historyURL: URL {
+        storeURL.deletingLastPathComponent()
+                .appendingPathComponent("host-usage-history.json")
+    }
+
+    /// Cap the history file to a year so the disk footprint stays bounded
+    /// even for users who leave the app running for years.
+    static let historyDayCap = 365
 
     private static let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -57,6 +83,18 @@ enum HostUsage {
               var state = try? JSONDecoder.iso8601.decode(HostUsageState.self, from: data)
         else { return HostUsageState(dateString: today(), entries: []) }
         if state.dateString != today() {
+            // Before discarding yesterday's counters, snapshot them into
+            // the history log so the CSV exporter can see the full
+            // timeline. Rows without any bytes AND no cap are skipped
+            // — they're noise.
+            let yesterdayRows = state.entries.filter {
+                $0.bytesToday > 0 || $0.dailyCap > 0
+            }
+            if !yesterdayRows.isEmpty, !state.dateString.isEmpty {
+                appendHistory(HostUsageDaily(
+                    dateString: state.dateString, entries: yesterdayRows
+                ))
+            }
             // Roll: keep caps, reset bytes. Drop entries that were
             // momentary (no cap and no usage) to avoid unbounded growth.
             let rolled = state.entries
@@ -71,6 +109,34 @@ enum HostUsage {
             save(state)
         }
         return state
+    }
+
+    /// Read the frozen-day history, most-recent-first. Cheap — it's
+    /// one JSON decode of at most `historyDayCap` days.
+    static func loadHistory() -> [HostUsageDaily] {
+        guard let data = try? Data(contentsOf: historyURL),
+              let history = try? JSONDecoder.iso8601.decode(HostUsageHistory.self, from: data)
+        else { return [] }
+        return history.days.sorted { $0.dateString > $1.dateString }
+    }
+
+    private static func appendHistory(_ day: HostUsageDaily) {
+        var history = (try? JSONDecoder.iso8601.decode(
+            HostUsageHistory.self,
+            from: (try? Data(contentsOf: historyURL)) ?? Data()
+        )) ?? .empty
+        // Replace any existing row for the same date (shouldn't happen,
+        // but a crash-then-recover path could double-append).
+        history.days.removeAll { $0.dateString == day.dateString }
+        history.days.append(day)
+        // Keep the most-recent `historyDayCap` days.
+        history.days.sort { $0.dateString > $1.dateString }
+        if history.days.count > historyDayCap {
+            history.days = Array(history.days.prefix(historyDayCap))
+        }
+        if let data = try? JSONEncoder.iso8601.encode(history) {
+            try? data.write(to: historyURL, options: .atomic)
+        }
     }
 
     static func save(_ state: HostUsageState) {

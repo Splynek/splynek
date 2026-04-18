@@ -70,6 +70,26 @@ enum MagnetTests {
                 }
             }
 
+            TestHarness.test("Display name with '+' decodes as space (v0.43 QA)") {
+                // Real bug from QA walkthrough: magnet URIs encode
+                // spaces in `dn` as `+` (x-www-form-urlencoded), but
+                // we were only running `removingPercentEncoding`,
+                // which leaves `+` intact. Users saw "Ubuntu+Test".
+                let hex = String(repeating: "ab", count: 20)
+                let uri = "magnet:?xt=urn:btih:\(hex)&dn=Ubuntu+Test"
+                let m = try Magnet.parse(uri)
+                try expectEqual(m.displayName, "Ubuntu Test")
+            }
+
+            TestHarness.test("A literal '+' escaped as %2B still round-trips") {
+                // Belt-and-braces: `+` → space, `%2B` → `+`. If a dn
+                // genuinely contains a plus, the user sees it.
+                let hex = String(repeating: "ab", count: 20)
+                let uri = "magnet:?xt=urn:btih:\(hex)&dn=C%2B%2B+Guide"
+                let m = try Magnet.parse(uri)
+                try expectEqual(m.displayName, "C++ Guide")
+            }
+
             TestHarness.test("Bad btmh multihash is rejected") {
                 // Wrong prefix — 1221 (SHA-512) not 1220 (SHA-256).
                 let hex = String(repeating: "ef", count: 32)

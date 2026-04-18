@@ -23,6 +23,738 @@ Install system-wide:
 cp -R build/Splynek.app /Applications/
 ```
 
+## What's new in v0.43 (QA pass — bug-fix release before launch)
+
+v0.42 shipped Agentic Download Recipes; a full real-user walkthrough
+surfaced a critical rendering bug, a recipe-URL safety gap, and a
+dozen smaller UX issues. v0.43 is all fixes, no new features.
+
+### P1 — ship-blocker fixed
+
+- **Assistant + Recipes tabs rendered blank and wedged the whole
+  `NavigationSplitView`** — the sidebar lost items, the detail pane
+  went empty, and only a full app restart recovered. Root cause
+  isolated via bisection against v0.31: SwiftUI on macOS 14
+  miscomputes sidebar layout when a tab's destination view body has
+  a top-level conditional returning structurally different subtrees.
+  Every in-view workaround (Group wrapper, unified VStack, ScrollView
+  wrapper, `.id()` splitting) failed. **The real fix: move the Pro
+  gate out of the view bodies and into the sidebar** — when the
+  user isn't Pro, the Assistant + Recipes rows simply don't appear,
+  and a single "Unlock AI tools" row (with a PRO pill) jumps to
+  Settings' unlock form on click. Same pattern Bear, iA Writer, and
+  most Mac indies use for subscription-gated areas. Bodies of both
+  views restored to their clean pre-gate shapes.
+
+- **Recipe items with Mac App Store URLs silently failed in the
+  queue.** The LLM sometimes returned `apps.apple.com/us/app/xcode/...`
+  as Xcode's "url"; Splynek dutifully tried to range-download an
+  HTML page and surfaced *"Server doesn't advertise Range support;
+  aggregation impossible."* Fixed at two layers: the prompt
+  explicitly forbids App Store URLs ("for Apple-only apps with no
+  direct download, skip the item entirely"), and
+  `RecipeParser.isNonDownloadableHost(...)` rejects
+  `apps.apple.com` / `itunes.apple.com` / `play.google.com` /
+  `apps.microsoft.com` / etc. client-side so hallucinated items
+  never reach the queue.
+
+### P2 — UX polish surfaced during the walkthrough
+
+- **Goal text cleared after successful recipe generation** — users
+  no longer have to delete their previous goal before typing the
+  next one. Cleared via `.onChange(of: vm.currentRecipe?.id)`.
+- **Queue row time display rewritten**:
+  - COMPLETED rows show **"took 2s"** (actual download duration
+    from `startedAt → finishedAt`).
+  - FAILED / CANCELLED rows hide the clock entirely — the error
+    message already carries the timing context.
+  - PENDING / RUNNING keep the "added X ago" relative clock.
+- **Queue Summary icon changed** from `chart.bar` (read as Wi-Fi
+  signal strength) to `list.clipboard`.
+- **Relative-time formatter** (`formatRelative(_:)`) — clamps
+  sub-minute intervals to "just now" (no more `-2 min`), and uses
+  `en_US_POSIX` so abbreviated units don't mix with Portuguese
+  connector "e" (previously rendered as `3 min e 14 seg`).
+- **Magnet display names decode `+` as space** — `dn=Ubuntu+Test`
+  now resolves to "Ubuntu Test"; `dn=C%2B%2B+Guide` correctly
+  resolves to "C++ Guide" (plus-decoded before percent-decoded).
+- **Host-usage reconciliation on completion** — `DownloadEngine`
+  tops up `HostUsage.credit(...)` if the per-lane crediting
+  undercounted (happens on tiny files / single-shot paths).
+  "Today by host" now reflects every completion.
+- **Chart legend private-IP friendliness** — `172.20.10.4` in the
+  Usage timeline legend now renders as "LAN (172.20.10.4)", same
+  for `192.168.*`, `10.*`, loopback, and IPv6 ULA/link-local.
+- **"Launch at login — Unavailable" message rewritten** from the
+  scary `App not found in expected path.` to the actionable *"Move
+  Splynek to /Applications first, then toggle this on."*
+- **Toolbar tooltips** — every Downloads-toolbar button now has a
+  `.help(...)` hint. Hover reveals the action + keyboard shortcut.
+- **Inline Start / Queue buttons** in the Source card — users no
+  longer have to hunt the toolbar for primary actions. Toolbar
+  remains as the keyboard-shortcut home.
+
+### Tests
+5 new assertions across the QA-regression set:
+- `App Store / marketing-host URLs are dropped` (recipe parser).
+- `Display name with '+' decodes as space` (magnet parser).
+- `A literal '+' escaped as %2B still round-trips` (magnet parser).
+- Existing 158 assertions updated (canonical recipe fixture swapped
+  its Xcode item for a VS Code URL since apps.apple.com now rejects
+  at parse time).
+
+**Suite: 165 green.**
+
+### What this doesn't do yet
+- **Trial period** — still no 14-day Pro trial. Tracked for v0.44+.
+- **MAS StoreKit IAP** — still blocked on the €99 Apple Developer fee.
+- **Phase-transition order assertion in integration test** — still
+  only asserts monotonic subsequence, not exact order; fast
+  loopback downloads skip phases between polls.
+
+## What's new in v0.42 (Agentic Download Recipes — cutting-edge AI)
+
+The AI so far resolved one URL at a time. v0.42 upgrades it to **plan
+batches**. User types a goal in plain English — *"set up my Mac for
+iOS development"*, *"everything I need to self-host a small Linux
+server"* — and the local LLM returns a **structured recipe**: 5–10
+downloads with URLs, rationales, self-rated confidence, and homepage
+links for user verification. User reviews, unchecks what they don't
+want, clicks **Queue N downloads**. Splynek runs the batch through
+the existing multi-interface + checksum + schedule pipeline.
+
+**Nothing else does this.** Homebrew bundles are static text. No
+download manager generates a batch from intent. aria2, FDM, Motrix,
+JDownloader — none of them. This is agentic AI + LLM structured
+output + human-in-the-loop review + Splynek's existing execution
+plumbing, all composing into a feature that's genuinely new.
+
+### What landed
+- **[Sources/SplynekCore/DownloadRecipe.swift](Sources/SplynekCore/DownloadRecipe.swift)** — `RecipeItem` +
+  `DownloadRecipe` types + `RecipeParser` + `RecipeStore` (capped
+  at 20 recent recipes). The parser is the robustness surface —
+  tolerant of markdown fences, leading/trailing prose, embedded
+  braces in string literals; strict about URL scheme, required
+  fields, confidence clamping, and SHA-256 format.
+- **`AIAssistant.generateRecipe(goal:)`** (in [AIAssistant.swift](Sources/SplynekCore/AIAssistant.swift))
+  — few-shot prompted, `format: "json"` enforced, temperature 0.2
+  for deterministic-ish output, 90s timeout (small models can take
+  60s for structured output of this length). Returns a parsed
+  `DownloadRecipe`.
+- **[Sources/SplynekCore/Views/RecipeView.swift](Sources/SplynekCore/Views/RecipeView.swift)** — three
+  states: **Pro-gated** (shows `ProLockedView`), **AI-missing**
+  (shows Ollama install instructions + retry), **ready** (goal
+  editor + recipe card + recent-recipes history). Recipe card
+  renders each item with checkbox, name, confidence pill
+  (colour-coded ≥85%/≥70%/<70%), rationale, URL (clickable),
+  homepage link, size hint, truncated SHA-256 if present. Items
+  under 70% confidence get an orange-tinted background.
+- **VM integration** — `currentRecipe`, `recipeGenerating`,
+  `recipeError`, `recipeHistory` `@Published`. `generateRecipe(for:)`,
+  `queueCurrentRecipe()`, `toggleRecipeItem(id:)`,
+  `discardCurrentRecipe()`, `reopenRecipe(_:)`.
+- **Recipes sidebar tab** between Assistant and Queue. Accessory
+  pill: `DRAFT` when a recipe is pending approval, spinner while
+  the LLM is thinking.
+- **Pro-gated** — aligns with [MONETIZATION.md](MONETIZATION.md).
+  Concierge + Recipes are now the core Pro wedge.
+
+### Safety
+- **Every URL has a clickable homepage** for user verification.
+- **Confidence scores are self-rated by the LLM** and surfaced as
+  coloured pills. Below 70% flashes an orange stripe on the row.
+- **No auto-queue.** The recipe is a *proposal*. The user
+  explicitly clicks **Queue N downloads**. Nothing starts without
+  approval.
+- **Individual item toggles.** User can uncheck any item before
+  queuing.
+
+### End-to-end verified
+Live test against `llama3.2:3b` on a real Ollama instance:
+- *"set up my Mac for iOS development"* → 4 items, 12.2 s generation,
+  Xcode App Store URL correct, others default to homepage URLs with
+  lower confidence (the prompted fallback behaviour).
+- *"latest Ubuntu desktop ISO plus VS Code and Docker"* → 3 items,
+  7.4 s, Ubuntu + VS Code + Docker URLs from official sources.
+
+### Tests
+19 new assertions across 3 suites in `RecipeParserTests`:
+- **Tolerance (5 tests)**: canonical response; markdown-fenced
+  response; leading prose; trailing prose; braces inside JSON
+  strings.
+- **Strictness (10 tests)**: non-http URL dropped; missing-field
+  item dropped; confidence clamped; missing confidence defaults to
+  0.5; invalid SHA-256 dropped; non-http homepage dropped; all-
+  items-dropped throws `.noItems`; no JSON throws `.noJSONFound`;
+  malformed JSON throws; all items default `selected = true`.
+- **Codable (1 test)**: round-trip through JSONEncoder/Decoder.
+
+**Suite: 162 green (up from 146).**
+
+### What this doesn't do yet
+- **No version-freshness verification.** The LLM's URL knowledge
+  is only as fresh as its training cutoff. User can always edit
+  URLs before queuing. A future pass could HEAD-check each URL
+  and warn on 404s.
+- **No "retry with bigger model" button.** If the small model
+  produces a thin recipe, users just re-prompt. Model-picker UI
+  is a future improvement.
+
+## What's new in v0.41 (Pro license gating — commercial substrate)
+
+[MONETIZATION.md](MONETIZATION.md) has always described a freemium
+split with five Pro differentiators. Through v0.40, every one of
+those differentiators had silently shipped into the free tier —
+including v0.34's scheduled downloads and v0.28's AI Concierge.
+v0.41 is not new user-facing features; it's the commercial
+substrate: an offline license validator, a Pro-gate at each of the
+five call sites, and a Settings card that accepts a key.
+
+The engineering is done so the product can actually *sell*. The
+€99 Apple Developer fee is the only remaining blocker to hosting
+the store and notarizing the binary; the license code itself runs
+fine today against a test key generated via
+[Scripts/gen-license.py](Scripts/gen-license.py).
+
+### What landed
+- **[Sources/SplynekCore/LicenseManager.swift](Sources/SplynekCore/LicenseManager.swift)** — pure
+  `LicenseValidator.issue(email:)` / `.validate(email:key:)` over
+  `HMAC-SHA256` with a compiled-in secret, returning keys in the
+  `SPLYNEK-AAAA-BBBB-CCCC-DDDD-EEEE` format. Plus a
+  `LicenseManager` `ObservableObject` that persists the key/email
+  to `UserDefaults[splynekProEmail]` / `[splynekProKey]` and
+  re-validates on every launch (tampered persisted data is
+  ignored — defence in depth against hand-edited defaults).
+- **[Scripts/gen-license.py](Scripts/gen-license.py)** — the
+  server-side issuance tool. Same HMAC secret, same format. Runs
+  in the Stripe-success webhook in production; a test asserts the
+  Swift and Python implementations agree byte-for-byte on a known
+  fixture (`test@splynek.app` → `SPLYNEK-250B-54AA-8108-AB17-ACA7`).
+- **[Sources/SplynekCore/Views/ProLockedView.swift](Sources/SplynekCore/Views/ProLockedView.swift)** —
+  reusable paywall placeholder. Takes over a feature's real
+  estate with a title + summary + SF symbol + *Unlock Splynek
+  Pro — $29* CTA. Design principle: visible but not functional,
+  so users *see* what Pro offers.
+- **Gates at 4 call sites** (the fifth — fleet >2 devices — is
+  deferred to v0.42 because it touches the hot swarm path):
+  - **Scheduled downloads** — `vm.scheduleEvaluation` short-
+    circuits to `.allowed` when not Pro; Settings card renders
+    `ProLockedView`.
+  - **AI Concierge** — view body replaced with `ProLockedView`
+    when not Pro.
+  - **AI history search** — sparkle row hidden in both
+    `HistoryView` (aiSearchBar) and `DownloadView` (aiRow).
+  - **Mobile web dashboard** — `FleetCoordinator.proGateForcesLoopback`
+    forces the listener to bind to 127.0.0.1 when free.
+    Settings card shows `ProLockedView` so users know what
+    they're missing.
+- **Splynek Pro settings card** at the top of Settings. Two
+  states: `FREE` with *Buy Pro* + *I already have a key* affordance,
+  or `ACTIVE` with licensed-email display + *Deactivate on this Mac*
+  button.
+
+### What this unlocks commercially
+- Every feature currently flagged Pro in [MONETIZATION.md](MONETIZATION.md:61)
+  that was built is now correctly gated. The free tier matches
+  what v0.27 was supposed to ship; the Pro tier matches what Pro
+  was supposed to differentiate on.
+- Direct-DMG → Stripe checkout → Postmark email → key works
+  end-to-end as soon as the Stripe + email plumbing is set up
+  (both are out-of-app configuration, not code work).
+- MAS IAP path still needs a `StoreKit` receipt-validation
+  helper, deferred to v0.42 once the €99 is paid and the MAS
+  submission flow is real.
+
+### Tests
+13 new assertions across two suites:
+- **License validator** (8 tests): Swift issue() matches Python
+  gen-license fixture byte-for-byte; issue is deterministic;
+  email normalisation tolerates case + whitespace; tampered or
+  wrong-email keys are rejected; empty inputs rejected; key
+  format matches the advertised shape.
+- **LicenseManager state machine** (5 tests): fresh init → free;
+  valid unlock → persisted → reborn manager sees Pro; wrong key
+  → free + user-facing error; deactivate wipes persistence;
+  hand-edited invalid persisted data is ignored on load.
+
+**Suite: 146 green (up from 133).**
+
+### What this doesn't do yet
+- **No fleet-peer-count gate.** Touches the hot swarm code path;
+  needs care. Tracked for v0.42.
+- **No StoreKit IAP.** MAS distribution is still blocked on the
+  €99 fee; a `StoreKit` receipt-validation helper slots in once
+  the paid Apple Developer account exists.
+- **No trial.** Adding a 14-day trial with a `trialStartedAt`
+  UserDefaults entry is a small future pass.
+- **Secret is in the binary.** A determined attacker can reverse-
+  engineer it. For a $29 solo-dev Mac app, that's the accepted
+  economics — see the threat-model comment at the top of
+  `LicenseManager.swift`.
+
+## What's new in v0.40 (Torrent session restore)
+
+HTTP downloads resumed correctly from a sidecar file since v0.11.
+Torrents didn't — every start wiped the partial payload because
+`TorrentWriter.preallocate()` called `fm.removeItem(at:)` on each
+declared file before creating it fresh. v0.40 fixes the data-loss
+bug and adds a piece-level resume scan so any already-downloaded
+bytes on disk are reclaimed instead of re-fetched from the swarm.
+
+### What landed
+- **`preallocate()` is now idempotent** in [Sources/SplynekCore/Torrent/TorrentWriter.swift](Sources/SplynekCore/Torrent/TorrentWriter.swift).
+  Behaviour: missing file → create + truncate up; existing file at
+  correct size → leave bytes alone; existing file smaller → truncate
+  up (zero-fill tail); existing file bigger → truncate down. **No
+  more removeItem.**
+- **[Sources/SplynekCore/Torrent/PieceVerifier.swift](Sources/SplynekCore/Torrent/PieceVerifier.swift)** — extracted
+  from the live-swarm `PeerCoordinator.acceptPiece` so the resume
+  scanner and the swarm share one well-tested verifier. Carries a
+  `resumeMode` flag: in resume mode, v2 magnets without piece
+  layers refuse to verify (we can't pretend bytes are valid); in
+  live-swarm mode, the same state accepts tentatively (the engine's
+  existing behaviour — bytes arrived fresh from a peer).
+- **[Sources/SplynekCore/Torrent/TorrentResume.swift](Sources/SplynekCore/Torrent/TorrentResume.swift)** — pure
+  scan loop. Reads each piece via a new Sendable-friendly
+  `TorrentWriter.read(info:rootDirectory:...)` static helper (no
+  non-Sendable capture across the DispatchQueue), verifies via
+  `PieceVerifier`, returns `(verifiedPieces: Set<Int>,
+  bytesRecovered: Int64)`.
+- **Engine wiring** — `TorrentEngine.run()` now phases in:
+  `Announcing → Verifying existing pieces… → (swarm) → Done`. The
+  scan is dispatched to `DispatchQueue.global(qos: .userInitiated)`
+  so it doesn't stall the engine's cooperative Task. Verified pieces
+  are fed into `picker.markDone(_:)` AND
+  `seedingService.markPieceComplete(_:)` so partial-seed-while-leech
+  sees them. If the scan restores the full torrent, we skip the
+  swarm entirely and jump to the completion + seeding path.
+- **Cancellation** — the scan respects `cancelFlag.isCancelled`
+  (polled between pieces) so hitting Cancel during verification
+  aborts promptly.
+
+### Tests
+9 new assertions in `TorrentResumeTests`:
+- Full valid payload → every piece verified, bytes recovered match total length.
+- Single-byte corruption rejects exactly one piece.
+- Short final piece (BEP 3: final piece may be < pieceLength) is handled.
+- Empty torrent info produces empty result.
+- PieceVerifier resume-mode: correct v1 bytes verify; corrupt bytes don't.
+- PieceVerifier resume-mode v2-magnet-without-layers: refuses to verify.
+- PieceVerifier live-swarm mode v2-magnet-without-layers: accepts tentatively
+  (regression guard so fixing resume doesn't regress the swarm path).
+
+**Suite: 133 green (up from 124).**
+
+### What this doesn't do yet
+- **No per-piece mtime-based skip.** A full 10 GB torrent pays the
+  SHA read+hash cost every startup. Cheap on SSD, noticeable on
+  spinners. A future pass could persist a verified-piece bitmap
+  alongside the torrent and skip re-hashing known-good pieces.
+- **No partial-resume for v2-only magnets.** If you kill the app
+  before the magnet's piece layers arrive, relaunching finds bytes
+  on disk that `PieceVerifier` refuses to verify (can't
+  authenticate). The swarm will re-fetch; once layers arrive, a
+  rescan could be triggered manually. Not wired yet.
+
+## What's new in v0.39 (Finer Gatekeeper signature panel)
+
+The `gatekeeper` phase pill showed `accepted` or `rejected` — that was
+all the detail a user got about what Splynek had just downloaded.
+v0.39 fans the one-line verdict into a per-field signature panel so
+the History detail sheet answers the questions that actually matter
+for an unfamiliar `.app` / `.pkg` / `.dmg`: **who signed it, which
+team, is it notarized, is the notarization stapled**.
+
+### What landed
+- **`GatekeeperDetail` struct** — `accepted`, `source`, `origin`,
+  `authorities` (cert chain, outermost first), `teamID`, `cdHashSHA256`,
+  `notarizationStapled: Bool?` (true/false/nil for offline-ambiguous),
+  plus a `raw` blob concatenating the three tool outputs for the
+  "Show raw" disclosure.
+- **`GatekeeperVerify.parseDetail(...)`** — pure parser over merged
+  stderr+stdout of `spctl`, `codesign -dv --verbose=4`, and
+  `xcrun stapler validate`. Handles unsigned binaries (`TeamIdentifier=not set`
+  → nil), missing tools (stapler absent → `notarizationStapled: nil`),
+  and the three stapler failure modes (no ticket / validation failed /
+  CloudKit unreachable).
+- **`GatekeeperVerify.evaluateDetail(_:)`** — async wrapper that runs
+  the three tools concurrently enough (well — serially, but each is
+  fast on a completed file) and returns the parsed struct, or nil for
+  file types Gatekeeper doesn't evaluate.
+- **Signature card in [HistoryDetailSheet](Sources/SplynekCore/Views/HistoryDetailSheet.swift)** —
+  shown only when the file is `.app` / `.pkg` / `.dmg` / `.mpkg`.
+  Named fields: Source, Origin, Developer ID (first authority),
+  Team ID, CDHash (truncated), Notarization ("Stapled (verified
+  offline)" / "Not stapled" / "Unknown"). `ACCEPTED` / `REJECTED`
+  pill in the card accessory. Terminal-icon button toggles a raw
+  tool-output disclosure for diagnostics.
+- **Lazy evaluation** — `.task` on the sheet kicks off
+  `evaluateDetail` only once; spinner while it runs; result cached
+  on `@State` so flipping the raw disclosure doesn't re-run the
+  tools.
+
+### Tests
+7 new assertions in `GatekeeperDetailTests`:
+- Accepted + notarized + stapled — all fields extracted from realistic
+  canned spctl/codesign/stapler outputs.
+- Rejected + unsigned — empty authority list, `TeamIdentifier=not set`
+  normalised to nil, stapler missing-ticket → `notarizationStapled: false`.
+- Authorities preserve cert-chain order (outermost first).
+- Stapler non-zero exit + no-ticket sentinel → false.
+- Stapler inconclusive ("xcrun: error: unable to find utility stapler")
+  → nil, not a false positive.
+- Raw blob carries all three tool outputs with stable section headers
+  so support screenshots stay consistent across releases.
+- `headline` summary renders the acceptance state + source + stapled
+  state in one line.
+
+**Suite: 124 green (up from 117).**
+
+### What this doesn't do yet
+- **No re-evaluation on staleness.** `GatekeeperDetail` runs once per
+  sheet open. If Apple revokes the certificate mid-session, the
+  cached pill doesn't flip — you'd need to close + reopen the sheet.
+- **No background re-evaluation after app updates itself.** The panel
+  only checks on user action, not periodically.
+- **No trust-store details.** The "Apple Root CA" authority is taken
+  at the codesign-report level; we don't fan out to the
+  Security.framework trust-evaluation API for revocation or validity
+  dates. Could be a v0.40+ pass.
+
+## What's new in v0.38 (Usage timeline chart)
+
+v0.37 wrote the history to disk. v0.38 renders it in-app — a stacked
+bar chart of daily bytes with a Host / Cellular toggle, a window-size
+menu, and a CSV export accessory that hands the live dataset to the
+v0.37 formatter. No new source-of-truth changes; this is a pure
+rendering pass over the history logs.
+
+### What landed
+- **[Sources/SplynekCore/UsageTimeline.swift](Sources/SplynekCore/UsageTimeline.swift)** — pure data-shaping
+  helpers. `hostData(...)` picks top-N hosts by total bytes across
+  the window (with an alphabetical tiebreak for determinism across
+  renders) and rolls the rest into an `"Other"` series.
+  `cellularData(...)` emits one point per day and splits the series
+  name between `"Cellular"` and `"Cellular (over cap)"` so the
+  over-budget days jump out in the legend.
+- **[Sources/SplynekCore/Views/UsageTimelineView.swift](Sources/SplynekCore/Views/UsageTimelineView.swift)** — a
+  SwiftUI Charts `BarMark` stacked on `x = date`, coloured by
+  series. Today's bar is drawn at full opacity; history bars at 0.78
+  so the current-day column pops. Segmented picker (Host / Cellular)
+  + window-days menu (7 / 14 / 30 / 60 / 90) + an export-CSV button
+  reusing the v0.37 VM helpers.
+- **Wired into HistoryView** between the lifetime summary and the
+  Today-by-host card. Shows an `EmptyStateView` when there's no
+  activity yet (pre-first-download or pre-first-cellular-run).
+
+### Tests
+10 new assertions in `UsageTimelineTests`:
+- Empty state emits no points (host) / always emits today (cellular).
+- Top-N hosts picked by total bytes across the window.
+- Today's points precede history points.
+- `isToday` flag is only set on today's points.
+- Zero-byte `Other` is suppressed when every host makes top-N.
+- `lastNDays` caps the window for both variants.
+- Top-N ties break alphabetically (regression guard against chart
+  reshuffle between renders).
+- Cellular over-cap series split matches the cap-vs-bytes rule.
+
+**Suite: 117 green (up from 107).**
+
+## What's new in v0.37 (CSV export — usage timeline lands on disk)
+
+`HostUsage` and `CellularBudget` tracked today's byte tallies but
+discarded yesterday's counters on every midnight roll-over. v0.37
+preserves the rolled-day snapshot before the reset and ships an RFC
+4180 CSV exporter so users can pull the timeline into Numbers / Excel
+/ Sheets — for month-end reporting, for building a per-host bandwidth
+chart, for forensics on "where did my hotspot plan go."
+
+### What landed
+- **History logs on roll-over.** `HostUsage.load()` and
+  `CellularBudget.load()` both detect day-changes; v0.37 appends the
+  closing snapshot to a dedicated `*-history.json` file before
+  discarding the counters. Both logs are capped at 365 days so disk
+  usage stays bounded indefinitely.
+- **New persisted files** under `~/Library/Application Support/Splynek/`:
+  - `host-usage-history.json` — list of `HostUsageDaily` (date +
+    sorted entries)
+  - `cellular-budget-history.json` — list of `CellularBudgetDaily`
+    (date + total + cap-on-that-day, so post-hoc "was I over
+    budget?" analysis stays honest even if caps change later)
+- **[Sources/SplynekCore/UsageCSV.swift](Sources/SplynekCore/UsageCSV.swift)** — pure RFC 4180 formatter.
+  Quotes fields containing `,` / `"` / `\r` / `\n`, doubles embedded
+  quotes. Today's state comes first (most-recent-first answer to the
+  "who used what" question), history rows follow reverse-
+  chronologically. Within a day, hosts are sorted by bytes desc.
+- **Export buttons** wired into:
+  - **History → Today by host** card (`square.and.arrow.up` icon
+    accessory on the card header).
+  - **Downloads → Cellular budget** row (icon button after the OVER
+    pill — only appears when a cellular lane is selected).
+  - Both open an `NSSavePanel` pre-filled with a dated filename
+    (`splynek-host-usage-2026-04-18.csv`).
+- **VM helpers** — `exportHostUsageCSV()` / `exportCellularBudgetCSV()`
+  on `SplynekViewModel`; use `UTType(filenameExtension: "csv")` so
+  the save panel knows what kind of file it's writing.
+
+### Tests
+18 new assertions in `UsageCSVTests`:
+- Header-only CSV for empty today, no history.
+- Today's rows precede history rows in the output.
+- Hosts within a day are sorted by bytes desc.
+- `over_cap` flag honours `bytesToday >= dailyCap` (with cap > 0).
+- Cellular: today always present, history reverse-chronological,
+  over-cap flag matches the bytes-vs-cap rule.
+- RFC 4180 escapes: plain pass-through, comma forces quoting,
+  embedded `"` doubles, newline forces quoting, empty stays empty,
+  full-formatter round-trip with a comma-bearing hostname.
+
+**Suite: 107 green (up from 94).**
+
+### What this doesn't do yet
+- **No in-app timeline view.** Export writes the timeline; rendering
+  a per-host bar chart in-app is a separate pass. CSV + Numbers
+  covers the 80/20 for now.
+- **No backfill.** The history log starts accumulating from v0.37;
+  prior-day usage that was discarded pre-v0.37 is gone.
+
+## What's new in v0.36 (Phase over REST)
+
+The v0.35 integration test couldn't assert the pipeline order —
+`/splynek/v1/api/jobs` didn't publish `DownloadProgress.phase`. v0.36
+closes the gap: phase is now a first-class field on `ActiveJob`,
+re-published on every transition via a Combine subscription so fast
+downloads don't compress past the 2 Hz fleet-state timer.
+
+### What landed
+- **`phase: String`** added to `FleetCoordinator.LocalState.ActiveJob`.
+  Sourced from `job.progress.phase.rawValue` in
+  [Sources/SplynekCore/ViewModel.swift](Sources/SplynekCore/ViewModel.swift)'s `publishFleetState()`. Defaults
+  to `""` for a pre-started job.
+- **Per-job Combine subscription** on `job.progress.$phase` calls
+  `publishFleetState()` immediately on transition — the 2 Hz timer
+  alone would miss Probing → Planning → Connecting on a fast loopback
+  download. Cancellable is torn down in the job's completion handler.
+- **OpenAPI 3.1 spec updated** — `ActiveJob.phase` is listed as
+  required, with an `enum` of all eight canonical values so generated
+  clients can dispatch without string-compare drift.
+- **CLI `splynek status`** now shows a `PHASE` column. The local
+  `Decodable struct Job` keeps `phase: String?` so the CLI remains
+  compatible with a pre-v0.36 Splynek (renders `—` if absent).
+- **`Scripts/integration-test.py` upgraded** to collect the phase
+  trail across polls and assert it's a monotonic subsequence of
+  `["Queued", "Probing", "Planning", "Connecting", "Downloading",
+  "Verifying", "Gatekeeper", "Done"]`. Poll interval tightened from
+  500 ms → 100 ms so fast transitions land. Missing phases are a
+  warning (`note: did not observe {'Downloading'} — loopback is fast`)
+  rather than a failure, since on gigabit loopback the engine can
+  compress phases past even a 100 ms poll. On a real-network test the
+  full trail is observable.
+
+### Tests
+4 new assertions in `PhaseOverRESTTests`:
+- ActiveJob JSON round-trips with phase populated.
+- Phase strings exactly match `DownloadProgress.Phase.allCases`.
+- OpenAPI spec lists phase in the required list + enum.
+- Default phase is empty string.
+
+**Suite: 94 green (up from 90).** Integration test passes end-to-end
+with a monotonic `Planning → Done` trail on loopback.
+
+### Why this unlocks more than the test script
+- CLI `status` now tells you *what* Splynek is doing, not just
+  how many bytes have arrived. Useful when a download stalls at
+  0% — you can see if it's stuck in Probing (DNS / HEAD failing)
+  vs. Planning (no interface picked) vs. Connecting (server down).
+- Raycast / Alfred extensions can surface phase without a new
+  endpoint. No changes needed there — they just start showing the
+  field on their next release.
+- Future `GetDownloadProgress` App Intent can include phase too.
+
+## What's new in v0.35 (Integration tests + Watched folder — bets D & E)
+
+Two items from the "do them all" queue landed together because they
+share no code and both are small enough to ship in one pass: an
+end-to-end REST integration test that would have caught v0.27's
+silent-stale-binary regression, and a polled watched-folder ingester
+that turns the app into a drop target.
+
+### Bet D — End-to-end integration test
+- **[Scripts/integration-test.sh](Scripts/integration-test.sh)** → wraps [Scripts/integration-test.py](Scripts/integration-test.py).
+  Python 3 stdlib only — no third-party deps, tracks the zero-deps
+  invariant.
+- **What it does:**
+  1. Stands up a local `http.server.ThreadingTCPServer` on a free
+     port serving a deterministic 2 MiB SHA-256-known payload.
+  2. Reads `~/Library/Application Support/Splynek/fleet.json` for
+     port + token (optionally launches `build/Splynek.app` first
+     via `--launch`).
+  3. `POST /splynek/v1/api/download?t=<token>` with the URL.
+  4. Polls `/api/jobs` until the job disappears, then confirms the
+     entry lands in `/api/history` with the expected total-bytes.
+  5. SHA-256-compares the file on disk.
+  6. Cleans up the downloaded artefact + its `.splynek` sidecar.
+- **Binds the payload server to the machine's primary LAN IP** (via
+  a UDP-connect trick to discover the outbound interface) instead of
+  127.0.0.1. Splynek pins outbound connections to `NWParameters
+  .requiredInterface`, and 127.0.0.1 would route through `lo0`
+  which never matches the chosen Wi-Fi / Ethernet interface — the
+  job stalls at 0 bytes. Using the real LAN IP hairpins the request
+  back through the correct route.
+- **Honest limitation called out in the script header**: phase
+  transitions (Probing → Planning → Connecting → Downloading →
+  Verifying → Gatekeeper → Done) aren't exposed over REST, so we
+  assert the transport-level equivalent (job appeared, bytes grew,
+  history landed, SHA-256 matches) rather than the literal phase
+  strip. Exposing phase over REST is a future change.
+- First green run:
+  ```
+  ✓ job disappeared from /api/jobs after 1 progress ticks
+  ✓ history entry present with totalBytes=2097152
+  ✓ sha256 matches expected (0353e5bfa008…)
+  ✓ integration test passed
+  ```
+
+### Bet E — Watched folder
+- **[Sources/SplynekCore/WatchedFolder.swift](Sources/SplynekCore/WatchedFolder.swift)** — polled ingester
+  (`DispatchSourceTimer`-equivalent `Timer`, 5 s interval) with a
+  2-second file-age floor so mid-write drags don't trip the parser.
+- **Default folder**: `~/Splynek/Watch/`. User-configurable via the
+  Settings card. Handled files are moved to a `processed/`
+  subdirectory with a Unix-timestamp prefix so each drop is traceable
+  and never re-ingested.
+- **Accepted file types**:
+  - `.txt` — one URL (or magnet) per line; `# comments` and blank
+    lines skipped; HTTP(S) → queue, magnets → populate the torrent
+    UI state but don't auto-start the swarm (user picks an interface).
+  - `.torrent` — parses via `TorrentFile.parse`; UI shows the Start
+    button on the Torrents tab.
+  - `.metalink` / `.meta4` — parses via `Metalink.parse`; first
+    mirror goes into the queue with the declared SHA-256 pre-filled.
+- **Settings card** between Schedule and Background. Toggle, folder
+  picker, Reveal-in-Finder button.
+- **Session persistence** — `watchEnabled` + `watchFolderPath` live
+  in `UserDefaults`; `refreshWatcher()` runs on init so a toggled-on
+  watcher survives app restarts.
+
+### Tests
+- 8 new assertions in `WatchedFolderTests` pin the pure parser:
+  single-URL, multi-line, blank/whitespace/`#`-comment skipping,
+  magnet pass-through, unsupported-scheme drop, plain-garbage drop,
+  handled-extensions set. **Suite: 90 green (up from 82).**
+
+### What this doesn't do yet
+- **No phase exposure over REST.** The integration test asserts bytes,
+  not phase transitions. A future pass could add a `phase` field to
+  `LocalState.ActiveJob` in `FleetCoordinator`.
+- **No RSS ingestion.** Watched folder was the 80/20; RSS is a
+  separate ingress point the watcher doesn't cover.
+- **No FSEvents.** 5-second polling is "good enough"; FSEvents can
+  replace the Timer later without touching the parser or move-to-
+  processed logic.
+
+## What's new in v0.34 (Scheduled downloads — bet C)
+
+"Only start downloads overnight on home Wi-Fi" was the most requested
+policy gap in v0.33's queue. v0.34 adds a global `DownloadSchedule`
+that sits between the queue scheduler and `start()`: window open →
+runs the next pending entry; window closed → holds everything until
+the window opens, then resumes on its own without UI interaction.
+
+### What landed
+- **`DownloadSchedule` model** in [Sources/SplynekCore/DownloadSchedule.swift](Sources/SplynekCore/DownloadSchedule.swift).
+  Fields: `enabled`, `startHour`, `endHour`, `weekdays: Set<Int>`,
+  `pauseOnCellular`. Persisted as `schedule.json` alongside the other
+  session state under `~/Library/Application Support/Splynek/`.
+- **Pure evaluator** — `evaluate(at:calendar:onCellular:) → .allowed
+  / .blocked(reason, nextAllowed)`. Midnight-wrapping windows
+  (e.g., 22:00–06:00) handled natively; weekday set uses
+  `Calendar.weekday` values (1 = Sunday). Every branch is unit-tested.
+- **ViewModel integration** — `runNextInQueue()` now short-circuits on
+  `.blocked`; a 60-second retry timer re-enters the method so the
+  window opening wakes the queue without a user poke. Setter routes
+  through `updateSchedule(_:)` so persistence + immediate retry are
+  one call.
+- **Settings card** — "Download schedule" between AI and Background.
+  Enable toggle, start/end-hour pickers (hours 0–23 / 1–24), Mon→Sun
+  weekday chips with Weekdays/Every-day shortcuts, Pause-on-cellular
+  toggle, live "window is open" / "next opening in 3h" status row.
+  WRAPS MIDNIGHT pill appears when start > end.
+- **Queue badge** — the head-of-queue pending entry gets a WAITING
+  pill and "Next opening 4h" caption when the schedule is blocking.
+  Every other entry renders as before.
+
+### Tests
+16 new assertions in `DownloadScheduleTests` cover: disabled schedule,
+inside/at-edge/outside simple windows, midnight-wrapping windows at
+morning and late-night, weekday exclusion, empty weekdays set,
+cellular on/off gating, next-opening rollover, and the summary-label
+strings. All tests run against a synthesised UTC calendar so they're
+timezone-independent. **Suite: 82 green (up from 66).**
+
+### What this doesn't do yet
+- **No per-item schedules.** One global rule set. Per-torrent or
+  per-URL schedules can come later once a user asks for them.
+- **No grace-period pause on window close.** An in-flight job
+  continues running past `endHour`. The schedule gates *starts* only.
+  Mid-run throttling would need an engine-level callback pass.
+- **No bandwidth-tier schedules** (e.g., "50 % throttle during
+  business hours"). Call this v0.35+ if someone actually wants it.
+
+## What's new in v0.33 (Torrent Live — bet B)
+
+The `Live` dashboard was HTTP-only in v0.31. Torrents had their own
+Progress card in the Torrents tab, but you couldn't glance at the Live
+view and see what the swarm was doing. v0.33 closes the gap with a
+dedicated `TorrentLiveCard` that sits above the HTTP job cards whenever
+`vm.isTorrenting` is true.
+
+### What landed
+- **`TorrentLiveCard`** in `Sources/SplynekCore/Views/LiveView.swift`.
+  Reuses the 72-pt headline + big-metric + phase-strip grammar of
+  `LiveJobCard` so the two transports read the same story.
+- **Shared pipeline vocabulary** — `TorrentLivePhase` has six cases
+  (`announcing` → `fetchingMetadata` → `connecting` → `downloading`
+  → `seeding` → `done`) that collapse `TorrentEngine`'s freeform
+  `progress.phase` strings onto a stable pill set. The mapper is a
+  pure function (primitives in, case out) so regressions are unit-
+  testable instead of waiting for a real swarm to reproduce them.
+- **Torrent-native metrics** — pieces done / total, active / known
+  peers, percentage complete. `ENDGAME` and `SEEDING` pills hoist to
+  the title row so you spot them at a glance.
+- **Throughput sampling** — `TorrentRateSampler` observes
+  `progress.downloaded` on a 1-Hz timer and derives a smoothed
+  bytes-per-second over an 8-second rolling window. The engine doesn't
+  publish a rate directly (pieces arrive in bursts), and samplers
+  owned by the card avoid polluting `TorrentProgress` with view-
+  specific state.
+- **Seeding strip** — when `progress.seeding?.listening` is true, a
+  subtle inline row shows port, connected leechers, bytes uploaded,
+  and uptime. No separate card; the existing Torrents tab still has
+  the full Seeding card for detail.
+- **Cancel button** on the card calls `vm.cancelTorrent()` so you
+  don't have to leave the Live tab to stop a run.
+- **Empty state** updated — "No active downloads" now only shows when
+  both HTTP and torrent activity are idle.
+
+### Tests
+10 new assertions in `LiveTorrentPhaseTests` pin the phase mapping
+against every string the engine actually emits (`"Announcing to
+trackers…"`, `"Probing DHT…"`, `"Fetching metadata (BEP 9)…"`,
+`"Connecting to peers…"`, `"Seeding."`, `"Seeding stopped."`,
+`"Done."`) plus the `piecesDone > 0` override that moves the pipeline
+forward even when the engine leaves the freeform string unchanged.
+Full suite: **66 tests, all green.**
+
+### What this doesn't do yet
+- No per-peer card grid. The Torrents tab has a single aggregate
+  peer count; drilling into individual peer addresses is still a
+  future pass.
+- No throughput sparkline on the torrent card — the HTTP side uses
+  per-lane charts backed by `LaneStats`; the torrent side would need
+  the engine to publish per-peer stats. Out of scope for bet B.
+
 ## What's new in v0.32 (distribution pass — the repo goes public-ready)
 
 The first release where "Splynek" is a thing that can actually leave

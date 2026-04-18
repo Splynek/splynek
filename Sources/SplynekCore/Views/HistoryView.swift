@@ -26,8 +26,9 @@ struct HistoryView: View {
                     }
                 } else {
                     summaryCard
+                    UsageTimelineView(vm: vm)
                     todayByHostCard
-                    if vm.aiAvailable {
+                    if vm.aiAvailable && vm.license.isPro {
                         aiSearchBar
                     }
                     searchBar
@@ -148,7 +149,18 @@ struct HistoryView: View {
     @ViewBuilder
     private var todayByHostCard: some View {
         if !vm.topHosts.isEmpty {
-            TitledCard(title: "Today by host", systemImage: "globe") {
+            TitledCard(
+                title: "Today by host",
+                systemImage: "globe",
+                accessory: AnyView(
+                    Button { vm.exportHostUsageCSV() } label: {
+                        Label("Export CSV", systemImage: "square.and.arrow.up")
+                            .labelStyle(.iconOnly)
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Export today + historical daily snapshots as CSV.")
+                )
+            ) {
                 VStack(spacing: 4) {
                     ForEach(vm.topHosts) { entry in
                         HostRow(entry: entry, vm: vm)

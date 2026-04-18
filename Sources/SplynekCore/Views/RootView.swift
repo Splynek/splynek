@@ -48,6 +48,7 @@ struct RootView: View {
         case .live:      LiveView(vm: vm)
         case .torrents:  TorrentView(vm: vm, progress: torrent)
         case .concierge: ConciergeView(vm: vm)
+        case .recipes:   RecipeView(vm: vm)
         case .queue:     QueueView(vm: vm)
         case .fleet:     FleetView(vm: vm)
         case .benchmark: BenchmarkView(vm: vm)

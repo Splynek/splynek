@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import AppKit
+import Combine
 import UniformTypeIdentifiers
 
 @MainActor
@@ -126,6 +127,247 @@ final class SplynekViewModel: ObservableObject {
     /// this to decide whether to prompt before spawning a new job.
     var cellularBudgetExceeded: Bool {
         cellularDailyCap > 0 && cellularBytesToday >= cellularDailyCap
+    }
+
+    // MARK: Recipes (v0.42 — agentic download planner)
+
+    /// Current draft recipe — populated when `generateRecipe(goal:)`
+    /// returns. Users review + unselect items, then `queueRecipe()`
+    /// batches the selected items into the queue.
+    @Published var currentRecipe: DownloadRecipe?
+
+    /// True while the LLM is generating. Disables the input + shows
+    /// a spinner in the Recipes view.
+    @Published var recipeGenerating: Bool = false
+
+    /// Last error from generation — surfaced inline so users see
+    /// "model returned invalid JSON, try again" rather than silence.
+    @Published var recipeError: String?
+
+    /// Most-recent previous recipes (rolled off at 20). Rendered as
+    /// a collapsible history at the bottom of the Recipes view; users
+    /// can revisit a past plan without re-running the LLM.
+    @Published var recipeHistory: [DownloadRecipe] = []
+
+    /// Kick off LLM recipe generation for the user-typed goal.
+    /// Populates `currentRecipe` on success.
+    func generateRecipe(for goal: String) {
+        let trimmed = goal.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        recipeError = nil
+        recipeGenerating = true
+        let assistant = ai
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { self.recipeGenerating = false }
+            do {
+                let recipe = try await assistant.generateRecipe(goal: trimmed)
+                self.currentRecipe = recipe
+                self.recipeHistory.insert(recipe, at: 0)
+                self.recipeHistory = Array(self.recipeHistory.prefix(RecipeStore.maxStored))
+                RecipeStore.save(self.recipeHistory)
+            } catch {
+                self.recipeError = error.localizedDescription
+            }
+        }
+    }
+
+    /// Toggle selection of a single item in the current recipe.
+    func toggleRecipeItem(id: UUID) {
+        guard var recipe = currentRecipe,
+              let idx = recipe.items.firstIndex(where: { $0.id == id }) else { return }
+        recipe.items[idx].selected.toggle()
+        currentRecipe = recipe
+    }
+
+    /// Queue every selected item from the current recipe in one
+    /// go. Empties `currentRecipe` on success.
+    func queueCurrentRecipe() {
+        guard let recipe = currentRecipe else { return }
+        let picked = recipe.items.filter(\.selected)
+        guard !picked.isEmpty else { return }
+        for item in picked {
+            queue.append(QueueEntry(
+                id: UUID(),
+                url: item.url,
+                sha256: item.sha256,
+                addedAt: Date(),
+                status: .pending,
+                errorMessage: nil
+            ))
+        }
+        DownloadQueue.save(queue)
+        // Kick the scheduler so the first item starts immediately.
+        if !isRunning, !isTorrenting { runNextInQueue() }
+        currentRecipe = nil
+    }
+
+    /// Discard the current draft without queuing anything.
+    func discardCurrentRecipe() {
+        currentRecipe = nil
+    }
+
+    /// Re-open an archived recipe as the current draft so the user
+    /// can queue it again (possibly with different selections).
+    func reopenRecipe(_ recipe: DownloadRecipe) {
+        var copy = recipe
+        // Reset selection so the user reviews each item afresh.
+        copy.items = copy.items.map {
+            var it = $0; it.selected = true; return it
+        }
+        currentRecipe = copy
+    }
+
+    // MARK: Pro license (v0.41)
+
+    /// Offline-validated Pro unlock. Gates AI Concierge, AI history
+    /// search, scheduled downloads, and the LAN-accessible web
+    /// dashboard. Check `license.isPro` at call sites. See
+    /// `LicenseManager` for the threat model and rotation policy.
+    @Published var license = LicenseManager()
+
+    /// Shown in the Pro-unlock settings card after the user sees a
+    /// paywall CTA. True flips the card into the email+key form.
+    @Published var showingProUnlock: Bool = false
+
+    /// Called from any ProLockedView "Unlock" button. Jumps to
+    /// Settings and scrolls to the unlock form.
+    func requestProUnlock() {
+        showingProUnlock = true
+    }
+
+    // MARK: Watched folder (v0.34)
+
+    /// User-toggleable background ingestion of files dropped into a
+    /// watched folder. Off by default; defaults to `~/Splynek/Watch/`
+    /// when enabled for the first time.
+    @Published private(set) var watchEnabled: Bool = UserDefaults.standard.bool(forKey: "watchEnabled")
+    @Published private(set) var watchFolder: URL = {
+        if let saved = UserDefaults.standard.string(forKey: "watchFolderPath"),
+           !saved.isEmpty {
+            return URL(fileURLWithPath: saved, isDirectory: true)
+        }
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        return home.appendingPathComponent("Splynek/Watch", isDirectory: true)
+    }()
+
+    private var watcher: WatchedFolder?
+
+    func setWatchEnabled(_ on: Bool) {
+        watchEnabled = on
+        UserDefaults.standard.set(on, forKey: "watchEnabled")
+        refreshWatcher()
+    }
+
+    func setWatchFolder(_ url: URL) {
+        watchFolder = url
+        UserDefaults.standard.set(url.path, forKey: "watchFolderPath")
+        refreshWatcher()
+    }
+
+    private func refreshWatcher() {
+        if watchEnabled {
+            if watcher == nil {
+                watcher = WatchedFolder(folder: watchFolder) { [weak self] url in
+                    Task { @MainActor [weak self] in self?.handleWatchedFile(url) }
+                }
+            } else {
+                watcher?.setFolder(watchFolder)
+            }
+            watcher?.start()
+        } else {
+            watcher?.stop()
+            watcher = nil
+        }
+    }
+
+    /// Called from WatchedFolder for each eligible dropped file.
+    /// Silent on parse failures — we don't want an error banner from
+    /// a file the user didn't explicitly open. Bad drops simply land
+    /// in `processed/` without effect.
+    private func handleWatchedFile(_ url: URL) {
+        let ext = url.pathExtension.lowercased()
+        switch ext {
+        case "txt":
+            guard let text = try? String(contentsOf: url, encoding: .utf8) else { return }
+            var changed = false
+            for link in WatchedFolderParser.parseURLs(fromText: text) {
+                if link.hasPrefix("magnet:") {
+                    // Magnets set up torrent state but don't auto-start
+                    // the swarm — user still picks an interface.
+                    self.magnetText = link
+                    parseMagnet()
+                    continue
+                }
+                queue.append(QueueEntry(
+                    id: UUID(), url: link, sha256: nil,
+                    addedAt: Date(), status: .pending
+                ))
+                changed = true
+            }
+            if changed {
+                DownloadQueue.save(queue)
+                if !isRunning && !isTorrenting { runNextInQueue() }
+            }
+        case "torrent":
+            if let info = try? TorrentFile.parse(contentsOf: url) {
+                torrentInfo = info
+                suggestedFilename = info.name
+                magnetInfoHash = nil
+                magnetTrackers = []
+            }
+        case "metalink", "meta4":
+            if let file = try? Metalink.parse(contentsOf: url),
+               let first = file.urls.first {
+                queue.append(QueueEntry(
+                    id: UUID(), url: first.absoluteString, sha256: file.sha256,
+                    addedAt: Date(), status: .pending
+                ))
+                DownloadQueue.save(queue)
+                if !isRunning && !isTorrenting { runNextInQueue() }
+            }
+        default: break
+        }
+    }
+
+    // MARK: Download schedule (v0.34)
+
+    /// Global policy that gates when the engine is allowed to start queue
+    /// items. The UI writes through `updateSchedule(_:)` so persistence
+    /// and next-tick retry happen in one place.
+    @Published private(set) var downloadSchedule: DownloadSchedule = .default
+
+    /// Fires every 60s so a queued item whose window just opened wakes
+    /// up on its own. Cheap — it short-circuits immediately when the
+    /// queue is idle.
+    private var scheduleRetryTimer: Timer?
+
+    func updateSchedule(_ schedule: DownloadSchedule) {
+        downloadSchedule = schedule
+        schedule.save()
+        // If the change unblocks the queue, kick it right away.
+        if !isRunning, !isTorrenting { runNextInQueue() }
+    }
+
+    /// True when any currently selected interface is cellular. Used by
+    /// the schedule's `pauseOnCellular` rule.
+    var hasCellularSelected: Bool {
+        interfaces.contains { selected.contains($0.name) && $0.isExpensive }
+    }
+
+    /// Current gate state for the head-of-queue, snapshot-style. Used by
+    /// QueueView to render the "Waiting until 02:00" pill on pending
+    /// entries when the window is closed.
+    ///
+    /// Free tier (v0.41+): the scheduler is a Pro feature, so for
+    /// non-Pro sessions we always return `.allowed` — downloads fire
+    /// immediately regardless of the on-disk schedule config. The
+    /// Settings card also hides its contents, but a persisted
+    /// `schedule.json` from a previous Pro session would otherwise
+    /// silently keep gating starts; this guard ensures it doesn't.
+    var scheduleEvaluation: DownloadSchedule.Evaluation {
+        guard license.isPro else { return .allowed }
+        return downloadSchedule.evaluate(at: Date(), onCellular: hasCellularSelected)
     }
 
     // MARK: Per-host caps (HostUsage)
@@ -282,7 +524,17 @@ final class SplynekViewModel: ObservableObject {
 
         history = DownloadHistory.load()
         queue = DownloadQueue.load()
+        downloadSchedule = DownloadSchedule.load()
+        recipeHistory = RecipeStore.load()
         startDockBadgeTimer()
+        scheduleRetryTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, !self.isRunning, !self.isTorrenting else { return }
+                self.runNextInQueue()
+            }
+        }
+        // Resume watched-folder ingestion if the user had it on last launch.
+        Task { @MainActor [weak self] in self?.refreshWatcher() }
         // Seed cellular budget from disk + keep it refreshed as lanes write.
         refreshCellularBudget()
         refreshHostUsage()
@@ -294,7 +546,10 @@ final class SplynekViewModel: ObservableObject {
             }
         }
         // Stand up the Bonjour fleet listener + browser. Silent on
-        // networks where mDNS is blocked (no peers discovered).
+        // networks where mDNS is blocked (no peers discovered). Pro
+        // gate (v0.41+): free tier forces loopback-only so the web
+        // dashboard stays local-only; Pro lifts the restriction.
+        fleet.proGateForcesLoopback = !license.isPro
         fleet.start()
         publishFleetState()
         // Force-write the fleet descriptor shortly after launch so the
@@ -821,7 +1076,8 @@ final class SplynekViewModel: ObservableObject {
                 totalBytes: job.progress.totalBytes,
                 downloaded: job.progress.downloaded,
                 chunkSize: chunkSize,
-                completedChunks: completed
+                completedChunks: completed,
+                phase: job.progress.phase.rawValue
             ))
         }
         // Publish only completed files that still exist on disk — a peer
@@ -858,8 +1114,21 @@ final class SplynekViewModel: ObservableObject {
     }
 
     private func startJob(_ job: DownloadJob) {
+        // Republish fleet state on every phase transition so API
+        // consumers (integration tests, CLI, Raycast) observe the
+        // Probing → Planning → Connecting → Downloading → Verifying
+        // → Gatekeeper → Done order even when the 2 Hz publisher
+        // would compress fast transitions. Removed in the completion
+        // callback below.
+        let jobID = job.id
+        let cancellable = job.progress.$phase
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.publishFleetState() }
+        jobPhaseCancellables[jobID] = cancellable
+
         job.start { [weak self] finished in
             guard let self else { return }
+            self.jobPhaseCancellables.removeValue(forKey: finished.id)
             self.history = DownloadHistory.load()
             SplynekSpotlight.reindex(self.history)
             let ok = finished.progress.finished
@@ -868,6 +1137,11 @@ final class SplynekViewModel: ObservableObject {
             self.pumpQueueRunner()
         }
     }
+
+    /// Combine subscriptions tracking each active job's phase changes
+    /// so fleet state gets republished immediately when the pipeline
+    /// stage flips. Keyed by `DownloadJob.id`; torn down on completion.
+    private var jobPhaseCancellables: [UUID: AnyCancellable] = [:]
 
     func removeJob(_ job: DownloadJob) {
         guard !job.lifecycle.isActive else { return }
@@ -941,6 +1215,46 @@ final class SplynekViewModel: ObservableObject {
 
     /// Write the current queue (pending + finished) to a JSON file the user
     /// can share, move, or version-control.
+    // MARK: Usage CSV export (v0.37)
+
+    func exportHostUsageCSV() {
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "splynek-host-usage-\(HostUsage.today()).csv"
+        if let csv = UTType(filenameExtension: "csv") {
+            panel.allowedContentTypes = [csv]
+        }
+        panel.canCreateDirectories = true
+        guard panel.runModal() == .OK, let dest = panel.url else { return }
+        let csv = UsageCSV.hostUsageCSV(
+            today: HostUsage.load(),
+            history: HostUsage.loadHistory()
+        )
+        do {
+            try csv.data(using: .utf8)?.write(to: dest, options: .atomic)
+        } catch {
+            formErrorMessage = "Host-usage export failed: \(error.localizedDescription)"
+        }
+    }
+
+    func exportCellularBudgetCSV() {
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "splynek-cellular-budget-\(CellularBudget.today()).csv"
+        if let csv = UTType(filenameExtension: "csv") {
+            panel.allowedContentTypes = [csv]
+        }
+        panel.canCreateDirectories = true
+        guard panel.runModal() == .OK, let dest = panel.url else { return }
+        let csv = UsageCSV.cellularBudgetCSV(
+            today: CellularBudget.load(),
+            history: CellularBudget.loadHistory()
+        )
+        do {
+            try csv.data(using: .utf8)?.write(to: dest, options: .atomic)
+        } catch {
+            formErrorMessage = "Cellular-budget export failed: \(error.localizedDescription)"
+        }
+    }
+
     func exportQueue() {
         let panel = NSSavePanel()
         panel.nameFieldStringValue = "splynek-queue.json"
@@ -1003,8 +1317,13 @@ final class SplynekViewModel: ObservableObject {
         guard !isRunning, !isTorrenting,
               let nextIdx = queue.firstIndex(where: { $0.status == .pending })
         else { return }
+        // Schedule gate. When blocked, leave the entry pending; the
+        // 60-second retry timer will re-enter this function when the
+        // window opens.
+        if case .blocked = scheduleEvaluation { return }
         var entry = queue[nextIdx]
         entry.status = .running
+        entry.startedAt = Date()
         queue[nextIdx] = entry
         DownloadQueue.save(queue)
 

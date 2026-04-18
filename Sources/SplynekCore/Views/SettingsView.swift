@@ -27,9 +27,12 @@ struct SettingsView: View {
                     title: "Settings",
                     subtitle: "Integrations, background behaviour, web dashboard, and security controls. Nothing here phones home."
                 )
+                proCard
                 browserHelpersCard
                 webDashboardCard
                 aiCard
+                scheduleCard
+                watchedFolderCard
                 backgroundModeCard
                 securityCard
             }
@@ -39,6 +42,120 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity)
         .background(Color(nsColor: .windowBackgroundColor))
         .navigationTitle("Settings")
+    }
+
+    // MARK: Pro unlock (v0.41)
+
+    @State private var unlockEmail: String = ""
+    @State private var unlockKey: String = ""
+
+    private var proCard: some View {
+        TitledCard(
+            title: "Splynek Pro",
+            systemImage: "sparkles",
+            accessory: AnyView(StatusPill(
+                text: vm.license.isPro ? "ACTIVE" : "FREE",
+                style: vm.license.isPro ? .success : .neutral
+            ))
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                if vm.license.isPro {
+                    proActiveContent
+                } else {
+                    proFreeContent
+                }
+            }
+        }
+    }
+
+    @ViewBuilder private var proActiveContent: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "checkmark.seal.fill")
+                .foregroundStyle(.green)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Licensed to \(vm.license.licensedEmail ?? "you")")
+                    .font(.callout)
+                Text("Thanks for supporting Splynek. AI Concierge, AI history search, scheduled downloads, and LAN-accessible dashboard are unlocked.")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer()
+            Button(role: .destructive) { vm.license.deactivate() } label: {
+                Text("Deactivate on this Mac")
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
+    }
+
+    @ViewBuilder private var proFreeContent: some View {
+        Text("Unlock the AI Concierge, AI-powered history search, scheduled downloads, and phone-accessible LAN dashboard. One-time $29; lifetime 0.x updates.")
+            .font(.callout).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+
+        HStack(spacing: 10) {
+            if let url = URL(string: "https://splynek.app/pro") {
+                Link(destination: url) {
+                    Label("Buy Splynek Pro — $29", systemImage: "arrow.up.right.square")
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            Button {
+                vm.showingProUnlock.toggle()
+            } label: {
+                Label(vm.showingProUnlock ? "Hide key form" : "I already have a key",
+                      systemImage: "key.fill")
+            }
+            .buttonStyle(.bordered)
+            Spacer()
+        }
+
+        if vm.showingProUnlock {
+            Divider().opacity(0.3)
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: "envelope")
+                        .foregroundStyle(.secondary)
+                    TextField("Email used at purchase", text: $unlockEmail)
+                        .textFieldStyle(.plain)
+                        .font(.system(.body, design: .monospaced))
+                }
+                .padding(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(Color.primary.opacity(0.04))
+                )
+                HStack(spacing: 8) {
+                    Image(systemName: "key")
+                        .foregroundStyle(.secondary)
+                    TextField("SPLYNEK-XXXX-XXXX-XXXX-XXXX-XXXX", text: $unlockKey)
+                        .textFieldStyle(.plain)
+                        .font(.system(.body, design: .monospaced))
+                }
+                .padding(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(Color.primary.opacity(0.04))
+                )
+                HStack {
+                    if let err = vm.license.lastUnlockError {
+                        Text(err).font(.caption).foregroundStyle(.red)
+                    }
+                    Spacer()
+                    Button {
+                        if vm.license.unlock(email: unlockEmail, key: unlockKey) {
+                            unlockEmail = ""
+                            unlockKey = ""
+                            vm.showingProUnlock = false
+                        }
+                    } label: {
+                        Label("Activate", systemImage: "lock.open.fill")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(unlockEmail.isEmpty || unlockKey.isEmpty)
+                }
+            }
+        }
     }
 
     // MARK: Browser helpers
@@ -69,7 +186,21 @@ struct SettingsView: View {
 
     // MARK: Web dashboard (v0.24 splash)
 
+    @ViewBuilder
     private var webDashboardCard: some View {
+        if vm.license.isPro {
+            webDashboardCardUnlocked
+        } else {
+            ProLockedView(
+                featureTitle: "Mobile web dashboard",
+                summary: "Let your phone submit downloads to this Mac over the LAN — QR pairing, live progress, token-gated submit. Free tier runs the dashboard loopback-only; Pro opens it to the LAN.",
+                systemImage: "iphone.gen3.radiowaves.left.and.right",
+                onUnlock: { vm.requestProUnlock() }
+            )
+        }
+    }
+
+    private var webDashboardCardUnlocked: some View {
         TitledCard(title: "Web dashboard", systemImage: "iphone.gen3.radiowaves.left.and.right") {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Scan the QR with a phone on the same LAN to submit downloads to this Mac. Read-only state is open to the LAN; submit requires the token embedded in the QR.")
@@ -176,6 +307,253 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+
+    // MARK: Download schedule
+
+    @ViewBuilder
+    private var scheduleCard: some View {
+        if vm.license.isPro {
+            scheduleCardUnlocked
+        } else {
+            ProLockedView(
+                featureTitle: "Download schedule",
+                summary: "Only run downloads inside a time window — e.g., overnight on home Wi-Fi — with weekday rules and a cellular-off option. Running downloads are never interrupted; the schedule only gates starts.",
+                systemImage: "clock.badge.checkmark",
+                onUnlock: { vm.requestProUnlock() }
+            )
+        }
+    }
+
+    private var scheduleCardUnlocked: some View {
+        let schedule = Binding(
+            get: { vm.downloadSchedule },
+            set: { vm.updateSchedule($0) }
+        )
+        return TitledCard(
+            title: "Download schedule",
+            systemImage: "clock.badge.checkmark",
+            accessory: AnyView(StatusPill(
+                text: schedule.wrappedValue.enabled ? "ON" : "OFF",
+                style: schedule.wrappedValue.enabled ? .success : .neutral
+            ))
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Only start queued downloads inside a time window — e.g., overnight on home Wi-Fi. Running downloads are never interrupted; the schedule only gates starts.")
+                    .font(.callout).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Toggle(isOn: Binding(
+                    get: { schedule.wrappedValue.enabled },
+                    set: { var s = schedule.wrappedValue; s.enabled = $0; schedule.wrappedValue = s }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Respect schedule")
+                        Text(schedule.wrappedValue.summary)
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .toggleStyle(.switch)
+
+                if schedule.wrappedValue.enabled {
+                    hourWindowControls(schedule)
+                    Divider().opacity(0.3)
+                    weekdayPicker(schedule)
+                    Divider().opacity(0.3)
+                    Toggle(isOn: Binding(
+                        get: { schedule.wrappedValue.pauseOnCellular },
+                        set: { var s = schedule.wrappedValue; s.pauseOnCellular = $0; schedule.wrappedValue = s }
+                    )) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Pause on cellular")
+                            Text("Block starts while any selected interface is cellular. Complements the per-day bytes cap.")
+                                .font(.caption).foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    currentStateRow
+                }
+            }
+        }
+    }
+
+    private func hourWindowControls(_ schedule: Binding<DownloadSchedule>) -> some View {
+        HStack(spacing: 18) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Start").font(.caption).foregroundStyle(.secondary)
+                Picker("", selection: Binding(
+                    get: { schedule.wrappedValue.startHour },
+                    set: { var s = schedule.wrappedValue; s.startHour = $0; schedule.wrappedValue = s }
+                )) {
+                    ForEach(0..<24, id: \.self) { Text(String(format: "%02d:00", $0)).tag($0) }
+                }
+                .labelsHidden()
+                .frame(width: 90)
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("End").font(.caption).foregroundStyle(.secondary)
+                Picker("", selection: Binding(
+                    get: { schedule.wrappedValue.endHour },
+                    set: { var s = schedule.wrappedValue; s.endHour = $0; schedule.wrappedValue = s }
+                )) {
+                    ForEach(1...24, id: \.self) { Text(String(format: "%02d:00", $0)).tag($0) }
+                }
+                .labelsHidden()
+                .frame(width: 90)
+            }
+            Spacer()
+            if schedule.wrappedValue.startHour > schedule.wrappedValue.endHour {
+                StatusPill(text: "WRAPS MIDNIGHT", style: .info)
+            }
+        }
+    }
+
+    private func weekdayPicker(_ schedule: Binding<DownloadSchedule>) -> some View {
+        // Ordered Mon→Sun because that reads more naturally in a picker
+        // than Cal.weekday's Sun-first convention.
+        let order: [(Int, String)] = [
+            (2, "Mon"), (3, "Tue"), (4, "Wed"), (5, "Thu"),
+            (6, "Fri"), (7, "Sat"), (1, "Sun")
+        ]
+        return VStack(alignment: .leading, spacing: 6) {
+            Text("Active days").font(.caption).foregroundStyle(.secondary)
+            HStack(spacing: 6) {
+                ForEach(order, id: \.0) { item in
+                    let active = schedule.wrappedValue.weekdays.contains(item.0)
+                    Button {
+                        var s = schedule.wrappedValue
+                        if active { s.weekdays.remove(item.0) }
+                        else      { s.weekdays.insert(item.0) }
+                        schedule.wrappedValue = s
+                    } label: {
+                        Text(item.1)
+                            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                            .frame(width: 36, height: 24)
+                            .foregroundStyle(active ? .white : .primary)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(active ? Color.accentColor : Color.primary.opacity(0.08))
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+                Spacer()
+                Button("Weekdays") {
+                    var s = schedule.wrappedValue
+                    s.weekdays = [2, 3, 4, 5, 6]
+                    schedule.wrappedValue = s
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                Button("Every day") {
+                    var s = schedule.wrappedValue
+                    s.weekdays = Set(1...7)
+                    schedule.wrappedValue = s
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            }
+        }
+    }
+
+    @ViewBuilder private var currentStateRow: some View {
+        let eval = vm.scheduleEvaluation
+        HStack(spacing: 8) {
+            Image(systemName: eval == .allowed ? "checkmark.seal.fill" : "hourglass")
+                .foregroundStyle(eval == .allowed ? .green : .orange)
+            switch eval {
+            case .allowed:
+                Text("Window is open — queued items will start as slots free up.")
+                    .font(.caption).foregroundStyle(.secondary)
+            case .blocked(let reason, let nextAllowed):
+                if let next = nextAllowed {
+                    Text("\(reason.displayText) — next opening \(Self.relative(next)).")
+                        .font(.caption).foregroundStyle(.secondary)
+                } else {
+                    Text("\(reason.displayText).")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+        }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .fill(Color.primary.opacity(0.04))
+        )
+    }
+
+    private static func relative(_ date: Date) -> String { formatRelative(date) }
+
+    // MARK: Watched folder
+
+    private var watchedFolderCard: some View {
+        TitledCard(
+            title: "Watched folder",
+            systemImage: "folder.badge.gearshape",
+            accessory: AnyView(StatusPill(
+                text: vm.watchEnabled ? "ON" : "OFF",
+                style: vm.watchEnabled ? .success : .neutral
+            ))
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Drop `.txt` (one URL per line), `.torrent`, or `.metalink` files here. Splynek queues each new file within 5 seconds, then moves it to a `processed/` subfolder.")
+                    .font(.callout).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Toggle(isOn: Binding(
+                    get: { vm.watchEnabled },
+                    set: { vm.setWatchEnabled($0) }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Watch folder for drops")
+                        Text("Polled every 5 s. `# comments` and blank lines in .txt files are ignored.")
+                            .font(.caption).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .toggleStyle(.switch)
+
+                HStack(spacing: 8) {
+                    Image(systemName: "folder")
+                        .foregroundStyle(.secondary)
+                    Text(vm.watchFolder.path)
+                        .font(.system(.callout, design: .monospaced))
+                        .lineLimit(1).truncationMode(.middle)
+                    Spacer()
+                    Button("Change…") { pickWatchFolder() }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                    Button {
+                        NSWorkspace.shared.selectFile(nil,
+                            inFileViewerRootedAtPath: vm.watchFolder.path)
+                    } label: {
+                        Label("Reveal", systemImage: "magnifyingglass")
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .help("Open the watched folder in Finder.")
+                }
+                .padding(10)
+                .background(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.primary.opacity(0.04))
+                )
+            }
+        }
+    }
+
+    private func pickWatchFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.canCreateDirectories = true
+        panel.prompt = "Watch"
+        panel.directoryURL = vm.watchFolder
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        vm.setWatchFolder(url)
     }
 
     // MARK: Background mode

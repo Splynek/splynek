@@ -106,7 +106,15 @@ final class BackgroundModeController: ObservableObject {
         switch s {
         case .enabled:            loginItemStatus = .enabled
         case .notRegistered:      loginItemStatus = .disabled
-        case .notFound:           loginItemStatus = .unavailable("App not found in expected path.")
+        case .notFound:
+            // QA P2 #12 (v0.43): the raw "App not found in expected
+            // path" message scares users into thinking Splynek is
+            // broken. The real cause is almost always "the app is
+            // running from a dev `build/` folder or still in the
+            // DMG" — point users at the fix instead of at the error.
+            loginItemStatus = .unavailable(
+                "Move Splynek to /Applications first, then toggle this on."
+            )
         case .requiresApproval:   loginItemStatus = .requiresApproval
         @unknown default:         loginItemStatus = .unknown
         }
