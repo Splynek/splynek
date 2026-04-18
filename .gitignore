@@ -35,3 +35,6 @@ Extensions/Raycast/dist/
 .vscode/
 .idea/
 *.swp
+
+## Claude Code harness state (session-local, never committed)
+.claude/
