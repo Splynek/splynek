@@ -12,7 +12,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .downloads: return "Downloads"
         case .live:      return "Live"
         case .torrents:  return "Torrents"
-        case .concierge: return "Assistant"
+        case .concierge: return "Concierge"
         case .recipes:   return "Recipes"
         case .queue:     return "Queue"
         case .fleet:     return "Fleet"
@@ -93,71 +93,53 @@ struct Sidebar: View {
                 Text("Active")
             }
 
-            // QA P1 root-cause fix (v0.43): the Assistant + Recipes
-            // views are Pro-gated. Every attempt to put the Pro gate
-            // INSIDE the view body broke NavigationSplitView's sidebar
-            // layout on macOS 14 (detail blank + sidebar items above
-            // the selected tab disappear, requires full app restart
-            // to recover). Root cause: SwiftUI's NSSplitView-backed
-            // layout engine miscomputes when a destination view's
-            // shape changes between renders of the same tab — a
-            // known class of bug we can't work around at the view
-            // level.
+            // v0.48 redesign — Pro discovery via visible-but-locked tabs.
             //
-            // The clean fix: don't show the tabs at all when not Pro.
-            // If Pro isn't active the user has no way to navigate to
-            // a view with a conditional body, so the bug can't trigger.
-            // Pro discovery still happens via the Settings card. This
-            // is the solution used by most Mac indies (Bear, iA
-            // Writer) for Pro-only tabs: subscription-gated areas
-            // simply don't appear in the sidebar until unlocked.
-            if vm.license.isPro {
-                Section {
-                    NavigationLink(value: SidebarSection.concierge) {
-                        sidebarRow(
-                            title: "Assistant",
-                            systemImage: "sparkles",
-                            accessory: vm.aiAvailable
+            // Prior v0.43 → v0.47 hid the Concierge + Recipes rows
+            // entirely for non-Pro users (workaround for a
+            // NavigationSplitView layout bug triggered by a state-
+            // dependent view-body shape change). Hiding them solved
+            // the bug but killed discoverability — users who never
+            // see the tabs never know there's a Pro offering.
+            //
+            // v0.48: always show both tabs. Accessory flips from the
+            // info-pill / draft-pill in Pro state to a "PRO" badge in
+            // the locked state. The destination views must render a
+            // structurally-stable outer container in both states so
+            // the old layout bug stays dormant (see the real
+            // ConciergeView / RecipeView in splynek-pro for the
+            // implementation — outer VStack always present; only
+            // inner content swaps).
+            Section {
+                NavigationLink(value: SidebarSection.concierge) {
+                    sidebarRow(
+                        title: "Concierge",
+                        systemImage: "sparkles",
+                        accessory: vm.license.isPro
+                            ? (vm.aiAvailable
                                 ? AnyView(StatusPill(text: "AI", style: .info))
-                                : nil
-                        )
-                    }
-                    NavigationLink(value: SidebarSection.recipes) {
-                        sidebarRow(
-                            title: "Recipes",
-                            systemImage: "list.star",
-                            accessory: vm.currentRecipe != nil
+                                : nil)
+                            : AnyView(StatusPill(text: "PRO", style: .warning))
+                    )
+                }
+                NavigationLink(value: SidebarSection.recipes) {
+                    sidebarRow(
+                        title: "Recipes",
+                        systemImage: "list.star",
+                        accessory: vm.license.isPro
+                            ? (vm.currentRecipe != nil
                                 ? AnyView(StatusPill(text: "DRAFT", style: .warning))
                                 : (vm.recipeGenerating
                                     ? AnyView(ProgressView().controlSize(.mini))
-                                    : nil)
-                        )
-                    }
-                } header: {
-                    Text("Ask")
+                                    : nil))
+                            : AnyView(StatusPill(text: "PRO", style: .warning))
+                    )
                 }
-            } else {
-                // Free-tier Pro discovery: a single non-navigating
-                // row that points at Settings → Splynek Pro. Clicking
-                // it jumps to Settings so the user can unlock
-                // without leaving the sidebar context. Much cleaner
-                // than a broken Pro-gated tab.
-                Section {
-                    Button {
-                        selection = .settings
-                        vm.showingProUnlock = true
-                    } label: {
-                        sidebarRow(
-                            title: "Unlock AI tools",
-                            systemImage: "sparkles",
-                            accessory: AnyView(StatusPill(text: "PRO", style: .warning))
-                        )
-                    }
-                    .buttonStyle(.plain)
-                } header: {
-                    Text("Ask")
-                } footer: {
-                    Text("Assistant + Recipes unlock with Splynek Pro.")
+            } header: {
+                Text("Ask")
+            } footer: {
+                if !vm.license.isPro {
+                    Text("$29 one-time on the Mac App Store.")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
