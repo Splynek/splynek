@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      Entitlements for the Mac App Store build of Splynek.
+
+      These are the minimum entitlements Splynek needs to function in
+      the App Store sandbox. Most are self-explanatory; see
+      splynek-pro/SANDBOX_AUDIT.md for the code-level rationale.
+
+      Rejection risk by entitlement: every one of these has a clear
+      user-visible feature backing it. The review-notes boilerplate in
+      SANDBOX_AUDIT.md explains the network.server use case, which is
+      the only entitlement Apple routinely questions.
+    -->
+
+    <!-- Sandbox — required for every MAS app. -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+
+    <!-- Outgoing network — HTTP aggregation, torrent peers, DoH, etc.
+         Every download Splynek does goes through this. -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- Incoming network — the Fleet REST API server + web dashboard.
+         Loopback-only in the free tier; LAN-exposed in Pro (gated by
+         `vm.license.isPro`). Review notes: "Splynek is a
+         LAN-cooperative download manager; network.server enables a
+         local HTTP server for the menu-bar web dashboard, browser
+         extensions (free), and phone-pairing over LAN (Pro)." -->
+    <key>com.apple.security.network.server</key>
+    <true/>
+
+    <!-- User-picked files — output directory via NSOpenPanel, watched
+         folder picker, detached-signature sidecar browsing, etc. -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+
+    <!-- Downloads folder — the default output location. Users expect
+         `~/Downloads/` to just work without a picker. -->
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+
+    <!-- Security-scoped bookmarks — persist watched-folder access
+         across launches. See WatchedFolder.swift's bookmark flow. -->
+    <key>com.apple.security.files.bookmarks.app-scope</key>
+    <true/>
+</dict>
+</plist>

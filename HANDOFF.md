@@ -15,7 +15,18 @@ every session.
 **Tests:** `swift run splynek-test` (58+ tests, all green)
 **CLI:** `swift run splynek-cli version`
 
-**Current version:** 0.44 — the public/private split. Pro modules
+**Current version:** 0.45 — MAS build infrastructure. Xcode project
+(`project.yml` → XcodeGen), sandbox entitlements, StoreKit 2
+integration in `splynek-pro`, `#if MAS_BUILD` guards on GlobalHotkey
++ UpdateChecker. Three build paths now live alongside each other:
+`./Scripts/build.sh` (DMG ad-hoc), `xcodebuild … -scheme Splynek`
+(DMG Developer-ID), `xcodebuild … -scheme Splynek-MAS` (sandboxed
+MAS). All three pass `swift run splynek-test` (117 green). DMG
+experience unchanged; MAS target expects `splynek-pro` as a sibling
+checkout at `../splynek-pro`. See README § 0.45 for the full
+architecture + build command matrix.
+
+**v0.44 summary (for context):** the public/private split. Pro modules
 (AI Concierge, Recipes, Scheduling, LAN-exposed Fleet, HMAC license)
 moved to the private repo `Splynek/splynek-pro`. Public
 `Splynek/splynek` ships the free core only, with API-compatible

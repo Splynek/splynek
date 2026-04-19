@@ -1,0 +1,44 @@
+{
+  "identifier" : "8E7C7A2F-5A94-4F3B-9F30-B1C2D3E4F5A6",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "29.00",
+      "familyShareable" : false,
+      "internalID" : "19B2B8DC-7B20-4A01-B4E7-1A2B3C4D5E6F",
+      "localizations" : [
+        {
+          "description" : "Unlock AI Concierge, Agentic Download Recipes, Scheduled Downloads, and LAN-accessible Fleet dashboard. One-time purchase; lifetime 0.x updates.",
+          "displayName" : "Splynek Pro",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "app.splynek.Splynek.pro",
+      "referenceName" : "Splynek Pro",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "SimulatedStoreKit",
+    "_developerTeamID" : "58C6YC5GB5",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      { "current" : null, "enabled" : false, "name" : "Load Products" },
+      { "current" : null, "enabled" : false, "name" : "Purchase" },
+      { "current" : null, "enabled" : false, "name" : "Verification" },
+      { "current" : null, "enabled" : false, "name" : "App Store Sync" },
+      { "current" : null, "enabled" : false, "name" : "Subscription Status" },
+      { "current" : null, "enabled" : false, "name" : "App Transaction" },
+      { "current" : null, "enabled" : false, "name" : "Manage Subscriptions Sheet" },
+      { "current" : null, "enabled" : false, "name" : "Refund Request Sheet" },
+      { "current" : null, "enabled" : false, "name" : "Offer Code Redeem Sheet" }
+    ]
+  },
+  "subscriptionGroups" : [],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

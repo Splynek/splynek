@@ -1,11 +1,31 @@
 import AppKit
+#if !MAS_BUILD
 import Carbon.HIToolbox
+#endif
 
 /// Register a global macOS hot key via the legacy Carbon API. Works without
 /// accessibility permissions (unlike `CGEvent` tap approaches); hot key
 /// fires only while Splynek is running, which is what we want.
 ///
 /// Only one hot key is supported per process; enough for "show Splynek".
+///
+/// **Not available in the MAS build.** Global hotkeys require the
+/// Carbon `RegisterEventHotKey` / AXTrustedCheck flow which App Store
+/// review rejects for sandboxed apps. The MAS build exposes `shared`
+/// with no-op `install()` / `uninstall()` methods so callers don't
+/// need `#if`-guards; the functionality just silently doesn't
+/// activate.
+#if MAS_BUILD
+
+final class GlobalHotkey {
+    static let shared = GlobalHotkey()
+    private init() {}
+    func install(callback: @escaping () -> Void) { /* MAS: not available */ }
+    func uninstall() { /* MAS: not available */ }
+}
+
+#else
+
 final class GlobalHotkey {
 
     static let shared = GlobalHotkey()
@@ -59,3 +79,5 @@ final class GlobalHotkey {
         callback = nil
     }
 }
+
+#endif

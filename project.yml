@@ -1,0 +1,208 @@
+# XcodeGen spec for Splynek's Mac App Store build.
+#
+# The free-tier DMG is still produced by `./Scripts/build.sh` (pure
+# SPM flow, no Xcode needed — the community can build from source
+# on Command Line Tools alone). This Xcode project exists to produce
+# the MAS variant: sandboxed, IAP-enabled, signed with Apple
+# Distribution, submitted via Transporter / App Store Connect.
+#
+# Architecture note: both Xcode targets COMPILE SOURCES DIRECTLY
+# rather than linking the Swift Package. This avoids the public-
+# access-modifier surgery that a cross-module dependency would
+# require, and lets the MAS target simply exclude stub files and
+# include splynek-pro's files — everything ends up in one app
+# module with internal visibility across the boundary.
+#
+# The SPM Package.swift is kept intact for Scripts/build.sh only.
+# Tests (`swift run splynek-test`) also run against SPM.
+#
+# Regenerate:
+#   xcodegen generate
+# Build:
+#   xcodebuild -project Splynek.xcodeproj -scheme Splynek build
+# Archive (MAS):
+#   xcodebuild -project Splynek.xcodeproj -scheme Splynek-MAS archive
+name: Splynek
+options:
+  deploymentTarget:
+    macOS: "13.0"
+  bundleIdPrefix: app.splynek
+  developmentLanguage: en
+  xcodeVersion: "26.0"
+  groupSortPosition: top
+  generateEmptyDirectories: true
+  createIntermediateGroups: true
+
+configs:
+  Debug: debug
+  Release: release
+  Release-MAS: release
+
+settings:
+  base:
+    DEVELOPMENT_TEAM: 58C6YC5GB5
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "0.44"
+    CURRENT_PROJECT_VERSION: "44"
+    ENABLE_HARDENED_RUNTIME: "YES"
+    CODE_SIGN_STYLE: Automatic
+    PRODUCT_BUNDLE_IDENTIFIER: app.splynek.Splynek
+    ASSETCATALOG_COMPILER_APPICON_NAME: ""
+    # Swift package dependency resolution happens per-target via
+    # `packages:` above; we don't use package products here, but
+    # Xcode still scans the Package.swift at the project root.
+
+targets:
+
+  # ===================================================================
+  # Splynek (DMG in Xcode)
+  # Direct source compilation. No sandbox, no IAP. Use for notarised
+  # Developer-ID builds via `xcodebuild archive`.
+  # ===================================================================
+  Splynek:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/Splynek
+      - path: Sources/SplynekCore
+      - path: Resources/Splynek.icns
+        buildPhase: resources
+      - path: Resources/Legal
+        type: folder
+        buildPhase: resources
+      - path: Extensions
+        type: folder
+        buildPhase: resources
+        optional: true
+    info:
+      path: Resources/Generated-Info.plist
+      properties:
+        CFBundleName: Splynek
+        CFBundleDisplayName: Splynek
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIconFile: Splynek
+        CFBundlePackageType: APPL
+        CFBundleSignature: "????"
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSApplicationCategoryType: public.app-category.utilities
+        NSHighResolutionCapable: true
+        NSSupportsAutomaticGraphicsSwitching: true
+        NSPrincipalClass: NSApplication
+        CFBundleURLTypes:
+          - CFBundleURLName: app.splynek.Splynek.download
+            CFBundleURLSchemes: [splynek]
+            LSHandlerRank: Owner
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: BitTorrent metainfo
+            CFBundleTypeRole: Viewer
+            LSItemContentTypes: [org.bittorrent.torrent]
+            CFBundleTypeExtensions: [torrent]
+          - CFBundleTypeName: Metalink
+            CFBundleTypeRole: Viewer
+            CFBundleTypeExtensions: [metalink, meta4]
+    settings:
+      base:
+        PRODUCT_NAME: Splynek
+        CODE_SIGN_IDENTITY: "Apple Development"
+
+  # ===================================================================
+  # Splynek-MAS — App Store build.
+  # Sandboxed, IAP-capable, Apple-Distribution-signed.
+  # Excludes the stub files (ProStubs.swift + 3 stub view files) and
+  # includes splynek-pro's real implementations in their place.
+  # Expects splynek-pro checked out as a sibling directory:
+  #   /Users/pcgm/Claude Code/
+  #   /Users/pcgm/splynek-pro/
+  # ===================================================================
+  Splynek-MAS:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/Splynek
+      # SplynekCore sources, minus the stub files that SplynekPro
+      # replaces. XcodeGen's `excludes` maps directly to Xcode's
+      # per-file membership in the target.
+      - path: Sources/SplynekCore
+        excludes:
+          - ProStubs.swift
+          - Views/ConciergeView.swift
+          - Views/RecipeView.swift
+          - Views/ProLockedView.swift
+      # splynek-pro's real Pro modules, pulled in from the sibling
+      # private repo. Same module as the rest of the app target.
+      - path: ../splynek-pro/Sources/SplynekPro
+      - path: Resources/Splynek.icns
+        buildPhase: resources
+      - path: Resources/Legal
+        type: folder
+        buildPhase: resources
+      - path: Extensions
+        type: folder
+        buildPhase: resources
+        optional: true
+    info:
+      path: Resources/Generated-Info-MAS.plist
+      properties:
+        CFBundleName: Splynek
+        CFBundleDisplayName: Splynek
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIconFile: Splynek
+        CFBundlePackageType: APPL
+        CFBundleSignature: "????"
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSApplicationCategoryType: public.app-category.utilities
+        NSHighResolutionCapable: true
+        NSSupportsAutomaticGraphicsSwitching: true
+        NSPrincipalClass: NSApplication
+        CFBundleURLTypes:
+          - CFBundleURLName: app.splynek.Splynek.download
+            CFBundleURLSchemes: [splynek]
+            LSHandlerRank: Owner
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: BitTorrent metainfo
+            CFBundleTypeRole: Viewer
+            LSItemContentTypes: [org.bittorrent.torrent]
+            CFBundleTypeExtensions: [torrent]
+          - CFBundleTypeName: Metalink
+            CFBundleTypeRole: Viewer
+            CFBundleTypeExtensions: [metalink, meta4]
+        # Export compliance: HMAC + TLS are both exempt under
+        # BIS 740.17(b)(3)(i). Declare once to skip the per-release
+        # export-compliance question in App Store Connect.
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_NAME: Splynek
+        CODE_SIGN_ENTITLEMENTS: Resources/Splynek-MAS.entitlements
+        CODE_SIGN_IDENTITY: "Apple Distribution"
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: MAS_BUILD
+        # StoreKit local-test config. Simulates the $29 IAP without
+        # submitting to App Store Connect. Drop to test against the
+        # real App-Store sandbox instead — set the product ID in ASC
+        # → In-App Purchases first.
+        STOREKIT_CONFIGURATION_FILE_PATH: Resources/Splynek.storekit
+
+schemes:
+  Splynek:
+    build:
+      targets:
+        Splynek: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  Splynek-MAS:
+    build:
+      targets:
+        Splynek-MAS: all
+    run:
+      config: Debug
+    archive:
+      config: Release-MAS

@@ -23,6 +23,86 @@ Install system-wide:
 cp -R build/Splynek.app /Applications/
 ```
 
+## What's new in v0.45 (MAS build infrastructure — the Xcode project scaffold)
+
+v0.44 split the source tree (public free core + private `splynek-pro`
+Pro modules) and replaced the HMAC license with "Pro is on the Mac
+App Store" stubs. v0.45 is the plumbing that actually makes the MAS
+build possible: Xcode project, sandbox entitlements, StoreKit 2
+integration, and `#if MAS_BUILD` guards on features the App Store
+sandbox rejects.
+
+### What's in this release
+
+- **`project.yml`** — [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+  spec that generates `Splynek.xcodeproj` with two targets:
+  - `Splynek` (DMG) — direct-source compilation, same behaviour as
+    `./Scripts/build.sh`, for Developer-ID-notarised distribution.
+  - `Splynek-MAS` — sandboxed, IAP-capable, excludes
+    `ProStubs.swift` + the three stub view files, includes
+    `splynek-pro/Sources/SplynekPro/` from the sibling private repo.
+- **`Resources/Splynek-MAS.entitlements`** — sandbox entitlements
+  with `network.client`, `network.server`, files.user-selected,
+  files.downloads, and bookmarks.app-scope. See
+  `splynek-pro/SANDBOX_AUDIT.md` for the per-entitlement rationale.
+- **`Resources/Splynek.storekit`** — local StoreKit test config
+  (product `app.splynek.Splynek.pro` @ $29) so the purchase flow can
+  be driven without an App Store Connect submission during dev.
+- **`#if MAS_BUILD` guards** on `GlobalHotkey` and `UpdateChecker` —
+  both no-op in MAS (Accessibility API unavailable in sandbox; App
+  Store handles updates directly).
+- **DMG-build Pro card rewritten** (`SettingsView.proFreeContent`):
+  the old email+key form is gone. Free-tier users see a single
+  "Get Splynek Pro on the Mac App Store" link. The MAS build shows
+  a StoreKit IAP "Buy — $29" + "Restore Purchase" pair instead.
+- **StoreKit 2 integration in `splynek-pro/Sources/SplynekPro/LicenseManager.swift`**
+  — replaces the HMAC implementation. Flips `isPro` when the
+  `app.splynek.Splynek.pro` non-consumable IAP verifies; reacts to
+  Apple-side refunds via `Transaction.updates`; exposes `purchase()`
+  and `restore()` async methods consumed by the MAS settings card.
+
+### What builds where
+
+| Build | Command | Result |
+|---|---|---|
+| Free DMG (ad-hoc) | `./Scripts/build.sh` | `build/Splynek.app`, no sandbox |
+| Free DMG (notarised) | `xcodebuild -project Splynek.xcodeproj -scheme Splynek archive` | `.xcarchive` → Developer ID export |
+| Mac App Store | `xcodebuild -project Splynek.xcodeproj -scheme Splynek-MAS archive` | sandboxed `.xcarchive` → MAS upload |
+| SPM (dev) | `swift build -c release --product Splynek` | unchanged, still Xcode-optional |
+| Tests | `swift run splynek-test` | 117 green |
+
+### What's NOT in the MAS build (by design)
+
+- **Global hotkey** — Carbon API isn't permitted for sandboxed apps.
+  DMG users keep the ⌘⇧D show-Splynek shortcut; MAS users don't.
+- **`splynek-cli` helper** — MAS can't install `/usr/local/bin/`
+  binaries. DMG users get the CLI; MAS v1 doesn't ship it.
+- **Self-update banner** — Apple enforces "App Store is the only
+  update channel." Users get MAS-native updates.
+- **DMG→MAS data migration** — on first launch, MAS is a fresh
+  install; existing history/queue stays with the DMG copy. Proper
+  one-way migration is tracked for MAS v2.
+
+### Setup for building MAS locally
+
+```sh
+brew install xcodegen
+git clone https://github.com/Splynek/splynek.git
+cd splynek
+# splynek-pro clone required as a sibling, private-repo access needed
+git clone git@github.com:Splynek/splynek-pro.git ../splynek-pro
+
+xcodegen generate
+open Splynek.xcodeproj
+# Product → Archive (scheme: Splynek-MAS)
+```
+
+Developers without private-repo access can still build the free
+`Splynek` target (DMG variant). The MAS target just won't compile —
+it references `splynek-pro` sources.
+
+---
+
 ## What's new in v0.44 (the public/private split — free core on GitHub, Pro on the Mac App Store)
 
 v0.33–v0.43 shipped the commercial substrate (license gate, AI Concierge,

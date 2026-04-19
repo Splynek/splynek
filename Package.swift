@@ -13,6 +13,13 @@ import PackageDescription
 let package = Package(
     name: "Splynek",
     platforms: [.macOS(.v13)],
+    products: [
+        // Library product — linked by the Xcode App target for MAS
+        // distribution. Xcode requires an explicit library product
+        // declaration; SPM alone auto-exports library targets but
+        // Xcode's package integration doesn't.
+        .library(name: "SplynekCore", targets: ["SplynekCore"]),
+    ],
     targets: [
         .target(
             name: "SplynekCore",

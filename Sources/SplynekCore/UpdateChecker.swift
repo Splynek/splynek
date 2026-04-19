@@ -43,7 +43,15 @@ enum UpdateChecker {
     /// Fire-and-forget check. Returns an `UpdateInfo` only if the feed
     /// advertises a strictly-higher semver than the running build; nil
     /// otherwise (up-to-date, feed absent, or any error).
+    ///
+    /// **MAS builds always return nil.** App Store apps can't ship
+    /// their own updater — Apple enforces "App Store is the only
+    /// update channel." The About view's update banner code-path is
+    /// dead in MAS; users get notified via the App Store app instead.
     static func check() async -> UpdateInfo? {
+        #if MAS_BUILD
+        return nil
+        #else
         guard let url = feedURL else { return nil }
         var req = URLRequest(url: url)
         req.timeoutInterval = 10
@@ -57,6 +65,7 @@ enum UpdateChecker {
             return nil
         }
         return isNewer(info.version, than: currentVersion) ? info : nil
+        #endif
     }
 
     /// Compare two dotted-numeric versions. Non-numeric suffixes

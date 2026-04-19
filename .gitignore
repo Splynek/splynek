@@ -6,6 +6,10 @@ Packages/
 *.xcworkspace
 Package.resolved
 
+## XcodeGen-generated Info.plist files (produced from project.yml)
+Resources/Generated-Info.plist
+Resources/Generated-Info-MAS.plist
+
 ## macOS noise
 .DS_Store
 ._*

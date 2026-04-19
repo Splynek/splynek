@@ -44,10 +44,9 @@ struct SettingsView: View {
         .navigationTitle("Settings")
     }
 
-    // MARK: Pro unlock (v0.41)
-
-    @State private var unlockEmail: String = ""
-    @State private var unlockKey: String = ""
+    // MARK: Pro unlock (v0.41; reworked for StoreKit v0.44)
+    // No UI state here anymore — StoreKit drives the purchase sheet
+    // in MAS; the DMG build just links out to the App Store page.
 
     private var proCard: some View {
         TitledCard(
@@ -93,69 +92,45 @@ struct SettingsView: View {
             .font(.callout).foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
 
+#if MAS_BUILD
+        // MAS build — StoreKit IAP replaces the email+key form. The
+        // actual $29 sheet is driven by Apple; we just wire the Buy
+        // + Restore buttons to the LicenseManager's StoreKit methods.
         HStack(spacing: 10) {
-            if let url = URL(string: "https://splynek.app/pro") {
-                Link(destination: url) {
-                    Label("Buy Splynek Pro — $29", systemImage: "arrow.up.right.square")
-                }
-                .buttonStyle(.borderedProminent)
-            }
             Button {
-                vm.showingProUnlock.toggle()
+                Task { await vm.license.purchase() }
             } label: {
-                Label(vm.showingProUnlock ? "Hide key form" : "I already have a key",
-                      systemImage: "key.fill")
+                Label("Buy Splynek Pro — $29", systemImage: "cart.fill")
+            }
+            .buttonStyle(.borderedProminent)
+            Button {
+                Task { await vm.license.restore() }
+            } label: {
+                Label("Restore Purchase", systemImage: "arrow.clockwise")
             }
             .buttonStyle(.bordered)
             Spacer()
         }
-
-        if vm.showingProUnlock {
-            Divider().opacity(0.3)
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    Image(systemName: "envelope")
-                        .foregroundStyle(.secondary)
-                    TextField("Email used at purchase", text: $unlockEmail)
-                        .textFieldStyle(.plain)
-                        .font(.system(.body, design: .monospaced))
-                }
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(Color.primary.opacity(0.04))
-                )
-                HStack(spacing: 8) {
-                    Image(systemName: "key")
-                        .foregroundStyle(.secondary)
-                    TextField("SPLYNEK-XXXX-XXXX-XXXX-XXXX-XXXX", text: $unlockKey)
-                        .textFieldStyle(.plain)
-                        .font(.system(.body, design: .monospaced))
-                }
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(Color.primary.opacity(0.04))
-                )
-                HStack {
-                    if let err = vm.license.lastUnlockError {
-                        Text(err).font(.caption).foregroundStyle(.red)
-                    }
-                    Spacer()
-                    Button {
-                        if vm.license.unlock(email: unlockEmail, key: unlockKey) {
-                            unlockEmail = ""
-                            unlockKey = ""
-                            vm.showingProUnlock = false
-                        }
-                    } label: {
-                        Label("Activate", systemImage: "lock.open.fill")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(unlockEmail.isEmpty || unlockKey.isEmpty)
-                }
-            }
+        if let err = vm.license.lastUnlockError {
+            Text(err).font(.caption).foregroundStyle(.orange)
+                .fixedSize(horizontal: false, vertical: true)
         }
+#else
+        // DMG build — no purchase flow in the free tier. Point users
+        // at the Mac App Store for the paid upgrade.
+        HStack(spacing: 10) {
+            if let url = URL(string: "https://splynek.app/pro") {
+                Link(destination: url) {
+                    Label("Get Splynek Pro on the Mac App Store", systemImage: "arrow.up.right.square")
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            Spacer()
+        }
+        Text("Splynek Pro is available only in the Mac App Store build. The free DMG build has the full download engine — torrents, multi-interface HTTP, everything non-AI.")
+            .font(.caption).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+#endif
     }
 
     // MARK: Browser helpers
