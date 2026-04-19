@@ -3,7 +3,16 @@ import Network
 
 /// A discovered interface we can egress through. May have IPv4, IPv6, or both.
 struct DiscoveredInterface: Identifiable, Hashable, Sendable {
-    enum Kind: String, Sendable { case wifi, ethernet, cellular, other }
+    /// Classification of the physical link. Drives the sidebar icon
+    /// and the "expensive" flag (for cellular budgeting).
+    ///
+    /// v0.46: added `.iPhoneUSB` so the interface row labels an
+    /// iPhone USB tether correctly. macOS reports it via
+    /// `NWInterface.InterfaceType.wiredEthernet` (it IS
+    /// Ethernet-over-USB), so without a specific check it used to
+    /// show up as "ETH" — confusing when users are on Wi-Fi only
+    /// and suddenly see a second "ETH" row.
+    enum Kind: String, Sendable { case wifi, ethernet, cellular, iPhoneUSB, other }
 
     let name: String
     let ipv4: String?
@@ -18,16 +27,18 @@ struct DiscoveredInterface: Identifiable, Hashable, Sendable {
 
     var label: String {
         switch kind {
-        case .wifi:     return "WIFI"
-        case .ethernet: return "ETH"
-        case .cellular: return "CELL"
-        case .other:    return "OTHER"
+        case .wifi:       return "WIFI"
+        case .ethernet:   return "ETH"
+        case .cellular:   return "CELL"
+        case .iPhoneUSB:  return "iPhone"
+        case .other:      return "OTHER"
         }
     }
 
-    /// Heuristic: cellular links are treated as metered. Used to drive default
-    /// selection and the "metered-safe" confirmation flow.
-    var isExpensive: Bool { kind == .cellular }
+    /// Heuristic: cellular links (and iPhone USB tether, which is
+    /// ultimately cellular bandwidth) are treated as metered. Drives
+    /// default selection and the "metered-safe" confirmation flow.
+    var isExpensive: Bool { kind == .cellular || kind == .iPhoneUSB }
 
     static func == (lhs: DiscoveredInterface, rhs: DiscoveredInterface) -> Bool {
         lhs.name == rhs.name && lhs.ipv4 == rhs.ipv4 && lhs.ipv6 == rhs.ipv6

@@ -442,6 +442,30 @@ final class SplynekViewModel: ObservableObject {
     // Fleet orchestration — singleton, owned by the VM, exposed to views.
     let fleet = FleetCoordinator()
 
+    /// URLs the user has explicitly excluded from fleet sharing.
+    /// Persisted to UserDefaults. Entries here are filtered out of
+    /// `publishFleetState`'s completed list, so other Splyneks on
+    /// the LAN can't fetch these files from this Mac. Added in v0.46
+    /// in response to "I want to stop sharing this specific file
+    /// but keep it in my history."
+    @Published var fleetExcludedURLs: Set<String> = Set(
+        UserDefaults.standard.stringArray(forKey: "fleetExcludedURLs") ?? []
+    )
+
+    /// Toggle a completed file's fleet-sharing status. Does NOT
+    /// delete the file or remove the history entry — just changes
+    /// whether peers can fetch it from us.
+    func toggleFleetSharing(url: String) {
+        if fleetExcludedURLs.contains(url) {
+            fleetExcludedURLs.remove(url)
+        } else {
+            fleetExcludedURLs.insert(url)
+        }
+        UserDefaults.standard.set(Array(fleetExcludedURLs),
+                                  forKey: "fleetExcludedURLs")
+        publishFleetState()
+    }
+
     // MARK: AI
 
     /// Local-AI assistant backed by Ollama on localhost. See
@@ -1084,11 +1108,17 @@ final class SplynekViewModel: ObservableObject {
         // fetching from us would otherwise get a 500 from the server's
         // FileHandle open. Also carry the SHA-256 so content-addressed
         // lookups work across URL changes.
+        //
+        // v0.46: respect the per-file "stop sharing" exclusion set.
+        // Entries in `fleetExcludedURLs` are hidden from the fleet
+        // sharing card and skipped when serving peer fetches.
         let fm = FileManager.default
+        let excluded = fleetExcludedURLs
         let completed: [FleetCoordinator.LocalState.CompletedFile] = history
             .prefix(100)
             .compactMap { h in
                 guard fm.fileExists(atPath: h.outputPath) else { return nil }
+                guard !excluded.contains(h.url) else { return nil }
                 return FleetCoordinator.LocalState.CompletedFile(
                     url: h.url, filename: h.filename,
                     outputPath: h.outputPath,
@@ -1144,7 +1174,16 @@ final class SplynekViewModel: ObservableObject {
     private var jobPhaseCancellables: [UUID: AnyCancellable] = [:]
 
     func removeJob(_ job: DownloadJob) {
-        guard !job.lifecycle.isActive else { return }
+        // v0.46 fix: the previous `isActive` guard made the trash
+        // icon silently do nothing on paused jobs (because paused
+        // counts as active in the lifecycle enum). That left users
+        // unable to clear a paused job from the list without first
+        // cancelling it in a separate click. Now we cancel the
+        // engine inline if the job is still running or paused, then
+        // remove it regardless.
+        if job.lifecycle == .running || job.lifecycle == .paused {
+            job.cancel()
+        }
         activeJobs.removeAll { $0.id == job.id }
     }
 

@@ -247,6 +247,15 @@ struct LiveJobCard: View {
     @ViewBuilder
     private func phasePill(_ phase: DownloadProgress.Phase,
                            idx: Int, currentIndex: Int) -> some View {
+        // v0.46 fix: the previous layout packed icon + text + divider
+        // between every pill, which squeezed narrow strip cells to
+        // the point where SwiftUI broke labels into stacked single
+        // characters ("Q u e u e d" vertically). Now:
+        // - Non-current pills show ONLY the icon (always legible)
+        // - The CURRENT pill shows icon + label (so users know what
+        //   stage the engine is at without hunting a tooltip)
+        // - `.help()` adds the full label as a hover tooltip on all
+        //   pills, so past/future stages are still identifiable.
         let isCurrent = idx == currentIndex
         let isPast    = idx < currentIndex
         let tint: Color = isCurrent ? .accentColor : (isPast ? .green : .secondary)
@@ -255,18 +264,23 @@ struct LiveJobCard: View {
                                   : Color.primary.opacity(0.05))
         HStack(spacing: 4) {
             Image(systemName: phase.systemImage)
-                .font(.system(size: 10, weight: .semibold))
-            Text(phase.rawValue)
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 11, weight: .semibold))
+            if isCurrent {
+                Text(phase.rawValue.capitalized)
+                    .font(.system(size: 11, weight: .semibold))
+                    .lineLimit(1)
+                    .fixedSize()
+            }
         }
         .foregroundStyle(tint)
-        .padding(.horizontal, 8)
+        .padding(.horizontal, isCurrent ? 10 : 7)
         .padding(.vertical, 5)
         .background(Capsule(style: .continuous).fill(bg))
         .overlay(
             Capsule(style: .continuous)
                 .strokeBorder(tint.opacity(isCurrent ? 0.6 : 0.0), lineWidth: 1)
         )
+        .help(phase.rawValue.capitalized)
     }
 
     private var phaseTint: Color {
@@ -619,6 +633,9 @@ struct TorrentLiveCard: View {
     @ViewBuilder
     private func phasePill(_ phase: TorrentLivePhase,
                            idx: Int, currentIndex: Int) -> some View {
+        // v0.46 fix: same stacked-letter bug as the HTTP phase strip.
+        // Show only the icon for past/future pills; icon + label for
+        // the current one; .help() on every pill for discoverability.
         let isCurrent = idx == currentIndex
         let isPast    = idx < currentIndex
         let tint: Color = isCurrent ? .accentColor : (isPast ? .green : .secondary)
@@ -627,18 +644,23 @@ struct TorrentLiveCard: View {
                                   : Color.primary.opacity(0.05))
         HStack(spacing: 4) {
             Image(systemName: phase.systemImage)
-                .font(.system(size: 10, weight: .semibold))
-            Text(phase.rawValue)
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 11, weight: .semibold))
+            if isCurrent {
+                Text(phase.rawValue.capitalized)
+                    .font(.system(size: 11, weight: .semibold))
+                    .lineLimit(1)
+                    .fixedSize()
+            }
         }
         .foregroundStyle(tint)
-        .padding(.horizontal, 8)
+        .padding(.horizontal, isCurrent ? 10 : 7)
         .padding(.vertical, 5)
         .background(Capsule(style: .continuous).fill(bg))
         .overlay(
             Capsule(style: .continuous)
                 .strokeBorder(tint.opacity(isCurrent ? 0.6 : 0.0), lineWidth: 1)
         )
+        .help(phase.rawValue.capitalized)
     }
 
     private var phaseTint: Color {

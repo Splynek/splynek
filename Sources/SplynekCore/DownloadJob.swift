@@ -118,10 +118,24 @@ final class DownloadJob: ObservableObject, Identifiable {
             lifecycle = .completed
         } else if pauseRequested {
             lifecycle = .paused
+            // v0.46 fix: the engine writes "Cancelled." to
+            // errorMessage whenever its cancelFlag fires, including
+            // the user-initiated pause path. Leaving that stale
+            // message behind made paused jobs look red-banner failed.
+            // A user pause is not an error; clear the message.
+            progress.errorMessage = nil
         } else if progress.errorMessage != nil {
             lifecycle = .failed
         } else {
             lifecycle = .cancelled
+        }
+        // v0.46 fix: reset the phase so the Live view's pipeline
+        // strip doesn't keep highlighting "downloading" after the
+        // engine has stopped. For completed jobs the engine already
+        // set phase = .done; for paused/cancelled/failed we go back
+        // to .pending so the strip reads as "not currently running."
+        if lifecycle != .completed {
+            progress.phase = .pending
         }
         engine = nil
         task = nil

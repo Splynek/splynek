@@ -99,19 +99,26 @@ struct InterfaceRow: View {
 
     private var iconName: String {
         switch interface.kind {
-        case .wifi:     return "wifi"
-        case .ethernet: return "cable.connector"
-        case .cellular: return "antenna.radiowaves.left.and.right"
-        case .other:    return "network"
+        case .wifi:      return "wifi"
+        case .ethernet:  return "cable.connector"
+        case .cellular:  return "antenna.radiowaves.left.and.right"
+        case .iPhoneUSB: return "iphone"
+        case .other:     return "network"
         }
     }
 
+    // v0.46: Wi-Fi was tinted .yellow which users read as a warning
+    // signal (low signal? captive portal?). Switched to .blue to match
+    // the rest of macOS's Wi-Fi styling and remove the false-alarm vibe.
+    // iPhone USB gets its own blue-ish tint so it's visually distinct
+    // from a generic Ethernet row.
     private var kindTint: Color {
         switch interface.kind {
-        case .wifi:     return .yellow
-        case .ethernet: return .green
-        case .cellular: return .pink
-        case .other:    return .secondary
+        case .wifi:      return .blue
+        case .ethernet:  return .green
+        case .cellular:  return .pink
+        case .iPhoneUSB: return .cyan
+        case .other:     return .secondary
         }
     }
 }
@@ -197,19 +204,21 @@ struct LaneCard: View {
 
     private var iconName: String {
         switch lane.interface.kind {
-        case .wifi:     return "wifi"
-        case .ethernet: return "cable.connector"
-        case .cellular: return "antenna.radiowaves.left.and.right"
-        case .other:    return "network"
+        case .wifi:      return "wifi"
+        case .ethernet:  return "cable.connector"
+        case .cellular:  return "antenna.radiowaves.left.and.right"
+        case .iPhoneUSB: return "iphone"
+        case .other:     return "network"
         }
     }
 
     private var kindTint: Color {
         switch lane.interface.kind {
-        case .wifi:     return .yellow
-        case .ethernet: return .green
-        case .cellular: return .pink
-        case .other:    return .secondary
+        case .wifi:      return .blue
+        case .ethernet:  return .green
+        case .cellular:  return .pink
+        case .iPhoneUSB: return .cyan
+        case .other:     return .secondary
         }
     }
 

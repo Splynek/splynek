@@ -306,33 +306,30 @@ private struct HistoryRow: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .frame(width: 90, alignment: .trailing)
+            // v0.46 UX fix: previously there were THREE icons here
+            // (info + eye + magnifying-glass) and users couldn't tell
+            // the info from the eye. Removed the inline Quick Look —
+            // it's still accessible from the context menu (right-
+            // click) and from Finder via spacebar after Reveal. Two
+            // visibly distinct icons remain: Details (blue info) and
+            // Reveal in Finder (folder).
             Button {
                 onShowDetail()
             } label: {
-                Image(systemName: "info.circle")
+                Image(systemName: "info.circle.fill")
                     .foregroundStyle(Color.accentColor)
             }
             .buttonStyle(.borderless)
-            .help("Show download analysis (speedup, interface contribution, time saved).")
-
-            Button {
-                previewURL = fileURL
-            } label: {
-                Image(systemName: "eye.circle")
-                    .foregroundStyle(.secondary)
-            }
-            .buttonStyle(.borderless)
-            .help("Quick Look.")
-            .disabled(!FileManager.default.fileExists(atPath: fileURL.path))
+            .help("Show details — speedup, per-interface contribution, SHA-256.")
 
             Button {
                 NSWorkspace.shared.activateFileViewerSelecting([fileURL])
             } label: {
-                Image(systemName: "magnifyingglass.circle")
+                Image(systemName: "folder")
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.borderless)
-            .help("Reveal in Finder.")
+            .help("Reveal the downloaded file in Finder.")
         }
         .contentShape(Rectangle())
         .onTapGesture(count: 2) { onShowDetail() }

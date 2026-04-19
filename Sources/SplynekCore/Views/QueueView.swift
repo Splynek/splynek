@@ -160,15 +160,40 @@ private struct QueueRow: View {
                     .frame(width: 90, alignment: .trailing)
             }
 
+            // v0.46 fix: previously the menu on completed rows held a
+            // single "Remove" item, which rendered as an apparently
+            // empty click target on macOS 14. Now every state has at
+            // least two entries so the menu reads as actually
+            // functional:
+            //   pending   → Remove
+            //   running   → Open URL · (no Remove — in-flight)
+            //   completed → Open URL · Copy URL · Remove
+            //   failed    → Retry · Open URL · Copy URL · Remove
+            //   cancelled → Retry · Open URL · Copy URL · Remove
             Menu {
                 if entry.status == .failed || entry.status == .cancelled {
                     Button { vm.retryQueue(id: entry.id) } label: {
                         Label("Retry", systemImage: "arrow.clockwise")
                     }
+                    Divider()
+                }
+                if let url = URL(string: entry.url) {
+                    Button {
+                        NSWorkspace.shared.open(url)
+                    } label: {
+                        Label("Open URL in browser", systemImage: "safari")
+                    }
+                    Button {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(entry.url, forType: .string)
+                    } label: {
+                        Label("Copy URL", systemImage: "doc.on.doc")
+                    }
                 }
                 if entry.status != .running {
+                    Divider()
                     Button(role: .destructive) { vm.removeFromQueue(id: entry.id) } label: {
-                        Label("Remove", systemImage: "trash")
+                        Label("Remove from queue", systemImage: "trash")
                     }
                 }
             } label: {

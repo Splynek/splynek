@@ -9,7 +9,22 @@ enum ProbeError: Error, LocalizedError {
         switch self {
         case .invalidURL:       return "Invalid URL."
         case .noContentLength:  return "Server didn't report Content-Length."
-        case .httpStatus(let s): return "HTTP \(s)."
+        case .httpStatus(let s):
+            // v0.46: a bare "HTTP 404." left users wondering what
+            // failed. Add a one-line human explanation for the most
+            // common status codes so the form error is actionable.
+            let hint: String
+            switch s {
+            case 400: hint = " — the server rejected the URL as malformed."
+            case 401: hint = " — authentication required. Add credentials to the URL or Advanced → Headers."
+            case 403: hint = " — the server refused access. Login or region restriction?"
+            case 404: hint = " — the file doesn't exist at that URL. Check the path."
+            case 410: hint = " — the file is permanently gone from that URL."
+            case 429: hint = " — rate-limited. Try again in a few minutes."
+            case 500...599: hint = " — server-side error. Try again later."
+            default:  hint = ""
+            }
+            return "HTTP \(s)" + hint
         }
     }
 }

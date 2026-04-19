@@ -195,10 +195,46 @@ struct FleetView: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
                             Text(done.filename).font(.callout)
+                                .lineLimit(1).truncationMode(.middle)
                             Spacer()
                             Text(formatBytes(done.totalBytes))
                                 .font(.caption).foregroundStyle(.secondary)
                                 .monospacedDigit()
+                            // v0.46: per-file "stop sharing" button.
+                            // Clicking this removes the file from
+                            // fleet offerings on this Mac but keeps
+                            // the file + the history entry intact.
+                            // The exclusion list is persisted; a
+                            // re-toggle from History puts the file
+                            // back in the share pool.
+                            Button(role: .destructive) {
+                                vm.toggleFleetSharing(url: done.url)
+                            } label: {
+                                Image(systemName: "eye.slash")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.borderless)
+                            .help("Stop sharing this file with other Splyneks on the LAN. The file and history entry are kept; only fleet sharing stops.")
+                        }
+                    }
+                    // v0.46: if any files are excluded, surface a
+                    // small restore link at the bottom so users can
+                    // undo without digging through history.
+                    if !vm.fleetExcludedURLs.isEmpty {
+                        Divider().opacity(0.3)
+                        HStack(spacing: 6) {
+                            Image(systemName: "eye.slash")
+                                .foregroundStyle(.secondary)
+                            Text("\(vm.fleetExcludedURLs.count) file\(vm.fleetExcludedURLs.count == 1 ? "" : "s") hidden from fleet.")
+                                .font(.caption).foregroundStyle(.secondary)
+                            Spacer()
+                            Button("Restore all") {
+                                for url in vm.fleetExcludedURLs {
+                                    vm.toggleFleetSharing(url: url)
+                                }
+                            }
+                            .buttonStyle(.borderless)
+                            .controlSize(.small)
                         }
                     }
                 }

@@ -4,6 +4,21 @@
 <dict>
     <key>bundleid</key>
     <string>app.splynek.alfred</string>
+    <!-- App Store Connect scans every bundle-shaped directory inside
+         a MAS-submitted .pkg and requires CFBundleIdentifier +
+         CFBundleName on each. Alfred itself reads `bundleid`
+         (lowercase) above; these three keys just make ASC happy.
+         Alfred ignores them. -->
+    <key>CFBundleIdentifier</key>
+    <string>app.splynek.alfred</string>
+    <key>CFBundleName</key>
+    <string>Splynek</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.46</string>
+    <key>CFBundlePackageType</key>
+    <string>BNDL</string>
     <key>category</key>
     <string>Productivity</string>
     <key>connections</key>

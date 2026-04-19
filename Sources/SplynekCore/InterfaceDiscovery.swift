@@ -23,7 +23,7 @@ enum InterfaceDiscovery {
             guard entry.ipv4 != nil || entry.ipv6 != nil else { return nil }
 
             let nwIf = nwMap[entry.name]
-            let kind: DiscoveredInterface.Kind
+            var kind: DiscoveredInterface.Kind
             if let t = nwIf?.type {
                 switch t {
                 case .wifi:          kind = .wifi
@@ -35,6 +35,20 @@ enum InterfaceDiscovery {
                 }
             } else {
                 kind = classifyOther(name: entry.name)
+            }
+
+            // v0.46: iPhone USB Personal Hotspot presents to macOS as
+            // a wiredEthernet link (IEEE 802.3 over the Apple USB
+            // multiplexer). The carrier is cellular but the link type
+            // isn't, so without an extra check it'd show up as "ETH"
+            // — confusing when users are on Wi-Fi only and spot a
+            // mysterious new Ethernet interface. iPhone Personal
+            // Hotspot hands out 172.20.10.2–14 from the fixed
+            // 172.20.10.0/28 subnet (iPhone itself at .1). Detect by
+            // IP range + link type.
+            if kind == .ethernet, let ip = entry.ipv4,
+               ip.hasPrefix("172.20.10.") {
+                kind = .iPhoneUSB
             }
 
             if kind == .other, entry.name.hasPrefix("utun") || entry.name.hasPrefix("ipsec") ||

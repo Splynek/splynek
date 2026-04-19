@@ -27,23 +27,12 @@ struct BenchmarkView: View {
         .background(Color(nsColor: .windowBackgroundColor))
         .navigationTitle("Benchmark")
         .toolbar {
+            // v0.46: the Run button moved inline into the source
+            // card below the URL field — much more discoverable than
+            // tucked in the toolbar corner. Toolbar keeps only the
+            // post-run Copy + Save image actions, which make sense
+            // here because they export the whole-tab state.
             ToolbarItemGroup(placement: .primaryAction) {
-                if runner.isRunning {
-                    Text(runner.phase)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    ProgressView().controlSize(.small)
-                } else {
-                    Button {
-                        runBenchmark()
-                    } label: {
-                        Label("Run Benchmark", systemImage: "bolt.fill")
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .keyboardShortcut(.return)
-                    .disabled(URL(string: urlText) == nil
-                              || vm.interfaces.filter { $0.nwInterface != nil }.isEmpty)
-                }
                 if !runner.results.isEmpty && !runner.isRunning {
                     Button {
                         let text = runner.plainTextSummary(
@@ -55,12 +44,13 @@ struct BenchmarkView: View {
                     } label: {
                         Label("Copy results", systemImage: "doc.on.clipboard")
                     }
+                    .help("Copy a plain-text summary of the results to the clipboard.")
                     Button {
                         saveShareableImage()
                     } label: {
                         Label("Save image…", systemImage: "photo")
                     }
-                    .help("Render a 1200×630 PNG for sharing on social media")
+                    .help("Render a 1200×630 PNG for sharing on social media.")
                 }
             }
         }
@@ -116,6 +106,36 @@ struct BenchmarkView: View {
                 Text("Pick a CDN-backed URL with `Accept-Ranges: bytes`. The default is Hetzner's 100 MB speed-test file.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                // v0.46 fix: the Run button used to live only in the
+                // toolbar (top-right corner), which many users never
+                // found. Also surface it prominently here, right
+                // under the target URL where the eye is already
+                // looking. The toolbar copy still works for keyboard
+                // shortcuts and muscle memory.
+                HStack(spacing: 10) {
+                    if runner.isRunning {
+                        ProgressView().controlSize(.small)
+                        Text(runner.phase)
+                            .font(.callout).foregroundStyle(.secondary)
+                    } else {
+                        Button { runBenchmark() } label: {
+                            Label("Run benchmark", systemImage: "bolt.fill")
+                                .frame(minWidth: 140)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .keyboardShortcut(.return)
+                        .disabled(URL(string: urlText) == nil
+                                  || vm.interfaces.filter { $0.nwInterface != nil }.isEmpty)
+                        .help("Run the benchmark: single-path vs multi-path throughput across every selected interface (⏎).")
+                        if !runner.results.isEmpty {
+                            Text("Results below ↓")
+                                .font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(.top, 4)
             }
         }
     }
@@ -210,19 +230,21 @@ struct BenchmarkView: View {
 
     private func icon(for kind: DiscoveredInterface.Kind) -> String {
         switch kind {
-        case .wifi:     return "wifi"
-        case .ethernet: return "cable.connector"
-        case .cellular: return "antenna.radiowaves.left.and.right"
-        case .other:    return "network"
+        case .wifi:      return "wifi"
+        case .ethernet:  return "cable.connector"
+        case .cellular:  return "antenna.radiowaves.left.and.right"
+        case .iPhoneUSB: return "iphone"
+        case .other:     return "network"
         }
     }
 
     private func kindTint(_ kind: DiscoveredInterface.Kind) -> Color {
         switch kind {
-        case .wifi:     return .yellow
-        case .ethernet: return .green
-        case .cellular: return .pink
-        case .other:    return .secondary
+        case .wifi:      return .blue
+        case .ethernet:  return .green
+        case .cellular:  return .pink
+        case .iPhoneUSB: return .cyan
+        case .other:     return .secondary
         }
     }
 }

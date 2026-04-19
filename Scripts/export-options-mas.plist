@@ -25,9 +25,11 @@
     <string>58C6YC5GB5</string>
 
     <!-- Uploads straight to ASC when true; false produces a local
-         .pkg you upload manually via Transporter or altool. -->
+         .pkg you upload manually via Transporter or altool.
+         `true` relies on the Apple ID signed into Xcode's Accounts
+         pane, so no separate keychain credential is needed. -->
     <key>uploadToAppStore</key>
-    <false/>
+    <true/>
 
     <!-- Automatic signing; picks the "Apple Distribution" cert
          associated with the TeamID above. -->

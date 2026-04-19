@@ -9,11 +9,11 @@ struct AboutView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                VStack(spacing: 14) {
+                VStack(spacing: 10) {
                     brandHero
-                    VStack(spacing: 4) {
+                    VStack(spacing: 2) {
                         Text("Splynek")
-                            .font(.system(size: 34, weight: .bold, design: .rounded))
+                            .font(.system(size: 26, weight: .bold, design: .rounded))
                         Text("Multi-interface download aggregator")
                             .font(.callout).foregroundStyle(.secondary)
                         Text("Version \(version)")
@@ -21,8 +21,8 @@ struct AboutView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .padding(.top, 40)
-                .padding(.bottom, 12)
+                .padding(.top, 20)
+                .padding(.bottom, 4)
 
                 if let upd = vm.availableUpdate {
                     updateBanner(upd)
@@ -57,14 +57,14 @@ struct AboutView: View {
             Image(nsImage: nsImage)
                 .resizable()
                 .interpolation(.high)
-                .frame(width: 128, height: 128)
-                .shadow(color: .black.opacity(0.18), radius: 14, x: 0, y: 8)
+                .frame(width: 88, height: 88)
+                .shadow(color: .black.opacity(0.18), radius: 10, x: 0, y: 5)
         } else if let nsImage = NSApp.applicationIconImage {
             Image(nsImage: nsImage)
                 .resizable()
                 .interpolation(.high)
-                .frame(width: 128, height: 128)
-                .shadow(color: .black.opacity(0.18), radius: 14, x: 0, y: 8)
+                .frame(width: 88, height: 88)
+                .shadow(color: .black.opacity(0.18), radius: 10, x: 0, y: 5)
         } else {
             Image(systemName: "arrow.down.circle.fill")
                 .font(.system(size: 68, weight: .regular))

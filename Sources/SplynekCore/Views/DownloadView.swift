@@ -41,21 +41,13 @@ struct DownloadView: View {
                         JobCard(job: job, vm: vm)
                     }
                 }
-                if let err = vm.formErrorMessage {
-                    HStack(spacing: 6) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundStyle(.red)
-                        Text(err).font(.callout)
-                    }
-                    .padding(10)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(Color.red.opacity(0.08))
-                    )
-                }
+                // (form error banner moved into the Source card so
+                // it appears right below the Start button — see the
+                // source card's inline error view.)
             }
             .padding(20)
             .animation(.easeInOut(duration: 0.2), value: vm.activeJobs.count)
+            .animation(.easeInOut(duration: 0.2), value: vm.formErrorMessage != nil)
             .animation(.easeInOut(duration: 0.2), value: showAdvanced)
         }
         .background(Color(nsColor: .windowBackgroundColor))
@@ -173,25 +165,15 @@ struct DownloadView: View {
 
     @ToolbarContentBuilder
     private var downloadToolbar: some ToolbarContent {
-        // QA P2 #13 (v0.43): toolbar icons previously had no
-        // tooltip. Adding .help(...) per button surfaces their
-        // function on hover — users no longer have to guess.
+        // v0.46 UX fix: the toolbar previously carried Start + Queue
+        // buttons that were pixel-for-pixel duplicates of the big
+        // "Start download" / "Add to queue" buttons inside the
+        // Source card below. Users reported it as clutter. Both
+        // actions are now card-only; the Return / ⌘⇧Q keyboard
+        // shortcuts moved onto the card buttons themselves.
+        // Toolbar keeps only the genuinely toolbar-scoped actions:
+        // Cancel All (contextual), Copy curl, Advanced toggle.
         ToolbarItemGroup(placement: .primaryAction) {
-            Button { vm.start() } label: {
-                Label("Start", systemImage: "arrow.down.circle.fill")
-            }
-            .keyboardShortcut(.return)
-            .disabled(vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty)
-            .buttonStyle(.borderedProminent)
-            .help("Start download now (⏎). Pulls the URL across every selected interface in parallel.")
-
-            Button { vm.addCurrentToQueue() } label: {
-                Label("Queue", systemImage: "line.3.horizontal.decrease.circle.fill")
-            }
-            .keyboardShortcut("q", modifiers: [.command, .shift])
-            .disabled(vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty)
-            .help("Add to queue (⌘⇧Q). Runs when the current download finishes.")
-
             if vm.isRunning {
                 Button(role: .destructive) { vm.cancelAll() } label: {
                     Label("Cancel All", systemImage: "stop.fill")
@@ -299,19 +281,43 @@ struct DownloadView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
+                    .keyboardShortcut(.return)
                     .disabled(vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty
                               || vm.isRunning)
+                    .help("Start download now (⏎). Pulls the URL across every selected interface in parallel.")
                     Button { vm.addCurrentToQueue() } label: {
                         Label("Add to queue",
                               systemImage: "line.3.horizontal.decrease.circle.fill")
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.large)
+                    .keyboardShortcut("q", modifiers: [.command, .shift])
                     .disabled(vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .help("Add to queue (⌘⇧Q). Runs when the current download finishes.")
                     Spacer()
                     if vm.isRunning {
                         StatusPill(text: "RUNNING", style: .info)
                     }
+                }
+                // v0.46 fix: previously the form error banner (bad
+                // URL, probe failure, etc.) was rendered far below
+                // the card — often off-screen when the active-jobs
+                // list was empty, so a 404 probe looked like "I
+                // clicked Start and nothing happened." Move the
+                // banner INLINE here so it appears directly under
+                // the button the user just clicked.
+                if let err = vm.formErrorMessage {
+                    HStack(spacing: 6) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.red)
+                        Text(err).font(.callout)
+                    }
+                    .padding(10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color.red.opacity(0.08))
+                    )
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
                 HStack(spacing: 8) {
                     Image(systemName: "folder").foregroundStyle(.secondary)

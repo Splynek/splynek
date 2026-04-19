@@ -49,7 +49,14 @@ final class LaneStats: ObservableObject, Identifiable {
         window.append((now, Int64(n)))
         let cutoff = now.addingTimeInterval(-1.0)
         while let first = window.first, first.0 < cutoff { window.removeFirst() }
-        let span = max(now.timeIntervalSince(window.first?.0 ?? now), 0.001)
+        // v0.46 fix: clamp the divisor to 0.5 s minimum. Previous
+        // 0.001 s clamp produced fantasy "5 GB/s" flashes whenever a
+        // fresh chunk landed before the 1-second trailing window
+        // could fill — dividing a real 1 MB transfer by a 2 ms span.
+        // The 0.5 s floor means the reported throughput can briefly
+        // under-shoot reality by ~2× for the first 500 ms, but it
+        // never over-shoots into impossible territory.
+        let span = max(now.timeIntervalSince(window.first?.0 ?? now), 0.5)
         throughputBps = Double(window.reduce(0) { $0 + $1.1 }) / span
     }
 

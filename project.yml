@@ -43,8 +43,8 @@ settings:
     DEVELOPMENT_TEAM: 58C6YC5GB5
     MACOSX_DEPLOYMENT_TARGET: "13.0"
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "0.44"
-    CURRENT_PROJECT_VERSION: "44"
+    MARKETING_VERSION: "0.46"
+    CURRENT_PROJECT_VERSION: "46"
     ENABLE_HARDENED_RUNTIME: "YES"
     CODE_SIGN_STYLE: Automatic
     PRODUCT_BUNDLE_IDENTIFIER: app.splynek.Splynek
@@ -99,15 +99,21 @@ targets:
         CFBundleDocumentTypes:
           - CFBundleTypeName: BitTorrent metainfo
             CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
             LSItemContentTypes: [org.bittorrent.torrent]
             CFBundleTypeExtensions: [torrent]
           - CFBundleTypeName: Metalink
             CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
             CFBundleTypeExtensions: [metalink, meta4]
     settings:
       base:
         PRODUCT_NAME: Splynek
-        CODE_SIGN_IDENTITY: "Apple Development"
+        # No CODE_SIGN_IDENTITY override — with automatic signing,
+        # Xcode picks "Apple Development" for build and
+        # "Developer ID Application" for archive (requires that cert
+        # to exist in the keychain). Manual override conflicts with
+        # automatic signing style.
 
   # ===================================================================
   # Splynek-MAS — App Store build.
@@ -168,10 +174,12 @@ targets:
         CFBundleDocumentTypes:
           - CFBundleTypeName: BitTorrent metainfo
             CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
             LSItemContentTypes: [org.bittorrent.torrent]
             CFBundleTypeExtensions: [torrent]
           - CFBundleTypeName: Metalink
             CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
             CFBundleTypeExtensions: [metalink, meta4]
         # Export compliance: HMAC + TLS are both exempt under
         # BIS 740.17(b)(3)(i). Declare once to skip the per-release
@@ -181,7 +189,10 @@ targets:
       base:
         PRODUCT_NAME: Splynek
         CODE_SIGN_ENTITLEMENTS: Resources/Splynek-MAS.entitlements
-        CODE_SIGN_IDENTITY: "Apple Distribution"
+        # CODE_SIGN_IDENTITY is NOT set — automatic signing picks
+        # "Apple Distribution" for archive actions, "Apple
+        # Development" for regular builds. Manual override here
+        # breaks automatic provisioning.
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: MAS_BUILD
         # StoreKit local-test config. Simulates the $29 IAP without
         # submitting to App Store Connect. Drop to test against the

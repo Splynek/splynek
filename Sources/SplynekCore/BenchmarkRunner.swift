@@ -110,10 +110,11 @@ final class BenchmarkRunner: ObservableObject {
 
     private func icon(for kind: DiscoveredInterface.Kind) -> String {
         switch kind {
-        case .wifi:     return "wifi"
-        case .ethernet: return "cable.connector"
-        case .cellular: return "antenna.radiowaves.left.and.right"
-        case .other:    return "network"
+        case .wifi:      return "wifi"
+        case .ethernet:  return "cable.connector"
+        case .cellular:  return "antenna.radiowaves.left.and.right"
+        case .iPhoneUSB: return "iphone"
+        case .other:     return "network"
         }
     }
 
