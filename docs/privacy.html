@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Splynek — Privacy Policy</title>
+  <meta name="description" content="Splynek collects nothing. No accounts, no telemetry, no crash reports. Every byte of user data stays on the user's Mac.">
+  <meta name="theme-color" content="#0F1A3D">
+  <link rel="icon" type="image/png" href="icon-256.png">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0B1128; --panel: #151C36; --border: rgba(255,255,255,0.08);
+      --text: #ECEFF9; --muted: #8891B0; --accent: #5ADCA5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+      background: radial-gradient(ellipse at 50% -10%, #1A2345 0%, var(--bg) 50%) no-repeat fixed;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    main { max-width: 700px; margin: 0 auto; padding: 64px 24px; }
+    h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.5px; margin: 0 0 8px; }
+    h2 { font-size: 22px; margin-top: 44px; margin-bottom: 12px; }
+    p, li { color: var(--muted); font-size: 16px; }
+    strong { color: var(--text); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .lede {
+      font-size: 18px;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin: 24px 0 32px;
+    }
+    .meta { font-size: 13px; color: var(--muted); margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+    .nav { font-size: 14px; margin-bottom: 40px; }
+    .nav a { color: var(--muted); }
+    .nav a:hover { color: var(--accent); }
+    code {
+      font-family: "SF Mono", ui-monospace, Menlo, monospace;
+      background: rgba(255,255,255,0.06);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <nav class="nav"><a href="/">← Splynek</a></nav>
+    <h1>Privacy Policy</h1>
+
+    <p class="lede">
+      Splynek collects nothing about you. No accounts, no telemetry, no
+      crash reports, no analytics, no phone-home. Every byte of
+      information about what you download and when lives on your Mac,
+      full stop.
+    </p>
+
+    <h2>What this means concretely</h2>
+    <p>When you use Splynek:</p>
+    <ul>
+      <li>No tracking pixels, no web analytics, no heartbeat pings.</li>
+      <li>No account creation, no login, no email address collection.</li>
+      <li>No crash reports — Splynek doesn't use Crashlytics, Sentry, App Center, or any similar service.</li>
+      <li>No server of ours sees which URLs you download, how fast, from where, or at what time.</li>
+      <li>Download history, queue, preferences, session snapshots, and license state are stored exclusively in local files under <code>~/Library/Application Support/Splynek/</code> (or the App Store build's sandbox container at <code>~/Library/Containers/app.splynek.Splynek/</code>).</li>
+    </ul>
+
+    <h2>What Splynek does talk to</h2>
+    <p>Splynek is a download manager, so by design it makes outbound network connections. Specifically:</p>
+    <ul>
+      <li><strong>The URLs you tell it to download.</strong> Splynek connects directly to those origin servers. Nothing is proxied through Splynek's servers (we don't run any).</li>
+      <li><strong>BitTorrent trackers and peers</strong> for torrents you add. Standard BitTorrent protocol traffic.</li>
+      <li><strong>Cloudflare DNS (1.1.1.1)</strong> if you enable DNS-over-HTTPS in Settings. Off by default.</li>
+      <li><strong>Bonjour / mDNS</strong> on your LAN if you enable Fleet (localhost-scoped in the free tier, LAN-scoped in Pro).</li>
+      <li><strong>Local Ollama daemon</strong> (<code>http://localhost:11434</code>) for Pro AI features. Loopback only; never leaves your machine. If you don't install Ollama, the AI features display an "install Ollama to enable" message — no network traffic at all.</li>
+      <li><strong>Apple's App Store / StoreKit servers</strong> for In-App Purchase processing (MAS build only). Handled entirely by Apple; we see no payment details, no email, no name.</li>
+    </ul>
+
+    <h2>What's in your local data</h2>
+    <p>Splynek writes a few small JSON files under its app-support directory. They're yours and never leave your Mac unless you copy them out:</p>
+    <ul>
+      <li><code>history.json</code> — completed downloads (URL, output path, SHA-256, bytes per interface, duration). Capped at 500 entries.</li>
+      <li><code>queue.json</code> — persistent download queue.</li>
+      <li><code>session.json</code> — in-progress jobs for crash recovery.</li>
+      <li><code>host-usage.json</code> — per-hostname bytes-today tally.</li>
+      <li><code>cellular-budget.json</code> — daily cellular byte budget.</li>
+      <li><code>dht-routing.json</code> — BitTorrent DHT routing table (200 most-recent good nodes).</li>
+      <li><code>fleet.json</code> — Fleet coordinator descriptor (REST port + token).</li>
+      <li>Per-download sidecar files: <code>&lt;downloaded-file&gt;.splynek</code> — manifest with hash + interface split.</li>
+    </ul>
+    <p>Delete these files any time. Splynek rebuilds fresh state on next launch.</p>
+
+    <h2>Source code transparency</h2>
+    <p>The entire free-tier source code is MIT-licensed and public at <a href="https://github.com/Splynek/splynek">github.com/Splynek/splynek</a>. You can verify every network call Splynek makes by reading the code — <code>grep -rn URLSession Sources/</code> surfaces all of it in under a second.</p>
+    <p>The Pro-tier modules (AI Concierge, Recipes, Scheduling, LAN-exposed Fleet) are closed-source and ship only in the Mac App Store build, but they follow the same rule: zero telemetry, loopback-only AI, StoreKit-only payment.</p>
+
+    <h2>In-App Purchase — handled by Apple, not us</h2>
+    <p>If you buy Splynek Pro through the Mac App Store, Apple processes the payment. We receive a signed receipt from Apple confirming the purchase; we never see your credit card, your Apple ID email, or any other identifying information. Apple's own <a href="https://www.apple.com/legal/privacy/">privacy policy</a> covers their side.</p>
+
+    <h2>Children</h2>
+    <p>Splynek is not directed at children under 13. We don't knowingly collect any information from anyone (the policy applies to everyone), but this is the required disclosure.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes, the date below updates and the commit history at <a href="https://github.com/Splynek/splynek/commits/main/docs/privacy.html">github.com/Splynek/splynek</a> shows the diff — every change is tracked publicly.</p>
+
+    <h2>Contact</h2>
+    <p>Questions? <a href="mailto:support@splynek.app">support@splynek.app</a>.</p>
+
+    <p class="meta">Last updated: 2026-04-19 · <a href="https://github.com/Splynek/splynek/commits/main/docs/privacy.html">View revision history</a></p>
+  </main>
+</body>
+</html>

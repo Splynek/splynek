@@ -3,6 +3,59 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v0.45 — MAS build infrastructure (2026-04-19)
+
+- **Xcode project** (`project.yml` → `xcodegen generate` → `Splynek.xcodeproj`)
+  with two targets: `Splynek` (DMG) + `Splynek-MAS` (sandboxed).
+- **Direct-source compilation** in the MAS target: excludes stubs,
+  includes sibling private `splynek-pro/Sources/SplynekPro/`. No
+  cross-module public-access refactor needed.
+- **Sandbox entitlements** (`Resources/Splynek-MAS.entitlements`):
+  app-sandbox + network.client + network.server + file pickers +
+  bookmarks.app-scope.
+- **StoreKit 2 LicenseManager** (in splynek-pro): replaces HMAC with
+  Apple-enforced IAP. `Transaction.updates` listener; refund-aware;
+  offline-usable via cached entitlements.
+- **MAS-specific Pro card** in SettingsView (`#if MAS_BUILD`):
+  StoreKit "Buy — $29" + "Restore Purchase" replace the email+key form.
+  DMG build's free-tier card now points at the Mac App Store.
+- **`#if !MAS_BUILD` guards** on `GlobalHotkey` + `UpdateChecker` —
+  both rejected for MAS sandbox; no-op stubs keep call sites clean.
+- **Local StoreKit test config** (`Resources/Splynek.storekit`)
+  simulates the $29 IAP for dev without submitting to ASC.
+- **`Scripts/build-mas.sh`** — one-command MAS archive build with
+  prerequisite checks + `Scripts/export-options-mas.plist`.
+- **New docs pages**: `docs/support.html`, `docs/privacy.html`,
+  `docs/pro.html`. Required URLs for ASC submission.
+- **`MAS_LISTING.md`** — copy-paste ASC submission material: 2.2k-char
+  description, keywords, review notes, privacy labels, 15-item
+  submission checklist.
+- Three build paths all pass 117 tests: SPM, Xcode DMG, Xcode MAS.
+
+MAS v1 limitations (tracked for v0.46+): no global hotkey, no
+`splynek-cli` helper, no self-update banner, no DMG→MAS data
+migration on first launch. DMG users keep all four.
+
+## v0.44 — Public/private split (2026-04-18)
+
+- **Pro code moved to private `Splynek/splynek-pro` repo**: closes
+  the bypass vector where anyone could clone the MIT repo and edit
+  `isPro = true`. Future Pro features land in the private repo.
+- Moved: `LicenseManager`, `AIConcierge`, `AIAssistant`,
+  `DownloadRecipe`, `DownloadSchedule`, `ConciergeView`,
+  `RecipeView`, `ProLockedView`, `Scripts/gen-license.py`,
+  4 test suites.
+- **`Sources/SplynekCore/ProStubs.swift`** provides API-compatible
+  free-tier stubs: `isPro` always false, AI methods throw,
+  schedule always `.allowed`, recipe store is empty no-op.
+- Public build compiles identically against stubs; MAS build swaps
+  them for real implementations at Xcode-target-exclusion level.
+- **`splynek-pro/SANDBOX_AUDIT.md`** — six code changes needed for
+  MAS review (global hotkey, CLI, Fleet entitlement, data migration,
+  watched folder bookmarks, UpdateChecker).
+- Tests: 165 → 117 (48 moved to private repo).
+- DMG: 2.5 MB → 2.3 MB (~1,400 LOC lighter).
+
 ## v0.43 — QA pass (2026-04-18)
 
 - **P1**: Assistant + Recipes tabs wedged NavigationSplitView (blank

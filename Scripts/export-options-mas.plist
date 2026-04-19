@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Export options for the Mac App Store build.
+
+  Used by:
+      xcodebuild -exportArchive \
+          -archivePath build/Splynek-MAS.xcarchive \
+          -exportPath build/Splynek-MAS-Export \
+          -exportOptionsPlist Scripts/export-options-mas.plist
+
+  Produces a `.pkg` ready for `xcrun altool --upload-package` or
+  Transporter. Team ID must match the Apple Distribution certificate
+  used to sign the archive.
+
+  For the Developer-ID notarised DMG flow, use a separate
+  export-options plist with `method = developer-id` — not this one.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>app-store-connect</string>
+
+    <key>teamID</key>
+    <string>58C6YC5GB5</string>
+
+    <!-- Uploads straight to ASC when true; false produces a local
+         .pkg you upload manually via Transporter or altool. -->
+    <key>uploadToAppStore</key>
+    <false/>
+
+    <!-- Automatic signing; picks the "Apple Distribution" cert
+         associated with the TeamID above. -->
+    <key>signingStyle</key>
+    <string>automatic</string>
+
+    <!-- Destination: App Store. -->
+    <key>destination</key>
+    <string>export</string>
+
+    <!-- Whether to strip debug symbols from the IPA/PKG. Keep them —
+         ASC uses them for crash symbolication when we enable it
+         post-launch. (Enabling crash symbolication is opt-in in ASC
+         and does not equal telemetry — Apple aggregates crashes
+         across all users; we never see individual reports.) -->
+    <key>stripSwiftSymbols</key>
+    <false/>
+</dict>
+</plist>

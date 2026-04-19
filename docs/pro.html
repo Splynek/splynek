@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Splynek Pro — $29, one-time, lifetime updates</title>
+  <meta name="description" content="Splynek Pro unlocks the AI Concierge, Agentic Download Recipes, Scheduled Downloads, and LAN-accessible mobile-phone pairing. $29 one-time via the Mac App Store.">
+  <meta property="og:title" content="Splynek Pro">
+  <meta property="og:description" content="$29 one-time. Lifetime 0.x updates. Unlocks AI + scheduling + phone pairing.">
+  <meta name="theme-color" content="#0F1A3D">
+  <link rel="icon" type="image/png" href="icon-256.png">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0B1128; --panel: #151C36; --border: rgba(255,255,255,0.08);
+      --text: #ECEFF9; --muted: #8891B0; --accent: #5ADCA5; --accent-dk: #2FBC85;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+      background: radial-gradient(ellipse at 50% -10%, #1A2345 0%, var(--bg) 50%) no-repeat fixed;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+    main { max-width: 780px; margin: 0 auto; padding: 64px 24px; }
+    h1 { font-size: 48px; font-weight: 700; letter-spacing: -1px; margin: 0 0 10px; }
+    h2 { font-size: 24px; margin: 44px 0 12px; }
+    h3 { font-size: 17px; margin: 0 0 6px; }
+    p, li { color: var(--muted); font-size: 16px; }
+    strong { color: var(--text); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .nav { font-size: 14px; margin-bottom: 40px; }
+    .nav a { color: var(--muted); }
+    .price {
+      font-size: 20px; color: var(--accent);
+      margin: 0 0 32px; font-weight: 600;
+    }
+    .cta {
+      display: inline-block;
+      background: var(--accent);
+      color: #062013 !important;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 10px;
+      margin: 12px 0 8px;
+      text-decoration: none !important;
+      font-size: 17px;
+    }
+    .cta:hover { background: var(--accent-dk); }
+    .cta.secondary {
+      background: transparent;
+      color: var(--text) !important;
+      border: 1px solid var(--border);
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .feature {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .feature h3 { color: var(--text); }
+    .feature p { margin: 6px 0 0; font-size: 14px; }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 3px 7px;
+      background: rgba(90,220,165,0.12);
+      color: var(--accent);
+      border-radius: 4px;
+      vertical-align: 2px;
+      margin-left: 6px;
+    }
+    .faq-item {
+      border-top: 1px solid var(--border);
+      padding: 18px 0;
+    }
+    .faq-item:last-child { border-bottom: 1px solid var(--border); }
+    .faq-item p { margin: 6px 0 0; }
+  </style>
+</head>
+<body>
+  <main>
+    <nav class="nav"><a href="/">← Splynek</a></nav>
+
+    <h1>Splynek Pro</h1>
+    <p class="price">$29 one-time · Lifetime 0.x updates · Mac App Store only</p>
+
+    <p style="font-size: 18px; color: var(--text);">
+      Splynek's free core — multi-interface downloads, BitTorrent,
+      queue, history, Live dashboard, the whole transport layer — is
+      MIT-licensed and stays free forever. Pro unlocks four features
+      that use the same transport for more ambitious workflows.
+    </p>
+
+    <a class="cta" href="https://apps.apple.com/app/splynek">Get Splynek Pro on the Mac App Store</a>
+
+    <p style="font-size: 13px;">
+      Not live yet? The MAS listing goes live with v0.45. In the meantime,
+      <a href="https://github.com/Splynek/splynek/releases">download the free DMG</a>.
+    </p>
+
+    <h2>What's in the $29 tier</h2>
+
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>AI Concierge <span class="badge">LOCAL</span></h3>
+        <p>
+          Chat-first control for Splynek. Type "download the latest
+          Firefox," "find that iOS SDK I grabbed in January," or
+          "cancel everything" — the local LLM routes it to the right
+          action. Powered by Ollama on your Mac; no cloud, no
+          round-trip, no data leaves your machine.
+        </p>
+      </div>
+
+      <div class="feature">
+        <h3>Agentic Recipes <span class="badge">LOCAL</span></h3>
+        <p>
+          Type a plain-English goal — "set up my Mac for iOS dev,"
+          "mirror the latest Ubuntu release" — and the local LLM
+          proposes a multi-item download plan. Review, uncheck items
+          you don't want, queue the rest in one click.
+        </p>
+      </div>
+
+      <div class="feature">
+        <h3>Scheduled Downloads</h3>
+        <p>
+          Restrict starts to time windows (e.g., overnight on home
+          Wi-Fi), weekdays, and cellular-off rules. Running downloads
+          are never interrupted — the schedule only gates starts.
+          Waiting queue entries show a "WAITING · next opening 2h" pill.
+        </p>
+      </div>
+
+      <div class="feature">
+        <h3>Phone Pairing <span class="badge">LAN</span></h3>
+        <p>
+          Scan a QR code with your phone to pair it to this Mac over
+          the LAN. Submit download URLs from your phone; Splynek does
+          the actual download on your Mac. Your phone stays fast; the
+          download doesn't touch its battery or tether quota.
+        </p>
+      </div>
+    </div>
+
+    <h2>Pricing rationale</h2>
+    <p>
+      <strong>$29 once.</strong> Not $5/month. Not $29/year. You pay once and the app keeps working. New features on the 0.x line ship free to existing Pro users.
+    </p>
+    <p>
+      <strong>No enforcement via honour system.</strong> v0.33–v0.43 shipped Pro with an HMAC gate and a publicly-readable secret in the source — effectively honour-system. We acknowledged that and fixed it in v0.44/v0.45: the Pro modules are now closed-source and gated by Apple's StoreKit receipt check. The $29 is real.
+    </p>
+    <p>
+      <strong>Free tier still covers 80% of users.</strong> If all you want is a download manager that saturates every NIC you've got plus torrents, use the DMG. It's free. Support the dev by <a href="https://github.com/Splynek/splynek">starring the repo</a> and telling friends.
+    </p>
+
+    <h2>Frequently asked</h2>
+
+    <div class="faq-item">
+      <h3>Does Splynek Pro phone home?</h3>
+      <p>No. Like the free tier, every AI feature runs locally via Ollama. The REST API on your LAN only talks to phones you've paired via QR. No analytics, no crash reports, no telemetry. See the <a href="/privacy">privacy policy</a>.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Do I need Ollama?</h3>
+      <p>Only for the two AI features (Concierge + Recipes). Scheduling and Phone Pairing work without Ollama. Ollama is free, one-command install from <a href="https://ollama.com/download">ollama.com</a>; Splynek auto-detects it.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Is this a subscription?</h3>
+      <p>No. One-time $29, non-consumable Mac App Store In-App Purchase. If you stop updating, what you paid for keeps working forever — Apple doesn't revoke purchased apps.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>What if I want a refund?</h3>
+      <p>Request it directly from Apple — <strong>App Store → your profile → Purchased → Report a Problem</strong> next to Splynek. Apple usually approves refunds within 24 hours.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Will you add a cloud-AI version for folks without Ollama?</h3>
+      <p>No current plans. Local-only is a feature, not a limitation — it keeps your download history off every LLM vendor's training set. If Ollama's install flow is blocking you, tell us via <a href="mailto:support@splynek.app">email</a> — we can ship better onboarding.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Do the v0.33–v0.43 HMAC keys still work?</h3>
+      <p>No. The v0.44 split removed HMAC validation; Pro is StoreKit-only from v0.45 forward. If you were a friend/early tester who got an HMAC key and bought the MAS version, email us — we'll waive the $29.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Family Sharing?</h3>
+      <p>Splynek Pro is <strong>not</strong> Family Share-enabled in v1. One key per Apple ID. We may revisit if asked.</p>
+    </div>
+
+    <p style="margin-top: 48px;">
+      Still have questions? <a href="/support">Support page</a> or email <a href="mailto:support@splynek.app">support@splynek.app</a>.
+    </p>
+  </main>
+</body>
+</html>
