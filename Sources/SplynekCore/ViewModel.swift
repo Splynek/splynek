@@ -1250,6 +1250,26 @@ final class SplynekViewModel: ObservableObject {
         DownloadQueue.save(queue)
     }
 
+    /// v0.47: bulk "retry every failed/cancelled entry" — flips each
+    /// one back to .pending and kicks the queue runner. Saves users
+    /// from clicking through the per-row 3-dots menu when many
+    /// entries failed at once (e.g., after a Wi-Fi blip).
+    func retryAllFailed() {
+        var changed = false
+        for i in queue.indices {
+            if queue[i].status == .failed || queue[i].status == .cancelled {
+                queue[i].status = .pending
+                queue[i].errorMessage = nil
+                queue[i].startedAt = nil
+                queue[i].finishedAt = nil
+                changed = true
+            }
+        }
+        guard changed else { return }
+        DownloadQueue.save(queue)
+        if !isRunning, !isTorrenting { runNextInQueue() }
+    }
+
     // MARK: Queue export / import
 
     /// Write the current queue (pending + finished) to a JSON file the user

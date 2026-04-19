@@ -50,22 +50,107 @@ struct QueueView: View {
     }
 
     private var summaryCard: some View {
-        let pending = vm.queue.filter { $0.status == .pending }.count
-        let running = vm.queue.filter { $0.status == .running }.count
-        let done = vm.queue.filter { $0.status == .completed }.count
-        let failed = vm.queue.filter { $0.status == .failed }.count
-        // QA P2 #6 (v0.43): `chart.bar` reads as Wi-Fi signal
-        // strength at small sizes. `rectangle.stack.badge.person.crop`
-        // is too thematic; `list.clipboard` conveys "queue summary"
-        // without the signal-bars ambiguity.
+        // v0.47 redesign. Prior version was four bare MetricViews in
+        // a row — readable but visually flat, no sense of scale,
+        // and no way to act on the numbers. New layout:
+        //   Top    — total count, large, with a subtitle line that
+        //            switches between "idle" and "running" language.
+        //   Middle — four status pills with coloured dots.
+        //   Bottom — contextual bulk-action buttons (Retry all
+        //            failed, Clear finished). Only show when useful.
+        let total     = vm.queue.count
+        let pending   = vm.queue.filter { $0.status == .pending }.count
+        let running   = vm.queue.filter { $0.status == .running }.count
+        let done      = vm.queue.filter { $0.status == .completed }.count
+        let failed    = vm.queue.filter { $0.status == .failed }.count
+        let cancelled = vm.queue.filter { $0.status == .cancelled }.count
+        let finishedTotal = done + failed + cancelled
         return TitledCard(title: "Summary", systemImage: "list.clipboard") {
-            HStack(spacing: 24) {
-                MetricView(value: "\(running)", caption: "Running", tint: .accentColor)
-                MetricView(value: "\(pending)", caption: "Pending")
-                MetricView(value: "\(done)", caption: "Done", tint: .green)
-                MetricView(value: "\(failed)", caption: "Failed", tint: failed > 0 ? .red : .primary)
-                Spacer()
+            VStack(alignment: .leading, spacing: 14) {
+                // Hero line
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    Text("\(total)")
+                        .font(.system(size: 40, weight: .semibold, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(.primary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(total == 1 ? "entry" : "entries")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                        Text(summarySubtitle(running: running, pending: pending, finished: finishedTotal))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+
+                // Status dots + counts
+                HStack(spacing: 14) {
+                    statusTag(count: running,   label: "Running",   color: .accentColor)
+                    statusTag(count: pending,   label: "Pending",   color: .secondary)
+                    statusTag(count: done,      label: "Done",      color: .green)
+                    statusTag(count: failed,    label: "Failed",    color: .red)
+                    if cancelled > 0 {
+                        statusTag(count: cancelled, label: "Cancelled", color: .orange)
+                    }
+                    Spacer()
+                }
+
+                // Action bar — only render if there's something to do.
+                let failureCount = failed + cancelled
+                if failureCount > 0 || finishedTotal > 0 {
+                    Divider().opacity(0.3)
+                    HStack(spacing: 10) {
+                        if failureCount > 0 {
+                            Button {
+                                vm.retryAllFailed()
+                            } label: {
+                                Label("Retry \(failureCount) failed", systemImage: "arrow.clockwise")
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                            .help("Re-queue every failed or cancelled entry. Runs immediately if nothing else is running.")
+                        }
+                        if finishedTotal > 0 {
+                            Button(role: .destructive) {
+                                vm.clearFinishedQueue()
+                            } label: {
+                                Label("Clear \(finishedTotal) finished", systemImage: "trash")
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                            .help("Remove every completed, failed, and cancelled entry. Running and pending entries are kept.")
+                        }
+                        Spacer()
+                    }
+                }
             }
+        }
+    }
+
+    /// One-liner narrating queue state beneath the big total.
+    private func summarySubtitle(running: Int, pending: Int, finished: Int) -> String {
+        if running > 0 && pending > 0 { return "Running \(running), \(pending) queued." }
+        if running > 0                { return "Running \(running) right now." }
+        if pending > 0                { return "\(pending) waiting to start." }
+        if finished > 0               { return "All clear — \(finished) finished." }
+        return "Empty. Paste a URL on the Downloads tab to queue one."
+    }
+
+    /// Compact status "dot + count + label" chip.
+    @ViewBuilder
+    private func statusTag(count: Int, label: String, color: Color) -> some View {
+        HStack(spacing: 6) {
+            Circle()
+                .fill(count > 0 ? color : color.opacity(0.25))
+                .frame(width: 8, height: 8)
+            Text("\(count)")
+                .font(.system(.callout, design: .rounded, weight: .semibold))
+                .monospacedDigit()
+                .foregroundStyle(count > 0 ? .primary : .secondary)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 

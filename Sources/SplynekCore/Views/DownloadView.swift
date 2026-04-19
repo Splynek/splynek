@@ -608,6 +608,22 @@ struct DownloadView: View {
         return "\(s / 86_400)d"
     }
 
+    /// v0.47: label text + an adjacent info ⓘ icon whose hover
+    /// tooltip explains what the option does. For non-techie users
+    /// who look at "Connections per interface" or "Per-interface DoH"
+    /// and don't know what those mean.
+    @ViewBuilder
+    private func labelWithInfo(_ text: String, tooltip: String) -> some View {
+        HStack(spacing: 4) {
+            Text(text)
+                .font(.caption).foregroundStyle(.secondary)
+            Image(systemName: "info.circle")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary.opacity(0.6))
+                .help(tooltip)
+        }
+    }
+
     @ViewBuilder
     private func inputRow(
         icon: String, placeholder: String,
@@ -641,29 +657,36 @@ struct DownloadView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 20) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Connections per interface")
-                            .font(.caption).foregroundStyle(.secondary)
+                        labelWithInfo(
+                            "Connections per interface",
+                            tooltip: "How many parallel HTTP connections to open per network interface. More = higher peak throughput, but also more load on origin servers. 1–2 is polite; 4–6 is aggressive."
+                        )
                         Stepper(value: $vm.connectionsPerInterface, in: 1...8) {
                             Text("\(vm.connectionsPerInterface)")
                                 .font(.system(.body, design: .monospaced))
                                 .frame(width: 24, alignment: .leading)
                         }
+                        .help("Set the per-interface parallel-connection count.")
                     }
                     Divider().frame(height: 36)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Max concurrent downloads")
-                            .font(.caption).foregroundStyle(.secondary)
+                        labelWithInfo(
+                            "Max concurrent downloads",
+                            tooltip: "The most downloads Splynek will run at the same time. Extra URLs queue up and start as slots free. Keep low if your link is thin; higher is fine on a fat pipe."
+                        )
                         Stepper(value: $vm.maxConcurrentDownloads, in: 1...10) {
                             Text("\(vm.maxConcurrentDownloads)")
                                 .font(.system(.body, design: .monospaced))
                                 .frame(width: 24, alignment: .leading)
                         }
+                        .help("Set the concurrent-download cap.")
                     }
                     Divider().frame(height: 36)
                     Toggle(isOn: $vm.useDoH) {
                         Label("Per-interface DoH", systemImage: "lock.shield")
                     }
                     .toggleStyle(.switch)
+                    .help("DNS-over-HTTPS, per interface. Each lane resolves hostnames through Cloudflare (1.1.1.1) using encrypted DNS over the same interface it downloads through — prevents DNS leaks across networks and keeps your ISP from seeing which hosts you query. Slight latency penalty on first request.")
                     Spacer()
                 }
 
@@ -678,20 +701,24 @@ struct DownloadView: View {
                         Label("Load Metalink…", systemImage: "square.stack.3d.up")
                     }
                     .buttonStyle(.bordered)
+                    .help("Load a .metalink / .meta4 file — an XML list of mirror URLs + checksums. Splynek fans the download across every mirror in parallel, one per interface, and verifies against the checksum when done. Common on Linux distros.")
                     if !vm.mirrors.isEmpty {
                         StatusPill(text: "\(vm.mirrors.count) MIRRORS", style: .info)
                         Button("Clear") { vm.clearMirrors() }
                             .buttonStyle(.borderless).controlSize(.small)
+                            .help("Drop the mirror list and fall back to the single URL above.")
                     }
                     Divider().frame(height: 20)
                     Button { vm.loadMerkleManifest() } label: {
                         Label("Load Merkle…", systemImage: "checkmark.seal")
                     }
                     .buttonStyle(.bordered)
+                    .help("Load a .splynek-manifest with a precomputed Merkle tree of the file's contents. Splynek verifies each chunk against its expected leaf hash on arrival — any corrupted byte triggers a re-fetch inline, without waiting for a full-file SHA-256 at the end.")
                     if let m = vm.merkleManifest {
                         StatusPill(text: "\(m.leafHexes.count) LEAVES", style: .success)
                         Button("Clear") { vm.clearMerkleManifest() }
                             .buttonStyle(.borderless).controlSize(.small)
+                            .help("Drop the Merkle manifest and fall back to end-of-file SHA-256 verification (or none if unset).")
                     }
                     Spacer()
                 }
