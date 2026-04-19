@@ -3,6 +3,71 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v0.47 — P3 polish + tooltips pass (2026-04-19)
+
+- **Queue → Summary card redesigned.** Hero count (40pt) + state-
+  aware subtitle + colour-dot pills + contextual action bar
+  (Retry all failed / Clear finished). New `vm.retryAllFailed()`
+  method saves click-through after Wi-Fi blips kill a batch.
+- **Tooltips pass** — 12 new `.help()` strings on jargon controls.
+  "Connections per interface" + ⓘ icon explains the 1–8 trade-off.
+  "Per-interface DoH" gets a full paragraph on what DNS-over-HTTPS-
+  per-interface actually buys. Metalink / Merkle buttons explain
+  file-format semantics.
+- **New `labelWithInfo(_:tooltip:)` helper** in DownloadView —
+  caption label + small ⓘ icon with hover tooltip. Drop-in for
+  future tooltip additions.
+- **Dev-override flag for Pro audit.** `splynekDevProUnlocked`
+  UserDefaults key bypasses the StoreKit gate in
+  splynek-pro/LicenseManager. Lets reviewers + QA test Pro features
+  without a real $29 sandbox IAP. Documented in ASC review notes.
+
+## v0.46 — P1 + P2 pre-submission QA (2026-04-19)
+
+P1 bugs (would have earned an App Review rejection):
+
+- **Pause no longer looks cancelled.** Clear errorMessage on the
+  paused branch of `DownloadJob.settleAfterRun()`.
+- **Phase resets on pause/cancel.** `progress.phase = .pending` on
+  every non-completed exit.
+- **Trash icon works on paused jobs.** `removeJob()` cancels the
+  engine inline and removes regardless of isActive state.
+- **Bad-URL error visible.** Moved inline into Source card, below
+  Start button. Probe errors get human-actionable hints
+  ("HTTP 404 — the file doesn't exist at that URL.").
+- **Throughput no longer fantasy GB/s.** Clamped LaneStats window
+  divisor to 0.5 s minimum (was 0.001 s).
+
+P2 polish:
+
+- **Phase pills readable.** Icon-only for past/future, icon + label
+  for current; `.help()` tooltip on every pill.
+- **iPhone USB tether detected + labeled.** New `.iPhoneUSB`
+  interface Kind, detected by 172.20.10.0/28 IP range. Icon
+  `iphone`, label `iPhone`, cyan tint. Metered for cellular budget.
+- **Wi-Fi icon blue (was yellow).** Matches macOS Wi-Fi styling.
+- **Queue 3-dots menu enriched.** Retry / Open URL / Copy URL /
+  Remove per state (previously often one item → looked empty).
+- **Duplicate Start/Queue toolbar buttons removed.** Keyboard
+  shortcuts moved to the Source card buttons.
+- **Benchmark Run button surfaced inline.** Below the target URL,
+  not tucked in the toolbar.
+- **History row actions 3 → 2 icons.** Details + Reveal; Quick Look
+  in context menu only.
+- **Fleet per-file "Stop sharing"** button + persisted exclusion
+  list + "Restore all" link.
+- **About logo shrunk** 128 → 88 px.
+
+Notarisation shipped:
+
+- Apple Distribution + Developer ID Application certificates in
+  keychain.
+- `notarytool` keychain profile `AC_PASSWORD` set up.
+- DMG re-signed with Developer ID, notarised, stapled, uploaded as
+  the GitHub Release asset. No more right-click-to-open dance.
+- MAS .pkg built + Apple-Distribution-signed + uploadable via
+  Xcode Organizer.
+
 ## v0.45 — MAS build infrastructure (2026-04-19)
 
 - **Xcode project** (`project.yml` → `xcodegen generate` → `Splynek.xcodeproj`)

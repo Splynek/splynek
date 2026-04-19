@@ -23,6 +23,174 @@ Install system-wide:
 cp -R build/Splynek.app /Applications/
 ```
 
+## What's new in v0.47 (P3 polish — Queue Summary redesign + tooltips pass)
+
+v0.46 shipped the urgent-bug + polish pass. v0.47 is the deliberate-
+polish round: the last batch of user-QA feedback that didn't make
+the P1/P2 cut, plus a tooltips sweep on the jargon-heavy controls
+that scare off non-technical buyers.
+
+### Queue → Summary card redesigned
+
+The old layout (four bare MetricViews in a row) read as visually
+flat and gave no sense of scale. New layout:
+
+- **Hero line** — 40pt rounded-display total count + state-aware
+  subtitle. The subtitle swaps between "Running 2, 3 queued." /
+  "Running 1 right now." / "5 waiting to start." / "All clear — 5
+  finished." / "Empty. Paste a URL on Downloads."
+- **Status pills** — coloured dot + count + label for each state
+  (Running / Pending / Done / Failed). Cancelled only shows up when
+  non-zero so the card isn't permanently five-columned.
+- **Bulk-action bar** — **Retry all failed** + **Clear finished**
+  appear contextually. Tooltip on each explains the exact behaviour.
+  Backed by a new `vm.retryAllFailed()` method that flips every
+  failed/cancelled entry back to pending and kicks the runner. Saves
+  users clicking through the per-row menu after a Wi-Fi blip kills
+  ten entries.
+
+### Tooltips pass — 12 new `.help()` on jargon controls
+
+Non-techie users bounce off terms like "Connections per interface"
+and "Per-interface DoH." Added explanatory tooltips + a new
+`labelWithInfo(_:tooltip:)` helper that renders a caption label with
+a small ⓘ icon. Applied so far:
+
+- **Connections per interface** — "How many parallel HTTP connections
+  per network interface. More = higher peak throughput, but also
+  more load on origin servers. 1–2 is polite; 4–6 is aggressive."
+- **Max concurrent downloads** — explains queue behaviour + when to
+  bump it.
+- **Per-interface DoH** — full paragraph on what DNS-over-HTTPS-per-
+  interface actually buys (DNS leak prevention + ISP-blind lookups,
+  slight first-request latency penalty).
+- **Load Metalink…** — explains the .metalink / .meta4 XML format
+  and when it's useful (Linux distros).
+- **Load Merkle…** — explains per-chunk verification vs end-of-file
+  SHA-256.
+- Assorted Clear / Remove secondary buttons.
+
+### Dev override for Pro audit
+
+New `splynekDevProUnlocked` UserDefaults flag in splynek-pro's
+`LicenseManager`. When YES, `isPro` flips true at init and stays on
+through `refreshEntitlements()`. Used for Pro-feature QA without
+needing a real StoreKit sandbox purchase. Also documented in the
+App Store review notes so Apple reviewers can toggle it if they
+prefer to skip the TestFlight / Sandbox Apple ID flow.
+
+Activation:
+```sh
+defaults write app.splynek.Splynek splynekDevProUnlocked -bool YES
+# relaunch → Assistant + Recipes tabs visible
+defaults delete app.splynek.Splynek splynekDevProUnlocked
+# relaunch → back to normal StoreKit-gated behaviour
+```
+
+### Tests + builds
+
+117 tests green. Three build paths all clean (SPM, Xcode DMG, Xcode
+MAS). The `Splynek-MAS.xcarchive` at v0.47 is Apple-Distribution-
+signed and ready for ASC upload; the DMG is Developer-ID-signed,
+notarised, and stapled. Free DMG download on the GitHub Release now
+opens without any right-click dance (notarised since v0.46).
+
+---
+
+## What's new in v0.46 (P1 + P2 pre-submission QA fixes)
+
+A full user-QA pass on v0.45 found 17 bugs + UX issues before the
+first App Store submission. v0.46 addresses the P1s (real functional
+bugs that would earn an App Review rejection or a bad first-review
+score on the Store) and the P2s (polish items visible in Store
+screenshots).
+
+### P1 bugs fixed
+
+- **Pause no longer shows as "Cancelled"** — `settleAfterRun()` in
+  `DownloadJob.swift` was letting the engine's end-of-run
+  "Cancelled." `errorMessage` bleed into the paused state (red
+  banner on paused rows). Now explicitly cleared on the paused
+  branch. Pause is visibly pause.
+- **Phase no longer frozen on "Downloading" after pause/cancel** —
+  `settleAfterRun()` resets `progress.phase` to `.pending` on every
+  non-completed exit so the Live pipeline strip reads correctly.
+- **Trash icon works on paused jobs** — `removeJob()` previously
+  guarded on `isActive` (which includes paused); now cancels the
+  engine inline and removes regardless.
+- **Bad-URL feedback now visible** — the error banner was rendered
+  below the active-jobs list, so on an empty state (typical first
+  use) it was below the fold. Moved INSIDE the Source card,
+  directly under the Start button. Also: `Probe.swift` now returns
+  human-actionable HTTP error hints ("HTTP 404 — the file doesn't
+  exist at that URL. Check the path." instead of just "HTTP 404.").
+- **Throughput no longer spikes to fantasy GB/s** — `LaneStats.record()`
+  was clamping the sample-window divisor to 0.001 s, so a 5 MB chunk
+  arriving mid-session would display as 5 GB/s for a frame. Bumped
+  to 0.5 s minimum; worst-case under-shoot is now ~2× during the
+  first 500 ms, but the display is always in believable territory.
+
+### P2 polish
+
+- **Phase pills readable again** — the old layout packed icon + text
+  + divider per pill, which squeezed narrow cells until SwiftUI
+  broke the label into stacked single characters ("Q u e u e d"
+  vertically). Now icon-only for past/future pills, icon + label
+  for the current one, with `.help()` on every pill providing the
+  hover tooltip.
+- **iPhone USB tether correctly detected + labeled** — macOS
+  presents it as wiredEthernet (it IS Ethernet-over-USB), so prior
+  UI showed a mysterious "ETH" row next to Wi-Fi. Detection via
+  the 172.20.10.0/28 IP range + wiredEthernet link type; new
+  `.iPhoneUSB` `DiscoveredInterface.Kind`; new icon (`iphone`),
+  label ("iPhone"), cyan tint. Also treated as metered for the
+  cellular-budget check (the carrier IS cellular bandwidth).
+- **Wi-Fi icon changed from yellow to blue** — yellow read as a
+  warning badge. Blue matches the rest of macOS's Wi-Fi styling.
+- **Queue 3-dots menu enriched** — completed rows previously held a
+  single "Remove" item, which rendered as an apparently empty menu
+  on macOS 14. Now every state has 2+ entries (Retry, Open URL,
+  Copy URL, Remove) so the menu reads as functional at a glance.
+- **Duplicate Start/Queue toolbar buttons removed** — the top-right
+  toolbar's Start and Queue buttons were pixel duplicates of the
+  big buttons inside the Source card below. Users flagged as
+  clutter. Toolbar keeps only Cancel All (contextual), Copy curl,
+  Advanced; keyboard shortcuts (⏎ and ⌘⇧Q) moved to the card
+  buttons.
+- **Benchmark Run button surfaced inline** — was tucked in the
+  top-right toolbar where most users never found it. Now a large
+  "Run benchmark" button sits directly below the target URL, with
+  a "Results below ↓" hint when results are available. Toolbar
+  keeps only post-run Copy / Save-image actions (they export the
+  whole-tab state, making toolbar placement appropriate).
+- **History row actions reduced 3 → 2 icons** — was info + eye +
+  magnifying-glass; users couldn't tell the info from the eye.
+  Now two visibly distinct icons (Details = blue info-filled,
+  Reveal in Finder = folder). Quick Look still accessible via
+  right-click context menu and via Finder's spacebar after Reveal.
+- **Fleet sharing → per-file "Stop sharing"** — new eye-slash
+  button on each file row in the "What this Mac is sharing" card.
+  Exclusion list persisted in UserDefaults under
+  `fleetExcludedURLs`; a "Restore all" link surfaces at the card
+  footer when any files are hidden. File and history entry stay
+  intact; only fleet peer-sharing stops.
+- **About logo shrunk** — 128 → 88 px with tighter padding. The
+  hero was overwhelming on the current card-grid layout.
+
+### Notarisation shipped
+
+Signing certificates lived elsewhere until this session. v0.46:
+- Apple Distribution cert installed (MAS signing)
+- Developer ID Application cert installed (DMG notarisation)
+- `notarytool store-credentials AC_PASSWORD` keychain profile set
+- DMG re-signed with Developer ID, submitted to Apple notary
+  service, `Status: Accepted`, stapled, uploaded as the GitHub
+  Release asset. Users who `brew install splynek` or download the
+  DMG directly no longer see the right-click-to-open Gatekeeper
+  dance.
+
+---
+
 ## What's new in v0.45 (MAS build infrastructure — the Xcode project scaffold)
 
 v0.44 split the source tree (public free core + private `splynek-pro`

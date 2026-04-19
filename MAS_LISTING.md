@@ -4,6 +4,35 @@ Copy-paste-ready material for App Store Connect. Each section below maps 1:1 to 
 
 ---
 
+## Submission state — as of v0.47 session (2026-04-19)
+
+**What's already filled in ASC (don't redo):**
+- App Information: name `Splynek`, subtitle `Use every network, at once`, primary category `Utilities`, secondary `Productivity`, content rights (no third-party), age rating 4+.
+- Version 1.0 page: promotional text (161 chars), description (3210 chars), keywords (94 chars), support URL `https://splynek.app/support`, marketing URL `https://splynek.app`, copyright `© 2026 Splynek. Source (free tier) available under MIT license.`, reviewer contact `Paulo Moura / paulo@splynek.app`, review notes (3381 chars — the entitlement + IAP-test + Ollama briefing).
+- App Privacy: 14× Data Not Collected, privacy URL `https://splynek.app/privacy`, published.
+- DSA (EU Digital Services Act): trader declaration filed via `TraditioneForAll, Lda` address + `info@splynek.app`. Status: Em revisão.
+- Paid Apps Agreement: signed 19/04/2026 – 19/04/2027.
+- Tax forms: W-8BEN + U.S. Certificate of Foreign Status both Active.
+- Bank info: processing (~24h async task, doesn't block submission).
+
+**What's still user-side pending:**
+- Upload the v0.47 MAS `.pkg` (rebuild after every code change — the current pkg is v0.47 at `build/Splynek-MAS-Export/Splynek.pkg`, 5.9 MB, Apple-Distribution-signed).
+- Change ASC "Versão" from `1.0` to match the uploaded build (`0.47`).
+- Attach the uploaded build via **Adicionar compilação**.
+- Upload screenshots (see § Screenshots plan below — user has 5+ real Retina shots captured; add Torrents + Live + Queue shots for a full 7–8 set).
+- Click **Adicionar para revisão** (Submit for Review).
+
+**Do not change:**
+- Bundle ID `app.splynek.Splynek` (locked; first build shipped).
+- IAP product ID `app.splynek.Splynek.pro` (must match `LicenseManager.proProductID`).
+- DSA contact info (re-review delay if changed).
+
+**Password / credentials reference:**
+- Keychain profile for `xcrun notarytool` is saved as `AC_PASSWORD`. Use `--keychain-profile AC_PASSWORD`.
+- `altool --upload-package` can't read this profile (different keychain format). Use Xcode Organizer's Upload button for MAS uploads instead, OR create an App Store Connect API key (.p8) and use JWT auth.
+
+---
+
 ## App name (30 char max)
 
 **Splynek**
