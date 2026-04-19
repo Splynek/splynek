@@ -16,16 +16,16 @@ WebDashboardTests.run()
 QRCodeTests.run()
 OpenAPITests.run()
 FleetDescriptorTests.run()
-ConciergeTests.run()
 LiveTorrentPhaseTests.run()
-DownloadScheduleTests.run()
 WatchedFolderTests.run()
 PhaseOverRESTTests.run()
 UsageCSVTests.run()
 UsageTimelineTests.run()
 GatekeeperDetailTests.run()
 TorrentResumeTests.run()
-LicenseValidatorTests.run()
-RecipeParserTests.run()
+
+// v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
+// RecipeParserTests moved with their sources to the private
+// Splynek/splynek-pro repo.
 
 TestHarness.finish()

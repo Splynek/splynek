@@ -1,17 +1,14 @@
 import SwiftUI
 
-/// Reusable paywall placeholder shown in place of a Pro-gated
-/// feature when the current session isn't licensed. Not a modal,
-/// not a banner — it takes over the feature's real estate so the
-/// user sees exactly what Pro unlocks without being able to use it.
+/// Placeholder shown in place of a Pro-gated feature in the free
+/// build. In the MAS build, the real `ProLockedView` (shipped in
+/// the private `SplynekPro` package) presents a StoreKit IAP
+/// unlock flow here. In the free DMG, it just points users at the
+/// Mac App Store listing.
 ///
-/// The design intent is "visible but not functional." Apple's MAS
-/// review guidelines and Stripe-direct conventions both prefer
-/// *disabled with a clear CTA* over *hidden entirely*, because:
-///   - the feature discovery is marketing;
-///   - removing a familiar UI after a free-tier downgrade confuses
-///     users who've had Pro before;
-///   - accessibility tools can still describe the feature.
+/// Not visually minimal — the free build lands users on a clear
+/// "this exists, it's $29 on MAS" message rather than silently
+/// hiding the feature.
 struct ProLockedView: View {
     let featureTitle: String
     let summary: String
@@ -19,43 +16,32 @@ struct ProLockedView: View {
     let onUnlock: () -> Void
 
     var body: some View {
-        VStack(spacing: 14) {
-            Image(systemName: systemImage)
-                .font(.system(size: 40, weight: .regular))
-                .foregroundStyle(.tint)
-                .padding(.top, 12)
-            HStack(spacing: 8) {
-                Text(featureTitle)
-                    .font(.system(.title3, design: .rounded, weight: .semibold))
-                StatusPill(text: "PRO", style: .warning)
+        TitledCard(title: featureTitle, systemImage: systemImage) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Color.accentColor)
+                    Text("Splynek Pro feature")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                    Spacer()
+                    StatusPill(text: "MAS", style: .info)
+                }
+                Text(summary)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: 10) {
+                    if let url = URL(string: "https://splynek.app/pro") {
+                        Link(destination: url) {
+                            Label("Get Splynek Pro on the Mac App Store",
+                                  systemImage: "arrow.up.right.square")
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                    Spacer()
+                }
             }
-            Text(summary)
-                .font(.callout).foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 420)
-                .fixedSize(horizontal: false, vertical: true)
-            Button {
-                onUnlock()
-            } label: {
-                Label("Unlock Splynek Pro — $29", systemImage: "key.fill")
-                    .frame(minWidth: 200)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .padding(.top, 6)
-            Text("One-time purchase. Lifetime updates on the 0.x line.")
-                .font(.caption).foregroundStyle(.secondary)
-                .padding(.bottom, 14)
         }
-        .padding(.horizontal, 24)
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(Color.accentColor.opacity(0.35), lineWidth: 1)
-        )
     }
 }

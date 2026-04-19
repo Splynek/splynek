@@ -15,16 +15,26 @@ every session.
 **Tests:** `swift run splynek-test` (58+ tests, all green)
 **CLI:** `swift run splynek-cli version`
 
-**Current version:** 0.43 — QA-pass release. No new features;
-fixes the P1 rendering bug uncovered by a full user walkthrough
-of v0.42 + twelve P2 UX issues (magnet name decoding, queue
-time display, chart legend IP labelling, etc.). Critical fix:
-Pro-gated tabs (Assistant + Recipes) no longer render their
-Pro-gate INSIDE the view body — moved to the sidebar instead,
-because the in-view gate triggered a SwiftUI
-NavigationSplitView layout bug on macOS 14 that wedged the
-whole app. 165 tests. See README.md for the full
-reverse-chronological feature log from v0.1 to v0.43.
+**Current version:** 0.44 — the public/private split. Pro modules
+(AI Concierge, Recipes, Scheduling, LAN-exposed Fleet, HMAC license)
+moved to the private repo `Splynek/splynek-pro`. Public
+`Splynek/splynek` ships the free core only, with API-compatible
+stubs (`Sources/SplynekCore/ProStubs.swift`) so `ViewModel` and
+Pro-gated views compile unchanged. MAS build will substitute real
+implementations by excluding the stubs and linking `SplynekPro`.
+117 tests (was 165; 48 moved with their sources). DMG: 2.3 MB
+(down from 2.5 MB). See README.md for the full reverse-chronological
+feature log from v0.1 to v0.44.
+
+**D1 split invariants (v0.44+):**
+- Free-tier `isPro = false` is compile-time-enforced — it's a
+  stubbed class, not a runtime-toggled flag.
+- New Pro functionality lands in `Splynek/splynek-pro`, NOT in the
+  public repo. If it needs to compile in the free build, the stub
+  in `ProStubs.swift` must also gain a corresponding API-compatible
+  no-op.
+- Views gate Pro tabs at the sidebar level (not inside the body).
+  See the v0.43 NavigationSplitView invariant below — still holds.
 
 **Architectural invariant (v0.43+):** Do NOT put a top-level
 conditional `if/else` that returns structurally different view

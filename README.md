@@ -23,6 +23,71 @@ Install system-wide:
 cp -R build/Splynek.app /Applications/
 ```
 
+## What's new in v0.44 (the public/private split — free core on GitHub, Pro on the Mac App Store)
+
+v0.33–v0.43 shipped the commercial substrate (license gate, AI Concierge,
+Recipes, scheduled downloads, LAN-exposed Fleet) and pushed the first
+open-source Release to GitHub. A day later the obvious question arrived:
+*if every line of Pro is MIT-licensed in the public repo, what exactly is
+there to charge $29 for?* Answer: nothing cryptographic — the "gate" was
+a one-line edit away from unlocked. v0.44 is the architectural fix.
+
+### What moved
+
+Five modules moved to a **private** repo (`Splynek/splynek-pro`, not
+browsable outside the Splynek team). They now ship only in the Mac
+App Store build, where StoreKit enforces the $29 one-time unlock:
+
+- `LicenseManager` (soon replaced by `StoreKitManager` in the MAS build)
+- `AIConcierge` + `AIAssistant` — local-Ollama chat router + URL resolver + history search
+- `DownloadRecipe` — agentic multi-step planner
+- `DownloadSchedule` — time-window + weekday + cellular rules
+- `ConciergeView` + `RecipeView` + `ProLockedView` — the SwiftUI tabs
+- `Scripts/gen-license.py` — obsolete HMAC issuer (superseded by StoreKit)
+- Four test suites (`LicenseValidatorTests`, `ConciergeTests`, `RecipeParserTests`, `DownloadScheduleTests`)
+
+### What the free DMG build still has
+
+**Everything that was free at v0.43:** multi-interface HTTP aggregation,
+torrents (v1 + v2, magnets, DHT, seeding), queue, history, Live
+dashboard, History detail sheet, Benchmark, Watched folder, CSV export,
+usage timeline, Fleet REST API (loopback-only — LAN exposure is a
+Pro gate), web dashboard (localhost-accessible), Chrome / Raycast /
+Alfred / bookmarklet integrations, menu-bar mode, login-item background
+mode, Gatekeeper signature inspection, per-host caps, cellular budget.
+
+### How the split works structurally
+
+The public `SplynekCore` module now carries a small `ProStubs.swift`
+that gives Pro types (`LicenseManager`, `AIAssistant`, `DownloadRecipe`,
+`DownloadSchedule`, `RecipeStore`) API-compatible free-tier stubs —
+`isPro` is always `false`, all AI methods throw `UnavailableError`,
+`schedule.evaluate(...)` always returns `.allowed`, the recipe store
+loads `[]` and persists nothing. `ViewModel` and the Pro-gated views
+(`ConciergeView` / `RecipeView` / the Pro cards in `SettingsView`)
+compile against these stubs unchanged.
+
+In the MAS build, the Xcode project excludes `ProStubs.swift` and the
+three stub view files, and links `SplynekPro` (from the private
+package) in their place — same type names, real implementations,
+StoreKit IAP drives `isPro`.
+
+Public build ≈ "free core + stub placeholders." MAS build ≈ "free core
++ SplynekPro's real modules." One `Package.swift`, one `ViewModel`,
+one source tree — only the leaf Pro files differ.
+
+### Tests
+
+117 (was 165 at v0.43). 48 tests moved with their sources to the
+private repo.
+
+### DMG
+
+2.3 MB (down from 2.5 MB at v0.43) — ~1,400 LOC lighter for the free
+build.
+
+---
+
 ## What's new in v0.43 (QA pass — bug-fix release before launch)
 
 v0.42 shipped Agentic Download Recipes; a full real-user walkthrough
