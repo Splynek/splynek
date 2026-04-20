@@ -1,0 +1,180 @@
+/* Splynek design system — shared by index / pro / support / privacy.
+ * v0.50: extracted from the inline CSS in index.html so the supporting
+ * pages inherit the same palette, hero, card, and footer pattern
+ * without duplicating ~500 lines per file.
+ */
+
+:root {
+  color-scheme: light dark;
+  --bg:        #0B1128;
+  --bg2:       #11183A;
+  --panel:     #151C36;
+  --panel-lift:#1A2145;
+  --border:    rgba(255, 255, 255, 0.08);
+  --border-lift: rgba(255, 255, 255, 0.14);
+  --text:      #ECEFF9;
+  --text-dim:  #C9CEE3;
+  --muted:     #8891B0;
+  --accent:    #5ADCA5;
+  --accent-dk: #2FBC85;
+  --gold:      #F5C16C;
+  --purple:    #B48CFF;
+  --pink:      #FF9BD2;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+               system-ui, "Segoe UI", Roboto, sans-serif;
+  background:
+    radial-gradient(ellipse 1100px 700px at 50% -10%, rgba(90, 220, 165, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 900px 600px at 10% 40%,   rgba(180, 140, 255, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 900px 600px at 90% 70%,   rgba(255, 155, 210, 0.06) 0%, transparent 55%),
+    linear-gradient(180deg, #11183A 0%, var(--bg) 50%, var(--bg) 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  background: rgba(255,255,255,0.08);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.92em;
+}
+main { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+/* Top nav — shared across all pages */
+nav.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 12px;
+}
+nav.top .logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 16px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+nav.top .logo:hover { text-decoration: none; }
+nav.top .logo img { width: 28px; height: 28px; border-radius: 6px; }
+nav.top .links { display: flex; gap: 22px; font-size: 14px; }
+nav.top .links a { color: var(--text-dim); }
+nav.top .links a:hover { color: var(--accent); text-decoration: none; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 22px; border-radius: 11px;
+  font-size: 15px; font-weight: 600;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border: 1px solid var(--border-lift);
+  text-decoration: none !important;
+  transition: transform .15s ease, background .15s ease;
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.12); }
+.btn.primary {
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dk) 100%);
+  color: #062013 !important; border-color: transparent;
+  box-shadow: 0 10px 30px -10px rgba(90, 220, 165, 0.6);
+}
+.btn.primary:hover { background: var(--accent); }
+.cta {
+  display: inline-flex; flex-wrap: wrap;
+  gap: 12px; align-items: center;
+}
+
+/* Page-level hero (smaller than index's hero; for supporting pages) */
+.page-hero {
+  padding: 40px 0 20px;
+}
+.page-hero .crumbs {
+  font-size: 14px; color: var(--muted); margin-bottom: 16px;
+}
+.page-hero .crumbs a { color: var(--muted); }
+.page-hero .crumbs a:hover { color: var(--accent); }
+.page-hero h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 10px;
+  line-height: 1.08;
+  background: linear-gradient(180deg, #ffffff 0%, #BFC5E0 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.page-hero .lede {
+  font-size: 18px;
+  color: var(--text-dim);
+  margin: 0 0 6px;
+  max-width: 640px;
+}
+
+/* Cards */
+.card-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin: 16px 0;
+}
+.card-panel h2, .card-panel h3 { margin-top: 0; }
+.card-panel p:last-child { margin-bottom: 0; }
+
+h2 {
+  font-size: 26px; font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 44px 0 14px;
+}
+h3 {
+  font-size: 18px; font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 28px 0 10px;
+}
+
+p, li { color: var(--text-dim); font-size: 16px; }
+strong { color: var(--text); }
+
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 40px 24px 50px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 50px;
+}
+footer a { color: var(--text-dim); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+footer .row + .row { margin-top: 6px; }
+footer .row a + a::before { content: "·"; margin: 0 10px; color: var(--border-lift); }
+
+/* Metadata line at bottom of content */
+.meta {
+  font-size: 13px; color: var(--muted);
+  margin-top: 48px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* Utility */
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+@media (max-width: 640px) {
+  .page-hero h1 { font-size: 34px; }
+  .page-hero .lede { font-size: 16px; }
+  nav.top .links { display: none; }
+}

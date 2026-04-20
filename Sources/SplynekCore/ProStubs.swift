@@ -61,8 +61,12 @@ final class LicenseManager: ObservableObject {
 /// the UI tells the user where to go (the MAS build).
 final class AIAssistant {
 
+    // v0.50: State shape matches the real AIAssistant in splynek-pro
+    // (`.ready(provider:, model:)`) so ViewModel's single pattern-match
+    // compiles against either build. Free build never emits `.ready`
+    // — always `.unavailable` — so the provider value is cosmetic here.
     enum DetectionState {
-        case ready(String)
+        case ready(provider: String, model: String)
         case unavailable(String)
         case unknown
     }

@@ -477,6 +477,11 @@ final class SplynekViewModel: ObservableObject {
     @Published var aiAvailable: Bool = false
     /// The model tag the assistant will use (picked heuristically).
     @Published var aiModel: String?
+    /// v0.50: which provider is currently serving this Mac's AI.
+    /// "Ollama" or "LM Studio", set when detection succeeds. Used to
+    /// render "Using llama3.2:3b via LM Studio" in the Concierge
+    /// empty state and the About card. `nil` when AI is unavailable.
+    @Published var aiProvider: String?
     /// One-line reason Ollama isn't usable; surfaced in the AboutView.
     @Published var aiUnavailableReason: String?
     /// True while a URL-resolution request is in flight.
@@ -630,13 +635,21 @@ final class SplynekViewModel: ObservableObject {
         let state = await ai.detect()
         await MainActor.run {
             switch state {
-            case .ready(let model):
+            // v0.50: `.ready` carries the provider (Ollama or LM Studio)
+            // in addition to the model name. Both stub + real use the
+            // same tuple shape so this one pattern compiles in both
+            // builds.  We take the provider name as a String so the
+            // core module doesn't need to import splynek-pro's Provider
+            // enum.
+            case .ready(let provider, let model):
                 self.aiAvailable = true
                 self.aiModel = model
+                self.aiProvider = String(describing: provider)
                 self.aiUnavailableReason = nil
             case .unavailable(let why):
                 self.aiAvailable = false
                 self.aiModel = nil
+                self.aiProvider = nil
                 self.aiUnavailableReason = why
             case .unknown:
                 break

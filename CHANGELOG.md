@@ -3,6 +3,61 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v0.50 — LM Studio support + marketing-site rewrite (2026-04-19)
+
+- **LM Studio + Ollama hybrid.** `AIAssistant` now probes both
+  `localhost:1234` (LM Studio) and `localhost:11434` (Ollama) in
+  parallel at launch, picking whichever answers first. All LLM calls
+  route through a single `chatCompletion(...)` helper that speaks
+  OpenAI's `/v1/chat/completions` format — native for LM Studio,
+  supported by Ollama since 0.1.14. Same code path for URL resolution,
+  history search, Recipes, and Concierge.
+- **New Provider enum.** `Provider { .ollama, .lmStudio }` carries
+  per-provider URLs (chat, models list, download page). State shape
+  changes to `.ready(provider:model:)` — the VM surfaces both so the
+  Concierge empty state can show "Using llama3.2:3b via LM Studio".
+- **Dual-provider onboarding UI.** Concierge empty state + Recipes
+  `aiMissingCard` now show two cards — LM Studio ("EASIEST", green)
+  and Ollama ("LIGHTER", blue) — each with a one-click install button
+  and a shared "Check again" refresh. Prior copy assumed every user
+  would `ollama pull llama3.2:3b` from a terminal, which landed badly
+  with non-technical testers.
+- **pro.html / support.html / privacy.html restyled.** Extracted the
+  v0.49 inline CSS into `docs/splynek.css` and rebuilt each supporting
+  page on the same card-panel + page-hero grammar as the landing page.
+  Privacy page lede now calls out LM Studio alongside Ollama as a
+  non-cloud LLM option.
+
+## v0.49 — UX overhaul + new logo (2026-04-19)
+
+- **Sidebar reordered ASK → ACTIVE → LIBRARY.** Pro-discovery tabs
+  (Concierge, Recipes) now sit above the fold. `Settings`, `Legal`,
+  `About` moved out of the sidebar into the macOS menu bar — Apple
+  menu → About / Settings… (⌘,) and Help menu → Legal…. Sidebar
+  ends with a compact "Welcome to Splynek" brand footer so first-
+  paint still carries the wordmark.
+- **New logo.** Canva-authored Splynek mark replaces the v0 glyph
+  everywhere — in-app `.icns`, docs/icon-{256,1024}.png, the website
+  hero, Pro-tab empty states.
+- **Website landing rewrite.** Gradient hero with 144pt mark,
+  "Use every network, at once." headline, proof bars (38 MB/s Wi-Fi
+  vs 117 MB/s Splynek), 6-card feature grid, Pro teaser panel,
+  closing CTA. Shrunk the QR panel on the in-app Web Dashboard tab
+  (170 → 110 px).
+
+## v0.48 — Pro tab discovery (2026-04-19)
+
+- **Concierge + Recipes always visible.** Free-tier users see the
+  Pro tabs in the sidebar with PRO badges. In-tab locked upsells
+  replace the empty chat / goal editor with a sneak-peek of what
+  they'd get and a $29 CTA to the Mac App Store. Rationale: you
+  can't want what you don't see.
+- **AI Assistant renamed Concierge.** More aspirational, less
+  utilitarian. The pitch is "your personal download concierge."
+- **Themed Ideas panel in Recipes.** 24 starter goals grouped by
+  theme (Dev setup, Linux distros, Media, AI + ML, Games, Writing).
+  Clickable chips auto-fill the goal field.
+
 ## v0.47 — P3 polish + tooltips pass (2026-04-19)
 
 - **Queue → Summary card redesigned.** Hero count (40pt) + state-

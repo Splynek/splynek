@@ -5,89 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Splynek — Support</title>
   <meta name="description" content="How to get help with Splynek. Email support, GitHub issues, documentation links.">
-  <meta name="theme-color" content="#0F1A3D">
+  <meta name="theme-color" content="#0B1128">
   <link rel="icon" type="image/png" href="icon-256.png">
-  <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #0B1128; --panel: #151C36; --border: rgba(255,255,255,0.08);
-      --text: #ECEFF9; --muted: #8891B0; --accent: #5ADCA5;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-      background: radial-gradient(ellipse at 50% -10%, #1A2345 0%, var(--bg) 50%) no-repeat fixed;
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.55;
-    }
-    main { max-width: 700px; margin: 0 auto; padding: 64px 24px; }
-    h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.5px; margin: 0 0 8px; }
-    h2 { font-size: 22px; margin-top: 40px; margin-bottom: 12px; }
-    p, li { color: var(--muted); font-size: 16px; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-      margin: 20px 0;
-    }
-    .card p:last-child { margin-bottom: 0; }
-    code {
-      font-family: "SF Mono", ui-monospace, Menlo, monospace;
-      background: rgba(255,255,255,0.06);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    .nav { font-size: 14px; margin-bottom: 40px; }
-    .nav a { color: var(--muted); }
-    .nav a:hover { color: var(--accent); }
-  </style>
+  <link rel="stylesheet" href="splynek.css">
 </head>
 <body>
   <main>
-    <nav class="nav"><a href="/">← Splynek</a></nav>
-    <h1>Support</h1>
-    <p>Splynek is built and maintained by one person. Every email gets a human reply.</p>
 
-    <div class="card">
-      <h2 style="margin-top:0">Email</h2>
-      <p><a href="mailto:support@splynek.app">support@splynek.app</a></p>
-      <p>Best for: licence issues, refund requests, crash reports, bug reports that mention sensitive URLs or download contents.</p>
-      <p>Response time: within 48 hours on weekdays; up to 5 days on weekends.</p>
+    <nav class="top">
+      <a href="/" class="logo">
+        <img src="icon-256.png" alt="Splynek">
+        Splynek
+      </a>
+      <div class="links">
+        <a href="/#features">Features</a>
+        <a href="/pro">Pro</a>
+        <a href="/support">Support</a>
+        <a href="https://github.com/Splynek/splynek">GitHub</a>
+      </div>
+    </nav>
+
+    <header class="page-hero">
+      <div class="crumbs"><a href="/">← Splynek</a> / Support</div>
+      <h1>Support</h1>
+      <p class="lede">
+        Splynek is built and maintained by one person. Every email
+        gets a human reply — usually within 48 hours.
+      </p>
+    </header>
+
+    <div class="card-panel">
+      <h2 style="margin-top: 0; font-size: 18px;">Email</h2>
+      <p><a href="mailto:support@splynek.app"><strong>support@splynek.app</strong></a></p>
+      <p>Best for: licence issues, refund requests, crash reports, or bug reports that reference sensitive URLs or download contents.</p>
+      <p class="small muted">Response time: within 48 hours on weekdays; up to 5 days on weekends.</p>
     </div>
 
-    <div class="card">
-      <h2 style="margin-top:0">GitHub Issues</h2>
-      <p><a href="https://github.com/Splynek/splynek/issues">github.com/Splynek/splynek/issues</a></p>
-      <p>Best for: public bug reports, feature requests, reproductions you're happy to share.</p>
-      <p>Free-tier source is MIT-licensed and public — pull requests welcome on the issue tracker.</p>
+    <div class="card-panel">
+      <h2 style="margin-top: 0; font-size: 18px;">GitHub Issues</h2>
+      <p><a href="https://github.com/Splynek/splynek/issues"><strong>github.com/Splynek/splynek/issues</strong></a></p>
+      <p>Best for: public bug reports, feature requests, reproductions you're happy to share publicly.</p>
+      <p class="small muted">Free-tier source is MIT — pull requests welcome on the issue tracker.</p>
     </div>
 
     <h2>Before you write</h2>
-    <p>A few things to check that will shortcut most support tickets:</p>
+    <p>A few things that shortcut most support tickets:</p>
     <ul>
-      <li><strong>Update to the latest version.</strong> App Store users get updates automatically; DMG users: <a href="https://github.com/Splynek/splynek/releases">github.com/Splynek/splynek/releases</a>.</li>
+      <li><strong>Update to the latest version.</strong> Mac App Store users update automatically. DMG users: <a href="https://github.com/Splynek/splynek/releases">GitHub Releases</a>.</li>
       <li><strong>Check the Gatekeeper signature panel</strong> (Splynek → Settings → Security & privacy) if the app won't launch. It tells you exactly which signature check failed.</li>
-      <li><strong>Run the bench</strong> (Benchmark tab) if downloads are slower than expected. Splynek measures single-interface vs multi-interface throughput — if the multi-interface result isn't higher, there's a configuration issue the numbers will surface.</li>
-      <li><strong>Reset state</strong> by removing <code>~/Library/Application Support/Splynek/</code> (DMG) or <code>~/Library/Containers/app.splynek.Splynek/Data/</code> (App Store). Splynek restarts fresh.</li>
+      <li><strong>Run the Benchmark tab</strong> if downloads are slower than expected. Measures single-interface vs multi-interface throughput — if multi-interface isn't higher, there's a config issue the numbers surface.</li>
+      <li><strong>Reset state</strong> by removing <code>~/Library/Application Support/Splynek/</code> (DMG) or <code>~/Library/Containers/app.splynek.Splynek/</code> (Mac App Store). Splynek restarts fresh.</li>
     </ul>
 
     <h2>Refunds</h2>
-    <p><strong>App Store purchases:</strong> use Apple's built-in refund flow — open the <strong>App Store</strong> app → your profile → <strong>Purchased</strong> → <strong>Report a Problem</strong> next to Splynek. We don't process App Store refunds ourselves; Apple does.</p>
-    <p><strong>DMG purchases:</strong> there aren't any. The DMG build is free and open-source. If you paid for Splynek elsewhere (e.g., a reseller site that shouldn't exist), email us — it's not legitimate.</p>
+    <p><strong>App Store purchases:</strong> use Apple's built-in refund flow — open <strong>App Store</strong> → your profile → <strong>Purchased</strong> → <strong>Report a Problem</strong> next to Splynek. Apple usually approves refunds within 24 hours. We don't process App Store refunds ourselves; Apple does.</p>
+    <p><strong>DMG purchases:</strong> there aren't any. The DMG build is free and open-source. If you paid for Splynek elsewhere (a reseller site that shouldn't exist), email us — it's not legitimate.</p>
 
     <h2>Documentation</h2>
     <ul>
-      <li><a href="https://github.com/Splynek/splynek/blob/main/README.md">README</a> — feature log + build instructions</li>
+      <li><a href="https://github.com/Splynek/splynek/blob/main/README.md">README</a> — feature log and build instructions</li>
       <li><a href="https://github.com/Splynek/splynek/blob/main/SECURITY.md">Security model</a></li>
       <li><a href="/privacy">Privacy policy</a></li>
       <li><a href="/pro">Splynek Pro — what's in the $29 tier</a></li>
     </ul>
+
+    <footer>
+      <div class="row">
+        <a href="/">Home</a>
+        <a href="/pro">Splynek Pro</a>
+        <a href="/privacy">Privacy</a>
+        <a href="https://github.com/Splynek/splynek">GitHub</a>
+      </div>
+      <div class="row" style="margin-top: 14px; color: var(--muted);">
+        © 2026 Splynek. Free-tier source is MIT-licensed.
+      </div>
+    </footer>
   </main>
 </body>
 </html>

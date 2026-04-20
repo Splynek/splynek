@@ -5,60 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Splynek — Privacy Policy</title>
   <meta name="description" content="Splynek collects nothing. No accounts, no telemetry, no crash reports. Every byte of user data stays on the user's Mac.">
-  <meta name="theme-color" content="#0F1A3D">
+  <meta name="theme-color" content="#0B1128">
   <link rel="icon" type="image/png" href="icon-256.png">
+  <link rel="stylesheet" href="splynek.css">
   <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #0B1128; --panel: #151C36; --border: rgba(255,255,255,0.08);
-      --text: #ECEFF9; --muted: #8891B0; --accent: #5ADCA5;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-      background: radial-gradient(ellipse at 50% -10%, #1A2345 0%, var(--bg) 50%) no-repeat fixed;
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-    main { max-width: 700px; margin: 0 auto; padding: 64px 24px; }
-    h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.5px; margin: 0 0 8px; }
-    h2 { font-size: 22px; margin-top: 44px; margin-bottom: 12px; }
-    p, li { color: var(--muted); font-size: 16px; }
-    strong { color: var(--text); }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .lede {
+    .lede-box {
       font-size: 18px;
       color: var(--text);
       border-left: 3px solid var(--accent);
-      padding-left: 16px;
-      margin: 24px 0 32px;
-    }
-    .meta { font-size: 13px; color: var(--muted); margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
-    .nav { font-size: 14px; margin-bottom: 40px; }
-    .nav a { color: var(--muted); }
-    .nav a:hover { color: var(--accent); }
-    code {
-      font-family: "SF Mono", ui-monospace, Menlo, monospace;
-      background: rgba(255,255,255,0.06);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 14px;
+      padding: 16px 20px;
+      margin: 20px 0 36px;
+      background: rgba(90,220,165,0.05);
+      border-radius: 0 10px 10px 0;
     }
   </style>
 </head>
 <body>
   <main>
-    <nav class="nav"><a href="/">← Splynek</a></nav>
-    <h1>Privacy Policy</h1>
 
-    <p class="lede">
-      Splynek collects nothing about you. No accounts, no telemetry, no
-      crash reports, no analytics, no phone-home. Every byte of
-      information about what you download and when lives on your Mac,
-      full stop.
+    <nav class="top">
+      <a href="/" class="logo">
+        <img src="icon-256.png" alt="Splynek">
+        Splynek
+      </a>
+      <div class="links">
+        <a href="/#features">Features</a>
+        <a href="/pro">Pro</a>
+        <a href="/support">Support</a>
+        <a href="https://github.com/Splynek/splynek">GitHub</a>
+      </div>
+    </nav>
+
+    <header class="page-hero">
+      <div class="crumbs"><a href="/">← Splynek</a> / Privacy</div>
+      <h1>Privacy Policy</h1>
+    </header>
+
+    <p class="lede-box">
+      <strong>Splynek collects nothing about you.</strong>
+      No accounts, no telemetry, no crash reports, no analytics,
+      no phone-home. Every byte of information about what you
+      download and when lives on your Mac, full stop.
     </p>
 
     <h2>What this means concretely</h2>
@@ -66,20 +53,20 @@
     <ul>
       <li>No tracking pixels, no web analytics, no heartbeat pings.</li>
       <li>No account creation, no login, no email address collection.</li>
-      <li>No crash reports — Splynek doesn't use Crashlytics, Sentry, App Center, or any similar service.</li>
+      <li>No crash reports — no Crashlytics, Sentry, App Center, or similar.</li>
       <li>No server of ours sees which URLs you download, how fast, from where, or at what time.</li>
-      <li>Download history, queue, preferences, session snapshots, and license state are stored exclusively in local files under <code>~/Library/Application Support/Splynek/</code> (or the App Store build's sandbox container at <code>~/Library/Containers/app.splynek.Splynek/</code>).</li>
+      <li>Download history, queue, preferences, session snapshots, and license state are stored exclusively in local files under <code>~/Library/Application Support/Splynek/</code> (DMG build) or <code>~/Library/Containers/app.splynek.Splynek/</code> (Mac App Store build).</li>
     </ul>
 
     <h2>What Splynek does talk to</h2>
     <p>Splynek is a download manager, so by design it makes outbound network connections. Specifically:</p>
     <ul>
-      <li><strong>The URLs you tell it to download.</strong> Splynek connects directly to those origin servers. Nothing is proxied through Splynek's servers (we don't run any).</li>
+      <li><strong>The URLs you tell it to download.</strong> Splynek connects directly to those origin servers. Nothing is proxied through servers we run (we don't run any).</li>
       <li><strong>BitTorrent trackers and peers</strong> for torrents you add. Standard BitTorrent protocol traffic.</li>
       <li><strong>Cloudflare DNS (1.1.1.1)</strong> if you enable DNS-over-HTTPS in Settings. Off by default.</li>
       <li><strong>Bonjour / mDNS</strong> on your LAN if you enable Fleet (localhost-scoped in the free tier, LAN-scoped in Pro).</li>
-      <li><strong>Local Ollama daemon</strong> (<code>http://localhost:11434</code>) for Pro AI features. Loopback only; never leaves your machine. If you don't install Ollama, the AI features display an "install Ollama to enable" message — no network traffic at all.</li>
-      <li><strong>Apple's App Store / StoreKit servers</strong> for In-App Purchase processing (MAS build only). Handled entirely by Apple; we see no payment details, no email, no name.</li>
+      <li><strong>Local LLM daemon</strong> (Ollama on <code>localhost:11434</code> or LM Studio on <code>localhost:1234</code>) for Pro AI features. Loopback only; never leaves your machine. If no local LLM is installed, Pro features show install prompts — no network traffic at all.</li>
+      <li><strong>Apple's App Store / StoreKit servers</strong> for In-App Purchase processing (Mac App Store build only). Handled entirely by Apple; we see no payment details, no email, no name.</li>
     </ul>
 
     <h2>What's in your local data</h2>
@@ -110,9 +97,21 @@
     <p>If this policy changes, the date below updates and the commit history at <a href="https://github.com/Splynek/splynek/commits/main/docs/privacy.html">github.com/Splynek/splynek</a> shows the diff — every change is tracked publicly.</p>
 
     <h2>Contact</h2>
-    <p>Questions? <a href="mailto:support@splynek.app">support@splynek.app</a>.</p>
+    <p>Questions? <a href="mailto:support@splynek.app"><strong>support@splynek.app</strong></a>.</p>
 
-    <p class="meta">Last updated: 2026-04-19 · <a href="https://github.com/Splynek/splynek/commits/main/docs/privacy.html">View revision history</a></p>
+    <p class="meta">Last updated: 2026-04-20 · <a href="https://github.com/Splynek/splynek/commits/main/docs/privacy.html">View revision history</a></p>
+
+    <footer>
+      <div class="row">
+        <a href="/">Home</a>
+        <a href="/pro">Splynek Pro</a>
+        <a href="/support">Support</a>
+        <a href="https://github.com/Splynek/splynek">GitHub</a>
+      </div>
+      <div class="row" style="margin-top: 14px; color: var(--muted);">
+        © 2026 Splynek. Free-tier source is MIT-licensed.
+      </div>
+    </footer>
   </main>
 </body>
 </html>
