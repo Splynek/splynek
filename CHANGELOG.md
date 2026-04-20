@@ -3,6 +3,18 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v0.50.2 — Free-tier Concierge/Recipes upsell rewrite (2026-04-20)
+
+- **Concierge and Recipes tabs are no longer visually empty in the
+  free DMG.** The previous stubs rendered a small `ProLockedView`
+  card pinned to the top-leading corner, which on a wide window got
+  lost in blank space and read as a broken tab. Rewrote both stubs
+  to mirror the Pro build's locked-state pitch: centred gradient
+  glyph, bold title, four value bullets, "$29 on the Mac App Store"
+  CTA. Covers the full detail column, matches the design of the
+  Pro build's pre-unlock state, and stays on-brand with the
+  `.windowBackgroundColor` + `navigationTitle` other tabs set.
+
 ## v0.50.1 — Concierge sidebar fix + amplified app icon (2026-04-20)
 
 - **Concierge no longer collapses the sidebar.** The outer VStack
