@@ -70,29 +70,34 @@ struct DownloadView: View {
     // The Downloads tab now leads with its standard PageHeader like
     // every other tab.
 
-    /// AI upsell. Shown to users who don't have Ollama running (the AI
-    /// row would be hidden today) during their first few downloads, so
-    /// the AI value prop isn't invisible to the 80% without Ollama.
-    /// One-click link to ollama.com/download.
+    /// AI-URL Pro upsell. Shown to users who haven't unlocked Pro (or
+    /// are Pro but without a local LLM running) during their first few
+    /// downloads, so the Pro value prop isn't invisible. v0.50.3 added
+    /// the explicit PRO pill — previous copy said "Runs locally — free"
+    /// which was misleading: Ollama/LM Studio are free, but the URL-
+    /// resolution feature that CALLS them is Pro-gated.
     private var aiUpsellRow: some View {
         HStack(spacing: 10) {
             Image(systemName: "sparkles")
                 .foregroundStyle(.purple)
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Describe downloads in plain English")
-                    .font(.callout).fontWeight(.semibold)
-                Text("Install Ollama to type “the latest Ubuntu ISO” instead of a URL. Runs locally — free, no account.")
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text("Describe downloads in plain English")
+                        .font(.callout).fontWeight(.semibold)
+                    StatusPill(text: "PRO", style: .warning)
+                }
+                Text("Type “the latest Ubuntu ISO” instead of a URL. Splynek Pro feature — powered by a local LLM (LM Studio or Ollama) on your Mac.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer()
             Button {
-                if let u = URL(string: "https://ollama.com/download") {
+                if let u = URL(string: "https://splynek.app/pro") {
                     NSWorkspace.shared.open(u)
                 }
             } label: {
-                Label("Install Ollama", systemImage: "arrow.up.right.square")
+                Label("Unlock Pro — $29", systemImage: "cart.fill")
             }
             .buttonStyle(.bordered)
             .controlSize(.small)

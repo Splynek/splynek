@@ -9,9 +9,9 @@
     <key>CFBundleIdentifier</key>
     <string>app.splynek.Splynek</string>
     <key>CFBundleVersion</key>
-    <string>502</string>
+    <string>503</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.50.2</string>
+    <string>0.50.3</string>
     <key>CFBundleExecutable</key>
     <string>Splynek</string>
     <key>CFBundleIconFile</key>

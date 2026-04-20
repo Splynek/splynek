@@ -3,6 +3,21 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v0.50.3 — Borderless app icon + PRO tag on AI-URL card (2026-04-20)
+
+- **App icon: white tile removed.** The colored "S" glyph now fills
+  the icon edge-to-edge with transparent corners, following the same
+  "silhouette icon" pattern Apple uses for letter-mark brands. The
+  prior build rendered the glyph at ~84 % of a rounded white tile,
+  which read as "small logo on a white card" at Dock size.
+- **PRO pill on the Downloads "Describe downloads in plain English"
+  card.** The card was always a Pro upsell but the copy ("Install
+  Ollama to type… Runs locally — free") hid that fact. Now shows an
+  explicit "PRO" tag next to the title, clarified copy that names
+  both LM Studio + Ollama as the local-LLM providers, and a button
+  that goes to splynek.app/pro instead of ollama.com — so users who
+  click aren't surprised when Ollama alone doesn't unlock the feature.
+
 ## v0.50.2 — Free-tier Concierge/Recipes upsell rewrite (2026-04-20)
 
 - **Concierge and Recipes tabs are no longer visually empty in the
