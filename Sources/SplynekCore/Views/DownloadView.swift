@@ -16,15 +16,19 @@ struct DownloadView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                if isFirstPaint {
-                    brandStrip
-                } else {
-                    PageHeader(
-                        systemImage: "arrow.down.circle",
-                        title: "Downloads",
-                        subtitle: "Paste a URL. Splynek fans it out across every interface you have — Wi-Fi, Ethernet, tether — and reassembles a verified file."
-                    )
-                }
+                // v0.49: removed the first-paint "Welcome to Splynek"
+                // hero that squatted at the top of Downloads when the
+                // user had no jobs / history. User feedback: that
+                // splash belonged in the sidebar (where it now lives
+                // as a compact footer), not stealing real estate from
+                // the Downloads page itself. The Downloads tab now
+                // always leads with its own consistent PageHeader,
+                // matching every other tab.
+                PageHeader(
+                    systemImage: "arrow.down.circle",
+                    title: "Downloads",
+                    subtitle: "Paste a URL. Splynek fans it out across every interface you have — Wi-Fi, Ethernet, tether — and reassembles a verified file."
+                )
                 sourceCard
                 if !vm.aiAvailable && vm.history.count < 3 {
                     aiUpsellRow
@@ -58,59 +62,13 @@ struct DownloadView: View {
     /// True when this is a user's first look at the app: no jobs, no
     /// history, no URL typed. Triggers the compact brand hero +
     /// onboarding hint so the form isn't the user's first impression.
-    private var isFirstPaint: Bool {
-        vm.activeJobs.isEmpty &&
-        vm.history.isEmpty &&
-        vm.urlText.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
-    /// Compact brand strip: logo + tagline + one-line hint on what to do
-    /// first. Shown only during first-paint (see `isFirstPaint`). Much
-    /// smaller than the About-pane hero so it doesn't dominate.
-    private var brandStrip: some View {
-        HStack(spacing: 14) {
-            Group {
-                if let url = Bundle.main.url(forResource: "Splynek", withExtension: "icns"),
-                   let nsImage = NSImage(contentsOf: url) {
-                    Image(nsImage: nsImage)
-                        .resizable()
-                        .interpolation(.high)
-                } else if let nsImage = NSApp.applicationIconImage {
-                    Image(nsImage: nsImage)
-                        .resizable()
-                        .interpolation(.high)
-                }
-            }
-            .frame(width: 60, height: 60)
-            .shadow(color: .black.opacity(0.10), radius: 6, x: 0, y: 3)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Welcome to Splynek")
-                    .font(.system(.title2, design: .rounded, weight: .bold))
-                Text("Paste a URL below. Splynek downloads it across every interface you have — Wi-Fi, Ethernet, iPhone tether — in parallel.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer()
-        }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color.accentColor.opacity(0.18),
-                            Color.accentColor.opacity(0.04)
-                        ],
-                        startPoint: .topLeading, endPoint: .bottomTrailing
-                    )
-                )
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Color.accentColor.opacity(0.25), lineWidth: 0.5)
-        )
-    }
+    // v0.49: the old `isFirstPaint` + `brandStrip` scaffolding lived
+    // here to show a "Welcome to Splynek" splash at the top of the
+    // Downloads tab when the user had no active jobs, no history, no
+    // URL typed. Removed per user feedback — the splash belonged in
+    // the sidebar, where it now lives as a compact brand footer.
+    // The Downloads tab now leads with its standard PageHeader like
+    // every other tab.
 
     /// AI upsell. Shown to users who don't have Ollama running (the AI
     /// row would be hidden today) during their first few downloads, so

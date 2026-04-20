@@ -225,6 +225,39 @@ public struct SplynekApp: App {
         .windowToolbarStyle(.unified(showsTitle: true))
         .commands {
             CommandGroup(replacing: .newItem) { }
+
+            // v0.49: Settings / Legal / About moved OUT of the
+            // sidebar (user feedback: clutter) and INTO the macOS
+            // menu bar where Mac apps traditionally live. Standard
+            // Apple-menu slots are used where they exist:
+            //   Apple menu → About Splynek   → replaces .appInfo
+            //   Apple menu → Settings… (⌘,)  → replaces .appSettings
+            //   Help menu  → Legal…          → new command under .help
+            // Each posts a Notification that RootView catches and
+            // routes to the still-valid SidebarSection destination.
+            CommandGroup(replacing: .appInfo) {
+                Button("About Splynek") {
+                    NSApp.activate(ignoringOtherApps: true)
+                    NSApp.windows.first?.makeKeyAndOrderFront(nil)
+                    NotificationCenter.default.post(name: .splynekShowAbout, object: nil)
+                }
+            }
+            CommandGroup(replacing: .appSettings) {
+                Button("Settings…") {
+                    NSApp.activate(ignoringOtherApps: true)
+                    NSApp.windows.first?.makeKeyAndOrderFront(nil)
+                    NotificationCenter.default.post(name: .splynekShowSettings, object: nil)
+                }
+                .keyboardShortcut(",", modifiers: .command)
+            }
+            CommandGroup(after: .help) {
+                Button("Legal…") {
+                    NSApp.activate(ignoringOtherApps: true)
+                    NSApp.windows.first?.makeKeyAndOrderFront(nil)
+                    NotificationCenter.default.post(name: .splynekShowLegal, object: nil)
+                }
+            }
+
             CommandGroup(after: .toolbar) {
                 Button("Show Splynek") {
                     NSApp.activate(ignoringOtherApps: true)

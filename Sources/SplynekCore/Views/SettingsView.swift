@@ -184,11 +184,16 @@ struct SettingsView: View {
 
                 if let url = vm.fleet.webDashboardURL() {
                     HStack(alignment: .top, spacing: 14) {
-                        if let qr = QRCode.image(for: url.absoluteString, size: 170) {
+                        // v0.49: QR shrunk 170 → 110 px. At 170 the code
+                        // dominated the Web-dashboard card and felt out of
+                        // scale with the text beside it; 110 still scans
+                        // fine from phone distance (~25 cm) and leaves
+                        // room for the URL + token controls to breathe.
+                        if let qr = QRCode.image(for: url.absoluteString, size: 110) {
                             Image(nsImage: qr)
                                 .interpolation(.none)
                                 .resizable()
-                                .frame(width: 170, height: 170)
+                                .frame(width: 110, height: 110)
                                 .background(Color.white)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .overlay(

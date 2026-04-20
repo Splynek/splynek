@@ -3,369 +3,589 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Splynek — multi-interface download manager for macOS</title>
-  <meta name="description" content="Native macOS download manager that uses every network interface you have in parallel. Wi-Fi + Ethernet + iPhone tether, verified, cooperative across your LAN, with a local-AI assistant.">
+  <title>Splynek — Use every network, at once</title>
+  <meta name="description" content="Native macOS download manager that uses every network interface you have — Wi-Fi + Ethernet + iPhone tether — in parallel. Verified, cooperative over your LAN, with a local-AI concierge.">
   <meta property="og:title" content="Splynek">
-  <meta property="og:description" content="Multi-interface download manager for macOS. Wi-Fi + Ethernet + iPhone tether, in parallel, verified.">
-  <meta property="og:image" content="icon-1024.png">
-  <meta name="theme-color" content="#0F1A3D">
+  <meta property="og:description" content="Use every network, at once. Multi-interface download manager for macOS. Pro tier with local-AI concierge.">
+  <meta property="og:image" content="https://splynek.app/icon-1024.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://splynek.app/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0B1128">
   <link rel="icon" type="image/png" href="icon-256.png">
+  <link rel="apple-touch-icon" href="icon-256.png">
   <style>
     :root {
       color-scheme: light dark;
       --bg:        #0B1128;
+      --bg2:       #11183A;
       --panel:     #151C36;
+      --panel-lift:#1A2145;
       --border:    rgba(255, 255, 255, 0.08);
+      --border-lift: rgba(255, 255, 255, 0.14);
       --text:      #ECEFF9;
+      --text-dim:  #C9CEE3;
       --muted:     #8891B0;
       --accent:    #5ADCA5;
       --accent-dk: #2FBC85;
+      --gold:      #F5C16C;
+      --purple:    #B48CFF;
+      --pink:      #FF9BD2;
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
                    system-ui, "Segoe UI", Roboto, sans-serif;
       background:
-        radial-gradient(ellipse at 50% -10%,
-                        rgba(90, 220, 165, 0.18),
-                        transparent 65%),
-        linear-gradient(180deg, #0B1128 0%, #06091E 100%);
+        radial-gradient(ellipse 1100px 700px at 50% -10%, rgba(90, 220, 165, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 900px 600px at 10% 40%,   rgba(180, 140, 255, 0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 900px 600px at 90% 70%,   rgba(255, 155, 210, 0.06) 0%, transparent 55%),
+        linear-gradient(180deg, #11183A 0%, var(--bg) 50%, var(--bg) 100%);
+      background-attachment: fixed;
       color: var(--text);
       min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
+      line-height: 1.55;
+      letter-spacing: -0.005em;
     }
-    main {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 64px 24px 120px;
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code {
+      font-family: "SF Mono", ui-monospace, Menlo, monospace;
+      background: rgba(255,255,255,0.08);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.92em;
     }
-    header {
+    main { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+    /* Top navigation */
+    nav.top {
       display: flex;
-      flex-direction: column;
       align-items: center;
+      justify-content: space-between;
+      padding: 20px 0 12px;
+    }
+    nav.top .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+    nav.top .logo img { width: 28px; height: 28px; border-radius: 6px; }
+    nav.top .links { display: flex; gap: 22px; font-size: 14px; }
+    nav.top .links a { color: var(--text-dim); }
+    nav.top .links a:hover { color: var(--accent); text-decoration: none; }
+
+    /* Hero */
+    header.hero {
       text-align: center;
-      gap: 20px;
-      margin-bottom: 72px;
+      padding: 56px 0 48px;
     }
-    header img {
-      width: 128px; height: 128px;
-      border-radius: 28px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    header.hero .mark {
+      display: inline-block;
+      width: 144px; height: 144px;
+      filter: drop-shadow(0 18px 40px rgba(90, 220, 165, 0.22))
+              drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+      margin-bottom: 18px;
+      transition: transform .4s cubic-bezier(.22,.9,.3,1.25);
     }
-    h1 {
-      font-size: 52px;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      margin: 0;
+    header.hero .mark:hover { transform: scale(1.06) rotate(-3deg); }
+    header.hero h1 {
+      font-size: 68px;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      margin: 0 0 10px;
+      background: linear-gradient(180deg, #ffffff 0%, #BFC5E0 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .tagline {
-      font-size: 20px;
-      color: var(--muted);
+    header.hero .kicker {
+      font-size: 22px;
+      color: var(--text-dim);
+      font-weight: 500;
+      margin: 0 auto 14px;
       max-width: 640px;
-      line-height: 1.5;
-      margin: 0;
     }
-    .cta {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 10px;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 11px 18px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 15px;
-      text-decoration: none;
-      border: 1px solid var(--border);
-      color: var(--text);
-      background: var(--panel);
-      transition: transform 0.08s, background 0.1s;
-    }
-    .btn:hover { transform: translateY(-1px); background: #1B2448; }
-    .btn.primary {
-      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dk) 100%);
-      color: #0B1128;
-      border-color: transparent;
-    }
-    .btn.primary:hover { filter: brightness(1.08); }
-    .badges {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 8px;
-    }
-    .badge {
-      padding: 4px 9px;
-      border-radius: 99px;
-      font: 600 11px ui-monospace, SFMono-Regular, Menlo, monospace;
-      background: rgba(90, 220, 165, 0.12);
-      color: var(--accent);
-      border: 1px solid rgba(90, 220, 165, 0.2);
+    header.hero .sub {
+      font-size: 16px;
+      color: var(--muted);
+      margin: 0 auto 30px;
+      max-width: 620px;
     }
 
-    section.pitch {
+    .cta {
+      display: inline-flex; flex-wrap: wrap;
+      gap: 12px; justify-content: center; align-items: center;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 22px; border-radius: 11px;
+      font-size: 15px; font-weight: 600;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid var(--border-lift);
+      text-decoration: none !important;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.12); }
+    .btn.primary {
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dk) 100%);
+      color: #062013; border-color: transparent;
+      box-shadow: 0 10px 30px -10px rgba(90, 220, 165, 0.6);
+    }
+    .btn.primary:hover { background: var(--accent); }
+    .badges {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-top: 22px;
+    }
+    .badge {
+      font-size: 11px; font-weight: 600;
+      padding: 5px 10px; border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      letter-spacing: 0.02em;
+    }
+
+    /* Hero "proof" — speed bars */
+    section.proof {
+      margin: 30px auto 60px;
+      max-width: 700px;
+      background: linear-gradient(180deg, var(--panel-lift), var(--panel));
+      border: 1px solid var(--border-lift);
+      border-radius: 18px;
+      padding: 30px 32px 26px;
+    }
+    section.proof h3 {
+      font-size: 15px; font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 0 0 20px;
+    }
+    .speed-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 96px;
+      align-items: center; gap: 14px;
+      margin: 10px 0;
+    }
+    .speed-row .label {
+      font-size: 13px; color: var(--text-dim); font-weight: 600;
+    }
+    .speed-row .bar {
+      height: 10px; border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden; position: relative;
+    }
+    .speed-row .fill {
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(90,220,165,0.3), rgba(90,220,165,0.7));
+    }
+    .speed-row.single .fill { width: 30%; background: linear-gradient(90deg, rgba(180,140,255,0.3), rgba(180,140,255,0.55)); }
+    .speed-row.multi  .fill { width: 92%; background: linear-gradient(90deg, rgba(90,220,165,0.4), var(--accent)); box-shadow: 0 0 20px rgba(90,220,165,0.4); }
+    .speed-row .rate {
+      font-family: "SF Mono", ui-monospace, Menlo, monospace;
+      font-weight: 600; font-size: 14px;
+      text-align: right; color: var(--text);
+    }
+    .speed-row.multi .rate { color: var(--accent); }
+    section.proof .note {
+      font-size: 12px; color: var(--muted); margin: 16px 0 0;
+    }
+
+    /* Feature grid */
+    section.features {
+      padding: 40px 0 50px;
+    }
+    section.features h2 {
+      font-size: 36px; font-weight: 700; letter-spacing: -0.02em;
+      text-align: center; margin: 0 0 10px;
+    }
+    section.features .lede {
+      text-align: center; color: var(--muted); font-size: 16px;
+      margin: 0 auto 36px; max-width: 560px;
+    }
+    .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
-      margin: 72px 0;
     }
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 20px;
+      padding: 22px;
+      transition: transform .15s ease, border-color .15s ease;
     }
+    .card:hover { border-color: var(--border-lift); transform: translateY(-2px); }
+    .card .icon {
+      width: 40px; height: 40px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      background: linear-gradient(140deg, rgba(90,220,165,0.25), rgba(90,220,165,0.08));
+      margin-bottom: 12px;
+    }
+    .card.purple .icon { background: linear-gradient(140deg, rgba(180,140,255,0.25), rgba(180,140,255,0.08)); }
+    .card.gold   .icon { background: linear-gradient(140deg, rgba(245,193,108,0.25), rgba(245,193,108,0.08)); }
+    .card.pink   .icon { background: linear-gradient(140deg, rgba(255,155,210,0.25), rgba(255,155,210,0.08)); }
     .card h3 {
-      margin: 0 0 6px;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 17px; font-weight: 700; margin: 0 0 6px;
+      letter-spacing: -0.01em;
     }
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
-    }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
 
-    section.proof {
-      background: var(--panel);
+    /* Pro section — the splashy one */
+    section.pro {
+      margin: 70px 0 60px;
+      position: relative;
+      border-radius: 26px;
+      padding: 54px 40px;
+      background:
+        radial-gradient(ellipse 600px 400px at 20% 20%, rgba(180, 140, 255, 0.22) 0%, transparent 55%),
+        radial-gradient(ellipse 700px 400px at 90% 90%, rgba(90, 220, 165, 0.18) 0%, transparent 55%),
+        linear-gradient(180deg, #1B2355 0%, #11183A 100%);
+      border: 1px solid var(--border-lift);
+      overflow: hidden;
+    }
+    section.pro::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.06) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(255,255,255,0.04) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    section.pro .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(90deg, rgba(245,193,108,0.18), rgba(245,193,108,0.08));
+      color: var(--gold);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      padding: 6px 12px; border-radius: 999px;
+      border: 1px solid rgba(245,193,108,0.35);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    section.pro h2 {
+      font-size: 46px; font-weight: 800; letter-spacing: -0.03em;
+      margin: 0 0 12px; line-height: 1.08;
+      background: linear-gradient(180deg, #ffffff 0%, #CEC0FF 100%);
+      background-clip: text; -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    section.pro .headline-sub {
+      font-size: 18px; color: var(--text-dim);
+      max-width: 580px; margin: 0 0 28px;
+    }
+    section.pro .features-two {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 14px; margin-bottom: 28px;
+    }
+    @media (max-width: 640px) {
+      section.pro .features-two { grid-template-columns: 1fr; }
+    }
+    section.pro .feat {
+      background: rgba(255,255,255,0.04);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 36px;
-      margin: 72px 0;
-      text-align: center;
+      border-radius: 14px;
+      padding: 18px 20px;
+      backdrop-filter: blur(6px);
     }
-    section.proof h2 {
-      font-size: 32px;
-      margin: 0 0 12px;
-      letter-spacing: -0.015em;
+    section.pro .feat h4 {
+      margin: 0 0 4px; font-size: 15px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
     }
-    section.proof p {
-      margin: 0 auto 28px;
-      max-width: 560px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
+    section.pro .feat h4 .tag {
+      font-size: 9px; font-weight: 800; letter-spacing: 0.1em;
+      background: rgba(90,220,165,0.2); color: var(--accent);
+      padding: 2px 7px; border-radius: 999px;
+      text-transform: uppercase;
     }
-    .speed-demo {
-      display: grid;
-      grid-template-columns: 120px 1fr 90px;
-      align-items: center;
-      gap: 10px;
-      max-width: 520px;
-      margin: 6px auto;
-      font: 600 13px ui-monospace, SFMono-Regular, Menlo, monospace;
-      text-align: left;
-    }
-    .speed-demo .label { color: var(--muted); }
-    .bar {
-      height: 14px;
-      border-radius: 7px;
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dk) 100%);
-    }
-    .speed-demo.single .bar { width: 38%; background: #4A6796; }
-    .speed-demo.multi  .bar { width: 100%; }
-    .speed-demo .rate { text-align: right; }
-
-    section.list {
-      margin: 72px 0;
-    }
-    section.list h2 {
-      font-size: 26px;
+    section.pro .feat p { margin: 0; font-size: 13.5px; color: var(--muted); }
+    section.pro .price-row {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 16px;
       margin-bottom: 20px;
     }
-    ul.features {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 10px 24px;
-    }
-    ul.features li {
-      padding: 10px 0 10px 28px;
-      position: relative;
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-    ul.features li::before {
-      content: "✓";
-      position: absolute; left: 0; top: 10px;
+    section.pro .price {
+      font-size: 40px; font-weight: 800;
+      letter-spacing: -0.025em;
       color: var(--accent);
-      font-weight: 700;
     }
-    ul.features li span {
-      color: var(--muted);
+    section.pro .price small {
+      font-size: 14px; font-weight: 500; color: var(--muted);
+      margin-left: 8px;
+    }
+    section.pro .cta { position: relative; z-index: 1; justify-content: flex-start; }
+
+    /* Scriptable / inline stack */
+    section.scriptable {
+      padding: 40px 0 40px;
+    }
+    section.scriptable h2 {
+      font-size: 32px; letter-spacing: -0.02em; margin: 0 0 24px; text-align: center;
+    }
+    .inline-list {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+    }
+    .inline-list .chip {
+      padding: 10px 14px; border-radius: 12px;
+      background: var(--panel); border: 1px solid var(--border);
+      font-size: 13px; font-weight: 500; color: var(--text-dim);
+    }
+    .inline-list .chip span {
+      color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 4px;
+    }
+
+    /* Closing CTA */
+    section.close {
+      text-align: center;
+      margin: 70px 0 40px;
+      padding: 48px 24px;
+      background: linear-gradient(180deg, var(--panel-lift), var(--panel));
+      border: 1px solid var(--border-lift);
+      border-radius: 20px;
+    }
+    section.close h2 {
+      font-size: 32px; letter-spacing: -0.02em; margin: 0 0 10px;
+    }
+    section.close p {
+      color: var(--muted); font-size: 15px; margin: 0 0 24px;
+      max-width: 520px; margin-left: auto; margin-right: auto;
     }
 
     footer {
       text-align: center;
-      padding-top: 48px;
+      padding: 40px 24px 50px;
       border-top: 1px solid var(--border);
       color: var(--muted);
       font-size: 13px;
+      margin-top: 20px;
     }
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    footer a { color: var(--text-dim); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+    footer .row + .row { margin-top: 6px; }
+    footer .row a + a::before { content: "·"; margin: 0 10px; color: var(--border-lift); }
 
     @media (max-width: 640px) {
-      main { padding: 40px 16px 64px; }
-      h1 { font-size: 36px; }
-      header { margin-bottom: 48px; }
+      header.hero { padding: 40px 0 32px; }
+      header.hero h1 { font-size: 48px; }
+      header.hero .kicker { font-size: 18px; }
+      header.hero .mark { width: 104px; height: 104px; }
+      section.pro { padding: 40px 24px; }
+      section.pro h2 { font-size: 34px; }
+      nav.top .links { display: none; }
     }
   </style>
 </head>
 <body>
   <main>
-    <header>
-      <img src="icon-1024.png" width="128" height="128" alt="Splynek app icon">
-      <h1>Splynek</h1>
-      <p class="tagline">
-        Native macOS download manager that uses every network interface
-        you have, in parallel. Wi-Fi + Ethernet + iPhone tether,
-        verified, cooperative across your LAN, with a local-AI
-        assistant.
+
+    <!-- Nav -->
+    <nav class="top">
+      <div class="logo">
+        <img src="icon-256.png" alt="Splynek logo">
+        Splynek
+      </div>
+      <div class="links">
+        <a href="#features">Features</a>
+        <a href="#pro">Pro</a>
+        <a href="/pro">Concierge</a>
+        <a href="https://github.com/Splynek/splynek">GitHub</a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+      <img class="mark" src="icon-1024.png" alt="Splynek app mark">
+      <h1>Use every network, at once.</h1>
+      <p class="kicker">
+        Splynek is a native macOS download manager that turns
+        Wi-Fi, Ethernet, and your iPhone tether into a single
+        pipe — in parallel, verified, offline-AI-assisted.
+      </p>
+      <p class="sub">
+        Cooperative over your LAN. Free and open-source core.
+        One-time $29 Pro tier adds a local-LLM concierge.
       </p>
       <div class="cta">
-        <a class="btn primary" href="https://github.com/splynek/splynek/releases/latest">
-          Download for macOS
+        <a class="btn primary" href="https://github.com/Splynek/splynek/releases/latest">
+          ↓ Download for macOS
         </a>
-        <a class="btn" href="https://github.com/splynek/splynek">
-          View on GitHub
+        <a class="btn" href="https://apps.apple.com/app/splynek">
+          Mac App Store →
+        </a>
+        <a class="btn" href="https://github.com/Splynek/splynek">
+          GitHub
         </a>
       </div>
       <div class="badges">
         <span class="badge">macOS 13+</span>
-        <span class="badge">Zero deps</span>
-        <span class="badge">MIT Licence</span>
-        <span class="badge">~11 k LOC Swift</span>
+        <span class="badge">Universal (Apple Silicon + Intel)</span>
+        <span class="badge">Zero dependencies</span>
+        <span class="badge">MIT licensed core</span>
+        <span class="badge">Notarised</span>
       </div>
     </header>
 
-    <section class="pitch">
-      <div class="card">
-        <h3>Aggregated bandwidth</h3>
-        <p>Every outbound socket pinned to a specific NIC via
-           <code>IP_BOUND_IF</code>. Wi-Fi plus Ethernet plus iPhone
-           tether plus Thunderbolt — Splynek pulls the same file over
-           all of them and reassembles it verified.</p>
-      </div>
-      <div class="card">
-        <h3>LAN cache</h3>
-        <p>Other Splyneks on your network advertise themselves over
-           Bonjour. Same file on your colleague's Mac arrives over
-           gigabit instead of the internet.</p>
-      </div>
-      <div class="card">
-        <h3>Phone remote</h3>
-        <p>QR code pairs any phone with this Mac's web dashboard.
-           Paste URLs from your iPhone's Safari share sheet; watch
-           throughput tick up live.</p>
-      </div>
-      <div class="card">
-        <h3>Local-AI assistant</h3>
-        <p>Ollama on your machine, no cloud. Type <em>"the latest
-           Ubuntu 24.04 desktop ISO"</em>, get the direct URL.
-           Natural-language history search too.</p>
-      </div>
-      <div class="card">
-        <h3>Verified bytes</h3>
-        <p>SHA-256 on every completed download. Per-chunk Merkle
-           integrity when a <code>.splynek-manifest</code> sibling
-           exists. BitTorrent v2 (BEP 52) supported.</p>
-      </div>
-      <div class="card">
-        <h3>Scriptable</h3>
-        <p><code>splynek</code> CLI, Raycast extension, Alfred workflow,
-           Chrome extension, Shortcuts / App Intents, and a documented
-           REST API with OpenAPI spec — all local.</p>
-      </div>
-    </section>
-
+    <!-- Proof: speed bars -->
     <section class="proof">
-      <h2>~2–3× faster than single-path.</h2>
-      <p>
-        When your Mac has two usable links — say, hotel Wi-Fi plus an
-        iPhone hotspot over USB — a single-path download is throttled
-        by the weaker of the two. Splynek uses both.
-      </p>
-      <div class="speed-demo single">
-        <span class="label">Chrome</span>
-        <span class="bar"></span>
+      <h3>Real-world throughput</h3>
+      <div class="speed-row single">
+        <span class="label">Single-path</span>
+        <span class="bar"><span class="fill"></span></span>
         <span class="rate">38 MB/s</span>
       </div>
-      <div class="speed-demo multi">
+      <div class="speed-row multi">
         <span class="label">Splynek</span>
-        <span class="bar"></span>
+        <span class="bar"><span class="fill"></span></span>
         <span class="rate">117 MB/s</span>
       </div>
-      <p style="margin-top: 24px; font-size: 13px;">
-        Benchmark view inside the app generates a shareable PNG with
-        your own numbers.
+      <p class="note">
+        Benchmark card inside the app generates a shareable PNG with
+        your own numbers. CDN-backed URL; Wi-Fi + iPhone-USB tether.
       </p>
     </section>
 
-    <section class="list">
-      <h2>What's in the box</h2>
-      <ul class="features">
-        <li>Multi-interface HTTP aggregation <span>(IP_BOUND_IF)</span></li>
-        <li>BitTorrent v1 + v2 + hybrid <span>(BEP 3/6/9/10/11/52)</span></li>
-        <li>LAN fleet cache <span>(Bonjour + content-addressed)</span></li>
-        <li>Mobile web dashboard <span>(QR-paired)</span></li>
-        <li>Local-AI URL resolution + history search <span>(Ollama)</span></li>
-        <li>AI Concierge <span>(chat-first, local)</span></li>
-        <li>Smart enrichment <span>(.sha256 / .torrent / .metalink siblings)</span></li>
-        <li>Duplicate detection <span>(don't re-download what you have)</span></li>
-        <li>Per-interface DoH <span>(DNS over the same lane)</span></li>
-        <li>Metalink / Merkle manifest verification</li>
-        <li>Chrome + Safari bookmarklets + Raycast + Alfred</li>
-        <li>Documented REST API + CLI + OpenAPI spec</li>
-        <li>Menu-bar-only mode + launch at login</li>
-        <li>Host daily caps + cellular budget</li>
-        <li>Session restore across reboots</li>
-        <li>Rate limiting + privacy-mode toggle + regenerate-token</li>
-      </ul>
+    <!-- Features grid -->
+    <section class="features" id="features">
+      <h2>Every knob, deliberate.</h2>
+      <p class="lede">
+        Pure Swift over <code>Network.framework</code>. No Electron, no
+        Python, no bundled LLM weights, no third-party Swift deps.
+      </p>
+      <div class="grid">
+        <div class="card">
+          <div class="icon">🌐</div>
+          <h3>Multi-interface aggregation</h3>
+          <p>Every outbound socket pinned to a specific NIC via
+             <code>IP_BOUND_IF</code>. Wi-Fi + Ethernet + iPhone tether
+             + Thunderbolt, together, reassembled and verified.</p>
+        </div>
+        <div class="card purple">
+          <div class="icon">⚡</div>
+          <h3>BitTorrent v1 + v2</h3>
+          <p>Native DHT + magnets + seeding. Every peer connection
+             pinned to the interface you chose — your tether doesn't
+             accidentally sync 40 GB.</p>
+        </div>
+        <div class="card pink">
+          <div class="icon">📲</div>
+          <h3>Phone remote</h3>
+          <p>QR-pair any phone with this Mac. Paste URLs from Safari's
+             share sheet; watch throughput tick up live on your
+             iPhone.</p>
+        </div>
+        <div class="card gold">
+          <div class="icon">🔐</div>
+          <h3>Verified bytes</h3>
+          <p>SHA-256 on every completed download. Per-chunk Merkle
+             integrity when a <code>.splynek-manifest</code> sibling
+             exists. BEP 52 throughout.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🏠</div>
+          <h3>LAN cache</h3>
+          <p>Other Splyneks on your network advertise via Bonjour.
+             Your colleague's copy of that 5 GB ISO arrives over
+             gigabit, not the internet.</p>
+        </div>
+        <div class="card purple">
+          <div class="icon">📡</div>
+          <h3>Per-interface DoH</h3>
+          <p>DNS over HTTPS, per lane, on the same interface the
+             bytes flow through. No DNS leaks across networks, no
+             ISP snooping on your lookups.</p>
+        </div>
+      </div>
     </section>
 
-    <section class="list">
-      <h2>Get it</h2>
-      <div class="cta" style="justify-content: flex-start;">
-        <a class="btn primary" href="https://github.com/splynek/splynek/releases/latest">
-          Download DMG
+    <!-- Pro — the splash section -->
+    <section class="pro" id="pro">
+      <span class="pill">★ Splynek Pro</span>
+      <h2>Your personal download concierge.</h2>
+      <p class="headline-sub">
+        A local-LLM layer on top of Splynek. Chat your downloads
+        into being. Plan entire setups from a sentence. All on
+        your Mac — no cloud, no account, no telemetry.
+      </p>
+
+      <div class="features-two">
+        <div class="feat">
+          <h4>Concierge <span class="tag">Chat</span></h4>
+          <p>Type <em>"download the latest Ubuntu desktop ISO"</em> or <em>"what did I grab from github last week?"</em> — Splynek routes it through your local model to the right action.</p>
+        </div>
+        <div class="feat">
+          <h4>Agentic Recipes <span class="tag">Plan</span></h4>
+          <p>One goal, full plan. Type <em>"Set up my Mac for iOS dev"</em>; review a proposed multi-step download batch; queue in one click. Six themed starter libraries.</p>
+        </div>
+        <div class="feat">
+          <h4>Scheduled windows <span class="tag">Quiet</span></h4>
+          <p>Restrict starts to overnight on home Wi-Fi, pause on cellular, weekday rules. Running downloads keep going — the schedule only gates starts.</p>
+        </div>
+        <div class="feat">
+          <h4>Phone pairing <span class="tag">LAN</span></h4>
+          <p>Opens the mobile web dashboard to your LAN. QR-pair, token-gated submit, live progress. Your phone stays fast; the download doesn't touch it.</p>
+        </div>
+      </div>
+
+      <div class="price-row">
+        <span class="price">$29<small>one-time</small></span>
+        <span style="color: var(--text-dim); font-size: 14px;">
+          Lifetime 0.x updates. StoreKit-enforced via the Mac App Store.
+        </span>
+      </div>
+
+      <div class="cta">
+        <a class="btn primary" href="https://apps.apple.com/app/splynek">
+          Unlock Splynek Pro — $29
         </a>
-        <a class="btn" href="https://github.com/splynek/splynek#install">
-          Homebrew cask
+        <a class="btn" href="/pro">What's inside →</a>
+      </div>
+    </section>
+
+    <!-- Scriptable / stack -->
+    <section class="scriptable">
+      <h2>Integrates with what you already use.</h2>
+      <div class="inline-list">
+        <div class="chip">Chrome extension <span>MV3</span></div>
+        <div class="chip">Safari bookmarklets</div>
+        <div class="chip">Raycast extension</div>
+        <div class="chip">Alfred workflow</div>
+        <div class="chip"><code>splynek-cli</code> <span>REST</span></div>
+        <div class="chip">Shortcuts / App Intents <span>×7</span></div>
+        <div class="chip">OpenAPI 3.1 spec</div>
+        <div class="chip">Spotlight index <span>of history</span></div>
+        <div class="chip">URL scheme <span><code>splynek://</code></span></div>
+      </div>
+    </section>
+
+    <!-- Closing CTA -->
+    <section class="close">
+      <h2>Try it in one command.</h2>
+      <p>Notarised DMG, double-click launch, opt into the Pro tier any time.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/Splynek/splynek/releases/latest">
+          Download latest DMG
         </a>
-        <a class="btn" href="https://github.com/splynek/splynek#build-from-source">
-          Build from source
+        <a class="btn" href="https://apps.apple.com/app/splynek">
+          Mac App Store
         </a>
       </div>
-      <p style="margin-top: 20px; color: var(--muted); font-size: 14px; line-height: 1.55;">
-        Splynek ships ad-hoc signed by default. On first launch,
-        right-click the app in Finder and choose <em>Open</em>; macOS
-        remembers your choice. A notarised build is tracked on the
-        roadmap.
-      </p>
     </section>
 
     <footer>
-      <p>
-        MIT licensed ·
-        <a href="https://github.com/Splynek/splynek">GitHub</a> ·
-        <a href="/pro">Splynek Pro</a> ·
-        <a href="/support">Support</a> ·
-        <a href="/privacy">Privacy</a> ·
+      <div class="row">
+        <a href="https://github.com/Splynek/splynek">GitHub</a>
+        <a href="/pro">Splynek Pro</a>
+        <a href="/support">Support</a>
+        <a href="/privacy">Privacy</a>
         <a href="https://github.com/Splynek/splynek/blob/main/SECURITY.md">Security</a>
-      </p>
+      </div>
+      <div class="row" style="margin-top: 14px; color: var(--muted);">
+        © 2026 Splynek. Free-tier source is MIT-licensed.
+      </div>
     </footer>
+
   </main>
 </body>
 </html>

@@ -39,6 +39,21 @@ struct RootView: View {
         } message: {
             Text("Today you've already used \(formatBytes(vm.hostCapAlertUsed)) from \(vm.hostCapAlertHost), past your \(formatBytes(vm.hostCapAlertLimit)) daily cap. Downloading anyway will clear today's cap for this host.")
         }
+        // v0.49: menu-bar → sidebar-routing. Apple menu → Settings…
+        // (⌘,) / About, Help menu → Legal… — each posts one of
+        // these notifications; here we route to the matching
+        // SidebarSection destination. Uses the splash route so
+        // users see the panels exactly like they would from the
+        // sidebar (no separate windows).
+        .onReceive(NotificationCenter.default.publisher(for: .splynekShowSettings)) { _ in
+            section = .settings
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .splynekShowLegal)) { _ in
+            section = .legal
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .splynekShowAbout)) { _ in
+            section = .about
+        }
     }
 
     @ViewBuilder
