@@ -8,7 +8,7 @@ Copy-paste-ready material for App Store Connect. Each section below maps 1:1 to 
 
 **What's already filled in ASC (don't redo):**
 - App Information: name `Splynek`, subtitle `Use every network, at once`, primary category `Utilities`, secondary `Productivity`, content rights (no third-party), age rating 4+.
-- Version 1.0 page: promotional text (161 chars), description (3210 chars), keywords (94 chars), support URL `https://splynek.app/support`, marketing URL `https://splynek.app`, copyright `© 2026 Splynek. Source (free tier) available under MIT license.`, reviewer contact `Paulo Moura / paulo@splynek.app`, review notes (3381 chars — the entitlement + IAP-test + Ollama briefing).
+- Version 1.0 page: promotional text (161 chars), description (3210 chars), keywords (94 chars), support URL `https://splynek.app/support`, marketing URL `https://splynek.app`, copyright `© 2026 Splynek. Source (free tier) available under MIT license.`, reviewer contact `Paulo Moura / info@splynek.app`, review notes (3381 chars — the entitlement + IAP-test + Ollama briefing).
 - App Privacy: 14× Data Not Collected, privacy URL `https://splynek.app/privacy`, published.
 - DSA (EU Digital Services Act): trader declaration filed via `TraditioneForAll, Lda` address + `info@splynek.app`. Status: Em revisão.
 - Paid Apps Agreement: signed 19/04/2026 – 19/04/2027.
@@ -310,11 +310,11 @@ and are linked only into this App Store build. This lets the app
 stay open-source-first while still enforcing the $29 Pro unlock
 via StoreKit.
 
-If you have any questions, please reach out at paulo@splynek.app.
+If you have any questions, please reach out at info@splynek.app.
 
 Thanks for reviewing,
 Paulo Graça Moura
-paulo@splynek.app
+info@splynek.app
 https://splynek.app
 ```
 
