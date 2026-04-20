@@ -3,6 +3,20 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v0.50.4 — Contact-email consolidation (2026-04-21)
+
+- **All contact addresses now point to `info@splynek.app`.** Prior
+  docs + in-app strings referenced `paulo@`, `support@`, `legal@`,
+  and `privacy@` mailboxes that were never provisioned. Only the
+  `info@` address (the DSA trader declaration contact) actually
+  receives mail. Updated in: `docs/pro.html`, `docs/support.html`,
+  `docs/privacy.html`, in-app Legal tab button + label
+  (`LegalView.swift`), shipped EULA/AUP/PRIVACY markdown bundles
+  (`Resources/Legal/*.md`), `MAS_LISTING.md`, and the `README.md`
+  description of the Legal-tab contact button. The only remaining
+  `*@splynek.app` is `test@splynek.app` — a deterministic unit-test
+  fixture, not a real mailbox.
+
 ## v0.50.3 — Borderless app icon + PRO tag on AI-URL card (2026-04-20)
 
 - **App icon: white tile removed.** The colored "S" glyph now fills

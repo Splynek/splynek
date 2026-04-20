@@ -152,4 +152,4 @@ billing entity's jurisdiction.*
 ## Contact
 
 Questions: open an issue in the project repository, or email
-`legal@splynek.app` (once the domain is registered).
+`info@splynek.app`.

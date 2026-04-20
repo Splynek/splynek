@@ -79,5 +79,5 @@ suspended.
 
 ## What if you're not sure?
 
-Ask. `legal@splynek.app` or open an issue on the repo. We'd
+Ask. `info@splynek.app` or open an issue on the repo. We'd
 rather answer a question than miss a problem.

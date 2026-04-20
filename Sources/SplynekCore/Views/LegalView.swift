@@ -231,11 +231,11 @@ struct LegalView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 10) {
                     Button {
-                        if let u = URL(string: "mailto:legal@splynek.app") {
+                        if let u = URL(string: "mailto:info@splynek.app") {
                             NSWorkspace.shared.open(u)
                         }
                     } label: {
-                        Label("Email legal@splynek.app", systemImage: "envelope.fill")
+                        Label("Email info@splynek.app", systemImage: "envelope.fill")
                     }
                     .buttonStyle(.bordered)
                     Spacer()

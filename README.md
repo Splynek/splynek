@@ -1270,7 +1270,7 @@ reads them from the .app bundle's `Resources/Legal/` via
 parser so headings + bullets + numbered lists render correctly
 (SwiftUI's `AttributedString(markdown:)` handles inline markup
 but not block structure). Includes a *Reveal in Finder* action
-and a *mailto:legal@splynek.app* contact button.
+and a *mailto:info@splynek.app* contact button.
 
 **Important caveat in the docs themselves**: they are templates
 provided in good faith. Before shipping commercially, have

@@ -103,5 +103,5 @@ a change requires a new release.
 
 ## Contact
 
-Questions: `privacy@splynek.app` (once the domain is
-registered) or open an issue on the project repository.
+Questions: `info@splynek.app` or open an issue on the project
+repository.
