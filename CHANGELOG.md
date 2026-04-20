@@ -3,6 +3,45 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.0 — Launch (2026-04-21)
+
+First stable release. Same binary as v0.50.4 with the marketing
+version bumped to 1.0 for the Mac App Store submission.
+
+What's in the launch build:
+
+- **Multi-interface download engine.** Wi-Fi + Ethernet + iPhone
+  tether bonded via `IP_BOUND_IF` into a single pipe with adaptive
+  lane stats, per-host caps, cellular-aware scheduling.
+- **Verified downloads.** SHA-256 checksums + Gatekeeper signature
+  introspection for `.dmg`/`.pkg`. Failed verification doesn't move
+  the file out of quarantine.
+- **LAN cache + fleet.** Bonjour-advertised peers share completed
+  downloads over the LAN. No cloud, no account. Free-tier is
+  loopback-only; Pro opens it to the LAN.
+- **BitTorrent v2.** Native libtorrent-rasterbar 2.x integration
+  with session restore, choking, tit-for-tat, magnet + metalink.
+- **Local-AI Pro tier** (Mac App Store only) — `$29` one-time:
+  - **Concierge**: chat-first control — "download the latest
+    Ubuntu ISO", "cancel everything", "find that iOS SDK". Routes
+    through LM Studio or Ollama on your Mac.
+  - **Agentic Recipes**: plain-English goals → multi-step download
+    plans you review + queue in one click.
+  - **Scheduled Downloads**: time-window + weekday + cellular-pause
+    policy.
+  - **LAN-exposed Fleet + iPhone pairing**: scan-a-QR web dashboard
+    on your phone, paste URLs from its share sheet.
+- **Integrations**: Alfred workflow, Chrome + Safari browser
+  extensions (DMG only), Raycast commands, Spotlight intents,
+  URL-scheme + CLI.
+- **Native macOS**: Universal 2 (Apple Silicon + Intel), sandboxed
+  MAS build, hardened runtime + notarised DMG, macOS 13+.
+- **Pre-launch polish** (cumulative from v0.47 → v0.50.4):
+  borderless app icon, PRO tags on upsells, LM Studio + Ollama
+  hybrid detection, Concierge/Recipes full-bleed upsells,
+  consolidated `info@splynek.app` contact address, website
+  rewrite at splynek.app.
+
 ## v0.50.4 — Contact-email consolidation (2026-04-21)
 
 - **All contact addresses now point to `info@splynek.app`.** Prior
