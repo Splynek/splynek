@@ -3,6 +3,25 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v0.50.1 — Concierge sidebar fix + amplified app icon (2026-04-20)
+
+- **Concierge no longer collapses the sidebar.** The outer VStack
+  now claims `maxWidth/maxHeight: .infinity`; without that, the
+  empty-chat Pro state (no PageHeader, 440-px-wide onboarding cards)
+  gave NavigationSplitView an intrinsic width too narrow to satisfy
+  the detail column's `min: 640`, so the split auto-hid the sidebar.
+- **App icon glyph enlarged.** The colored "S" inside the icon tile
+  was filling only ~35 % of the canvas, which read as "tiny logo
+  floating in a white square" at Dock size. Re-rendered the iconset:
+  auto-trimmed the glyph's bounding box, scaled it to ~84 % of the
+  1024-px canvas, composited onto a rounded-rect white tile with
+  transparent outer corners (macOS app-icon convention). Rebuilt
+  .icns; refreshed docs/icon-256.png + docs/icon-1024.png.
+- **Hero logo now actually transparent.** The embedded-JPEG source
+  under the Canva SVG was bleeding white; color-keyed it out so
+  `docs/logo-transparent.png` renders with a true RGBA-transparent
+  background against the dark site.
+
 ## v0.50 — LM Studio support + marketing-site rewrite (2026-04-19)
 
 - **LM Studio + Ollama hybrid.** `AIAssistant` now probes both
