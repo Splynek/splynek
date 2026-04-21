@@ -344,6 +344,35 @@ When filling ASC's age-rating form: select "None" for every category (violence, 
 
 `ITSAppUsesNonExemptEncryption` is set to `false` in the MAS Info.plist because Splynek's crypto usage (HMAC-SHA256 for receipts, TLS for downloads) is exempt under BIS 740.17(b)(3)(i) — symmetric crypto ≤ 256 bits used for authentication / access control / data transport, not for confidentiality of non-TLS protocols. This skips the per-release export-compliance question in ASC.
 
+## Networking model — answer to the standard VPN questionnaire
+
+Apple sent the standard VPN questionnaire on the v1.0 submission. Splynek does **not** use VPN functionality; the multi-interface mechanism is the BSD socket option `IP_BOUND_IF` applied to Splynek's own outgoing CFNetwork / URLSession connections.
+
+The following block is kept in **App Review Information → Notes** on every future submission so reviewers don't need to re-ask:
+
+```
+NETWORKING MODEL
+
+Splynek uses the BSD socket option IP_BOUND_IF on its own outgoing
+CFNetwork / URLSession connections to pin each HTTPS or BitTorrent
+download to a specific network interface (Wi-Fi, Ethernet, iPhone
+tether). This is NOT a VPN.
+
+Splynek does not use the NetworkExtension framework, does not
+create VPN configurations, does not intercept or reroute traffic
+from other applications, does not tunnel traffic through remote
+servers, and does not request any VPN-related entitlement. No
+NEVPNManager, no NEPacketTunnelProvider, no NetworkExtension
+target in the project.
+
+Splynek collects NO user data — no telemetry, no analytics, no
+account, no ID. The only outgoing connections are downloads the
+user explicitly requests plus Bonjour LAN peer discovery to other
+Splynek instances on the user's own network. No backend servers.
+```
+
+**Why Apple flagged this**: the app description mentions "Use every network, at once" and references Wi-Fi / Ethernet / iPhone-tether bonding. Apple's auto-triage keys off that kind of language and sends the boilerplate VPN questionnaire to any networking-heavy app. The reply is bounded — once the reviewer accepts the IP_BOUND_IF explanation, the same answer carries forward on future submissions.
+
 ## Taking the screenshots
 
 Quickest path: do it yourself in ~10 minutes with the app running in real state. Apple won't accept placeholder/mockup screenshots — they want actual UI.
