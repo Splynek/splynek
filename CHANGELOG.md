@@ -3,6 +3,44 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.1 — Apple Intelligence Concierge (2026-04-21)
+
+**Strategy Bet S1 shipped** — the AI Concierge + Recipes now run on
+**Apple's on-device Foundation Models** on macOS 26+, falling back
+to LM Studio / Ollama on older hardware.
+
+What changed:
+
+- **Zero-install AI.** On any M-series Mac with Apple Intelligence
+  enabled in Settings, the Concierge and Recipes work out of the
+  box — no Ollama, no LM Studio, no model download. Inference runs
+  on the Neural Engine (ANE) through Apple's `FoundationModels`
+  framework shipped in macOS 26 (Tahoe).
+- **Three-tier provider detection.** At launch, `AIAssistant.detect()`
+  tries Apple Intelligence first, then LM Studio on :1234, then
+  Ollama on :11434. Whichever is ready wins. If none are, the
+  Concierge / Recipes tabs show three onboarding cards side-by-side
+  (Apple Intelligence → Open Settings; LM Studio / Ollama → Install).
+- **Transport-agnostic chat completion.** `chatCompletion()` now
+  dispatches to either the in-process Foundation Models path or the
+  existing HTTP `/v1/chat/completions` path based on the current
+  provider. All upper-layer callers (resolveURL, searchHistory,
+  generateRecipe, concierge) remain unchanged.
+- **Compiles cleanly on older Xcode.** `#if canImport(FoundationModels)`
+  guards the new code path so the SPM build still works on Xcode
+  versions without the macOS 26 SDK — in that case Splynek gracefully
+  falls through to the HTTP providers.
+- **New Provider raw value** `"Apple Intelligence"` surfaces in the
+  Concierge footer ("Using Apple on-device model via Apple
+  Intelligence"), giving users a clear signal that their data isn't
+  leaving the Mac.
+
+Privacy positioning: Apple markets Apple Intelligence as strictly
+on-device. That's now Splynek's AI story too — no telemetry, no
+account, no cloud, no model download. Kills the "I have to install
+Ollama first" friction for the vast majority of Apple-Intelligence-
+eligible users.
+
 ## v1.0 — Launch (2026-04-21)
 
 First stable release. Same binary as v0.50.4 with the marketing
