@@ -59,18 +59,19 @@ struct RootView: View {
     @ViewBuilder
     private var detail: some View {
         switch section {
-        case .downloads: DownloadView(vm: vm)
-        case .live:      LiveView(vm: vm)
-        case .torrents:  TorrentView(vm: vm, progress: torrent)
-        case .concierge: ConciergeView(vm: vm)
-        case .recipes:   RecipeView(vm: vm)
-        case .queue:     QueueView(vm: vm)
-        case .fleet:     FleetView(vm: vm)
-        case .benchmark: BenchmarkView(vm: vm)
-        case .history:   HistoryView(vm: vm)
-        case .settings:  SettingsView(vm: vm)
-        case .legal:     LegalView(vm: vm)
-        case .about:     AboutView(vm: vm)
+        case .downloads:   DownloadView(vm: vm)
+        case .live:        LiveView(vm: vm)
+        case .torrents:    TorrentView(vm: vm, progress: torrent)
+        case .concierge:   ConciergeView(vm: vm)
+        case .recipes:     RecipeView(vm: vm)
+        case .sovereignty: SovereigntyView(vm: vm)
+        case .queue:       QueueView(vm: vm)
+        case .fleet:       FleetView(vm: vm)
+        case .benchmark:   BenchmarkView(vm: vm)
+        case .history:     HistoryView(vm: vm)
+        case .settings:    SettingsView(vm: vm)
+        case .legal:       LegalView(vm: vm)
+        case .about:       AboutView(vm: vm)
         }
     }
 }

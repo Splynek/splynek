@@ -2,42 +2,44 @@ import SwiftUI
 
 /// Which top-level section the sidebar is currently displaying.
 enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
-    case downloads, live, torrents, concierge, recipes, queue, fleet, benchmark,
-         history, settings, legal, about
+    case downloads, live, torrents, concierge, recipes, sovereignty, queue,
+         fleet, benchmark, history, settings, legal, about
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .downloads: return "Downloads"
-        case .live:      return "Live"
-        case .torrents:  return "Torrents"
-        case .concierge: return "Concierge"
-        case .recipes:   return "Recipes"
-        case .queue:     return "Queue"
-        case .fleet:     return "Fleet"
-        case .benchmark: return "Benchmark"
-        case .history:   return "History"
-        case .settings:  return "Settings"
-        case .legal:     return "Legal"
-        case .about:     return "About"
+        case .downloads:   return "Downloads"
+        case .live:        return "Live"
+        case .torrents:    return "Torrents"
+        case .concierge:   return "Concierge"
+        case .recipes:     return "Recipes"
+        case .sovereignty: return "Sovereignty"
+        case .queue:       return "Queue"
+        case .fleet:       return "Fleet"
+        case .benchmark:   return "Benchmark"
+        case .history:     return "History"
+        case .settings:    return "Settings"
+        case .legal:       return "Legal"
+        case .about:       return "About"
         }
     }
 
     var systemImage: String {
         switch self {
-        case .downloads: return "arrow.down.circle"
-        case .live:      return "waveform.circle.fill"
-        case .torrents:  return "antenna.radiowaves.left.and.right"
-        case .concierge: return "sparkles"
-        case .recipes:   return "list.star"
-        case .queue:     return "line.3.horizontal.decrease.circle"
-        case .fleet:     return "laptopcomputer.and.arrow.down"
-        case .benchmark: return "bolt.fill"
-        case .history:   return "clock.arrow.circlepath"
-        case .settings:  return "gearshape"
-        case .legal:     return "doc.text"
-        case .about:     return "info.circle"
+        case .downloads:   return "arrow.down.circle"
+        case .live:        return "waveform.circle.fill"
+        case .torrents:    return "antenna.radiowaves.left.and.right"
+        case .concierge:   return "sparkles"
+        case .recipes:     return "list.star"
+        case .sovereignty: return "shield.lefthalf.filled"
+        case .queue:       return "line.3.horizontal.decrease.circle"
+        case .fleet:       return "laptopcomputer.and.arrow.down"
+        case .benchmark:   return "bolt.fill"
+        case .history:     return "clock.arrow.circlepath"
+        case .settings:    return "gearshape"
+        case .legal:       return "doc.text"
+        case .about:       return "info.circle"
         }
     }
 }
@@ -85,6 +87,19 @@ struct Sidebar: View {
                                         ? AnyView(ProgressView().controlSize(.mini))
                                         : nil))
                                 : AnyView(StatusPill(text: "PRO", style: .warning))
+                        )
+                    }
+                    // v1.2: Sovereignty tab — scan installed apps and
+                    // recommend EU / open-source alternatives.  Free
+                    // tier; no PRO gate.  The scanning itself is local
+                    // and zero-cost; it's a statement of values before
+                    // it's a feature, and gating it behind payment
+                    // would undermine that statement.
+                    NavigationLink(value: SidebarSection.sovereignty) {
+                        sidebarRow(
+                            title: "Sovereignty",
+                            systemImage: "shield.lefthalf.filled",
+                            accessory: AnyView(StatusPill(text: "NEW", style: .info))
                         )
                     }
                 } header: {
