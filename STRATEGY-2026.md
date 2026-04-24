@@ -1,12 +1,38 @@
 # Splynek 2026 — strategy memo
 
-**Date:** April 2026 (v1.0 shipped, in Apple review)
+**Date:** April 2026
+**Last updated:** 2026-04-24 (after v1.3 ship)
 **Author:** Paulo with strategic input from Claude Opus 4.7
 
 This is a *decision document*, not a brainstorm. Everything below has a
 "why", an "evidence", and a "next action". Where the evidence is from
 external research, sources are in-line. Where the call is opinionated
 judgement, it's marked *[judgement]* and the reasoning is shown.
+
+---
+
+## 0a. Ship-status snapshot (2026-04-24)
+
+| Bet | Status | Version |
+|---|---|---|
+| **S1 — Apple Intelligence Concierge** | ✅ Shipped, with v1.1.1 hotfix | v1.1 → v1.1.1 |
+| **S7 — Sovereignty tab** *(new bet, emerged mid-session)* | ✅ Shipped | v1.2 + v1.3 |
+| **S2 — Unbreakable Resume** | Not started | Planned |
+| **S3 — yt-dlp swallow** | Not started | Planned |
+| **S4 — iPhone Companion** | Not started | Planned |
+| **S5 — Splynek Accelerator** | Not started | Planned |
+| **S6 — File Witness** | Not started | Planned |
+
+**What shipped since this memo was written:**
+- **v1.0 Launch** (2026-04-21) — same binary as v0.50.4, version bump for ASC.
+- **v1.1 Apple Intelligence Concierge** (2026-04-21) — Strategy Bet S1 delivered: Apple Foundation Models as primary AI provider on macOS 26+, Ollama / LM Studio fallback. Shipped with a blank-state regression.
+- **v1.1.1 hotfix** (2026-04-23) — three-layer fix for the blank-state bug (GeometryReader + ConciergeState ObservableObject + `@MainActor` AppleIntelligenceDriver) plus a probe-validator gate on every AI-suggested URL + multi-candidate retry + solution-oriented fallback. Full write-up in POSTMORTEM-Concierge-Blank.md.
+- **v1.2 Sovereignty tab** (2026-04-24) — new bet S7, not in the original memo. See § 12 below.
+- **v1.3 Sovereignty catalog x2 + AI fallback** (2026-04-24) — catalog 50 → 90 entries, AI fallback for uncataloged apps.
+
+**MAS submission:** v1.0 is still in Apple review. v1.3 MAS archive is built and ready; uploads once v1.0 clears.
+
+**Strategic note on Sovereignty (S7):** the tab emerged unplanned during the v1.1.1 post-fix conversation, after the user reframed the product angle from "de-Americanise" to "pro-EU-sovereignty." It turned out to be the **most differentiating feature Splynek now ships** — no other download manager has anything like it, and it aligns perfectly with the no-cloud, no-telemetry moat the rest of the product already had. The memo's six-bet roadmap should now have S7 treated as co-equal to S1 for press-cycle sequencing. See § 12 below.
 
 ---
 
@@ -829,3 +855,96 @@ once a week — which is ~every working Mac user.
 *This memo is intended to be durable through April 2026. Revisit at
 v1.3 launch. Kill any bet that loses conviction in implementation;
 the bet count should decrease, not increase, with time.*
+
+---
+
+## 12. S7 — Sovereignty tab (added 2026-04-24, after the fact)
+
+**Shipped in v1.2 + v1.3.** Not in the original memo; emerged during
+the v1.1.1 post-fix conversation as a user-originated idea. Worth
+documenting here because it has real strategic weight.
+
+### The idea (one-line)
+
+Scan the user's Mac locally, show every installed app's
+country-of-origin with a neutral badge, and recommend European or
+open-source alternatives where they exist. One-click Install via
+Splynek's own download engine when the alternative has a stable
+canonical URL.
+
+### Why it's a bet, not a feature
+
+- **Zero current competitors.** european-alternatives.eu is a static
+  list; AlternativeTo is a website without app-scanning; Setapp
+  surfaces alternatives only to push its own subscription. Nobody
+  combines app-scan + LLM-curated recs + one-click install, and
+  nobody does it local-only.
+- **Aligns perfectly with the no-cloud / no-telemetry moat.** The
+  tab's tagline — *"Everything stays local. No account, no
+  telemetry, no app list leaving your device."* — could be written
+  for any Splynek feature. The values snap together without
+  contortion.
+- **Hits two simultaneous trends**: EU Digital Markets Act +
+  Digital Services Act regulatory posture, and rising European-
+  alternatives discourse (Proton's growth, Nextcloud's enterprise
+  traction, Mullvad's cultural moment). One feature capturing both.
+- **Bleeds back into the core product.** Every "switch to X" click
+  is a download. Sovereignty drives Splynek usage, not just sits
+  next to it.
+- **Origin-neutral framing.** The user's key insight: this is
+  pro-EU-sovereignty, not anti-any-country. Chinese apps sit in
+  the same bucket as American ones. Makes the feature travel —
+  Japanese users, Indian users, African users all have the same
+  "where is this software controlled from" question, even if their
+  own answer is different from a European user's.
+
+### What's shipped
+
+- Local `SovereigntyScanner` — enumerates `/Applications`,
+  `/Applications/Utilities`, `~/Applications` via `FileManager` +
+  `Bundle(url:)`. Zero entitlements, zero network, zero persistence.
+  Source at `Sources/SplynekCore/SovereigntyScanner.swift` with an
+  audited privacy contract at the top.
+- `SovereigntyCatalog` — 90 handwritten entries (v1.3). `Origin`
+  taxonomy: `.europe / .oss / .europeAndOSS / .unitedStates /
+  .china / .russia / .other`. Targets never use European / OSS
+  origins; alternatives never use US / CN / RU. Invariants enforced
+  by `Origin.isRecommendable`.
+- UI — filter chips (All / European / OSS), target-origin badges
+  (neutral grey for US / CN / RU / OTHER; coloured for the good
+  picks), one-click Install for alternatives with stable download
+  URLs (Firefox + Thunderbird at launch), AI-fallback disclosure
+  for apps not in the catalog.
+- [SOVEREIGNTY-CONTRIBUTING.md](SOVEREIGNTY-CONTRIBUTING.md) —
+  schema, invariants, design principles, PR submission flow.
+  Community contributions are the catalog growth path.
+
+### What's next
+
+1. **Catalog expansion to 150+** via community PRs and manual
+   backfill. ~1 hour of research per 20 entries; URL-rot is the
+   real maintenance burden.
+2. **AI-fallback prompt tuning** — the 3B on-device model
+   occasionally ignores the "NEVER US/CN/RU" rule. Add bad-output
+   exemplars + a post-filter that checks homepage TLDs.
+3. **Localisation** (FR / DE / ES / IT). Sovereignty is the
+   EU-market-credibility feature; shipping English-only is a
+   self-own. Start with FR + DE.
+4. **Press cycle.** Hook: *"Scan your Mac. See where every app
+   comes from. Choose European or open-source alternatives. All
+   local, all private."* Best timed for the MAS go-live +
+   catalog-over-150 moment. Outlets: Le Monde, El País, Der
+   Spiegel, Wired, FT, TechCrunch EU.
+
+### Conviction
+
+**High.** S7 is now the single most-defensible feature Splynek has
+— every piece (multi-interface downloads, LAN cache, crypto
+receipts, Apple Intelligence) is copyable, but combining them with
+a local-only app scanner that positions Splynek as a values-aligned
+piece of software is much harder to replicate by any competitor
+that isn't willing to adopt the no-cloud discipline end-to-end.
+
+Compared to the original six bets, S7 ranks equal to S1 for
+press-cycle importance and probably higher for long-term
+differentiation. Recommend: don't skip it for any later bet.

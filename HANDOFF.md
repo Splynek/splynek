@@ -22,67 +22,93 @@ xcrun stapler staple build/Splynek.dmg
 **Tests:** `swift run splynek-test` (117 tests, all green)
 **CLI:** `swift run splynek-cli version`
 
-**Current version:** 0.47 — P1+P2+P3 QA polish pass before first App Store submission. 16 real bugs fixed + tooltips added to jargon controls + Queue Summary card redesigned. Three working build paths: SPM (`swift build`), Xcode DMG (`xcodebuild -scheme Splynek`), Xcode MAS (`xcodebuild -scheme Splynek-MAS`). The MAS .pkg is signed with Apple Distribution and ready for ASC upload. The DMG is notarised + stapled and sits on the GitHub v0.44 Release as the public download (SHA-256 `cdcbbaeac8d0bb41f60dd8e3ff0aeb76f1d680200e4ae2c5a3f786820adfe664`).
+**Current version: v1.3 — shipped 2026-04-24.** Notarised DMG published on GitHub Releases. MAS archive built, waiting for v1.0 to clear App Store review before uploading v1.3 as the update. Full release history + download URLs under § Shipped releases below.
 
-**What's DONE on the commercial/distribution side (was blocked last session):**
+---
+
+## Shipped releases (in order)
+
+All Developer-ID-signed, notarised, stapled, and published at
+<https://github.com/Splynek/splynek/releases>. SHA-256 hashes match the
+release-notes bodies.
+
+### v1.3 — Sovereignty catalog 2× + AI fallback (2026-04-24)
+- **DMG**: [Splynek-1.3.dmg](https://github.com/Splynek/splynek/releases/download/v1.3/Splynek-1.3.dmg) — `d08ee9f5546aa96f1c66b1011508f76e2c6852f0275f66fe7e5817ec7d7c73d4`
+- Sovereignty catalog 50 → 90 entries (new: Arc, Opera/CN, Superhuman, HEY, OmniFocus, TickTick/CN, Asana, Trello, Jira, Confluence, monday.com, Raycast, Magnet, Moom, Warp, Nova, Navicat/HK, Plex, Emby, NordVPN, ExpressVPN, Perplexity, Copilot, Steam + more)
+- Thunderbird joins Firefox as one-click-Install alternatives
+- **New: AI fallback for uncataloged apps.** Per-app Ask-AI button routes through the local LLM with a sovereignty-focused prompt. Results render inline. Gated on `vm.aiAvailable`.
+- Related commits: `/Users/pcgm/Claude Code` @ `4c27964`, `/Users/pcgm/splynek-pro` @ `f62a2ed`
+
+### v1.2 — Sovereignty tab (2026-04-24)
+- **DMG**: [Splynek-1.2.dmg](https://github.com/Splynek/splynek/releases/download/v1.2/Splynek-1.2.dmg) — `e50cdf80366542300b300ea6708624edf660785f77291f04eb8f37cd2b8dc52d`
+- New Sidebar tab **Sovereignty** (`shield.lefthalf.filled`, NEW badge) — scans installed apps locally and surfaces European or open-source alternatives
+- Framing is explicitly **pro-EU-sovereignty, not anti-any-country.** Target apps show their origin as a neutral grey badge (US / CN / RU / OTHER); alternatives show EU / OSS / EU+OSS coloured badges. The `Origin.isRecommendable` property enforces that alternatives can only be European or OSS.
+- 50-entry seed catalog covering common US/CN/RU/OTHER apps
+- Filter chips: All alternatives / European only / Open-source only
+- One-click "Install" button for alternatives with stable download URLs (Firefox v1.2; Thunderbird added v1.3)
+- Community-contribution guide at [SOVEREIGNTY-CONTRIBUTING.md](SOVEREIGNTY-CONTRIBUTING.md)
+- Concierge regex short-circuit for cancel/pause commands (10–17 s → microseconds)
+- Apple Intelligence `session.prewarm()` on input-focus
+- Related commits: `/Users/pcgm/Claude Code` @ `e09d69a`, `/Users/pcgm/splynek-pro` @ `ca38159`
+
+### v1.1.1 — Concierge blank-state hotfix (2026-04-23)
+- **DMG**: [Splynek-1.1.1.dmg](https://github.com/Splynek/splynek/releases/download/v1.1.1/Splynek-1.1.1.dmg) — `f114345f690f30acbdc546f14da6d09999a82f93514a4f83122c0fa4501d3a79`
+- v1.1 shipped with a **macOS 26 SwiftUI regression** that blanked the entire NavigationSplitView the instant a user clicked a Concierge suggestion chip. Fixed in v1.1.1 via **three combined changes** (all load-bearing; see POSTMORTEM).
+- `@MainActor AppleIntelligenceDriver` enum wraps `LanguageModelSession` per Apple's WWDC25 session 286 canonical pattern — keeps `Observation.Observable` notifications on MainActor so SwiftUI narrows invalidation correctly.
+- Dedicated `ConciergeState: ObservableObject` holds `chat` + `thinking`. Scopes re-renders to `ConciergeView` only — not Sidebar + RootView.
+- `GeometryReader` + explicit `.frame(width: geo.size.width, height: geo.size.height)` in `ConciergeView.body`. Pins the detail column so `NavigationSplitView` can't shrink it below `min: 640` during a ViewBuilder branch swap.
+- Plus Concierge upgrades: **probe-validator** (every AI-suggested URL runs through `Probe.run` before Concierge surfaces `.download` / `.queue`), **multi-candidate retry** (model returns `candidates: [String]` — we probe in order, first success wins), **solution-oriented fallback** (when every URL fails, render the model's `alternatives: [String]` project names instead of an error message), **tolerant JSON extractor** (handles markdown fences + prose-wrapped output).
+- Full write-up in [POSTMORTEM-Concierge-Blank.md](POSTMORTEM-Concierge-Blank.md) — four dead-end debugging paths, the clinching diagnostic, six rules-of-thumb for `NavigationSplitView` detail panes on macOS 26. **Required reading for anyone touching the Concierge or adding a new detail view.**
+- Related commits: `/Users/pcgm/Claude Code` @ `15b1645`/`17e2597`, `/Users/pcgm/splynek-pro` @ `eebc756`
+
+### v1.1 — Apple Intelligence Concierge (2026-04-21)
+- Apple Foundation Models as the primary AI provider on macOS 26+. Ollama + LM Studio remain as fallback / pre-macOS-26 path. `AIAssistant.detect()` probes Apple Intelligence first, then LM Studio, then Ollama — first ready wins.
+- Zero-install on eligible Macs. Footer reads "Using Apple on-device model via Apple Intelligence".
+- **Shipped with the blank-state bug** — superseded by v1.1.1.
+
+### v1.0 — Launch (2026-04-21)
+- First stable App Store candidate. Same binary as v0.50.4 with `MARKETING_VERSION` bumped to 1.0.
+- Still in App Store review (v1.0 submitted; not yet Ready for Sale as of 2026-04-24).
+
+### Pre-1.0 context
+
+**v0.47** — P1+P2+P3 QA polish pass. 16 bugs fixed. Tooltips added to jargon controls. Queue Summary card redesigned.
+**v0.46** — 6 P1 bugs fixed + 7 P2 polish items. Throughput clamped to 0.5 s min window.
+**v0.45** — MAS build infrastructure. XcodeGen, sandbox entitlements, StoreKit 2.
+**v0.44** — Public/private split. Pro modules moved to `splynek-pro`. Public ships stubs.
+**v0.40** — BitTorrent v2, DHT, persistent resume.
+**v0.30–0.43** — LAN fleet, Bonjour discovery, REST API, web dashboard, metalink, merkle.
+
+---
+
+## MAS submission status (as of 2026-04-24)
 
 - Apple Developer Program enrolled (€99, Team ID `58C6YC5GB5`)
 - App ID registered: `app.splynek.Splynek` with `In-App Purchase` capability
 - Apple Distribution + Developer ID Application certs in keychain
-- App Store Connect app record created (macOS app "Splynek", bundle `app.splynek.Splynek`, SKU `splynek-mac`)
+- App Store Connect app record created (macOS app "Splynek", SKU `splynek-mac`)
 - Paid Apps Agreement signed (19/04/2026 – 19/04/2027)
 - Tax forms submitted + active (W-8BEN + U.S. Foreign Status)
-- DSA (EU Digital Services Act) declaration filed as trader via `TraditioneForAll, Lda` contact details (Em revisão)
-- ASC version page filled: subtitle, description (2.2k chars), keywords, promo, URLs, copyright, review notes (3.3k chars), contact info
+- DSA (EU Digital Services Act) declaration filed as trader via `TraditioneForAll, Lda`
+- ASC version page filled: subtitle, description, keywords, promo, URLs, copyright, review notes
 - App Privacy card published: 14× Data Not Collected + privacy URL
-- Age rating: 4+
-- Categories: Utilities (primary) + Productivity (secondary)
-- Content rights declared: no third-party content
+- Age rating: 4+; Categories: Utilities (primary) + Productivity (secondary)
 - `notarytool` keychain profile saved: `AC_PASSWORD`
+- **v1.0 uploaded to ASC → still in review.** Once it clears to Ready for Sale, upload `build/Splynek-MAS.xcarchive` (currently v1.3) as the update via Xcode Organizer. Don't upload before v1.0 clears — it would invalidate the review.
 
-**What's STILL user-side pending** (end of the v0.47 session):
+**MAS_LISTING.md** holds the full listing copy and screenshot plan.
 
-1. Re-upload the v0.47 MAS `.pkg` via Xcode Organizer:
-   `open "/Users/pcgm/Claude Code/build/Splynek-MAS.xcarchive"` → Distribute App → App Store Connect → Upload.
-2. On ASC version page: update Versão to `0.47`, attach build `0.47 (47)`.
-3. Upload screenshots (user has 5+ Retina screenshots already captured; see `MAS_LISTING.md § Screenshots plan`).
-4. Click **Adicionar para revisão** (Submit for Review).
-5. Respond to Apple if they reject — review notes cover the likely concerns (network.server, Ollama dependency, BitTorrent).
+---
 
-**Dev override for Pro features** (ADDED v0.47):
-```
+## Dev override for Pro features
+
+```sh
 defaults write app.splynek.Splynek splynekDevProUnlocked -bool YES
+# Relaunch the MAS build — Concierge + Recipes tabs go from PRO-locked to unlocked.
+defaults delete app.splynek.Splynek splynekDevProUnlocked
 ```
-Relaunch the MAS build — Assistant + Recipes tabs appear, Pro = ACTIVE. Short-circuits StoreKit in `splynek-pro/Sources/SplynekPro/LicenseManager.swift`. Clear with `defaults delete app.splynek.Splynek splynekDevProUnlocked`.
 
-**v0.45 summary (for context):** MAS build infrastructure.
-Xcode project (`project.yml` → XcodeGen), sandbox entitlements,
-StoreKit 2 integration in `splynek-pro`, `#if MAS_BUILD` guards on
-GlobalHotkey + UpdateChecker. MAS target expects `splynek-pro` as
-a sibling checkout at `../splynek-pro`. See README § 0.45.
-
-**v0.44 summary (for context):** the public/private split. Pro
-modules (AI Concierge, Recipes, Scheduling, LAN-exposed Fleet,
-HMAC license) moved to `Splynek/splynek-pro`. Public ships
-free core + API-compatible stubs (`Sources/SplynekCore/ProStubs.swift`).
-117 tests (was 165; 48 moved). Free DMG: 2.3 MB.
-
-**v0.46 summary (for context):** 6 P1 bugs fixed + 7 P2 polish
-items. Pause no longer looks cancelled. Phase strip resets on
-pause/cancel. Trash icon works on paused jobs. Bad-URL error
-visible inline. Throughput clamped to 0.5 s min window (no more
-fantasy GB/s spikes). Phase pills readable (icon-only non-current).
-iPhone USB tether detected + labeled correctly. Wi-Fi icon blue
-(not yellow). Queue 3-dots menu enriched. Duplicate toolbar icons
-removed. Benchmark Run button surfaced inline. About logo shrunk.
-
-**v0.47 summary (this session):** P3 polish. Queue Summary card
-redesigned (hero count + state dots + bulk action bar with
-Retry-all-failed + Clear-finished). Tooltips pass — ~12 new
-`.help()` on jargon controls (Connections per interface,
-Per-interface DoH, Load Metalink, Load Merkle). New
-`labelWithInfo(_:tooltip:)` helper in DownloadView. Dev-override
-flag for Pro audit added to splynek-pro's LicenseManager.
+Short-circuits StoreKit. See `splynek-pro/Sources/SplynekPro/LicenseManager.swift::devOverrideKey`. Note: `vm.aiAvailable` is its own thing — it's true when any backend (Apple Intelligence / Ollama / LM Studio) is detected, regardless of Pro status.
 
 **D1 split invariants (v0.44+):**
 - Free-tier `isPro = false` is compile-time-enforced — it's a
@@ -197,6 +223,20 @@ Load-bearing; don't break them without explicit intent.
     in [POSTMORTEM-Concierge-Blank.md](POSTMORTEM-Concierge-Blank.md) — v1.1
     shipped without any of these three protections and the
     Concierge blanked the whole window on first chip click.
+12. **Sovereignty tab privacy contract.** `SovereigntyScanner` uses
+    `FileManager.contentsOfDirectory` + `Bundle(url:)` against
+    `/Applications`, `/Applications/Utilities`, and `~/Applications`.
+    Sandbox-legal, no entitlements, no Spotlight daemon access. The
+    privacy invariants are audited at the top of
+    `Sources/SplynekCore/SovereigntyScanner.swift` — enumeration only
+    (no content reads), stays on-device (no network), opt-in
+    one-shot (no background scans, no persistence), filters system
+    apps. **Do not add NSMetadataQuery, network calls, caching, or
+    background scanning.** The tab is a statement of values; any
+    code that breaks the audit trail undermines the statement.
+    `SovereigntyCatalog` invariants: targets never use European /
+    OSS origins; alternatives never use US / CN / RU. Enforce via
+    the `Origin.isRecommendable` property.
 
 ---
 
@@ -355,51 +395,56 @@ future work — not blocked, just not prioritised.
 
 ## Natural next bites (ordered queue)
 
-### A — Ship the MAS submission
+### A — Ship v1.3 to the MAS when v1.0 clears review
 
-Only user-side actions remain (see the user-side pending list at the
-top). After v0.47 `.pkg` re-upload + build attach + screenshots +
-Submit-for-Review, Apple typically responds within 24–72 hours. Any
-rejection-response iteration belongs to the next session. If Apple
-asks about network.server or Ollama, the review notes already
-pre-address those — just point them at the relevant paragraph.
+The MAS pipeline is locked; only the state transition is blocking.
+1. Monitor App Store Connect for v1.0 → Ready for Sale (or rejection).
+2. When it clears: open `/Users/pcgm/Claude Code/build/Splynek-MAS.xcarchive` in Xcode Organizer → Distribute App → App Store Connect → Upload.
+3. On ASC version page: update Versão to `1.3`, attach build `1.3 (1300)`, click Submit.
+4. If Apple rejects v1.0, iterate on review notes (they already pre-address network.server, Ollama, BitTorrent); resubmit with v1.3 once resolved.
 
-### B — Pro-tier audit (user is doing this right now)
+### B — Sovereignty catalog growth (community + manual)
 
-User has the dev override on. Any P1/P2/P3 bugs found in Concierge,
-Recipes, Schedule editor, or LAN web dashboard — triage like v0.46:
-P1 must-fix before submission, P2 polish before screenshots, P3
-deferred to next update. The Pro views live in
-`splynek-pro/Sources/SplynekPro/Views/`.
+Target: ~50 → 90 → 150+ entries. [SOVEREIGNTY-CONTRIBUTING.md](SOVEREIGNTY-CONTRIBUTING.md)
+is live so external PRs are possible. Manual next-pass:
+- **More `downloadURL`s** for popular alternatives that have stable canonical URLs. Firefox + Thunderbird currently work via Mozilla's redirect service. Research: Signal's `updates.signal.org` pattern, VLC's `get.videolan.org`, Bitwarden's GitHub-releases/latest, LibreOffice's stable mirror. One afternoon of careful URL-verification per batch — prone to 404 rot if the author isn't careful.
+- **More entries** for apps users actually have installed. Gap areas: graphics / illustration tools (Sketch, Procreate), DAWs (Logic Pro is built-in but Ableton is German), language IDEs (JetBrains suite — Czech), dev databases (Sequel Ace is OSS, TablePlus is Singapore-based), file-sync (Resilio Sync is US). When adding targets whose vendors are non-obvious, cite the source in the PR body.
 
-### C — Stripe + Postmark wire-up (if going beyond MAS-only)
+### C — Sovereignty AI-fallback prompt tuning
 
-MONETIZATION.md describes a dual-channel plan: MAS (Apple takes 15%
-under SBP) + direct Stripe (full revenue). `Scripts/gen-license.py`
-is still around but obsolete; Stripe success webhook would instead
-push a StoreKit offer-code redemption OR gate a DMG Developer-ID
-build. Open question — not started.
+Known issue: the 3B on-device model occasionally suggests US alternatives despite the strict "NEVER US/CN/RU" rule (in testing, Prime Video → YouTube/Netflix hallucination). Improvement path:
+- Add 2–3 **bad-output examples** to the system prompt ("if the user has X, do NOT suggest Y because Y is also US-based").
+- Consider running the AI response through a post-filter that rejects suggestions whose homepage TLD / registrar-country matches US / CN / RU. Brittle but catches the worst offenders.
+- A/B test the improvements using `/tmp/concierge-ab/` harness (adapt it for the sovereignty prompt). Each candidate prompt gets N runs against a held-out test set.
 
-### D — Post-launch cleanup
+### D — Localisation (FR / DE / ES / IT)
 
-- Bundle `splynek-cli` inside the MAS .app (sandbox-compatible CLI).
-  Currently MAS build simply omits the CLI; DMG users retain it.
-- Data migration DMG→MAS on first launch (see SANDBOX_AUDIT.md §4).
-- Full auto-update installer for DMG users (mount DMG + copy +
-  relaunch; needs the notarised build which v0.46 now provides).
-- `hash_request` / `hashes` peer messages for pure-v2 magnet
-  metadata (current v2 verify works for magnets that ship piece
-  layers).
-- Unified peer pool for BT (merge outbound `PeerCoordinator` with
-  inbound `SeedingService` for cross-direction tit-for-tat).
+Sovereignty is the EU-market-credibility feature; shipping it only in English is a self-own. Start with the Sovereignty tab's strings (small surface area, ~30 localisable strings). Pattern:
+- Add `Localizable.xcstrings` catalog under `Resources/`
+- Extract `String` literals from `SovereigntyView.swift` into `String(localized:)` calls
+- Machine-translate (DeepL / GPT) for first draft, flag for native-speaker review
+- Start with FR (largest EU market) and DE (Splynek's sovereignty-forward audience)
+- If well-received, roll the pattern out to Concierge + Recipes + Downloads
 
-### E — Marketing
+### E — Monetization / marketing (unchanged from prior sessions)
 
-- Show HN (draft at `SHOW_HN.md`). Best done after MAS goes live.
-- Product Hunt. Same timing.
-- Homebrew cask template at `Packaging/splynek.rb`. Update SHA when
-  v0.47 DMG lands on the Release asset (SHA is already current —
-  see top of this file).
+- **Stripe + Postmark direct channel** — dual-channel revenue (see MONETIZATION.md). Not blocked; not started.
+- **Show HN** — draft at `SHOW_HN.md`. Best done after MAS goes live. Rewrite around the Sovereignty angle: "Splynek — a Mac download manager that also helps you audit your software supply chain. All local, all private."
+- **Product Hunt** — same timing.
+- **Homebrew cask** — template at `Packaging/splynek.rb`. Update SHA when new DMG lands on a Release asset. v1.3 SHA is `d08ee9f5546aa96f1c66b1011508f76e2c6852f0275f66fe7e5817ec7d7c73d4`.
+- **EU press outreach** — Le Monde (FR), El País (ES), Der Spiegel (DE), Wired, FT. Hook: Sovereignty-tab scan video shot on a stock Mac. Co-ordinate with any MAS approval date to avoid review disruption.
+
+### F — Future platform bets (scoped in STRATEGY-2026.md)
+
+- **S2 — Unbreakable Resume** (HTTP Range + NWPathMonitor + curated mirror failover). Multi-week.
+- **S5 — Splynek Accelerator** (browser extension + HLS pre-buffer). Multi-week.
+- **iOS Companion** — Share Extension + Live Activity. Multi-week.
+
+See [STRATEGY-2026.md](STRATEGY-2026.md) for the full frontier-memo.
+Sovereignty itself was not in STRATEGY-2026.md's original six bets —
+it emerged as a v1.2 side-bet after the user's framing-shift
+conversation and turned out to be the most differentiating feature
+Splynek now ships. Worth a strategic re-read.
 
 ---
 
