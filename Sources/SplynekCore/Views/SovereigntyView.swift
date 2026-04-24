@@ -24,6 +24,26 @@ struct SovereigntyView: View {
     /// lifetime.
     @State private var filter: Filter = .all
 
+    /// v1.3 AI fallback state.  For apps NOT in the curated catalog,
+    /// the user can opt-in per-app to ask the local LLM for
+    /// alternative suggestions.  State is view-local: nothing is
+    /// persisted across launches, nothing is cached between scans.
+    @State private var uncatalogedExpanded: Bool = false
+    @State private var aiRequests: [String: AIRequestState] = [:]
+
+    enum AIRequestState: Equatable {
+        case idle
+        case loading
+        case ready([AISuggestion])
+        case error(String)
+    }
+
+    struct AISuggestion: Hashable {
+        let name: String
+        let note: String
+        let homepage: URL?
+    }
+
     enum Filter: String, CaseIterable, Identifiable {
         case all, european, oss
         var id: String { rawValue }
@@ -148,12 +168,186 @@ struct SovereigntyView: View {
                     if matchedRows.isEmpty && !scanner.isScanning {
                         noMatchesFooter
                     }
+                    if vm.aiAvailable {
+                        uncatalogedSection
+                            .padding(.top, 8)
+                    }
                 }
                 .padding(.vertical, 16)
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    /// v1.3 uncataloged-apps disclosure.  Apps that aren't in the
+    /// handwritten catalog go here.  When collapsed, it's a single
+    /// clickable row ("Apps we don't know yet (N) — expand to ask
+    /// AI").  When expanded, it lists up to 25 apps; each has an
+    /// "Ask AI" button that routes through the local LLM for a
+    /// handful of European / open-source suggestions.
+    @ViewBuilder
+    private var uncatalogedSection: some View {
+        let uncataloged = scanner.apps.filter {
+            SovereigntyCatalog.alternatives(for: $0.id) == nil
+        }
+        if !uncataloged.isEmpty {
+            DisclosureGroup(isExpanded: $uncatalogedExpanded) {
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(Array(uncataloged.prefix(25))) { app in
+                        uncatalogedRow(app)
+                    }
+                    if uncataloged.count > 25 {
+                        Text("…and \(uncataloged.count - 25) more.")
+                            .font(.caption).foregroundStyle(.secondary)
+                            .padding(.top, 4)
+                    }
+                }
+                .padding(.top, 10)
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(.purple)
+                    Text("Apps we don't know yet (\(uncataloged.count))")
+                        .font(.system(.subheadline, weight: .semibold))
+                    Spacer()
+                    Text("Ask AI")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(14)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.purple.opacity(0.05))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(Color.purple.opacity(0.18), lineWidth: 0.5)
+            )
+        }
+    }
+
+    @ViewBuilder
+    private func uncatalogedRow(_ app: SovereigntyScanner.InstalledApp) -> some View {
+        let state = aiRequests[app.id] ?? .idle
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: "app")
+                    .foregroundStyle(.secondary)
+                Text(app.name)
+                    .font(.system(.subheadline, weight: .semibold))
+                if let v = app.version {
+                    Text("v\(v)")
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                askAIButton(for: app, currentState: state)
+            }
+            aiResultView(for: state)
+        }
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(Color.primary.opacity(0.03))
+        )
+    }
+
+    @ViewBuilder
+    private func askAIButton(
+        for app: SovereigntyScanner.InstalledApp,
+        currentState: AIRequestState
+    ) -> some View {
+        switch currentState {
+        case .loading:
+            HStack(spacing: 6) {
+                ProgressView().controlSize(.small)
+                Text("Asking…").font(.caption).foregroundStyle(.secondary)
+            }
+        case .ready, .error:
+            Button {
+                requestAIAlternatives(for: app)
+            } label: {
+                Label("Ask again", systemImage: "arrow.clockwise")
+                    .font(.callout)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        case .idle:
+            Button {
+                requestAIAlternatives(for: app)
+            } label: {
+                Label("Ask AI", systemImage: "sparkles")
+                    .font(.callout)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
+    }
+
+    @ViewBuilder
+    private func aiResultView(for state: AIRequestState) -> some View {
+        switch state {
+        case .idle, .loading:
+            EmptyView()
+        case .ready(let suggestions):
+            if suggestions.isEmpty {
+                Text("The local LLM didn't know any good European or open-source alternatives. Contribute one at github.com/Splynek/splynek.")
+                    .font(.caption).foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(suggestions, id: \.self) { s in
+                        HStack(alignment: .top, spacing: 8) {
+                            Image(systemName: "arrow.right.circle.fill")
+                                .foregroundStyle(.purple)
+                                .font(.callout)
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 6) {
+                                    Text(s.name)
+                                        .font(.system(.subheadline, weight: .semibold))
+                                    if let url = s.homepage {
+                                        Link(destination: url) {
+                                            Image(systemName: "arrow.up.right.square")
+                                                .font(.caption)
+                                        }
+                                    }
+                                }
+                                if !s.note.isEmpty {
+                                    Text(s.note)
+                                        .font(.caption).foregroundStyle(.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                            Spacer()
+                        }
+                    }
+                }
+                .padding(.top, 2)
+            }
+        case .error(let msg):
+            Text(msg)
+                .font(.caption).foregroundStyle(.red)
+        }
+    }
+
+    private func requestAIAlternatives(for app: SovereigntyScanner.InstalledApp) {
+        aiRequests[app.id] = .loading
+        Task { @MainActor in
+            do {
+                let raw = try await vm.ai.sovereigntyAlternatives(
+                    appName: app.name, bundleID: app.id
+                )
+                let mapped = raw.map { s in
+                    AISuggestion(name: s.name, note: s.note, homepage: s.homepage)
+                }
+                aiRequests[app.id] = .ready(mapped)
+            } catch {
+                aiRequests[app.id] = .error(
+                    "AI request failed: \(error.localizedDescription)"
+                )
+            }
         }
     }
 

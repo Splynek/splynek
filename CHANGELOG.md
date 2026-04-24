@@ -3,6 +3,55 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.3 — Sovereignty catalog x2 + AI fallback (2026-04-24)
+
+Same-day follow-up release focused on making the Sovereignty tab
+more useful for more people.
+
+**Catalog expansion — 50 → 90 entries.** New categories:
+
+- **Browsers** — Arc (US), Opera (Chinese-majority-owned since 2016).
+- **Mail/calendar** — Superhuman (US), HEY (US), Notion Calendar (US).
+- **Tasks & project management** — OmniFocus, TickTick (CN),
+  Microsoft To Do, Asana, ClickUp, Trello (Atlassian/AU),
+  monday.com (IL), Jira + Confluence (Atlassian/AU), Basecamp.
+- **Launcher / window mgmt** — Raycast, Magnet, Moom. Recommend
+  Rectangle (OSS), Amethyst (OSS), Alfred (UK), LaunchBar (Austria).
+- **Dev / terminal** — Warp, Nova, BBEdit, Transmit, Navicat (HK).
+- **Media & streaming** — Plex, Emby → Jellyfin (OSS). Riverside,
+  Descript → Audacity (OSS).
+- **VPN** — NordVPN, ExpressVPN → ProtonVPN (CH), Mullvad (SE).
+- **System utilities** — iStat Menus (AU), Amphetamine (US),
+  Steam (US), Adobe Acrobat Pro.
+- **AI tools** — Perplexity, Microsoft Copilot → Mistral Le Chat
+  (France), LM Studio (OSS).
+
+Every new entry has a properly-set `targetOrigin` (US / CN / RU /
+OTHER) and 1–2 European or open-source alternatives with proper
+license + country notes.
+
+**Stable download URLs for more alternatives:** Thunderbird joins
+Firefox in the list of alternatives with one-click "Install"
+buttons.  Both leverage Mozilla's stable redirect service
+(`download.mozilla.org/?product=…-latest&os=osx&lang=en-US`).
+
+**New: AI fallback for uncataloged apps.** Scans occasionally turn
+up apps that aren't in the handwritten catalog.  v1.3 adds a
+collapsed disclosure at the bottom of the scan results —
+"Apps we don't know yet (N)" — that expands to list up to 25 of
+them.  Each has an **Ask AI** button that calls the local LLM with
+a focused system prompt (European or open-source suggestions only,
+never US/CN/RU, include homepage URLs when confident).  Results
+render inline.
+
+Caveats documented in the UI + the post-mortem:
+- The 3B on-device model occasionally still suggests US alternatives
+  despite the prompt.  Users should verify.
+- AI-fallback is Pro-only (gated behind `vm.aiAvailable`).  Free-tier
+  users see the catalog-based section but no AI fallback button.
+- No probe validation on AI suggestions — we're showing project
+  names + homepage URLs, not starting downloads.
+
 ## v1.2 — Sovereignty + smarter Concierge (2026-04-24)
 
 **New tab: Sovereignty.** Splynek now scans your Mac's installed apps

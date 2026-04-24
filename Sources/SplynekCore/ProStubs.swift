@@ -90,6 +90,15 @@ final class AIAssistant {
         }
     }
 
+    /// v1.3: one AI suggestion for the Sovereignty tab's
+    /// uncataloged-apps fallback flow.  Shared API surface between
+    /// the stub (here) and the real impl (splynek-pro/AIAssistant).
+    struct SovereigntySuggestion: Hashable, Sendable {
+        let name: String
+        let note: String
+        let homepage: URL?
+    }
+
     init() {}
 
     /// Always reports AI unavailable in the free build.
@@ -110,6 +119,17 @@ final class AIAssistant {
     }
 
     func generateRecipe(goal: String) async throws -> DownloadRecipe {
+        throw UnavailableError()
+    }
+
+    /// v1.3 Sovereignty AI fallback — see the real impl in
+    /// splynek-pro/AIAssistant.swift for the working behaviour.
+    /// The stub always throws; free-tier builds never surface the
+    /// "Ask AI" button because its Sovereignty view gates it behind
+    /// `vm.aiAvailable`, which is always false in the stub.
+    func sovereigntyAlternatives(
+        appName: String, bundleID: String, timeout: TimeInterval = 30
+    ) async throws -> [SovereigntySuggestion] {
         throw UnavailableError()
     }
 }
