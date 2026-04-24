@@ -183,6 +183,20 @@ Load-bearing; don't break them without explicit intent.
 10. **Throughput calc clamps min-window to 0.5 s (v0.46).** In
     `DownloadEngine.swift::LaneStats.record()`. Prior 0.001 s
     clamp produced fantasy "5 GB/s" on the first chunk landing.
+11. **NavigationSplitView detail panes on macOS 26 need belt +
+    suspenders sizing.** `GeometryReader { geo in … .frame(width:
+    geo.size.width, height: geo.size.height) }` is mandatory, not
+    optional, whenever a detail view's inner `@ViewBuilder`
+    produces branches with different intrinsic widths (e.g.
+    empty-state ↔ ScrollView). `.frame(maxWidth: .infinity)` alone
+    is NOT enough — it's the accept-ceiling, not the report-up
+    value. Related: chat/transcript state belongs in its own
+    ObservableObject, not on the root VM, so sibling re-renders
+    don't collide on a layout change. `LanguageModelSession` must
+    be created on `@MainActor` per WWDC25 session 286. Full story
+    in [POSTMORTEM-Concierge-Blank.md](POSTMORTEM-Concierge-Blank.md) — v1.1
+    shipped without any of these three protections and the
+    Concierge blanked the whole window on first chip click.
 
 ---
 

@@ -502,11 +502,35 @@ final class SplynekViewModel: ObservableObject {
     /// True while a history search is in flight.
     @Published var aiHistoryThinking: Bool = false
 
-    /// Running chat transcript for the AI Concierge view. Each entry
-    /// is one bubble — user on the right, assistant on the left.
-    @Published var aiChat: [ConciergeMessage] = []
-    /// True while the concierge is waiting on a model response.
-    @Published var aiConciergeThinking: Bool = false
+    /// v1.1.1: chat + thinking state moved out of the main VM into a
+    /// dedicated ObservableObject.  On macOS 26, mutating an @Published
+    /// array that's part of the root VM (`@ObservedObject var vm` in
+    /// Sidebar, RootView, and ConciergeView) fires objectWillChange on
+    /// all three simultaneously — and that concurrent re-render cascade
+    /// collapses NavigationSplitView's detail column into a blank pane
+    /// (both sidebar AND detail vanish, only toolbar chrome survives).
+    /// Giving the Concierge its own ObservableObject isolates the
+    /// re-render to ConciergeView alone, breaking the cascade.
+    ///
+    /// LOAD-BEARING.  Do not inline these properties back onto the
+    /// VM without first reading POSTMORTEM-Concierge-Blank.md — v1.1
+    /// shipped with them on the root VM and the whole window blanked
+    /// on first chip click.
+    let concierge = ConciergeState()
+
+    /// Back-compat shim — callers that still reach for `vm.aiChat` /
+    /// `vm.aiConciergeThinking` (Sidebar's AI badge; the old
+    /// `conciergeSend` path; the rename-surface in handleConciergeAction)
+    /// forward through these computed properties so we don't have to
+    /// rewrite every touchpoint in one sitting.
+    var aiChat: [ConciergeMessage] {
+        get { concierge.chat }
+        set { concierge.chat = newValue }
+    }
+    var aiConciergeThinking: Bool {
+        get { concierge.thinking }
+        set { concierge.thinking = newValue }
+    }
 
     struct ConciergeMessage: Identifiable, Equatable {
         let id = UUID()
@@ -514,6 +538,14 @@ final class SplynekViewModel: ObservableObject {
         let text: String
         let action: String?   // short human-readable chip under assistant msgs
         enum Role: String { case user, assistant, system }
+    }
+
+    /// The dedicated ObservableObject for the concierge transcript —
+    /// see the top comment above `concierge` for why this exists.
+    @MainActor
+    final class ConciergeState: ObservableObject {
+        @Published var chat: [ConciergeMessage] = []
+        @Published var thinking: Bool = false
     }
 
     // Torrent
@@ -706,40 +738,36 @@ final class SplynekViewModel: ObservableObject {
     func conciergeSend(_ text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        aiChat.append(.init(role: .user, text: trimmed, action: nil))
+        concierge.chat.append(.init(role: .user, text: trimmed, action: nil))
         guard aiAvailable else {
-            aiChat.append(.init(
+            concierge.chat.append(.init(
                 role: .system,
                 text: "Install Ollama (ollama.com/download) + any model — llama3.2:3b is perfect — to enable the Concierge. Until then the ingress surfaces (Download tab, menu bar, CLI, web dashboard) all still work.",
                 action: nil
             ))
             return
         }
-        aiConciergeThinking = true
-        Task { [weak self] in
+        concierge.thinking = true
+        Task { @MainActor [weak self] in
             guard let self else { return }
             do {
                 let action = try await self.ai.concierge(trimmed)
-                await MainActor.run {
-                    self.handleConciergeAction(action, userText: trimmed)
-                    self.aiConciergeThinking = false
-                }
+                self.handleConciergeAction(action, userText: trimmed)
+                self.concierge.thinking = false
             } catch {
-                await MainActor.run {
-                    self.aiChat.append(.init(
-                        role: .assistant,
-                        text: "Something went wrong: \(error.localizedDescription)",
-                        action: nil
-                    ))
-                    self.aiConciergeThinking = false
-                }
+                self.concierge.chat.append(.init(
+                    role: .assistant,
+                    text: "Something went wrong: \(error.localizedDescription)",
+                    action: nil
+                ))
+                self.concierge.thinking = false
             }
         }
     }
 
     /// Clear the concierge transcript — restart the conversation.
     func conciergeReset() {
-        aiChat = []
+        concierge.chat = []
     }
 
     /// Route the classified action through the existing VM operations.
@@ -752,7 +780,7 @@ final class SplynekViewModel: ObservableObject {
         switch action {
         case .download(let url, let rationale):
             urlText = url.absoluteString
-            aiChat.append(.init(
+            concierge.chat.append(.init(
                 role: .assistant,
                 text: rationale + " Starting download.",
                 action: "DOWNLOAD"
@@ -762,7 +790,7 @@ final class SplynekViewModel: ObservableObject {
 
         case .queue(let url, let rationale):
             urlText = url.absoluteString
-            aiChat.append(.init(
+            concierge.chat.append(.init(
                 role: .assistant,
                 text: rationale + " Added to queue.",
                 action: "QUEUE"
@@ -771,7 +799,7 @@ final class SplynekViewModel: ObservableObject {
 
         case .search(let query):
             searchHistoryViaAI(query)
-            aiChat.append(.init(
+            concierge.chat.append(.init(
                 role: .assistant,
                 text: "Searching your history for: \(query). Results appear in the History tab.",
                 action: "SEARCH"
@@ -780,7 +808,7 @@ final class SplynekViewModel: ObservableObject {
         case .cancelAll:
             let n = activeJobs.filter { $0.lifecycle == .running }.count
             cancelAll()
-            aiChat.append(.init(
+            concierge.chat.append(.init(
                 role: .assistant,
                 text: "Cancelled \(n) running download\(n == 1 ? "" : "s").",
                 action: "CANCEL"
@@ -789,14 +817,14 @@ final class SplynekViewModel: ObservableObject {
         case .pauseAll:
             let running = activeJobs.filter { $0.lifecycle == .running }
             for job in running { pauseJob(job) }
-            aiChat.append(.init(
+            concierge.chat.append(.init(
                 role: .assistant,
                 text: "Paused \(running.count) download\(running.count == 1 ? "" : "s"). Resume them from the Downloads tab.",
                 action: "PAUSE"
             ))
 
         case .unclear(let followUp):
-            aiChat.append(.init(
+            concierge.chat.append(.init(
                 role: .assistant,
                 text: followUp,
                 action: nil

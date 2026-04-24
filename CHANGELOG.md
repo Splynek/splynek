@@ -3,6 +3,36 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.1.1 — Concierge blank-state hotfix (2026-04-23)
+
+**P0 fix.** v1.1 shipped with a macOS 26 SwiftUI regression that blanked
+the entire Concierge split view the first time a user clicked a
+suggestion chip (both sidebar and detail pane vanished, only the
+toolbar chrome survived). Three combined changes fix it — all of them
+required, removing any one lets the bug come back:
+
+- **`GeometryReader` wrap on `ConciergeView.body`** pins the detail
+  column to the parent's offered width, breaking the bottom-up
+  intrinsic-size propagation that was collapsing the column when the
+  transcript flipped from `emptyState` (intrinsic ∞) to `ScrollView`
+  (intrinsic ≈ bubble width).
+- **Dedicated `ConciergeState: ObservableObject`** holds `chat` +
+  `thinking` so mutations re-render only `ConciergeView` — not Sidebar
+  and RootView too. The simultaneous three-view re-render was what
+  turned a local collapse into a window-wide blank.
+- **`@MainActor AppleIntelligenceDriver` enum** wraps
+  `LanguageModelSession` per Apple's WWDC25 sessions 286 / 259 / 301.
+  Keeps `Observation.Observable` notifications on MainActor so SwiftUI
+  can narrow invalidation to the specific leaves.
+
+Full post-mortem with the four dead-end paths we chased first, the
+clinching diagnostic, and six rules-of-thumb for NavigationSplitView
+detail panes on macOS 26: [POSTMORTEM-Concierge-Blank.md](POSTMORTEM-Concierge-Blank.md).
+
+No user-facing behaviour change other than "the Concierge works now."
+No free-tier impact — the free DMG has never included the Concierge;
+this only affects Pro / MAS builds.
+
 ## v1.1 — Apple Intelligence Concierge (2026-04-21)
 
 **Strategy Bet S1 shipped** — the AI Concierge + Recipes now run on
