@@ -3,6 +3,76 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.2 — Sovereignty + smarter Concierge (2026-04-24)
+
+**New tab: Sovereignty.** Splynek now scans your Mac's installed apps
+locally and shows which ones are controlled from outside the European
+Union, with European or open-source alternatives where they exist.
+
+Framing is deliberately **pro-sovereignty, not anti-any-country**. An
+app controlled from the US and an app controlled from China sit in
+the same bucket from an EU user's perspective: both place control
+outside the Union. The tab shows each app's country-of-origin as a
+neutral grey badge (US / CN / RU / OTHER) so users see *where control
+sits* — we inform, we don't shame — then recommend European or
+open-source alternatives because those are the two buckets that
+most reduce non-EU dependence.
+
+What's in the launch:
+
+- **Local-only scanner** — enumerates `/Applications`,
+  `/Applications/Utilities`, and `~/Applications` via FileManager +
+  `Bundle(url:)`. No Spotlight daemon access, no network calls, no
+  telemetry, no persistence across launches. Sandbox-legal under
+  MAS without any special entitlement. The scanner is
+  [open-source in this repo](Sources/SplynekCore/SovereigntyScanner.swift)
+  with an audited privacy contract at the top of the file.
+- **Seed catalog** — ~50 hand-written entries covering the common
+  non-European apps users have on their Macs. Browsers (Chrome,
+  Edge, Brave, Yandex), communication (Slack, Zoom, Teams, Discord,
+  WhatsApp, Messenger, WeChat, QQ, DingTalk, Webex, Tencent Meeting,
+  TikTok), productivity (Office, OneNote, WPS, Notion, Evernote,
+  Airtable), creative (Adobe CC + per-app, Figma), dev (VS Code,
+  GitHub Desktop, Postman, Docker, Sublime, Sourcetree), cloud
+  (Drive, Dropbox, Box, Baidu Netdisk), passwords (1Password,
+  LastPass, Dashlane), AI (ChatGPT, Cursor, Claude Desktop), and
+  security (Kaspersky, Avast, Yandex).
+- **Origin taxonomy** with an `isRecommendable` invariant — catalog
+  targets never use European or OSS origins, and catalog alternatives
+  never use US / CN / RU. A US app suggested as an "alternative" to
+  another US app wouldn't help.
+- **One-click Install** for alternatives with stable direct-download
+  URLs (Firefox at launch; community PRs expand). Clicking Install
+  hands the URL to Splynek's own download engine — multi-interface
+  aggregation, SHA-256 verification, the full stack.
+- **Filter chips**: All alternatives / European only / Open-source
+  only.
+- **Community contributions** — [SOVEREIGNTY-CONTRIBUTING.md](SOVEREIGNTY-CONTRIBUTING.md)
+  documents the schema, invariants, design principles, and PR
+  submission flow.
+
+**Concierge improvements:**
+
+- **Regex short-circuit for obvious cancel/pause commands.** Cancel,
+  stop, abort, kill, halt, pause, suspend, hold, freeze — with or
+  without a direct object — now bypass the AI entirely. What took
+  10–17 s on the on-device 3B model now takes microseconds.
+- **Apple Intelligence prewarm on input-focus** — ~1–2 s off the
+  first-response cold start, without paying the model-residency
+  cost for users who just peek.
+
+**Under the hood:**
+
+- Architecture invariant #11 in [HANDOFF.md](HANDOFF.md) documents
+  the load-bearing patterns for SwiftUI NavigationSplitView detail
+  panes on macOS 26 (GeometryReader + dedicated ObservableObjects +
+  MainActor-isolated @Observable system types).
+- [POSTMORTEM-Concierge-Blank.md](POSTMORTEM-Concierge-Blank.md)
+  from v1.1.1 remains the canonical reference for those patterns.
+
+No user-facing behaviour change for existing Downloads / Queue /
+Recipes / Concierge flows. Only additions.
+
 ## v1.1.1 — Concierge blank-state hotfix (2026-04-23)
 
 **P0 fix.** v1.1 shipped with a macOS 26 SwiftUI regression that blanked
