@@ -1,10 +1,17 @@
 import SwiftUI
 
-/// v1.2: Sovereignty tab.  Scans the Mac's installed apps (locally,
-/// via Spotlight — see SovereigntyScanner for the audit trail) and
-/// surfaces EU / open-source alternatives matched from the seed
-/// catalog.  Tone is "here's a door out if you want one," not
-/// "here's what you should feel bad about having."
+/// v1.2: Sovereignty tab.  Scans the Mac's installed apps (locally
+/// — see SovereigntyScanner for the audit trail) and surfaces
+/// European or open-source alternatives from the seed catalog.
+///
+/// The framing is **pro-sovereignty, not anti-any-country**.  An app
+/// controlled from the US and an app controlled from China sit in
+/// the same bucket from a European user's sovereignty perspective:
+/// both place control outside the EU.  The UI shows each target
+/// app's country-of-origin so the user can see *where control sits*
+/// before deciding what (if anything) to do about it.  European and
+/// open-source alternatives are the two buckets we recommend because
+/// those are the two that most reduce non-EU dependence.
 ///
 /// All processing is local.  The app list never leaves the Mac.
 struct SovereigntyView: View {
@@ -18,13 +25,13 @@ struct SovereigntyView: View {
     @State private var filter: Filter = .all
 
     enum Filter: String, CaseIterable, Identifiable {
-        case all, eu, oss
+        case all, european, oss
         var id: String { rawValue }
         var label: String {
             switch self {
-            case .all: return "All"
-            case .eu:  return "EU only"
-            case .oss: return "Open-source only"
+            case .all:      return "All alternatives"
+            case .european: return "European only"
+            case .oss:      return "Open-source only"
             }
         }
     }
@@ -65,7 +72,7 @@ struct SovereigntyView: View {
         PageHeader(
             systemImage: "shield.lefthalf.filled",
             title: "Sovereignty",
-            subtitle: "Scan your Mac to see which apps have EU or open-source alternatives. Everything stays local — no account, no telemetry, no app list leaving your device."
+            subtitle: "See where your Mac's software comes from, and which apps have European or open-source alternatives. Everything stays local — no account, no telemetry, no app list leaving your device."
         )
     }
 
@@ -79,9 +86,9 @@ struct SovereigntyView: View {
                     LinearGradient(colors: [.blue, .purple],
                                    startPoint: .top, endPoint: .bottom)
                 )
-            Text("Understand your software stack")
+            Text("Your software supply chain")
                 .font(.system(.title2, design: .rounded, weight: .semibold))
-            Text("Splynek uses Spotlight's existing index to list your third-party apps, then matches them against a handwritten catalog of EU and open-source alternatives. Nothing is uploaded, logged, or remembered across launches.")
+            Text("Most Mac apps are controlled from outside the European Union. Splynek lists your third-party apps with their country-of-origin, and points to European or open-source alternatives where they exist. Nothing is uploaded, logged, or remembered across launches.")
                 .font(.callout).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 500)
@@ -196,9 +203,9 @@ struct SovereigntyView: View {
 
     private func matchesFilter(_ alt: SovereigntyCatalog.Alternative) -> Bool {
         switch filter {
-        case .all: return true
-        case .eu:  return alt.origin == .eu || alt.origin == .both
-        case .oss: return alt.origin == .oss || alt.origin == .both
+        case .all:      return true
+        case .european: return alt.origin == .europe || alt.origin == .europeAndOSS
+        case .oss:      return alt.origin == .oss || alt.origin == .europeAndOSS
         }
     }
 
@@ -216,6 +223,9 @@ struct SovereigntyView: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
+                // v1.2: target-origin badge — where this app is
+                // controlled from.  US / CN / RU / OTHER.
+                originBadge(for: row.entry.targetOrigin)
             }
             VStack(spacing: 8) {
                 ForEach(row.visibleAlternatives) { alt in
@@ -262,12 +272,19 @@ struct SovereigntyView: View {
     }
 
     @ViewBuilder
-    private func originBadge(for origin: SovereigntyCatalog.Alternative.Origin) -> some View {
+    private func originBadge(for origin: SovereigntyCatalog.Origin) -> some View {
+        // Colours are intentionally neutral for non-European origins
+        // — grey for US / CN / RU / OTHER.  The tab isn't about
+        // shaming any country; it's about showing where control
+        // sits.  Green / blue / purple are reserved for the positive
+        // picks (EU / OSS / both) so they visually lead.
         let (bg, fg): (Color, Color) = {
             switch origin {
-            case .eu:   return (.blue.opacity(0.18), .blue)
-            case .oss:  return (.green.opacity(0.18), .green)
-            case .both: return (.purple.opacity(0.18), .purple)
+            case .europe:        return (.blue.opacity(0.18),   .blue)
+            case .oss:           return (.green.opacity(0.18),  .green)
+            case .europeAndOSS:  return (.purple.opacity(0.18), .purple)
+            case .unitedStates, .china, .russia, .other:
+                return (.secondary.opacity(0.18), .secondary)
             }
         }()
         Text(origin.label)
