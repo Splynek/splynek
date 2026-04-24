@@ -256,6 +256,35 @@ struct SovereigntyView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 8)
+            actionButton(for: alt)
+        }
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(Color.primary.opacity(0.03))
+        )
+    }
+
+    /// v1.2: either "Install" (direct-download URL known — hand to
+    /// Splynek's download engine) or "Visit" (homepage only — open
+    /// in the default browser).  Install is the better flow when
+    /// available; it keeps users inside Splynek and leverages the
+    /// multi-interface aggregation / SHA-256 verification pipeline.
+    @ViewBuilder
+    private func actionButton(for alt: SovereigntyCatalog.Alternative) -> some View {
+        if let dl = alt.downloadURL {
+            Button {
+                vm.urlText = dl.absoluteString
+                vm.start()
+            } label: {
+                Label("Install", systemImage: "arrow.down.circle.fill")
+                    .labelStyle(.titleAndIcon)
+                    .font(.callout)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+            .help("Download \(alt.name) via Splynek")
+        } else {
             Link(destination: alt.homepage) {
                 Label("Visit", systemImage: "arrow.up.right.square")
                     .labelStyle(.titleAndIcon)
@@ -263,12 +292,8 @@ struct SovereigntyView: View {
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
+            .help("Open \(alt.homepage.host ?? alt.name) in your browser")
         }
-        .padding(10)
-        .background(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color.primary.opacity(0.03))
-        )
     }
 
     @ViewBuilder

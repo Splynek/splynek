@@ -97,6 +97,29 @@ enum SovereigntyCatalog {
         /// One-line note shown under the alternative in the UI.
         /// Include country + license so users can decide at a glance.
         let note: String
+        /// v1.2: optional direct-download URL for one-click install
+        /// via Splynek.  When present, the UI shows an "Install"
+        /// button that hands the URL to Splynek's download engine.
+        /// When absent, the UI shows a "Visit" button that opens
+        /// `homepage` in the default browser.
+        ///
+        /// We populate this only for alternatives with stable,
+        /// canonical download URLs (e.g. `releases.latest/download/
+        /// …` patterns).  Apps that require a version-specific path
+        /// or a platform picker are left homepage-only to avoid
+        /// hallucinating stale URLs — the user takes one click
+        /// more but lands on a real page.
+        let downloadURL: URL?
+
+        init(id: String, origin: Origin, name: String,
+             homepage: URL, note: String, downloadURL: URL? = nil) {
+            self.id = id
+            self.origin = origin
+            self.name = name
+            self.homepage = homepage
+            self.note = note
+            self.downloadURL = downloadURL
+        }
     }
 
     struct Entry: Hashable {
@@ -131,7 +154,8 @@ enum SovereigntyCatalog {
               alternatives: [
                 .init(id: "chrome:firefox", origin: .oss,
                       name: "Firefox", homepage: URL(string: "https://www.mozilla.org/firefox")!,
-                      note: "Mozilla Foundation (MPL). Gecko engine, strong privacy defaults."),
+                      note: "Mozilla Foundation (MPL). Gecko engine, strong privacy defaults.",
+                      downloadURL: URL(string: "https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US")),
                 .init(id: "chrome:vivaldi", origin: .europe,
                       name: "Vivaldi", homepage: URL(string: "https://vivaldi.com")!,
                       note: "Vivaldi Technologies (Norway). Freeware, privacy-respecting."),
@@ -143,7 +167,8 @@ enum SovereigntyCatalog {
               alternatives: [
                 .init(id: "edge:firefox", origin: .oss,
                       name: "Firefox", homepage: URL(string: "https://www.mozilla.org/firefox")!,
-                      note: "Mozilla Foundation (MPL)."),
+                      note: "Mozilla Foundation (MPL).",
+                      downloadURL: URL(string: "https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US")),
                 .init(id: "edge:vivaldi", origin: .europe,
                       name: "Vivaldi", homepage: URL(string: "https://vivaldi.com")!,
                       note: "Vivaldi Technologies (Norway)."),
@@ -155,7 +180,8 @@ enum SovereigntyCatalog {
               alternatives: [
                 .init(id: "brave:firefox", origin: .oss,
                       name: "Firefox", homepage: URL(string: "https://www.mozilla.org/firefox")!,
-                      note: "Mozilla Foundation (MPL)."),
+                      note: "Mozilla Foundation (MPL).",
+                      downloadURL: URL(string: "https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US")),
                 .init(id: "brave:librewolf", origin: .oss,
                       name: "LibreWolf", homepage: URL(string: "https://librewolf.net")!,
                       note: "MPL. Firefox fork, telemetry-free."),
@@ -167,7 +193,8 @@ enum SovereigntyCatalog {
               alternatives: [
                 .init(id: "yandex:firefox", origin: .oss,
                       name: "Firefox", homepage: URL(string: "https://www.mozilla.org/firefox")!,
-                      note: "Mozilla Foundation (MPL)."),
+                      note: "Mozilla Foundation (MPL).",
+                      downloadURL: URL(string: "https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US")),
                 .init(id: "yandex:vivaldi", origin: .europe,
                       name: "Vivaldi", homepage: URL(string: "https://vivaldi.com")!,
                       note: "Norway. Freeware."),
