@@ -53,9 +53,17 @@ struct TrustView: View {
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0) {
-                header
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
+                // v1.5.1: in scan-results mode the context card sits at
+                // the top of the pane (NOT inside the ScrollView), so
+                // it stays visible no matter how far the user scrolls.
+                // The empty-state branch has its own centred layout,
+                // so the card is only rendered when we have results.
+                if !scanner.apps.isEmpty {
+                    contextCard
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                        .padding(.bottom, 4)
+                }
 
                 if scanner.apps.isEmpty && !scanner.isScanning {
                     emptyState
@@ -82,11 +90,37 @@ struct TrustView: View {
 
     // MARK: - Subviews
 
-    private var header: some View {
-        PageHeader(
-            systemImage: "checkmark.seal",
-            title: "Trust",
-            subtitle: "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Every claim cites its primary source. Everything stays local."
+    /// v1.5.1: replaces the previous `PageHeader(title: "Trust", …)`.
+    /// The window title bar already shows "Trust" via
+    /// `.navigationTitle(_:)`, so duplicating it inline was visual
+    /// noise.  This card keeps just the icon + the one-paragraph
+    /// "what does this tab do" explanation, lives outside the scroll
+    /// view (so it's effectively sticky), and is visually framed so
+    /// it reads as a self-contained context banner.
+    private var contextCard: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "checkmark.seal")
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(
+                    LinearGradient(colors: [.orange, .pink],
+                                   startPoint: .top, endPoint: .bottom)
+                )
+                .frame(width: 28, alignment: .top)
+                .padding(.top, 1)
+            Text("See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Every claim cites its primary source. Everything stays local.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.secondary.opacity(0.06))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .strokeBorder(Color.secondary.opacity(0.15), lineWidth: 0.5)
         )
     }
 
