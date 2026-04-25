@@ -22,10 +22,10 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                PageHeader(
+                ContextCard(
                     systemImage: "gearshape",
-                    title: "Settings",
-                    subtitle: "Integrations, background behaviour, web dashboard, and security controls. Nothing here phones home."
+                    subtitle: "Integrations, background behaviour, web dashboard, and security controls. Nothing here phones home.",
+                    tint: .gray
                 )
                 proCard
                 browserHelpersCard

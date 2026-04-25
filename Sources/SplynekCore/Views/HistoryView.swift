@@ -11,10 +11,10 @@ struct HistoryView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                PageHeader(
+                ContextCard(
                     systemImage: "clock.arrow.circlepath",
-                    title: "History",
-                    subtitle: "Every completed download, searchable by filename, URL or host — and by natural language when a local LLM is available."
+                    subtitle: "Every completed download, searchable by filename, URL or host — and by natural language when a local LLM is available.",
+                    tint: .indigo
                 )
                 if vm.history.isEmpty {
                     TitledCard(title: "History", systemImage: "clock.arrow.circlepath") {

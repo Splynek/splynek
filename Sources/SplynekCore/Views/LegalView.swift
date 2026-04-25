@@ -45,10 +45,10 @@ struct LegalView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                PageHeader(
+                ContextCard(
                     systemImage: "doc.text",
-                    title: "Legal",
-                    subtitle: "The documents that govern your use of Splynek. Read once, then scan when something changes."
+                    subtitle: "The documents that govern your use of Splynek. Read once, then scan when something changes.",
+                    tint: .brown
                 )
                 picker
                 viewer

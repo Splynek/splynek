@@ -9,10 +9,10 @@ struct BenchmarkView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                PageHeader(
+                ContextCard(
                     systemImage: "bolt.fill",
-                    title: "Benchmark",
-                    subtitle: "Measure single-path versus multi-path throughput against a CDN-backed URL. Real engine, real bytes — export the result as a shareable PNG."
+                    subtitle: "Measure single-path versus multi-path throughput against a CDN-backed URL. Real engine, real bytes — export the result as a shareable PNG.",
+                    tint: .yellow
                 )
                 sourceCard
                 interfacesCard

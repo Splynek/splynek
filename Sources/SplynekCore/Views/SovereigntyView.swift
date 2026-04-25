@@ -69,9 +69,19 @@ struct SovereigntyView: View {
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0) {
-                header
+                // v1.5.3: ContextCard only on the scan-results path so
+                // it doesn't double-up with the centred empty-state
+                // hero (which has its own dedicated icon + heading).
+                if !scanner.apps.isEmpty {
+                    ContextCard(
+                        systemImage: "shield.lefthalf.filled",
+                        subtitle: "See where your Mac's software comes from, and which apps have European or open-source alternatives. Everything stays local — no account, no telemetry, no app list leaving your device.",
+                        tint: .blue
+                    )
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
+                    .padding(.bottom, 4)
+                }
 
                 if scanner.apps.isEmpty && !scanner.isScanning {
                     emptyState
@@ -98,13 +108,8 @@ struct SovereigntyView: View {
 
     // MARK: - Subviews
 
-    private var header: some View {
-        PageHeader(
-            systemImage: "shield.lefthalf.filled",
-            title: "Sovereignty",
-            subtitle: "See where your Mac's software comes from, and which apps have European or open-source alternatives. Everything stays local — no account, no telemetry, no app list leaving your device."
-        )
-    }
+    // v1.5.3: PageHeader retired — see ContextCard above (rendered
+    // inline in body so the empty-state branch doesn't show it).
 
     @ViewBuilder
     private var emptyState: some View {

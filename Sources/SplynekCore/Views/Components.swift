@@ -140,6 +140,90 @@ struct MetricView: View {
 ///
 /// Visual: large rounded-display title, one-line secondary subtitle,
 /// a 1-pixel divider underneath.
+/// **v1.5.3 — ContextCard.** Replaces `PageHeader` as the standard
+/// "what is this tab" affordance.  Why the change:
+///
+///   • The window title bar already shows the tab name via
+///     `.navigationTitle(_:)`.  Repeating the title inside the
+///     content area wasted vertical real-estate and read as noise.
+///   • The card sits ABOVE the scroll area, not inside it, so it
+///     stays visible as the user scrolls — sticky-by-position.
+///   • Each tab gets a **tint** that becomes its visual signature:
+///     leading accent bar + icon colour + subtle outer glow.  Across
+///     the app this creates per-tab personality without a heavy
+///     theming framework.
+///   • Background is `.ultraThinMaterial` for the macOS-26 vibrancy
+///     feel — translucent over whatever's behind, dynamic with light
+///     and dark mode for free.
+///   • The SF Symbol is rendered `.hierarchical` so it has natural
+///     light-and-mass depth instead of the flat single-tone look.
+///
+/// Usage:
+///
+///     ContextCard(
+///         systemImage: "shield.lefthalf.filled",
+///         subtitle: "See where your Mac's software comes from…",
+///         tint: .blue
+///     )
+///     .padding(.horizontal, 16)
+///     .padding(.top, 12)
+///
+/// Place it OUTSIDE the `ScrollView`, before the scrolling content,
+/// so it stays pinned at the top.
+struct ContextCard: View {
+    let systemImage: String
+    let subtitle: LocalizedStringKey
+    var tint: Color = .accentColor
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 14) {
+            // Leading accent bar: per-tab signature.  Vertical gradient
+            // so the bar has a subtle highlight rather than reading as
+            // a flat strip of colour.
+            RoundedRectangle(cornerRadius: 2, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [tint, tint.opacity(0.55)],
+                        startPoint: .top, endPoint: .bottom
+                    )
+                )
+                .frame(width: 3)
+
+            // Icon.  Hierarchical rendering gives SF Symbols natural
+            // light/dark mass; combined with the tint it reads as a
+            // confident focal point without dominating.
+            Image(systemName: systemImage)
+                .font(.system(size: 22, weight: .semibold))
+                .symbolRenderingMode(.hierarchical)
+                .foregroundStyle(tint)
+                .frame(width: 28, alignment: .top)
+                .padding(.top, 1)
+
+            Text(subtitle)
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(tint.opacity(0.18), lineWidth: 0.6)
+        )
+        // Faint outer glow in the tab's tint.  Extremely subtle — just
+        // enough to separate the card from the window background.
+        .shadow(color: tint.opacity(0.10), radius: 12, y: 3)
+        // Card decoration is purely visual; the subtitle text carries
+        // all semantic content for VoiceOver.
+        .accessibilityElement(children: .contain)
+    }
+}
+
 struct PageHeader: View {
     let systemImage: String
     // v1.4: LocalizedStringKey so Sovereignty (and future localised
@@ -148,6 +232,11 @@ struct PageHeader: View {
     // into LocalizedStringKey — no behavioural change for the other
     // tabs because their strings aren't in the xcstrings catalog and
     // fall through to the source English.
+    //
+    // **v1.5.3 deprecation note:** new tabs should use `ContextCard`
+    // instead — the tab name now lives in the window title bar
+    // (`.navigationTitle(_:)`) and PageHeader's inline title duplicated
+    // it.  Existing PageHeader call sites are being migrated tab by tab.
     let title: LocalizedStringKey
     let subtitle: LocalizedStringKey
 

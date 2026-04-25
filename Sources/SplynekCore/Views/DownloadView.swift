@@ -24,10 +24,10 @@ struct DownloadView: View {
                 // the Downloads page itself. The Downloads tab now
                 // always leads with its own consistent PageHeader,
                 // matching every other tab.
-                PageHeader(
+                ContextCard(
                     systemImage: "arrow.down.circle",
-                    title: "Downloads",
-                    subtitle: "Paste a URL. Splynek fans it out across every interface you have — Wi-Fi, Ethernet, tether — and reassembles a verified file."
+                    subtitle: "Paste a URL. Splynek fans it out across every interface you have — Wi-Fi, Ethernet, tether — and reassembles a verified file.",
+                    tint: .blue
                 )
                 sourceCard
                 if !vm.aiAvailable && vm.history.count < 3 {

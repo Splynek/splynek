@@ -16,10 +16,10 @@ struct LiveView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 18) {
-                PageHeader(
+                ContextCard(
                     systemImage: "waveform.circle.fill",
-                    title: "Live",
-                    subtitle: "What the engine is doing right now. One section per running download — throughput, interface breakdown, pipeline stage."
+                    subtitle: "What the engine is doing right now. One section per running download — throughput, interface breakdown, pipeline stage.",
+                    tint: .green
                 )
 
                 let running = vm.activeJobs.filter {

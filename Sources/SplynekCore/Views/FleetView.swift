@@ -13,10 +13,10 @@ struct FleetView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                PageHeader(
+                ContextCard(
                     systemImage: "laptopcomputer.and.arrow.down",
-                    title: "Fleet",
-                    subtitle: "Other Splynek Macs on your LAN, advertised over Bonjour. Shared files skip the internet — downloads go Mac-to-Mac at gigabit."
+                    subtitle: "Other Splynek Macs on your LAN, advertised over Bonjour. Shared files skip the internet — downloads go Mac-to-Mac at gigabit.",
+                    tint: .cyan
                 )
                 thisDeviceCard
                 peersCard

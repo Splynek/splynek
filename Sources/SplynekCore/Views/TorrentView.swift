@@ -7,10 +7,10 @@ struct TorrentView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                PageHeader(
+                ContextCard(
                     systemImage: "antenna.radiowaves.left.and.right",
-                    title: "Torrents",
-                    subtitle: "Native BitTorrent v1 + v2 + hybrid. Paste a magnet, load a .torrent, or pick a web-seed mirror. Integrity is verified per piece."
+                    subtitle: "Native BitTorrent v1 + v2 + hybrid. Paste a magnet, load a .torrent, or pick a web-seed mirror. Integrity is verified per piece.",
+                    tint: .purple
                 )
                 sourceCard
                 interfaceCard

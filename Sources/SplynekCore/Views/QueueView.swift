@@ -6,10 +6,10 @@ struct QueueView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                PageHeader(
+                ContextCard(
                     systemImage: "line.3.horizontal.decrease.circle",
-                    title: "Queue",
-                    subtitle: "URLs waiting their turn. Splynek starts each one automatically when an active slot frees up."
+                    subtitle: "URLs waiting their turn. Splynek starts each one automatically when an active slot frees up.",
+                    tint: .indigo
                 )
                 if vm.queue.isEmpty {
                     TitledCard(title: "Queue", systemImage: "line.3.horizontal.decrease.circle") {
