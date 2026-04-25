@@ -19,10 +19,10 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (117 tests, all green)
-**CLI:** `swift run splynek-cli version`
+**Tests:** `swift run splynek-test` (126 tests, all green)
+**CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
-**Current version: v1.3 — shipped 2026-04-24.** Notarised DMG published on GitHub Releases. MAS archive built, waiting for v1.0 to clear App Store review before uploading v1.3 as the update. Full release history + download URLs under § Shipped releases below.
+**Current version: v1.4 — shipped 2026-04-24.** **Catalog pipeline + 13× growth: 90 → 1155 entries.** AI-fallback hardening (FORBIDDEN PATTERNS + deny-list post-filter). FR/DE/ES/IT localisation for the Sovereignty tab. MAS archive waiting on v1.0 to clear App Store review before uploading as the update. Full release history + download URLs under § Shipped releases below.
 
 ---
 
@@ -31,6 +31,24 @@ xcrun stapler staple build/Splynek.dmg
 All Developer-ID-signed, notarised, stapled, and published at
 <https://github.com/Splynek/splynek/releases>. SHA-256 hashes match the
 release-notes bodies.
+
+### v1.4 — Catalog pipeline (90→1167) + discovery/quality engines + AI hardening + FR/DE/ES/IT (2026-04-24)
+- **DMG**: not yet cut (waiting for this session's work to land). After commit + tag, run the Developer-ID build + notarise flow from the top of this file.
+- **Catalog grew 13×** (90 → 1167 entries — a full order of magnitude). New authoring flow: edit `Scripts/sovereignty-catalog.json`, run `swift Scripts/regenerate-sovereignty-catalog.swift`, commit both the JSON and the regenerated `Sources/SplynekCore/SovereigntyCatalog+Entries.swift`. See SOVEREIGNTY-CONTRIBUTING.md for the full pipeline. Compile-time type safety preserved; community can now PR via JSON diffs.
+- **Discovery + quality engines** (v1.4 second pass — for indefinite catalog growth):
+  - `Scripts/discover.swift` — finds new apps from external source files (`Scripts/sources/*.json`), local `/Applications/` (`--from-apps`), or display-name lists (`--from-file`); diffs against the catalog; emits `Scripts/candidates.json`.
+  - `Scripts/ai-propose.swift` — drafts alt-sets for each candidate via local LLM (LM Studio, Ollama, OpenAI-compat). System prompt mirrors the FORBIDDEN PATTERNS block in `splynek-pro/AIAssistant.swift` to minimise US-leakage. Output: `Scripts/proposals.json`.
+  - `Scripts/merge-proposals.swift` — reviewer-in-the-loop; interactive prompts (a/s/q) or `--auto-accept high` for trusted batches; validates against catalog invariants before merge.
+  - `Scripts/validate-catalog.swift` — offline lint: bundle-ID format, dup IDs, short/long notes, non-https homepages, placeholder hosts. Errors are hard-fail; warnings flagged. `--strict` makes warnings fail too.
+  - `Scripts/check-urls.swift` — concurrent online URL checker. Default 20 workers, 15s timeout per URL. `--json` for CI consumption, `--fail-on-rot` for non-zero exit.
+  - `.github/workflows/sovereignty-weekly.yml` — weekly cron: lint + regen-roundtrip + URL health; opens a labeled GitHub issue if URLs rotted.
+- New `splynek-cli sovereignty-dump` subcommand: reverse-exports the catalog back to JSON (for verifying round-trip, or reseeding the JSON if Swift gets edited directly).
+- The v1.4 bulk-seed itself is in `Scripts/seed-sovereignty-bulk.swift` — category templates × target tuples; idempotent, re-runnable. Useful for future bulk imports from curated external lists (european-alternatives.eu, switching.software, awesome-euro-tech).
+- New `splynek-cli sovereignty-dump` subcommand: reverse-exports the catalog back to JSON (for verifying round-trip, or reseeding the JSON if Swift gets edited directly).
+- **AI fallback hardening.** System prompt gains a FORBIDDEN PATTERNS block listing Netflix/YouTube/Discord/Slack/Dropbox/ChatGPT/etc. as things the model must NEVER propose. On top of that, a `sovereigntyDenyList` post-filter on `SovereigntySuggestion` strips any model-emitted name whose normalised form matches a known US/CN/RU product — belt + suspenders against the 3B model's hallucinations.
+- **Localisation — FR / DE / ES / IT.** Sovereignty tab's ~30 UI strings now localised. New `Sources/SplynekCore/Localizable.xcstrings`. Package.swift gains `defaultLocalization: "en"` and declares the xcstrings as a processed resource. PageHeader widened to `LocalizedStringKey` (forward-compat; existing English-only callers unchanged).
+- **Catalog invariant tests.** `Tests/SplynekTests/SovereigntyCatalogTests.swift` locks in contributor rules: every target is non-EU; every alt is .europe/.oss/.europeAndOSS/.other (never US/CN/RU); every entry has ≥1 recommendable alt; IDs unique; ≥100 entries. Test count: 117 → 124.
+- Related commits: `/Users/pcgm/Claude Code` @ (pending) — `/Users/pcgm/splynek-pro` @ (pending)
 
 ### v1.3 — Sovereignty catalog 2× + AI fallback (2026-04-24)
 - **DMG**: [Splynek-1.3.dmg](https://github.com/Splynek/splynek/releases/download/v1.3/Splynek-1.3.dmg) — `d08ee9f5546aa96f1c66b1011508f76e2c6852f0275f66fe7e5817ec7d7c73d4`
@@ -405,26 +423,26 @@ The MAS pipeline is locked; only the state transition is blocking.
 
 ### B — Sovereignty catalog growth (community + manual)
 
-Target: ~50 → 90 → 150+ entries. [SOVEREIGNTY-CONTRIBUTING.md](SOVEREIGNTY-CONTRIBUTING.md)
-is live so external PRs are possible. Manual next-pass:
-- **More `downloadURL`s** for popular alternatives that have stable canonical URLs. Firefox + Thunderbird currently work via Mozilla's redirect service. Research: Signal's `updates.signal.org` pattern, VLC's `get.videolan.org`, Bitwarden's GitHub-releases/latest, LibreOffice's stable mirror. One afternoon of careful URL-verification per batch — prone to 404 rot if the author isn't careful.
-- **More entries** for apps users actually have installed. Gap areas: graphics / illustration tools (Sketch, Procreate), DAWs (Logic Pro is built-in but Ableton is German), language IDEs (JetBrains suite — Czech), dev databases (Sequel Ace is OSS, TablePlus is Singapore-based), file-sync (Resilio Sync is US). When adding targets whose vendors are non-obvious, cite the source in the PR body.
+v1.4 shipped the JSON-backed pipeline and took the catalog from 90 → 869 entries. Further growth is now mostly a data-curation exercise, not a code exercise.
+- **Continue bulk imports** via `Scripts/seed-sovereignty-bulk.swift`. Easiest wins: mine [european-alternatives.eu](https://european-alternatives.eu/), [switching.software](https://switching.software/) (CC-BY), [awesome-euro-tech](https://github.com/) lists. Script is idempotent — re-running skips existing bundle IDs.
+- **More `downloadURL`s** for popular alternatives that have stable canonical URLs. Firefox + Thunderbird currently work via Mozilla's redirect. Research: Signal, VLC, Bitwarden's desktop-download redirect, LibreOffice stable mirror. One afternoon of careful URL-verification per batch — prone to 404 rot if the author isn't careful.
+- **Accuracy passes** — some v1.4 bulk entries have best-guess bundle IDs. High-value regression: an installed-apps scan on several real Macs, note which expected entries don't match, correct the bundle ID in JSON, regenerate. That's how the catalog goes from "comprehensive by count" to "comprehensive by hit-rate."
+- **Invariants are test-enforced** (`SovereigntyCatalogTests`): every target is non-EU, every alternative is .europe/.oss/.europeAndOSS/.other (never US/CN/RU), every entry has ≥1 recommendable pick, IDs unique, catalog ≥ 500 entries (regression floor).
 
-### C — Sovereignty AI-fallback prompt tuning
+### C — Sovereignty AI-fallback prompt tuning (v1.4 pass shipped — future work optional)
 
-Known issue: the 3B on-device model occasionally suggests US alternatives despite the strict "NEVER US/CN/RU" rule (in testing, Prime Video → YouTube/Netflix hallucination). Improvement path:
-- Add 2–3 **bad-output examples** to the system prompt ("if the user has X, do NOT suggest Y because Y is also US-based").
-- Consider running the AI response through a post-filter that rejects suggestions whose homepage TLD / registrar-country matches US / CN / RU. Brittle but catches the worst offenders.
-- A/B test the improvements using `/tmp/concierge-ab/` harness (adapt it for the sovereignty prompt). Each candidate prompt gets N runs against a held-out test set.
+v1.4 shipped a FORBIDDEN PATTERNS block in the system prompt + a `sovereigntyDenyList` post-filter (in `splynek-pro/AIAssistant.swift`) that strips known US/CN/RU products from model output. Future improvements if the 3B model still misbehaves:
+- **A/B test**: adapt the `/tmp/concierge-ab/` harness for the sovereignty prompt and measure deny-list hit-rates across prompt variants.
+- **Homepage TLD check**: reject suggestions whose homepage host resolves to a US-registered domain. Brittle (CloudFlare / CDN hosts confuse this); parking it.
+- **Extend the deny-list** with new mis-suggestions as they surface in production. The deny-list is intentionally short and high-signal — false positives drop legit suggestions silently.
 
-### D — Localisation (FR / DE / ES / IT)
+### D — Localisation (v1.4 shipped FR/DE/ES/IT for Sovereignty; roll out to rest)
 
-Sovereignty is the EU-market-credibility feature; shipping it only in English is a self-own. Start with the Sovereignty tab's strings (small surface area, ~30 localisable strings). Pattern:
-- Add `Localizable.xcstrings` catalog under `Resources/`
-- Extract `String` literals from `SovereigntyView.swift` into `String(localized:)` calls
-- Machine-translate (DeepL / GPT) for first draft, flag for native-speaker review
-- Start with FR (largest EU market) and DE (Splynek's sovereignty-forward audience)
-- If well-received, roll the pattern out to Concierge + Recipes + Downloads
+Sovereignty tab fully localised as of v1.4 (`Sources/SplynekCore/Localizable.xcstrings`, ~30 strings × 4 languages). Pattern to extend:
+- **Next tab**: Concierge. `Sources/SplynekCore/Views/ConciergeView.swift` has ~40 localisable strings. Same xcstrings file, same `LocalizedStringKey` pattern.
+- **After that**: Recipes, Downloads, Sidebar (tab names), Settings. ~200 strings total.
+- **Native-speaker review**: current translations are Claude-generated. Before major marketing push, flag FR + DE for a native-speaker pass — those are the two markets where Sovereignty has the biggest credibility lift.
+- **Arabic / ZH-HANS?** Only if Pro uptake in those markets warrants it. Not a priority.
 
 ### E — Monetization / marketing (unchanged from prior sessions)
 

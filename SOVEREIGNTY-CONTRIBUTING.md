@@ -1,12 +1,95 @@
 # Contributing to the Sovereignty catalog
 
 The Sovereignty tab in Splynek maps installed Mac apps to European
-or open-source alternatives.  The catalog at
-[`Sources/SplynekCore/SovereigntyCatalog.swift`](Sources/SplynekCore/SovereigntyCatalog.swift)
-is handwritten seed data — community PRs are how it grows.
+or open-source alternatives.  As of v1.4 the catalog has ~1170
+entries and the source-of-truth lives in
+[`Scripts/sovereignty-catalog.json`](Scripts/sovereignty-catalog.json);
+the Swift file
+[`Sources/SplynekCore/SovereigntyCatalog+Entries.swift`](Sources/SplynekCore/SovereigntyCatalog+Entries.swift)
+is **generated** from the JSON by
+[`Scripts/regenerate-sovereignty-catalog.swift`](Scripts/regenerate-sovereignty-catalog.swift).
 
 This guide is for anyone who wants to add, correct, or expand an
 entry.  It's deliberately short.
+
+## The pipeline in 30 seconds
+
+```
+   ┌────────────── DISCOVERY ───────────────┐
+   Scripts/sources/*.json   /Applications/   manual list
+        └──────────────┬──────────────────┘
+                       ▼
+        swift Scripts/discover.swift
+                       ▼
+              Scripts/candidates.json
+                       ▼
+        swift Scripts/ai-propose.swift   ← needs LM Studio / OpenAI-compat endpoint
+                       ▼
+              Scripts/proposals.json     ← LLM-drafted, never auto-merged
+                       ▼
+        swift Scripts/merge-proposals.swift   ← human-in-the-loop review
+                       ▼
+   ┌──────────────── AUTHORING ─────────────┐
+   Scripts/sovereignty-catalog.json   ← source of truth
+                       ▼
+        swift Scripts/regenerate-sovereignty-catalog.swift
+                       ▼
+   Sources/SplynekCore/SovereigntyCatalog+Entries.swift   ← generated Swift (commit both)
+                       ▼
+   ┌──────────────── QUALITY ───────────────┐
+        swift Scripts/validate-catalog.swift   ← offline lint
+        swift Scripts/check-urls.swift         ← online liveness check
+        swift run splynek-test                 ← invariant tests
+                       ▼
+                   git commit
+```
+
+### Quick contributor flow (single entry)
+
+1. Edit `Scripts/sovereignty-catalog.json`.  Copy an existing entry,
+   adjust fields, save.
+2. `swift Scripts/regenerate-sovereignty-catalog.swift` — refreshes
+   the generated Swift; validates URLs, origins, duplicate IDs.
+3. `swift Scripts/validate-catalog.swift` — lint (short notes,
+   non-https homepages, etc.).
+4. `swift run splynek-test` — invariant tests.
+5. Commit **both** the JSON and the regenerated Swift.
+
+### Bulk-import flow (curated batch)
+
+1. Drop a JSON file into `Scripts/sources/` matching the schema
+   in [`Scripts/sources/README.md`](Scripts/sources/README.md).
+2. `swift Scripts/discover.swift` — diffs against the catalog,
+   writes `Scripts/candidates.json`.
+3. `swift Scripts/ai-propose.swift` — LLM drafts alternatives for
+   each candidate.  Defaults to LM Studio at `localhost:1234`; set
+   `OPENAI_COMPAT_URL` + `OPENAI_API_KEY` for cloud APIs.
+4. `swift Scripts/merge-proposals.swift` — interactive review.  Use
+   `--auto-accept high` for the trusted bulk-flow path.
+5. Regenerate + lint + test (steps 2-4 from the quick flow).
+
+### Discovery from a real Mac
+
+`swift Scripts/discover.swift --from-apps` enumerates `/Applications/`,
+`/Applications/Utilities/`, `~/Applications/` and emits any apps not
+already in the catalog as candidates — cheap way to find genuinely
+common Mac apps that have slipped through.
+
+### Reverse: refresh JSON from Swift
+
+If the generated Swift was hand-edited by accident:
+`swift run splynek-cli sovereignty-dump > Scripts/sovereignty-catalog.json`.
+
+### Weekly health check (CI)
+
+`.github/workflows/sovereignty-weekly.yml` runs every Monday:
+- Validates the catalog (offline lint).
+- Verifies the regenerator round-trips cleanly.
+- HEAD-checks every homepage + downloadURL; opens a labeled issue if
+  any rotted.
+
+Manual trigger: Actions tab → "Sovereignty catalog — weekly health
+check" → Run workflow.
 
 ## What the Sovereignty tab is, and isn't
 
@@ -42,9 +125,17 @@ Each Entry has:
     target — apps that are already sovereign don't need alternatives.
 - `alternatives` — an ordered list of suggested replacements.  Each
   alternative has:
-  - `origin` — one of `.europe`, `.oss`, `.europeAndOSS`.  **Do not**
-    suggest a US alternative to another US app; it wouldn't reduce
-    non-EU dependence.
+  - `origin` — preferably `.europe`, `.oss`, or `.europeAndOSS`.
+    `.other` is tolerated as a *secondary* pick (e.g. DaVinci Resolve
+    (Australia) for pro video editing, TablePlus (Singapore) for SQL)
+    when no strong European commercial option exists and the OSS pick
+    is already listed.  **Never** use `.unitedStates`, `.china`, or
+    `.russia` — those are precisely the origins users come here to
+    step away from.  The `SovereigntyCatalogTests` suite enforces
+    this at test time.
+  - Every entry must contain **at least one** `.europe` / `.oss` /
+    `.europeAndOSS` alternative so the European-only and OSS-only
+    filters never come up empty.
   - `name` — the project's common name.
   - `homepage` — canonical homepage URL.
   - `note` — one-line summary.  Always mention country + license.

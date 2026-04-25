@@ -37,8 +37,23 @@ struct CLI {
         case "cancel":    runCancel()
         case "openapi":   runOpenAPI()
         case "version":   runVersion()
+        case "sovereignty-dump":   runSovereigntyDump()
         case "-h", "--help", "help":  usage(); exit(0)
         default:          usage(); exit(1)
+        }
+    }
+
+    /// v1.4: dump the Sovereignty catalog to JSON on stdout.  Internal
+    /// tool used by `Scripts/regenerate-sovereignty-catalog.swift` to
+    /// round-trip the hand-written Swift catalog into JSON form.  Not
+    /// in the public help text — it's a build-time tool, not a
+    /// user-facing command.
+    static func runSovereigntyDump() {
+        do {
+            try SovereigntyExport.dumpJSON()
+        } catch {
+            FileHandle.standardError.write(Data("error: \(error)\n".utf8))
+            exit(3)
         }
     }
 

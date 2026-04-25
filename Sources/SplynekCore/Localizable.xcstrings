@@ -1,0 +1,248 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "Sovereignty" : {
+      "comment" : "Navigation title and empty-state heading for the Sovereignty tab.",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Souveränität" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Soberanía" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Souveraineté" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Sovranità" } }
+      }
+    },
+    "See where your Mac's software comes from, and which apps have European or open-source alternatives. Everything stays local — no account, no telemetry, no app list leaving your device." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Sehen Sie, woher die Software Ihres Mac kommt und welche Apps europäische oder Open-Source-Alternativen haben. Alles bleibt lokal — kein Konto, keine Telemetrie, keine App-Liste verlässt Ihr Gerät." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Descubre de dónde viene el software de tu Mac y qué apps tienen alternativas europeas o de código abierto. Todo permanece local — sin cuenta, sin telemetría, ninguna lista de apps sale de tu dispositivo." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Découvrez d’où viennent les logiciels de votre Mac, et quelles apps ont des alternatives européennes ou open-source. Tout reste local — pas de compte, pas de télémétrie, aucune liste d’apps ne quitte votre appareil." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scopri da dove proviene il software del tuo Mac e quali app hanno alternative europee o open-source. Tutto resta locale — nessun account, nessuna telemetria, nessun elenco di app lascia il tuo dispositivo." } }
+      }
+    },
+    "Rescan" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erneut scannen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Volver a escanear" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rescanner" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Ripeti scansione" } }
+      }
+    },
+    "Re-enumerate installed apps" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Installierte Apps erneut auflisten" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Volver a enumerar las apps instaladas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réénumérer les applications installées" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Rienumera le app installate" } }
+      }
+    },
+    "Your software supply chain" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ihre Software-Lieferkette" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tu cadena de suministro de software" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Votre chaîne d’approvisionnement logicielle" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "La tua supply chain del software" } }
+      }
+    },
+    "Most Mac apps are controlled from outside the European Union. Splynek lists your third-party apps with their country-of-origin, and points to European or open-source alternatives where they exist. Nothing is uploaded, logged, or remembered across launches." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die meisten Mac-Apps werden von außerhalb der Europäischen Union kontrolliert. Splynek listet Ihre Dritt-Apps mit ihrem Ursprungsland auf und verweist auf europäische oder Open-Source-Alternativen, wo sie existieren. Nichts wird hochgeladen, protokolliert oder zwischen Starts gespeichert." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "La mayoría de las apps de Mac se controlan desde fuera de la Unión Europea. Splynek lista tus apps de terceros con su país de origen y señala alternativas europeas o de código abierto cuando existen. Nada se sube, registra ni recuerda entre lanzamientos." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "La plupart des apps Mac sont contrôlées depuis l’extérieur de l’Union européenne. Splynek liste vos apps tierces avec leur pays d’origine et indique les alternatives européennes ou open-source lorsqu’elles existent. Rien n’est envoyé, journalisé ou retenu entre les lancements." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "La maggior parte delle app Mac è controllata da fuori l’Unione Europea. Splynek elenca le tue app di terze parti con il paese d’origine e indica alternative europee o open-source dove esistono. Niente viene caricato, registrato o ricordato tra un avvio e l’altro." } }
+      }
+    },
+    "Enumeration only — never reads app contents" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nur Auflistung — liest niemals App-Inhalte" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Solo enumeración — nunca lee el contenido de las apps" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Énumération uniquement — ne lit jamais le contenu des apps" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Solo enumerazione — non legge mai il contenuto delle app" } }
+      }
+    },
+    "Stays on-device — no network calls, ever" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bleibt auf dem Gerät — niemals Netzwerkaufrufe" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Permanece en el dispositivo — ninguna llamada de red, nunca" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Reste sur l’appareil — aucun appel réseau, jamais" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Resta sul dispositivo — nessuna chiamata di rete, mai" } }
+      }
+    },
+    "Opt-in — you click Scan, nothing runs in the background" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Opt-in — Sie klicken auf Scannen, nichts läuft im Hintergrund" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Opt-in — tú haces clic en Escanear, nada se ejecuta en segundo plano" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sur demande — vous cliquez sur Scanner, rien ne s’exécute en arrière-plan" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Opt-in — sei tu a cliccare Scansione, nulla gira in background" } }
+      }
+    },
+    "Open-source scanner in the public repo" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Open-Source-Scanner im öffentlichen Repo" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escáner de código abierto en el repositorio público" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Scanner open-source dans le dépôt public" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scanner open-source nel repository pubblico" } }
+      }
+    },
+    "Scan my Mac" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Meinen Mac scannen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escanear mi Mac" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Scanner mon Mac" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scansiona il mio Mac" } }
+      }
+    },
+    "All alternatives" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alle Alternativen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Todas las alternativas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Toutes les alternatives" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Tutte le alternative" } }
+      }
+    },
+    "European only" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nur europäische" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Solo europeas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Européennes uniquement" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Solo europee" } }
+      }
+    },
+    "Open-source only" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nur Open-Source" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Solo código abierto" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Open-source uniquement" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Solo open-source" } }
+      }
+    },
+    "Filter" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Filter" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Filtro" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Filtre" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Filtro" } }
+      }
+    },
+    "Scanning…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Scanne…" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escaneando…" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Analyse en cours…" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scansione in corso…" } }
+      }
+    },
+    "%1$lld / %2$lld apps" : {
+      "comment" : "Match summary shown above the results list. %1$lld = matched count, %2$lld = total scanned.",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld Apps" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld apps" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld apps" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld app" } }
+      }
+    },
+    "Apps we don't know yet (%lld)" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Noch unbekannte Apps (%lld)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Apps que aún no conocemos (%lld)" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Apps que nous ne connaissons pas encore (%lld)" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "App non ancora conosciute (%lld)" } }
+      }
+    },
+    "…and %lld more." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "…und %lld weitere." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "…y %lld más." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "…et %lld de plus." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "…e altre %lld." } }
+      }
+    },
+    "Ask AI" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "KI fragen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Preguntar a la IA" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Demander à l’IA" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Chiedi all’IA" } }
+      }
+    },
+    "Ask again" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erneut fragen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Preguntar de nuevo" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Redemander" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Chiedi di nuovo" } }
+      }
+    },
+    "Asking…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Anfrage läuft…" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Consultando…" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Interrogation…" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "In corso…" } }
+      }
+    },
+    "The local LLM didn't know any good European or open-source alternatives. Contribute one at github.com/Splynek/splynek." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das lokale LLM kannte keine guten europäischen oder Open-Source-Alternativen. Tragen Sie eine auf github.com/Splynek/splynek bei." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "El LLM local no conocía buenas alternativas europeas o de código abierto. Contribuye con una en github.com/Splynek/splynek." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le LLM local ne connaissait aucune bonne alternative européenne ou open-source. Contribuez-en une sur github.com/Splynek/splynek." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "L’LLM locale non conosceva buone alternative europee o open-source. Contribuiscine una su github.com/Splynek/splynek." } }
+      }
+    },
+    "AI request failed: %@" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "KI-Anfrage fehlgeschlagen: %@" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "La solicitud a la IA falló: %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec de la requête IA : %@" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Richiesta IA non riuscita: %@" } }
+      }
+    },
+    "No matches with the current filter" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Treffer mit dem aktuellen Filter" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Sin coincidencias con el filtro actual" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune correspondance avec le filtre actuel" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Nessuna corrispondenza con il filtro attuale" } }
+      }
+    },
+    "Either your installed apps don't have catalog entries yet, or the filter is hiding them. The catalog is intentionally small at launch — community PRs expand it at [github.com/Splynek/splynek](https://github.com/Splynek/splynek)." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Entweder haben Ihre installierten Apps noch keine Katalog-Einträge, oder der Filter blendet sie aus. Der Katalog ist zum Start absichtlich klein — Community-PRs erweitern ihn auf [github.com/Splynek/splynek](https://github.com/Splynek/splynek)." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "O tus apps instaladas aún no tienen entradas en el catálogo, o el filtro las oculta. El catálogo es intencionadamente pequeño al lanzar — los PR de la comunidad lo amplían en [github.com/Splynek/splynek](https://github.com/Splynek/splynek)." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Soit vos apps installées n’ont pas encore d’entrées dans le catalogue, soit le filtre les cache. Le catalogue est volontairement restreint au lancement — les PR de la communauté l’étendent sur [github.com/Splynek/splynek](https://github.com/Splynek/splynek)." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Le tue app installate non hanno ancora voci nel catalogo, oppure il filtro le sta nascondendo. Il catalogo è volutamente ridotto al lancio — le PR della community lo ampliano su [github.com/Splynek/splynek](https://github.com/Splynek/splynek)." } }
+      }
+    },
+    "Install" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Installieren" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Instalar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Installer" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Installa" } }
+      }
+    },
+    "Visit" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Besuchen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Visitar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Visiter" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Visita" } }
+      }
+    },
+    "Download %@ via Splynek" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@ über Splynek herunterladen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Descargar %@ con Splynek" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Télécharger %@ via Splynek" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scarica %@ con Splynek" } }
+      }
+    },
+    "Open %@ in your browser" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@ im Browser öffnen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Abrir %@ en tu navegador" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir %@ dans votre navigateur" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Apri %@ nel tuo browser" } }
+      }
+    }
+  }
+}

@@ -12,6 +12,10 @@ import PackageDescription
 // contract any CI needs.
 let package = Package(
     name: "Splynek",
+    // v1.4: Sovereignty tab strings localised to FR/DE/ES/IT.  SPM
+    // requires `defaultLocalization` whenever a target declares
+    // localizable resources (the `.xcstrings` under SplynekCore).
+    defaultLocalization: "en",
     platforms: [.macOS(.v13)],
     products: [
         // Library product — linked by the Xcode App target for MAS
@@ -23,7 +27,8 @@ let package = Package(
     targets: [
         .target(
             name: "SplynekCore",
-            path: "Sources/SplynekCore"
+            path: "Sources/SplynekCore",
+            resources: [.process("Localizable.xcstrings")]
         ),
         .executableTarget(
             name: "Splynek",

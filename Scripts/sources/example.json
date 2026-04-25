@@ -1,0 +1,15 @@
+{
+  "source":  "example-batch-2026-04",
+  "license": "CC0",
+  "url":     "https://splynek.app",
+  "comment": "Example source file showing the schema. Drop your own JSON files alongside this one and run `swift Scripts/discover.swift`.",
+  "entries": [
+    {
+      "displayName": "Example Sovereignty Target",
+      "bundleID":    "com.example.target",
+      "origin":      "unitedStates",
+      "category":    "chat-personal",
+      "note":        "If discover.swift sees this, the pipeline is wired correctly."
+    }
+  ]
+}

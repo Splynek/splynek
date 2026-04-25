@@ -695,7 +695,13 @@ final class SplynekViewModel: ObservableObject {
     /// the full list.
     func searchHistoryViaAI(_ query: String) {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, aiAvailable else {
+        // v1.4 audit: defense-in-depth.  HistoryView already gates the
+        // search bar UI on `aiAvailable && license.isPro`, but the VM
+        // function should refuse Pro-only work too — so a future
+        // accidental call from a free code path doesn't silently hit
+        // the stub's UnavailableError and leave the user staring at
+        // "0 results" with no explanation.
+        guard !trimmed.isEmpty, aiAvailable, license.isPro else {
             aiHistoryHits = []
             aiHistoryQuery = ""
             return
@@ -739,7 +745,12 @@ final class SplynekViewModel: ObservableObject {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         concierge.chat.append(.init(role: .user, text: trimmed, action: nil))
-        guard aiAvailable else {
+        // v1.4 audit: defense-in-depth.  The Concierge view itself is
+        // Pro-only (free builds show ProLockedView in its place), so
+        // this code path isn't reachable in free builds today.  The
+        // explicit `license.isPro` check guards against a future
+        // refactor accidentally exposing it.
+        guard aiAvailable, license.isPro else {
             concierge.chat.append(.init(
                 role: .system,
                 text: "Install Ollama (ollama.com/download) + any model — llama3.2:3b is perfect — to enable the Concierge. Until then the ingress surfaces (Download tab, menu bar, CLI, web dashboard) all still work.",

@@ -131,8 +131,14 @@ struct MetricView: View {
 /// a 1-pixel divider underneath.
 struct PageHeader: View {
     let systemImage: String
-    let title: String
-    let subtitle: String
+    // v1.4: LocalizedStringKey so Sovereignty (and future localised
+    // views) auto-translate via Localizable.xcstrings.  Existing
+    // callers pass string literals which are ExpressibleByStringLiteral
+    // into LocalizedStringKey — no behavioural change for the other
+    // tabs because their strings aren't in the xcstrings catalog and
+    // fall through to the source English.
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {

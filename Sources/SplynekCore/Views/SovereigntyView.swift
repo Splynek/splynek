@@ -31,14 +31,22 @@ struct SovereigntyView: View {
     @State private var uncatalogedExpanded: Bool = false
     @State private var aiRequests: [String: AIRequestState] = [:]
 
-    enum AIRequestState: Equatable {
+    /// v1.4 audit: track the in-flight request UUID per app so a
+    /// late-arriving response from a superseded request can't
+    /// overwrite the state set by a newer request.  Without this,
+    /// rapid Ask-AI clicks created a "last finishes wins" race —
+    /// the user would see suggestions for click N reverted to those
+    /// of click N-1 if N-1's network request happened to land later.
+    @State private var aiRequestTokens: [String: UUID] = [:]
+
+    enum AIRequestState: Equatable, Sendable {
         case idle
         case loading
         case ready([AISuggestion])
         case error(String)
     }
 
-    struct AISuggestion: Hashable {
+    struct AISuggestion: Hashable, Sendable {
         let name: String
         let note: String
         let homepage: URL?
@@ -47,7 +55,9 @@ struct SovereigntyView: View {
     enum Filter: String, CaseIterable, Identifiable {
         case all, european, oss
         var id: String { rawValue }
-        var label: String {
+        /// Localized label — looks up the string in
+        /// SplynekCore's `Localizable.xcstrings` at render time.
+        var label: LocalizedStringKey {
             switch self {
             case .all:      return "All alternatives"
             case .european: return "European only"
@@ -168,7 +178,13 @@ struct SovereigntyView: View {
                     if matchedRows.isEmpty && !scanner.isScanning {
                         noMatchesFooter
                     }
-                    if vm.aiAvailable {
+                    // v1.4: AI fallback is Pro-only.  The implementation
+                    // lives in splynek-pro; the free build's
+                    // ProStubs.sovereigntyAlternatives() throws
+                    // UnavailableError.  Showing the button without the
+                    // Pro gate let free users with Apple Intelligence
+                    // click into a guaranteed error.  Both gates required.
+                    if vm.aiAvailable && vm.license.isPro {
                         uncatalogedSection
                             .padding(.top, 8)
                     }
@@ -333,17 +349,26 @@ struct SovereigntyView: View {
     }
 
     private func requestAIAlternatives(for app: SovereigntyScanner.InstalledApp) {
+        // v1.4 audit: token-based dedup.  Each click stamps the request
+        // with a fresh UUID; the completion handler only commits its
+        // result if the token still matches (i.e. the user hasn't
+        // clicked Ask again in the meantime).  Earlier behaviour was
+        // last-finishes-wins, which surfaced stale suggestions.
+        let token = UUID()
+        aiRequestTokens[app.id] = token
         aiRequests[app.id] = .loading
         Task { @MainActor in
             do {
                 let raw = try await vm.ai.sovereigntyAlternatives(
                     appName: app.name, bundleID: app.id
                 )
+                guard aiRequestTokens[app.id] == token else { return }  // superseded
                 let mapped = raw.map { s in
                     AISuggestion(name: s.name, note: s.note, homepage: s.homepage)
                 }
                 aiRequests[app.id] = .ready(mapped)
             } catch {
+                guard aiRequestTokens[app.id] == token else { return }  // superseded
                 aiRequests[app.id] = .error(
                     "AI request failed: \(error.localizedDescription)"
                 )
@@ -369,7 +394,9 @@ struct SovereigntyView: View {
                     Text("Scanning…").font(.caption).foregroundStyle(.secondary)
                 }
             } else {
-                Text("\(matchedRows.count) match\(matchedRows.count == 1 ? "" : "es") out of \(scanner.apps.count) apps")
+                // v1.4: simplified "X / Y apps" phrasing — avoids
+                // per-language plural headaches in the localisations.
+                Text("\(matchedRows.count) / \(scanner.apps.count) apps")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -464,9 +491,15 @@ struct SovereigntyView: View {
     /// in the default browser).  Install is the better flow when
     /// available; it keeps users inside Splynek and leverages the
     /// multi-interface aggregation / SHA-256 verification pipeline.
+    ///
+    /// v1.4 hardening: only HTTP(S) downloadURLs trigger the Install
+    /// path.  Catalog data is human-curated, but a malicious upstream
+    /// JSON source could submit `file:///` or `data:` schemes via the
+    /// discovery pipeline — we defence-in-depth here so the URL never
+    /// reaches the download engine even if validation upstream fails.
     @ViewBuilder
     private func actionButton(for alt: SovereigntyCatalog.Alternative) -> some View {
-        if let dl = alt.downloadURL {
+        if let dl = alt.downloadURL, isSafeDownloadScheme(dl) {
             Button {
                 vm.urlText = dl.absoluteString
                 vm.start()
@@ -478,7 +511,7 @@ struct SovereigntyView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
             .help("Download \(alt.name) via Splynek")
-        } else {
+        } else if isSafeHomepageScheme(alt.homepage) {
             Link(destination: alt.homepage) {
                 Label("Visit", systemImage: "arrow.up.right.square")
                     .labelStyle(.titleAndIcon)
@@ -488,6 +521,24 @@ struct SovereigntyView: View {
             .controlSize(.small)
             .help("Open \(alt.homepage.host ?? alt.name) in your browser")
         }
+    }
+
+    /// Allow only `https://` for downloads — the engine doesn't gain
+    /// anything from `http://` (no integrity), and `file://` / `data:`
+    /// would let a poisoned catalog leak local files or trigger
+    /// arbitrary handlers.  Match `ViewModel.start()`'s own scheme
+    /// gate — both layers enforce, neither relies on the other.
+    private func isSafeDownloadScheme(_ url: URL) -> Bool {
+        (url.scheme ?? "").lowercased() == "https"
+    }
+
+    /// Allow `https://` (and `http://` for the rare upstream that
+    /// hasn't migrated) for homepages opened in the user's browser.
+    /// Reject `file://`, `data:`, `javascript:`, custom schemes —
+    /// `Link` would happily hand any of those to LaunchServices.
+    private func isSafeHomepageScheme(_ url: URL) -> Bool {
+        let s = (url.scheme ?? "").lowercased()
+        return s == "https" || s == "http"
     }
 
     @ViewBuilder
@@ -512,6 +563,12 @@ struct SovereigntyView: View {
             .padding(.horizontal, 7).padding(.vertical, 3)
             .background(Capsule().fill(bg))
             .foregroundStyle(fg)
+            // v1.4 audit: VoiceOver pronounces "EU" / "OSS" as letter
+            // soup without a label.  Replace the visual abbreviation
+            // with a spoken-language description so the badge conveys
+            // the same meaning to screen-reader users that it does to
+            // sighted users.
+            .accessibilityLabel(origin.accessibilityLabel)
     }
 
     @ViewBuilder

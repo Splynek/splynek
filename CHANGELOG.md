@@ -3,6 +3,111 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.4 — Sovereignty catalog pipeline (90 → 1167), AI hardening, FR/DE/ES/IT (2026-04-24)
+
+Sovereignty-tab focused release.  Headline: the catalog grew by a
+full order of magnitude (90 → **1167 entries — 13×** more apps
+covered) via a new JSON-backed codegen pipeline.  Plus AI-fallback
+hardening and FR/DE/ES/IT localisation for the tab's UI copy.
+
+**Catalog pipeline refactor.** The catalog used to live as a hand-
+typed Swift literal.  v1.4 splits it into:
+
+- `Scripts/sovereignty-catalog.json` — the authoring source (1 entry
+  per object; diffable; community-PR-friendly).
+- `Scripts/regenerate-sovereignty-catalog.swift` — a pure-Foundation
+  Swift script that reads the JSON, validates it (origins, URLs,
+  duplicate IDs), and rewrites
+  `Sources/SplynekCore/SovereigntyCatalog+Entries.swift`.
+- `Scripts/seed-sovereignty-bulk.swift` — a template-driven
+  bulk-expander that pairs target tuples with category-keyed
+  alternative sets.  Idempotent (skips bundle IDs already present).
+- `splynek-cli sovereignty-dump` — reverse path: emits the current
+  catalog as JSON for round-trip verification.
+
+Compile-time type safety is preserved (the output Swift file is
+normal code, compiled into the app module).  Contributors edit JSON;
+Swift stays auto-generated.  Full workflow in
+[SOVEREIGNTY-CONTRIBUTING.md](SOVEREIGNTY-CONTRIBUTING.md).
+
+**Catalog expansion — 90 → 106 entries.** New categories/entries:
+
+- **Cloud storage** — Microsoft OneDrive, Resilio Sync, Backblaze.
+- **Communication** — Skype, Google Meet, Telegram, LINE.
+- **Creative / writing** — Canva, Grammarly, iA Writer.
+- **Dev tools** — Linear, Parallels Desktop, VMware Fusion.
+- **Torrents** — µTorrent, BitTorrent Classic.
+- **Streaming / academic** — Amazon Music, EndNote.
+
+**AI fallback hardening.** The `sovereigntyAlternatives` system
+prompt now includes an explicit FORBIDDEN PATTERNS block listing
+the US/CN alternatives the 3B model most commonly hallucinates
+(Netflix/YouTube/Prime Video, Discord/Slack/Teams, Dropbox/Google
+Drive, ChatGPT/Claude, etc.).  On top of that, a deny-list
+post-filter strips any suggestion whose normalised name matches
+a known US/CN/RU product — the prompt tells the model, the filter
+catches what the model emits anyway.  Valid European picks
+(Spotify, Things, Todoist, Sketch — all EU-based) are intentionally
+NOT on the deny-list so they continue to surface as suggestions.
+
+**Localisation — FR / DE / ES / IT.** The Sovereignty tab's UI copy
+(~30 strings) now lives in `Sources/SplynekCore/Localizable.xcstrings`
+with native translations for French, German, Spanish, Italian.
+Plumbing: `defaultLocalization: "en"` on Package.swift, PageHeader's
+`title` / `subtitle` widened to `LocalizedStringKey` (string-literal
+callers unchanged).  Other tabs stay English-only for now — the
+pattern is proven and can roll out to Concierge / Recipes / Downloads
+in a follow-up pass.
+
+**Invariant tests for the catalog.** New `SovereigntyCatalogTests`
+suite (8 tests) locks in: every target is outside the European
+ecosystem; every alternative is .europe / .oss / .europeAndOSS /
+.other (never US/CN/RU); every entry has at least one recommendable
+(EU/OSS) alternative; alt IDs are unique; bundle-ID lookup
+round-trips cleanly; catalog within ±50 of expected size; no
+duplicate bundle IDs; no `(dup-chk)` placeholders.  Protects the
+community PR pipeline from regressions.
+
+**Audit hardening (round 2).** End-to-end audit pass found and fixed:
+
+- *Critical*: scheme-validation gap let a poisoned upstream catalog
+  trigger `file://` URLs through the Sovereignty "Install" button.
+  Fixed at three layers: data (`Scripts/regenerate-sovereignty-catalog.swift`
+  rejects non-https downloadURLs at regen time), merge
+  (`Scripts/merge-proposals.swift` enforces http/https before write),
+  and UI (`SovereigntyView.actionButton` only renders for safe schemes).
+- *High*: `Scripts/ai-propose.swift` now redacts the endpoint URL in
+  log output (strips userinfo, query, fragment) and refuses to call
+  any non-localhost endpoint over plain http — MITM goldmine when the
+  request body includes the user's app list.
+- *High*: 12 `(dup-chk)` placeholder entries removed from the catalog
+  (workflow markers from the bulk seeder that should never have shipped).
+  New `SovereigntyCatalogTests` invariant fails the build if any return.
+- *Medium*: AI request UUID dedup in `SovereigntyView` — rapid Ask-AI
+  clicks no longer surface stale results from superseded requests.
+- *Medium*: `Origin`, `Alternative`, `Entry`, `AISuggestion`,
+  `AIRequestState` gained `Sendable` conformance for clean
+  Swift-6-mode forward-compat.
+- *Medium*: `swiftStringLit` in regenerator now escapes tab, null, and
+  the full C0 control range — defends against catalog notes that
+  picked up control chars from upstream sources.
+- *Medium*: VoiceOver pronunciation fix — origin badges (EU / OSS /
+  US / CN / RU) gained `.accessibilityLabel(_:)` with full-word
+  descriptions ("European origin", "Open-source", etc.) instead of
+  letter-soup defaults.
+- *Medium*: `validate-catalog.swift` `try!` on regex compilation
+  replaced with named `mustCompile()` that exits with a clear error
+  on bad pattern; dictionary force-unwraps replaced with explicit
+  default-then-write pattern.
+- *Medium*: `searchHistoryViaAI` and `conciergeSend` in `ViewModel`
+  gained `license.isPro` guards — defense-in-depth, the UIs already
+  gate but the VM functions shouldn't silently hit the Pro stub.
+- *Medium*: `merge-proposals.swift` pre-scans for duplicate bundle
+  IDs within a batch (was first-wins, silently dropping later dupes).
+- *High*: AI-fallback deny-list in `splynek-pro/AIAssistant.swift`
+  expanded with brand variants the 3B model emits (chatgpt4,
+  microsoftteams, discordpro, googlechrome, geminipro, etc.).
+
 ## v1.3 — Sovereignty catalog x2 + AI fallback (2026-04-24)
 
 Same-day follow-up release focused on making the Sovereignty tab

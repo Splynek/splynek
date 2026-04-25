@@ -126,11 +126,22 @@ final class AIAssistant {
     /// splynek-pro/AIAssistant.swift for the working behaviour.
     /// The stub always throws; free-tier builds never surface the
     /// "Ask AI" button because its Sovereignty view gates it behind
-    /// `vm.aiAvailable`, which is always false in the stub.
+    /// `vm.aiAvailable && vm.license.isPro`, which is always false
+    /// in the stub.
     func sovereigntyAlternatives(
         appName: String, bundleID: String, timeout: TimeInterval = 30
     ) async throws -> [SovereigntySuggestion] {
         throw UnavailableError()
+    }
+
+    /// v1.4 audit gap: Pro's `AIAssistant.prewarm()` is called from
+    /// splynek-pro/Views/ConciergeView.swift on input-focus.  That
+    /// view is excluded from the free build, so the call site never
+    /// reaches the stub — but adding a no-op here makes the API
+    /// symmetric and keeps any future free-build call site (e.g. if
+    /// we add a free Concierge teaser) from breaking the compile.
+    func prewarm() async {
+        // No-op in free builds.
     }
 }
 
