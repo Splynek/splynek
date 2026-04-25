@@ -24,6 +24,7 @@ UsageTimelineTests.run()
 GatekeeperDetailTests.run()
 TorrentResumeTests.run()
 SovereigntyCatalogTests.run()
+TrustCatalogTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

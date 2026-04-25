@@ -19,10 +19,10 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (126 tests, all green)
+**Tests:** `swift run splynek-test` (144 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
-**Current version: v1.4 — shipped 2026-04-24.** **Catalog pipeline + 13× growth: 90 → 1155 entries.** AI-fallback hardening (FORBIDDEN PATTERNS + deny-list post-filter). FR/DE/ES/IT localisation for the Sovereignty tab. MAS archive waiting on v1.0 to clear App Store review before uploading as the update. Full release history + download URLs under § Shipped releases below.
+**Current version: v1.5 — shipped 2026-04-25.** New **Trust** tab — public-record audit of installed apps (Apple App Store privacy labels + DPA/FTC/SEC rulings + NVD CVE + HIBP breaches + vendor advisories), 30 deeply-cited initial entries, MAS-safe source allowlist. Pairs with Sovereignty (Trust surfaces concerns; Sovereignty surfaces alternatives). v1.4 baseline still applies: **Catalog pipeline + 13× growth: 90 → 1155 entries.** AI-fallback hardening (FORBIDDEN PATTERNS + deny-list post-filter). FR/DE/ES/IT localisation for the Sovereignty tab. MAS archive waiting on v1.0 to clear App Store review before uploading as the update. Full release history + download URLs under § Shipped releases below.
 
 ---
 
@@ -31,6 +31,16 @@ xcrun stapler staple build/Splynek.dmg
 All Developer-ID-signed, notarised, stapled, and published at
 <https://github.com/Splynek/splynek/releases>. SHA-256 hashes match the
 release-notes bodies.
+
+### v1.5 — Trust tab (2026-04-25)
+- New tab in the sidebar Ask section (next to Sovereignty). Free-tier; no PRO gate.
+- **Source allowlist (legal/MAS guarantee):** every concern cites Apple App Store privacy labels, EU DPA / FTC / SEC rulings, NVD CVE, HIBP breaches, vendor security advisories, or vendor's own privacy policy. Editorial words (`spies`, `untrustworthy`, `you are the product`, etc.) are rejected by the regenerator. See `TRUST-CONTRIBUTING.md`.
+- **30 deeply-cited initial entries** in `Scripts/trust-catalog.json` covering the most-installed apps (Chrome, Messenger, WhatsApp, Slack, Zoom, Teams, Dropbox, LastPass, TikTok, WeChat, Yandex Browser, Kaspersky, Adobe, ChatGPT, …).
+- `TrustScorer` produces 0–100 score + categorical level (Low/Moderate/High/Severe). Pure + deterministic + weight-aware. UI always shows score + level + cited concern labels — never the score alone.
+- **Alternatives lookup chain:** Sovereignty catalog (EU/OSS) first → Trust's own `fallbackAlternatives` → "no curated alt yet, contribute one".
+- Pipeline mirrors Sovereignty: `Scripts/trust-catalog.json` → `regenerate-trust-catalog.swift` → `Sources/SplynekCore/TrustCatalog+Entries.swift`. Validator at `Scripts/validate-trust-catalog.swift --strict`.
+- 18 new tests in `TrustCatalogTests` + `TrustScorerTests` — banned-phrase guard, HTTPS-only, ID uniqueness, scorer bounds, level thresholds.
+- FR/DE/ES/IT localisation for all Trust strings.
 
 ### v1.4 — Catalog pipeline (90→1167) + discovery/quality engines + AI hardening + FR/DE/ES/IT (2026-04-24)
 - **DMG**: not yet cut (waiting for this session's work to land). After commit + tag, run the Developer-ID build + notarise flow from the top of this file.

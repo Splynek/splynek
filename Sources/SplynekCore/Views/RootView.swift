@@ -65,6 +65,7 @@ struct RootView: View {
         case .concierge:   ConciergeView(vm: vm)
         case .recipes:     RecipeView(vm: vm)
         case .sovereignty: SovereigntyView(vm: vm)
+        case .trust:       TrustView(vm: vm)
         case .queue:       QueueView(vm: vm)
         case .fleet:       FleetView(vm: vm)
         case .benchmark:   BenchmarkView(vm: vm)

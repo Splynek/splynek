@@ -2,6 +2,215 @@
   "sourceLanguage" : "en",
   "version" : "1.0",
   "strings" : {
+    "Trust" : {
+      "comment" : "Navigation title for the Trust tab (v1.5).",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vertrauen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Confianza" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Confiance" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Affidabilità" } }
+      }
+    },
+    "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Every claim cites its primary source. Everything stays local." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Sehen Sie, was öffentliche Aufzeichnungen über Ihre installierten Apps sagen — App-Store-Datenschutzlabels, behördliche Entscheidungen, bestätigte Datenpannen, Sicherheitshinweise der Hersteller. Jede Aussage zitiert ihre Primärquelle. Alles bleibt lokal." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Descubre qué dicen los registros públicos sobre tus apps instaladas: etiquetas de privacidad del App Store, sanciones de reguladores, brechas confirmadas, avisos de seguridad de los desarrolladores. Cada afirmación cita su fuente primaria. Todo permanece local." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Voyez ce que disent les archives publiques sur vos apps installées — étiquettes de confidentialité de l'App Store, décisions des régulateurs, fuites confirmées, alertes de sécurité des éditeurs. Chaque affirmation cite sa source primaire. Tout reste local." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scopri cosa dicono i registri pubblici sulle tue app installate: etichette privacy dell'App Store, decisioni dei regolatori, violazioni confermate, avvisi di sicurezza dei fornitori. Ogni affermazione cita la fonte primaria. Tutto resta locale." } }
+      }
+    },
+    "Public-record audit of your apps" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffentlich dokumentierte Audit Ihrer Apps" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Auditoría basada en registros públicos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Audit fondé sur les archives publiques" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Audit basato su registri pubblici" } }
+      }
+    },
+    "Splynek cross-references your installed apps against Apple's App Store privacy labels, EU and US regulator decisions, the NVD CVE database, and the HIBP breach corpus. Every concern shown is a fact you can verify yourself — we surface public record, never opinion." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Splynek gleicht Ihre installierten Apps mit Apples App-Store-Datenschutzlabels, EU- und US-Regulierungsentscheidungen, der NVD-CVE-Datenbank und dem HIBP-Datenpannenkorpus ab. Jeder gezeigte Befund ist eine Tatsache, die Sie selbst überprüfen können — wir machen öffentliche Aufzeichnungen sichtbar, nie Meinungen." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Splynek cruza tus apps instaladas con las etiquetas de privacidad del App Store, decisiones de reguladores de la UE y EE. UU., la base de datos NVD de CVE y el corpus de brechas HIBP. Cada hallazgo es un hecho verificable: mostramos registros públicos, nunca opinión." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Splynek recoupe vos apps installées avec les étiquettes de confidentialité de l'App Store d'Apple, les décisions des régulateurs de l'UE et des États-Unis, la base NVD des CVE et le corpus de fuites HIBP. Chaque alerte est un fait que vous pouvez vérifier — nous exposons des archives publiques, jamais des opinions." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Splynek confronta le tue app installate con le etichette privacy dell'App Store di Apple, le decisioni dei regolatori UE e USA, il database NVD dei CVE e il corpus di violazioni HIBP. Ogni segnalazione è un fatto verificabile: mostriamo registri pubblici, mai opinioni." } }
+      }
+    },
+    "Every concern cites a primary source you can open" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Jeder Befund zitiert eine Primärquelle, die Sie öffnen können" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cada hallazgo cita una fuente primaria que puedes abrir" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Chaque alerte cite une source primaire que vous pouvez ouvrir" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Ogni segnalazione cita una fonte primaria apribile" } }
+      }
+    },
+    "All apps" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alle Apps" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Todas las apps" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Toutes les apps" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Tutte le app" } }
+      }
+    },
+    "High risk only" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nur hohes Risiko" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Solo riesgo alto" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Risque élevé uniquement" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Solo rischio alto" } }
+      }
+    },
+    "Privacy" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Datenschutz" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Privacidad" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Confidentialité" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Privacy" } }
+      }
+    },
+    "Security" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Sicherheit" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Seguridad" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sécurité" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Sicurezza" } }
+      }
+    },
+    "Business model" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Geschäftsmodell" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Modelo de negocio" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modèle économique" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Modello di business" } }
+      }
+    },
+    "Search by app name" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nach App-Namen suchen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar por nombre de app" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rechercher par nom d'app" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Cerca per nome app" } }
+      }
+    },
+    "Details + better alternatives" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Details + bessere Alternativen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Detalles + mejores alternativas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Détails + meilleures alternatives" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Dettagli + alternative migliori" } }
+      }
+    },
+    "Better alternatives" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bessere Alternativen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mejores alternativas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Meilleures alternatives" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Alternative migliori" } }
+      }
+    },
+    "Sovereignty pick" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Souveränitäts-Empfehlung" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Selección Sovereignty" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choix Souveraineté" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scelta Sovranità" } }
+      }
+    },
+    "Trust pick" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Trust-Empfehlung" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Selección Trust" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choix Trust" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scelta Affidabilità" } }
+      }
+    },
+    "Low" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Niedrig" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Bajo" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Faible" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Basso" } }
+      }
+    },
+    "Moderate" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Mittel" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Moderado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modéré" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Moderato" } }
+      }
+    },
+    "High" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hoch" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Élevé" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Alto" } }
+      }
+    },
+    "Severe" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwerwiegend" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Grave" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Grave" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Grave" } }
+      }
+    },
+    "How this works" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "So funktioniert das" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cómo funciona esto" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Comment ça marche" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Come funziona" } }
+      }
+    },
+    "Trust surfaces public-record facts about your installed apps — Apple's own App Store privacy labels (which developers self-disclose), EU and US regulator decisions, the NVD CVE database, the HIBP breach corpus, and vendor security advisories. We do not editorialise. Every concern shown links to its primary source so you can verify the claim. If you spot inaccurate or outdated information, please open a PR or issue at github.com/Splynek/splynek." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Trust zeigt öffentlich dokumentierte Fakten zu Ihren installierten Apps — Apples eigene App-Store-Datenschutzlabels (von Entwicklern selbst angegeben), EU- und US-Regulierungsentscheidungen, die NVD-CVE-Datenbank, der HIBP-Datenpannenkorpus und Sicherheitshinweise der Hersteller. Wir kommentieren nicht. Jeder Befund verlinkt seine Primärquelle, damit Sie ihn überprüfen können. Bei Ungenauigkeiten bitte einen PR oder ein Issue auf github.com/Splynek/splynek öffnen." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Trust muestra hechos de registro público sobre tus apps instaladas: etiquetas de privacidad del App Store de Apple (autodeclaradas por los desarrolladores), decisiones de reguladores de la UE y EE. UU., la base NVD de CVE, el corpus de brechas HIBP y avisos de seguridad de los fabricantes. No editorializamos. Cada hallazgo enlaza con su fuente primaria para que puedas verificarlo. Si detectas información imprecisa, abre un PR o issue en github.com/Splynek/splynek." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trust expose des faits issus d'archives publiques sur vos apps installées — les étiquettes de confidentialité de l'App Store d'Apple (auto-déclarées par les éditeurs), les décisions des régulateurs de l'UE et des États-Unis, la base NVD des CVE, le corpus de fuites HIBP, et les alertes de sécurité des éditeurs. Nous n'éditorialisons pas. Chaque alerte renvoie à sa source primaire afin que vous puissiez vérifier. En cas d'inexactitude, ouvrez une PR ou un ticket sur github.com/Splynek/splynek." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Trust mostra fatti di registro pubblico sulle tue app installate: etichette privacy dell'App Store di Apple (auto-dichiarate dagli sviluppatori), decisioni dei regolatori UE e USA, database NVD dei CVE, corpus di violazioni HIBP e avvisi di sicurezza dei fornitori. Non editoriaIizziamo. Ogni segnalazione collega la sua fonte primaria così puoi verificarla. Se rilevi informazioni imprecise, apri una PR o issue su github.com/Splynek/splynek." } }
+      }
+    },
+    "No public-record concerns for your installed apps" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine öffentlich dokumentierten Befunde zu Ihren installierten Apps" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Sin hallazgos de registro público para tus apps instaladas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune alerte d'archives publiques pour vos apps installées" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Nessun rilievo da registri pubblici per le tue app installate" } }
+      }
+    },
+    "Either none of your installed apps have catalog entries yet, or the current filter is hiding them. The Trust catalog is intentionally focused on the most-installed apps — community PRs at github.com/Splynek/splynek expand it." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Entweder haben Ihre installierten Apps noch keine Katalog-Einträge, oder der aktuelle Filter blendet sie aus. Der Trust-Katalog konzentriert sich bewusst auf die meistgenutzten Apps — Community-PRs auf github.com/Splynek/splynek erweitern ihn." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "O tus apps instaladas aún no tienen entradas en el catálogo, o el filtro actual las oculta. El catálogo Trust se centra a propósito en las apps más instaladas; los PR de la comunidad en github.com/Splynek/splynek lo amplían." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Soit vos apps installées n'ont pas encore d'entrées au catalogue, soit le filtre actuel les masque. Le catalogue Trust se concentre volontairement sur les apps les plus installées — les PR de la communauté sur github.com/Splynek/splynek l'étendent." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Le tue app installate non hanno ancora voci nel catalogo, oppure il filtro attuale le sta nascondendo. Il catalogo Trust è volutamente concentrato sulle app più installate — le PR della community su github.com/Splynek/splynek lo ampliano." } }
+      }
+    },
+    "No curated alternative for this app yet. Contribute one at github.com/Splynek/splynek." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Noch keine kuratierte Alternative für diese App. Beitragen auf github.com/Splynek/splynek." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aún no hay alternativa curada para esta app. Contribuye en github.com/Splynek/splynek." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune alternative curée pour cette app. Contribuez sur github.com/Splynek/splynek." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Nessuna alternativa curata per questa app. Contribuisci su github.com/Splynek/splynek." } }
+      }
+    },
+    "Last reviewed %@" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zuletzt überprüft %@" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Revisado por última vez %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dernière revue %@" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Ultima revisione %@" } }
+      }
+    },
+    "+%lld more" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "+%lld weitere" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "+%lld más" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "+%lld de plus" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "+%lld in più" } }
+      }
+    },
     "Sovereignty" : {
       "comment" : "Navigation title and empty-state heading for the Sovereignty tab.",
       "localizations" : {

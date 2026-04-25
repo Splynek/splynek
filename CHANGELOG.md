@@ -3,6 +3,71 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.5 — Trust tab: public-record audit of installed apps (2026-04-25)
+
+A new tab paired with Sovereignty: where Sovereignty asks "where is
+this app controlled from", Trust asks "what does the public record
+say about this app's privacy, security, and behaviour".
+
+**MAS-safe by design.**  Every concern shown cites a primary source:
+Apple App Store privacy labels (which developers self-disclose), EU
+DPA / FTC / SEC enforcement actions, the NVD CVE database, the HIBP
+breach corpus, vendor security advisories.  No tech-press claims.
+No subjective ratings.  No AI-generated risk assessments.  We surface
+public record; users verify with one click.
+
+**What ships:**
+
+- New tab `Trust` (sidebar Ask section, NEW badge) with the same
+  privacy contract as Sovereignty — opt-in scan, on-device, no
+  network, no telemetry, no app-list leaving the device.
+- `TrustCatalog` types in `Sources/SplynekCore/TrustCatalog.swift`:
+  `Axis` (privacy / security / trust / businessModel), `Severity`
+  (low / moderate / high / severe), `Kind` (14 fact-classes — App
+  Store privacy labels, GDPR fines, FTC actions, sanctions, CVEs,
+  breaches, vendor advisories, business-model self-disclosures).
+- `TrustScorer` in `Sources/SplynekCore/TrustScorer.swift`: pure,
+  deterministic, weight-aware 0–100 score plus categorical level.
+  Default weights are public + documented; users will adjust them
+  in Settings (planned v1.6).
+- `Scripts/trust-catalog.json` — 30 deeply-cited entries covering
+  Chrome, Edge, Messenger, WhatsApp, Slack, Zoom, Teams, Discord,
+  Dropbox, LastPass, TikTok, WeChat, Yandex Browser, Kaspersky,
+  Adobe (Creative Cloud + Acrobat), Notion, Evernote, OneDrive,
+  Google Drive, ChatGPT Desktop, Spotify, Cursor, Grammarly,
+  Airtable, Dashlane, Linear, Amazon Kindle, Amazon Music,
+  Netflix.  Every concern cites a primary-source URL with a date.
+- Pipeline (mirrors Sovereignty):
+  - `Scripts/regenerate-trust-catalog.swift` — JSON → Swift codegen
+    with strict gates: HTTPS-only, valid enum membership, no future
+    dates, banned-editorial-phrase guard.
+  - `Scripts/validate-trust-catalog.swift` — soft lint (stale-source
+    warnings, terse summaries, unrecognised sourceNames).
+  - `Scripts/check-urls.swift` covers Trust URLs too (already
+    catalog-agnostic from v1.4).
+- UI (`Sources/SplynekCore/Views/TrustView.swift`):
+  - Filter chips (All / High risk only / per-axis), search bar.
+  - Per-app row with score badge (color-coded), top 4 inline concern
+    pills, expandable details with full citation list.
+  - Each concern → factual summary + axis icon + severity pill +
+    primary-source link with date.
+  - Better-alternatives lookup chain: Sovereignty catalog first
+    (EU/OSS), then Trust's own `fallbackAlternatives`, then a "no
+    curated alternative — contribute one" fallback.
+  - Legal footnote at the bottom of every scan: "How this works"
+    block explaining the public-record source model.
+- FR / DE / ES / IT localisation for all Trust strings (~25 keys
+  added to `Localizable.xcstrings`).
+- Accessibility: score badges + concern pills carry full
+  `accessibilityLabel(_:)` text for VoiceOver — no letter-soup
+  pronunciation.
+- Tests: 18 new tests in `TrustCatalogTests` + `TrustScorerTests`
+  — invariants for HTTPS URLs, banned phrases, ID uniqueness,
+  scorer bounds, weight clamping, threshold correctness.
+- `TRUST-CONTRIBUTING.md` documents the source allowlist + workflow.
+
+Test count: 126 → 144 (+18).
+
 ## v1.4 — Sovereignty catalog pipeline (90 → 1167), AI hardening, FR/DE/ES/IT (2026-04-24)
 
 Sovereignty-tab focused release.  Headline: the catalog grew by a

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Which top-level section the sidebar is currently displaying.
 enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
-    case downloads, live, torrents, concierge, recipes, sovereignty, queue,
+    case downloads, live, torrents, concierge, recipes, sovereignty, trust, queue,
          fleet, benchmark, history, settings, legal, about
 
     var id: String { rawValue }
@@ -15,6 +15,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .concierge:   return "Concierge"
         case .recipes:     return "Recipes"
         case .sovereignty: return "Sovereignty"
+        case .trust:       return "Trust"
         case .queue:       return "Queue"
         case .fleet:       return "Fleet"
         case .benchmark:   return "Benchmark"
@@ -33,6 +34,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .concierge:   return "sparkles"
         case .recipes:     return "list.star"
         case .sovereignty: return "shield.lefthalf.filled"
+        case .trust:       return "checkmark.seal"
         case .queue:       return "line.3.horizontal.decrease.circle"
         case .fleet:       return "laptopcomputer.and.arrow.down"
         case .benchmark:   return "bolt.fill"
@@ -99,6 +101,18 @@ struct Sidebar: View {
                         sidebarRow(
                             title: "Sovereignty",
                             systemImage: "shield.lefthalf.filled",
+                            accessory: nil
+                        )
+                    }
+                    // v1.5: Trust tab — public-record audit of installed
+                    // apps (App Store privacy labels, regulatory rulings,
+                    // CVEs, breaches).  Free-tier; no PRO gate.  Pairs
+                    // with Sovereignty: Trust surfaces concerns,
+                    // Sovereignty surfaces alternatives.
+                    NavigationLink(value: SidebarSection.trust) {
+                        sidebarRow(
+                            title: "Trust",
+                            systemImage: "checkmark.seal",
                             accessory: AnyView(StatusPill(text: "NEW", style: .info))
                         )
                     }
