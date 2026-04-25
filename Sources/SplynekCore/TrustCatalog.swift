@@ -205,6 +205,19 @@ enum TrustCatalog {
         /// "Strong App Store privacy label", "On-device processing",
         /// etc.  Same no-editorial rule applies.
         let note: String
+        /// v1.5.1: optional direct-download URL for one-click install
+        /// via Splynek's download engine.  Mirrors Sovereignty's
+        /// pattern.  When present, the Trust UI shows an "Install"
+        /// button; when nil, falls back to a homepage "Visit" link.
+        /// Validated https-only at regen time + scheme-checked again
+        /// at the UI layer (defence-in-depth).
+        let downloadURL: URL?
+
+        init(id: String, name: String, homepage: URL, note: String,
+             downloadURL: URL? = nil) {
+            self.id = id; self.name = name; self.homepage = homepage
+            self.note = note; self.downloadURL = downloadURL
+        }
     }
 
     // MARK: - Entry

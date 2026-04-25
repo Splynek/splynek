@@ -66,20 +66,31 @@ struct StatusPill: View {
 
     let text: String
     let style: Style
+    /// v1.5.1: when the parent row is selected (in a List with
+    /// selection), the row's background becomes the system accent
+    /// colour and the regular `color.opacity(0.14)` pill blends
+    /// almost invisibly into it.  Callers in selectable lists
+    /// (Sidebar) pass `inverted: true` so the pill flips to a
+    /// white-on-translucent-white style that stays readable on
+    /// any accent.
+    var inverted: Bool = false
 
     var body: some View {
         Text(text)
             .font(.system(size: 10, weight: .bold, design: .monospaced))
-            .foregroundStyle(color)
+            .foregroundStyle(inverted ? Color.white : color)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
             .background(
                 Capsule(style: .continuous)
-                    .fill(color.opacity(0.14))
+                    .fill(inverted ? Color.white.opacity(0.20) : color.opacity(0.14))
             )
             .overlay(
                 Capsule(style: .continuous)
-                    .strokeBorder(color.opacity(0.25), lineWidth: 0.5)
+                    .strokeBorder(
+                        inverted ? Color.white.opacity(0.45) : color.opacity(0.25),
+                        lineWidth: 0.5
+                    )
             )
     }
 

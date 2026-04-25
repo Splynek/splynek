@@ -108,6 +108,26 @@ enum TrustCatalogTests {
                 }
             }
 
+            TestHarness.test("Every fallback downloadURL (when present) is https://") {
+                // v1.5.1: defence-in-depth — `TrustView.altActionButton`
+                // re-checks at click time, but the catalog itself must
+                // never carry a non-https downloadURL.  A poisoned
+                // upstream JSON source can't get `file://` / `data:`
+                // through the regenerator, but this test guards the
+                // runtime catalog independently.
+                for entry in TrustCatalog.entries {
+                    for alt in entry.fallbackAlternatives {
+                        if let dl = alt.downloadURL {
+                            let scheme = dl.scheme?.lowercased() ?? ""
+                            try expect(
+                                scheme == "https",
+                                "\(entry.targetDisplayName) fallback \(alt.id) downloadURL scheme is '\(scheme)' (must be https)"
+                            )
+                        }
+                    }
+                }
+            }
+
             TestHarness.test("Bundle-ID lookup hits known and misses unknown") {
                 try expect(
                     TrustCatalog.profile(for: "com.google.Chrome") != nil,

@@ -91,20 +91,22 @@
         "it" : { "stringUnit" : { "state" : "translated", "value" : "Cerca per nome app" } }
       }
     },
-    "Details + better alternatives" : {
+    "Details + alternatives" : {
+      "comment" : "v1.5.1 — was 'Details + better alternatives'; dropped 'better' as editorial.",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Details + bessere Alternativen" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Detalles + mejores alternativas" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Détails + meilleures alternatives" } },
-        "it" : { "stringUnit" : { "state" : "translated", "value" : "Dettagli + alternative migliori" } }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Details + Alternativen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Detalles + alternativas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Détails + alternatives" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Dettagli + alternative" } }
       }
     },
-    "Better alternatives" : {
+    "Alternatives" : {
+      "comment" : "v1.5.1 — was 'Better alternatives'; dropped 'better' as editorial.",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bessere Alternativen" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mejores alternativas" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Meilleures alternatives" } },
-        "it" : { "stringUnit" : { "state" : "translated", "value" : "Alternative migliori" } }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alternativen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Alternativas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Alternatives" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Alternative" } }
       }
     },
     "Sovereignty pick" : {

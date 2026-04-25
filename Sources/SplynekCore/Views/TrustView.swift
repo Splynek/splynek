@@ -289,7 +289,7 @@ struct TrustView: View {
                 }
                 .padding(.top, 8)
             } label: {
-                Text("Details + better alternatives")
+                Text("Details + alternatives")
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.tint)
             }
@@ -340,23 +340,35 @@ struct TrustView: View {
     @ViewBuilder
     private func alternatives(for row: Row) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Better alternatives")
+            // v1.5.1: was "Better alternatives" — dropped "better"
+            // because that's an editorial judgement we shouldn't be
+            // making for the user.  We surface curated options; the
+            // user decides what fits.
+            Text("Alternatives")
                 .font(.system(.subheadline, weight: .semibold))
                 .foregroundStyle(.secondary)
-            // 1. Sovereignty (EU / OSS) first
+            // 1. Sovereignty (EU / OSS) first.  Pass each alternative's
+            // `downloadURL` through so users get the same one-click
+            // Install path Sovereignty offers (Mozilla redirect for
+            // Firefox/Thunderbird, Bitwarden's stable redirect, etc.).
             if let sov = SovereigntyCatalog.alternatives(for: row.app.id) {
                 ForEach(sov.alternatives.prefix(3)) { alt in
                     altRow(name: alt.name,
                            homepage: alt.homepage,
                            note: alt.note,
+                           downloadURL: alt.downloadURL,
                            sourceLabel: "Sovereignty pick")
                 }
             } else if !row.entry.fallbackAlternatives.isEmpty {
-                // 2. Trust fallback alternatives
+                // 2. Trust fallback alternatives — these may also carry
+                // a `downloadURL` (e.g. Apple Safari is a system app
+                // so no download, but a future Trust fallback like
+                // Brave or DuckDuckGo could).
                 ForEach(row.entry.fallbackAlternatives) { alt in
                     altRow(name: alt.name,
                            homepage: alt.homepage,
                            note: alt.note,
+                           downloadURL: alt.downloadURL,
                            sourceLabel: "Trust pick")
                 }
             } else {
@@ -367,8 +379,18 @@ struct TrustView: View {
         }
     }
 
+    /// Shared row renderer for both Sovereignty- and Trust-sourced
+    /// alternatives.  When `downloadURL` is present and https, the
+    /// row shows an "Install" button that hands the URL to Splynek's
+    /// download engine.  When absent or non-https, it falls back to a
+    /// "Visit" link to the homepage — same behaviour as the
+    /// Sovereignty tab so users get a consistent ingress.
     @ViewBuilder
-    private func altRow(name: String, homepage: URL, note: String, sourceLabel: LocalizedStringKey) -> some View {
+    private func altRow(name: String,
+                        homepage: URL,
+                        note: String,
+                        downloadURL: URL?,
+                        sourceLabel: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "arrow.right.circle.fill")
                 .foregroundStyle(.green)
@@ -388,11 +410,57 @@ struct TrustView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 8)
-            Link(destination: homepage) {
-                Image(systemName: "arrow.up.right.square")
+            altActionButton(name: name, homepage: homepage, downloadURL: downloadURL)
+        }
+    }
+
+    /// Either "Install" (downloadURL present and https → hand to
+    /// `vm.start()`) or "Visit" (open homepage in default browser).
+    /// Mirrors `SovereigntyView.actionButton` exactly so the user
+    /// gets the same behaviour across tabs.
+    @ViewBuilder
+    private func altActionButton(name: String, homepage: URL, downloadURL: URL?) -> some View {
+        if let dl = downloadURL, isSafeDownloadScheme(dl) {
+            Button {
+                vm.urlText = dl.absoluteString
+                vm.start()
+            } label: {
+                Label("Install", systemImage: "arrow.down.circle.fill")
+                    .labelStyle(.titleAndIcon)
                     .font(.callout)
             }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+            .help("Download \(name) via Splynek")
+        } else if isSafeHomepageScheme(homepage) {
+            Link(destination: homepage) {
+                Label("Visit", systemImage: "arrow.up.right.square")
+                    .labelStyle(.titleAndIcon)
+                    .font(.callout)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .help("Open \(homepage.host ?? name) in your browser")
         }
+    }
+
+    /// Allow only `https://` for downloads — engine doesn't gain
+    /// anything from `http://` (no integrity), and `file://` /
+    /// `data:` would let a poisoned catalog leak local files or
+    /// trigger arbitrary handlers.  Matches `ViewModel.start()`'s
+    /// own scheme gate — both layers enforce, neither relies on
+    /// the other.
+    private func isSafeDownloadScheme(_ url: URL) -> Bool {
+        (url.scheme ?? "").lowercased() == "https"
+    }
+
+    /// Allow `https://` (and `http://` for upstreams that haven't
+    /// migrated) for homepages opened in the user's browser.
+    /// Reject `file://`, `data:`, `javascript:` — `Link` would
+    /// happily hand any of those to LaunchServices.
+    private func isSafeHomepageScheme(_ url: URL) -> Bool {
+        let s = (url.scheme ?? "").lowercased()
+        return s == "https" || s == "http"
     }
 
     // MARK: - Visual atoms

@@ -46,6 +46,7 @@ struct RawAlt: Decodable {
     let name: String
     let homepage: String
     let note: String
+    let downloadURL: String?
 }
 
 struct RawEntry: Decodable {
@@ -223,6 +224,17 @@ do {
                 fputs("error: fallback alt '\(alt.id)' homepage '\(alt.homepage)' is not https://\n", stderr)
                 exit(3)
             }
+            // v1.5.1: optional downloadURL — same https-only rule as
+            // Sovereignty alternatives.  Defence-in-depth: the UI
+            // re-validates before passing to the download engine, but
+            // rejecting at regen means a poisoned upstream can't get
+            // a `file://` or `data:` URL into the compiled catalog.
+            if let dl = alt.downloadURL {
+                guard isHTTPS(dl) else {
+                    fputs("error: fallback alt '\(alt.id)' downloadURL '\(dl)' is not https://\n", stderr)
+                    exit(3)
+                }
+            }
         }
     }
 
@@ -271,12 +283,21 @@ do {
         out += "            ],\n"
         out += "            fallbackAlternatives: [\n"
         for a in entry.fallbackAlternatives {
+            // homepage `URL(string:)!` is safe because we validated
+            // https-parseability above (line under `// Lint:` block).
+            // downloadURL stays optional: when provided we emit
+            // `URL(string: …)` (without `!`) so a parse failure
+            // collapses to nil and the UI falls back to "Visit"
+            // rather than crashing.
             out += "                FallbackAlternative(\n"
             out += "                    id: \(swiftStringLit(a.id)),\n"
             out += "                    name: \(swiftStringLit(a.name)),\n"
             out += "                    homepage: URL(string: \(swiftStringLit(a.homepage)))!,\n"
-            out += "                    note: \(swiftStringLit(a.note))\n"
-            out += "                ),\n"
+            out += "                    note: \(swiftStringLit(a.note))"
+            if let dl = a.downloadURL {
+                out += ",\n                    downloadURL: URL(string: \(swiftStringLit(dl)))"
+            }
+            out += "\n                ),\n"
         }
         out += "            ]),\n"
     }

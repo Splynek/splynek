@@ -71,11 +71,15 @@ struct Sidebar: View {
                         sidebarRow(
                             title: "Concierge",
                             systemImage: "sparkles",
+                            // v1.5.1: pills invert on selection so they
+                            // stay readable on the selected-row accent.
                             accessory: vm.license.isPro
                                 ? (vm.aiAvailable
-                                    ? AnyView(StatusPill(text: "AI", style: .info))
+                                    ? AnyView(StatusPill(text: "AI", style: .info,
+                                                         inverted: selection == .concierge))
                                     : nil)
-                                : AnyView(StatusPill(text: "PRO", style: .warning))
+                                : AnyView(StatusPill(text: "PRO", style: .warning,
+                                                     inverted: selection == .concierge))
                         )
                     }
                     NavigationLink(value: SidebarSection.recipes) {
@@ -84,11 +88,13 @@ struct Sidebar: View {
                             systemImage: "list.star",
                             accessory: vm.license.isPro
                                 ? (vm.currentRecipe != nil
-                                    ? AnyView(StatusPill(text: "DRAFT", style: .warning))
+                                    ? AnyView(StatusPill(text: "DRAFT", style: .warning,
+                                                         inverted: selection == .recipes))
                                     : (vm.recipeGenerating
                                         ? AnyView(ProgressView().controlSize(.mini))
                                         : nil))
-                                : AnyView(StatusPill(text: "PRO", style: .warning))
+                                : AnyView(StatusPill(text: "PRO", style: .warning,
+                                                     inverted: selection == .recipes))
                         )
                     }
                     // v1.2: Sovereignty tab — scan installed apps and
@@ -113,7 +119,8 @@ struct Sidebar: View {
                         sidebarRow(
                             title: "Trust",
                             systemImage: "checkmark.seal",
-                            accessory: AnyView(StatusPill(text: "NEW", style: .info))
+                            accessory: AnyView(StatusPill(text: "NEW", style: .info,
+                                                          inverted: selection == .trust))
                         )
                     }
                 } header: {
@@ -141,7 +148,8 @@ struct Sidebar: View {
                                             .foregroundStyle(.secondary)
                                             .monospacedDigit()
                                             .contentTransition(.numericText())
-                                        StatusPill(text: "LIVE", style: .success)
+                                        StatusPill(text: "LIVE", style: .success,
+                                                   inverted: selection == .downloads)
                                     }
                                   )
                                 : nil
@@ -154,7 +162,8 @@ struct Sidebar: View {
                             accessory: (vm.isTorrenting || torrent.seeding != nil)
                                 ? AnyView(StatusPill(
                                     text: torrent.seeding != nil ? "SEED" : "LIVE",
-                                    style: torrent.seeding != nil ? .info : .success))
+                                    style: torrent.seeding != nil ? .info : .success,
+                                    inverted: selection == .torrents))
                                 : nil
                         )
                     }
@@ -163,7 +172,8 @@ struct Sidebar: View {
                             title: "Live",
                             systemImage: "waveform.circle.fill",
                             accessory: vm.isRunning
-                                ? AnyView(StatusPill(text: "NOW", style: .success))
+                                ? AnyView(StatusPill(text: "NOW", style: .success,
+                                                     inverted: selection == .live))
                                 : nil
                         )
                     }
@@ -234,55 +244,79 @@ struct Sidebar: View {
         .navigationTitle("Splynek")
     }
 
-    /// Small 32 pt logo + version at the foot of the sidebar.
-    /// Tap-able (opens About via the same mechanism as the menu bar
-    /// "About Splynek" item).
+    /// Small 32 pt logo + version at the foot of the sidebar, with
+    /// a Settings gear on the trailing edge (v1.5.1).  The brand
+    /// area opens About; the gear opens Settings.  Both still
+    /// available from the macOS menu bar — this is just a more
+    /// discoverable click target since most users never look in
+    /// the menu bar for app-internal settings.
     private var brandFooter: some View {
-        Button {
-            // Reuses the same notification the Apple-menu About item
-            // posts — clicking the footer feels identical to choosing
-            // About from the menu.
-            NotificationCenter.default.post(
-                name: .splynekShowAbout, object: nil
-            )
-        } label: {
-            HStack(spacing: 10) {
-                Group {
-                    if let url = Bundle.main.url(forResource: "Splynek", withExtension: "icns"),
-                       let nsImage = NSImage(contentsOf: url) {
-                        Image(nsImage: nsImage)
-                            .resizable()
-                            .interpolation(.high)
-                    } else if let nsImage = NSApp.applicationIconImage {
-                        Image(nsImage: nsImage).resizable().interpolation(.high)
-                    } else {
-                        Image(systemName: "arrow.down.circle.fill")
+        HStack(spacing: 0) {
+            Button {
+                NotificationCenter.default.post(
+                    name: .splynekShowAbout, object: nil
+                )
+            } label: {
+                HStack(spacing: 10) {
+                    Group {
+                        if let url = Bundle.main.url(forResource: "Splynek", withExtension: "icns"),
+                           let nsImage = NSImage(contentsOf: url) {
+                            Image(nsImage: nsImage)
+                                .resizable()
+                                .interpolation(.high)
+                        } else if let nsImage = NSApp.applicationIconImage {
+                            Image(nsImage: nsImage).resizable().interpolation(.high)
+                        } else {
+                            Image(systemName: "arrow.down.circle.fill")
+                        }
                     }
-                }
-                .frame(width: 28, height: 28)
+                    .frame(width: 28, height: 28)
 
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("Splynek")
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.primary)
-                    Text("v\(appVersion())")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Splynek")
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.primary)
+                        Text("v\(appVersion())")
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
                 }
-                Spacer()
+                .padding(.leading, 12)
+                .padding(.vertical, 10)
+                .contentShape(Rectangle())
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .contentShape(Rectangle())
+            .buttonStyle(.plain)
+            .help("About Splynek")
+
+            // v1.5.1: Settings gear on the trailing edge.  Reuses the
+            // existing notification that the menu bar's "Settings…"
+            // item already posts — RootView routes both to the same
+            // SidebarSection.settings destination.  Adding the icon
+            // doesn't change behaviour; it only adds a second, more
+            // discoverable click target.
+            Button {
+                NotificationCenter.default.post(
+                    name: .splynekShowSettings, object: nil
+                )
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.trailing, 8)
+            .help("Settings")
+            .accessibilityLabel("Settings")
         }
-        .buttonStyle(.plain)
         .background(
             Divider()
                 .frame(maxWidth: .infinity, alignment: .top)
                 .opacity(0.5),
             alignment: .top
         )
-        .help("About Splynek")
     }
 
     private func appVersion() -> String {
