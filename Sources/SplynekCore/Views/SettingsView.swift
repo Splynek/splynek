@@ -34,6 +34,7 @@ struct SettingsView: View {
                 scheduleCard
                 watchedFolderCard
                 backgroundModeCard
+                trustWeightsCard
                 securityCard
             }
             .padding(20)
@@ -595,6 +596,91 @@ struct SettingsView: View {
                 .font(.caption).foregroundStyle(.red)
         case .unknown:
             Text("Status unknown.").font(.caption).foregroundStyle(.secondary)
+        }
+    }
+
+    // MARK: Trust score weights (v1.5.4)
+
+    /// Per-axis weights for the Trust score in the Trust tab.  The
+    /// score is `Σ (severity points × axis weight)` clamped to 0…100.
+    /// Default weights err on the side of security > privacy > trust
+    /// > business model — see `TrustScorer.Weights`'s doc comment for
+    /// the rationale.  Sliders go (0, 3]; the underlying clamp in
+    /// `TrustScorer.Weights.sanitised` enforces this regardless of
+    /// what the slider sends.
+    private var trustWeightsCard: some View {
+        TitledCard(title: "Trust score weights", systemImage: "checkmark.seal") {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Adjust how the Trust tab weighs each axis when scoring your installed apps.  A user who cares mostly about privacy can dial security down — the underlying concerns don't change, only the score that summarises them.  Defaults: security 1.5, privacy 1.0, trust 1.0, business model 0.6.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                trustWeightSlider(
+                    label: "Privacy",
+                    systemImage: "eye.slash",
+                    tint: .blue,
+                    value: $vm.trustWeightPrivacy
+                )
+                trustWeightSlider(
+                    label: "Security",
+                    systemImage: "shield.fill",
+                    tint: .red,
+                    value: $vm.trustWeightSecurity
+                )
+                trustWeightSlider(
+                    label: "Trust / reputation",
+                    systemImage: "scalemass",
+                    tint: .orange,
+                    value: $vm.trustWeightTrust
+                )
+                trustWeightSlider(
+                    label: "Business model",
+                    systemImage: "creditcard",
+                    tint: .purple,
+                    value: $vm.trustWeightBusinessModel
+                )
+
+                HStack {
+                    Spacer()
+                    Button("Reset to defaults") {
+                        vm.resetTrustWeightsToDefault()
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func trustWeightSlider(
+        label: LocalizedStringKey,
+        systemImage: String,
+        tint: Color,
+        value: Binding<Double>
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Image(systemName: systemImage)
+                    .foregroundStyle(tint)
+                    .font(.callout)
+                    .frame(width: 18)
+                Text(label).font(.callout)
+                Spacer()
+                Text(String(format: "%.1f", value.wrappedValue))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .frame(width: 32, alignment: .trailing)
+            }
+            // Range (0, 3].  We start at 0.1 instead of 0 so a slider
+            // at the leftmost position still produces a valid weight
+            // (Weights.sanitised would clamp 0 → 0.1 anyway, but
+            // showing "0.1" in the UI matches what's actually used).
+            Slider(value: value, in: 0.1...3.0, step: 0.1)
+                .tint(tint)
+                .accessibilityLabel("\(label) weight")
+                .accessibilityValue(String(format: "%.1f", value.wrappedValue))
         }
     }
 

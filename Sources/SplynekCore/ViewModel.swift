@@ -31,6 +31,47 @@ final class SplynekViewModel: ObservableObject {
         }
     }
 
+    /// v1.5.4: per-axis weights for the Trust score.  TrustView reads
+    /// these and passes to `TrustScorer.score(_:weights:)`.  Settings
+    /// has a card with four sliders bound here.  Range (0, 3] enforced
+    /// by `TrustScorer.Weights.sanitised`.  Each setter persists the
+    /// individual value to its own UserDefaults key so a corrupted
+    /// preference can only break one axis, not all four.
+    @Published var trustWeightPrivacy: Double {
+        didSet { UserDefaults.standard.set(trustWeightPrivacy, forKey: "trustWeight.privacy") }
+    }
+    @Published var trustWeightSecurity: Double {
+        didSet { UserDefaults.standard.set(trustWeightSecurity, forKey: "trustWeight.security") }
+    }
+    @Published var trustWeightTrust: Double {
+        didSet { UserDefaults.standard.set(trustWeightTrust, forKey: "trustWeight.trust") }
+    }
+    @Published var trustWeightBusinessModel: Double {
+        didSet { UserDefaults.standard.set(trustWeightBusinessModel, forKey: "trustWeight.businessModel") }
+    }
+
+    /// Composite read-only view of the four trust weights.  TrustView
+    /// passes this to `TrustScorer.score(_:weights:)`.  Always returns
+    /// a sanitised value (clamps to (0, 3] internally).
+    var trustWeights: TrustScorer.Weights {
+        TrustScorer.Weights(
+            privacy: trustWeightPrivacy,
+            security: trustWeightSecurity,
+            trust: trustWeightTrust,
+            businessModel: trustWeightBusinessModel
+        )
+    }
+
+    /// Reset all four weights to their documented defaults.  Bound
+    /// to a "Reset to defaults" button in the Settings card.
+    func resetTrustWeightsToDefault() {
+        let d = TrustScorer.Weights.default
+        trustWeightPrivacy = d.privacy
+        trustWeightSecurity = d.security
+        trustWeightTrust = d.trust
+        trustWeightBusinessModel = d.businessModel
+    }
+
     /// Live jobs (running, paused, or recently completed/cancelled/failed
     /// — the UI lists them until the user clears).
     @Published var activeJobs: [DownloadJob] = []
@@ -582,6 +623,20 @@ final class SplynekViewModel: ObservableObject {
         self.seedWhileLeeching = defaults.bool(forKey: "seedWhileLeeching")
         let savedMax = defaults.integer(forKey: "maxConcurrentDownloads")
         self.maxConcurrentDownloads = (1...10).contains(savedMax) ? savedMax : 3
+
+        // v1.5.4: load Trust score weights from prefs (or defaults if
+        // never persisted).  `defaults.double(forKey:)` returns 0 if
+        // missing, so test against object(forKey:) explicitly to
+        // distinguish "user set it to 0" from "never set".
+        let dw = TrustScorer.Weights.default
+        self.trustWeightPrivacy = defaults.object(forKey: "trustWeight.privacy") != nil
+            ? defaults.double(forKey: "trustWeight.privacy") : dw.privacy
+        self.trustWeightSecurity = defaults.object(forKey: "trustWeight.security") != nil
+            ? defaults.double(forKey: "trustWeight.security") : dw.security
+        self.trustWeightTrust = defaults.object(forKey: "trustWeight.trust") != nil
+            ? defaults.double(forKey: "trustWeight.trust") : dw.trust
+        self.trustWeightBusinessModel = defaults.object(forKey: "trustWeight.businessModel") != nil
+            ? defaults.double(forKey: "trustWeight.businessModel") : dw.businessModel
 
         history = DownloadHistory.load()
         queue = DownloadQueue.load()

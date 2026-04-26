@@ -1,201 +1,242 @@
 # Splynek — Press Kit (v1.5.3)
 
-This is the outreach kit. Use **after** v1.0 clears App Store review and
-the splynek.app landing is updated to v1.5.3.
+**Use *after* v1.0 clears App Store review and `splynek.app` is on the
+v1.5.3 copy.**  Premature press = inconsistency between marketing and
+the in-review build = rejection ping-pong.
+
+> ⚠️ **Verify every email address before sending.**  Press desk emails
+> change frequently and the addresses below are best-effort.  Use
+> Hunter.io / public outlet contact pages / LinkedIn to confirm.  A
+> bounced cold email is fine; a `reply-to-all` to a wrong distribution
+> list is not.
+
+---
 
 ## The story in one paragraph
 
-> Splynek is a native macOS download manager that does three things: it
-> uses every network interface you have in parallel (Wi-Fi + Ethernet +
-> iPhone tether), it cooperates with other Splyneks on the LAN, and as
-> of v1.5 it audits your **other** Mac apps for safety and sovereignty
-> using only verifiable public records — Apple's own App Store privacy
-> labels, EU regulator decisions, the NVD CVE database, the HIBP breach
-> corpus. It's $29 one-time, MIT-licensed core, no telemetry, no cloud,
-> shipping on the Mac App Store. Built solo by a Portuguese developer.
+> Splynek is a $29 native macOS download manager that does three
+> uncommon things: it pulls files in parallel over every network
+> interface you have (Wi-Fi + Ethernet + iPhone tether), it cooperates
+> with other Splyneks on your LAN, and — new in v1.5 — it audits your
+> *other* installed apps for safety, privacy, and EU sovereignty using
+> only verifiable public records.  Built solo by a Portuguese
+> developer.  Pure Swift, MIT-licensed core, no telemetry, on the
+> Mac App Store.
 
-## The angles
+## Pick the angle by outlet
 
-Different outlets want different angles. Pick per-outlet.
-
-| Angle | Best for | Key claim |
+| Angle | Best for | Hook |
 |---|---|---|
-| **EU digital sovereignty** | Le Monde, Der Spiegel, El País, Repubblica, Politico EU, Heise | "A Mac app that helps European users see who controls their software, with European or open-source alternatives in one click. 1,150+ apps catalogued, FR/DE/ES/IT localised." |
-| **Privacy / surveillance economy** | The Information, FT, Wired, MIT Tech Review, EFF, Privacy News | "A Mac app that surfaces Apple's own App Store privacy labels alongside FTC consent orders and confirmed breaches — a public-record audit of what's known about your other apps. Source allowlist is the legal boundary." |
-| **Mac power-user / indie dev** | MacStories, 9to5Mac, The Eclectic Light Company, ATP, MacRumors, Daring Fireball | "12k lines of pure Swift, no third-party deps, $29 one-time, ad-free, telemetry-free, ships on MAS. Multi-interface aggregation that actually works on macOS 26." |
-| **Open source / dev tooling** | The Register, ZDNet, OSS Today, LWN, OMG Ubuntu (cross-platform interest) | "MIT-licensed Mac downloader with a community catalog of European/OSS alternatives that anyone can PR. Pipeline is JSON-backed Swift codegen, 145 invariant tests." |
+| **EU digital sovereignty** | Le Monde, Der Spiegel, El País, Repubblica, Politico EU, Heise, NRC, SZ | "1,150+ apps mapped to EU/OSS alternatives, FR/DE/ES/IT localised, by a Portuguese solo dev" |
+| **Privacy / surveillance economy** | The Information, FT, Wired, MIT TR, EFF, The Markup | "Audits your apps using *only* primary records — Apple's own labels + regulator decisions + NVD + HIBP. Source allowlist as legal boundary." |
+| **Mac power-user / indie dev** | MacStories, 9to5Mac, Eclectic Light, ATP, MacRumors, Six Colors | "12k LOC pure Swift, zero deps, $29 one-time, ad-free, telemetry-free, on MAS" |
+| **OSS dev tooling** | The Register, ZDNet, OSS Today, LWN, OMG Ubuntu | "MIT-licensed Mac downloader with community catalog of EU/OSS alts, JSON-backed pipeline, 145 invariant tests" |
 
-## Outlet contacts (verify before sending — emails change)
+## Outlet contacts (verify before sending)
 
 ### EU sovereignty angle
 
-- **Le Monde** (FR) — `services-techno@lemonde.fr` · technology desk
-- **Der Spiegel** (DE) — `netzwelt@spiegel.de` · digital desk
-- **El País** (ES) — `tecnologia@elpais.es`
-- **La Repubblica** (IT) — `tecnologia@repubblica.it`
-- **Politico EU** — `tech@politico.eu` · digital sovereignty beat
-- **Heise Online** (DE) — `redaktion@heise.de` · ct/heise-online tech-policy
-- **NRC Handelsblad** (NL) — `redactie@nrc.nl`
-- **Süddeutsche Zeitung** (DE) — `digital@sueddeutsche.de`
+- Le Monde (FR) — `services-techno@lemonde.fr`
+- Der Spiegel (DE) — `netzwelt@spiegel.de`
+- El País (ES) — `tecnologia@elpais.es`
+- La Repubblica (IT) — `tecnologia@repubblica.it`
+- Politico EU — public form at `politico.eu/about-us` → tech beat
+- Heise Online (DE) — `redaktion@heise.de`
+- NRC Handelsblad (NL) — `redactie@nrc.nl`
+- Süddeutsche Zeitung (DE) — `digital@sueddeutsche.de`
 
 ### Privacy / surveillance economy
 
-- **The Information** — `tips@theinformation.com`
-- **Financial Times** — `tech@ft.com`
-- **Wired US** — `wired@condenast.com` · Andy Greenberg covers privacy
-- **MIT Technology Review** — `responses@technologyreview.com`
-- **EFF** (Electronic Frontier Foundation) — `info@eff.org` · for blog mention
-- **The Markup** — `editorial@themarkup.org`
-- **Privacy News Online** — `editor@privacynewsonline.com`
+- The Information — `tips@theinformation.com`
+- Financial Times — `tech@ft.com`
+- Wired US — `wired@condenast.com` (Andy Greenberg covers privacy; `andy_greenberg@wired.com` if a tip is genuinely about him)
+- MIT Technology Review — `responses@technologyreview.com`
+- EFF — `info@eff.org` (for Deeplinks blog mention)
+- The Markup — `editorial@themarkup.org`
 
 ### Mac power-user / indie dev
 
-- **MacStories** — Federico Viticci `tips@macstories.net`
-- **9to5Mac** — Mac desk `tips@9to5mac.com`
-- **The Eclectic Light Company** — Howard Oakley `eclecticlightdotcom@gmail.com`
-- **ATP** (Accidental Tech Podcast) — `feedback@atp.fm` (low-probability mention)
-- **MacRumors** — `tips@macrumors.com`
-- **Daring Fireball** — John Gruber `feedback@daringfireball.net` (low-probability mention)
-- **The Mac Observer** — `editor@macobserver.com`
-- **Six Colors** — Jason Snell `tips@sixcolors.com`
+- MacStories — `tips@macstories.net` (Federico Viticci)
+- 9to5Mac — `tips@9to5mac.com`
+- Eclectic Light Co. — `eclecticlightdotcom@gmail.com` (Howard Oakley)
+- ATP — `feedback@atp.fm` (low-probability mention)
+- MacRumors — `tips@macrumors.com`
+- Daring Fireball — `feedback@daringfireball.net` (very low-probability)
+- The Mac Observer — `editor@macobserver.com`
+- Six Colors — `tips@sixcolors.com` (Jason Snell)
 
-### Open source / dev tooling
+### OSS / dev tooling
 
-- **The Register** — `tips@theregister.com`
-- **ZDNet** — `tips@zdnet.com`
-- **LWN** — `lwn@lwn.net`
-- **OMG Ubuntu** — `editor@omgubuntu.co.uk`
+- The Register — `tips@theregister.com`
+- ZDNet — `tips@zdnet.com`
+- LWN — `lwn@lwn.net`
+- OMG Ubuntu — `editor@omgubuntu.co.uk`
 
-## Email pitch templates
+## Email pitches — short, with subject variants
 
-### Template A — EU sovereignty (FR / DE / ES / IT outlets)
+Cold press emails get ~10 seconds of attention.  Keep them under 150
+words.  Three subject lines per template — if no reply in a week, the
+follow-up uses the next variant.
 
-Subject: `Splynek — a Mac downloader that audits which of your apps are EU-controlled`
+### Template A — EU sovereignty
+
+**Subject options:**
+1. `Splynek — a Mac downloader that audits which of your apps are EU-controlled`
+2. `Portuguese developer ships Mac tool for EU digital sovereignty`
+3. `Splynek 1.5: Mac apps mapped to European or open-source alternatives, in one click`
+
+**Body:**
 
 > Hi [Name],
 >
-> I'm Paulo Moura, the Portuguese developer behind Splynek — a native
-> macOS download manager that just released a major update relevant to
-> the EU digital-sovereignty conversation.
+> I'm Paulo Moura, a developer in Portugal.  Splynek is a Mac
+> download manager I built solo.  Yesterday I shipped v1.5 which
+> adds a "Sovereignty" tab — scans your installed Mac apps locally
+> and maps each to its country-of-origin alongside European or
+> open-source alternatives.  1,150+ apps catalogued.  Localised
+> French / German / Spanish / Italian.  One-click "Install" via
+> Splynek's own download engine.  Plus a "Trust" tab that surfaces
+> regulator decisions (CNIL, DPC Ireland, FTC) per app from
+> public-record sources only.
 >
-> Splynek's new "Sovereignty" tab scans installed Mac apps locally and
-> maps each one to its country-of-origin alongside European or open-
-> source alternatives. The catalog covers 1,150+ apps and is fully
-> localised in French, German, Spanish, and Italian. A user can see at
-> a glance how much of their software supply chain sits outside the EU,
-> and download European replacements (Proton Mail, Nextcloud, ProtonVPN,
-> LibreOffice, Mistral Le Chat, etc.) in one click.
+> $29 one-time, MIT-licensed core, on the Mac App Store, no
+> telemetry, no cloud.  Demo at https://splynek.app.
 >
-> A second new tab, "Trust", surfaces public-record concerns from the
-> EU Data Protection Authorities, the FTC, NVD CVE database, and HIBP
-> — every claim is sourced and dated. No editorialising; we surface
-> public record.
+> Happy to walk through it.  The story is genuinely European — a
+> solo developer making EU digital sovereignty actionable for
+> ordinary Mac users.
 >
-> The app is $29 one-time, MIT-licensed core, ad-free, telemetry-free,
-> shipping on the Mac App Store. Free DMG available now at
+> Cheers,  
+> Paulo · paulocgm@gmail.com
+
+### Template B — Privacy / surveillance
+
+**Subject options:**
+1. `A Mac app that audits your installed apps using only public records`
+2. `Splynek 1.5: per-app privacy audit sourced from Apple's own labels + FTC/DPA/NVD/HIBP`
+3. `MAS-shippable privacy audit tool — source allowlist as legal boundary`
+
+**Body:**
+
+> Hi [Name],
+>
+> Splynek's v1.5 update added a "Trust" tab that audits your
+> installed Mac apps for privacy + safety concerns using *only*
+> primary sources you can verify in one click: Apple's own App
+> Store privacy labels, EU DPA / FTC / SEC enforcement actions,
+> NVD CVE database, HIBP confirmed breaches, vendor security
+> advisories.  Editorial language is rejected by the build pipeline
+> — the source allowlist is the legal boundary that lets it ship
+> on the Mac App Store alongside the apps it labels.
+>
+> Reads like privacy-rights journalism applied per-app: "Messenger:
+> tracking disclosed; €1.2B GDPR fine (DPC Ireland, May 2023, link);
+> $5B FTC fine (July 2019, link)."  Score paired with cited
+> evidence; never the score alone.
+>
+> Built solo, $29, open core, no telemetry.  Demo + screenshots at
 > https://splynek.app.
 >
-> Happy to walk through the architecture, the legal reasoning behind
-> the source allowlist, or arrange a demo. The story is uniquely a
-> European one — a solo developer in Portugal building a tool that
-> makes EU digital sovereignty actionable for ordinary Mac users.
->
-> Cheers,
-> Paulo Moura · paulocgm@gmail.com · splynek.app
-
-### Template B — Privacy/surveillance angle (Wired, FT, The Information, etc.)
-
-Subject: `A Mac app that audits your installed apps using only public records`
-
-> Hi [Name],
->
-> Splynek is a Mac download manager whose v1.5 update added something
-> uncommon: a "Trust" tab that audits your installed apps for safety
-> and privacy concerns using **only** sources you can verify yourself
-> — Apple's own App Store privacy labels (developer self-disclosure),
-> EU regulator fines (CNIL, DPC Ireland, etc.), FTC consent orders,
-> NVD CVE database, HIBP breach data, vendor security advisories.
->
-> No tech-press citations. No subjective ratings. No AI-generated
-> claims. The source allowlist is the legal boundary that lets the
-> tab ship on the Mac App Store alongside the apps it labels.
->
-> The result reads like privacy-rights journalism applied per-app:
-> "Messenger — App Store label discloses tracking; Irish DPC fined
-> Meta €1.2B (May 2023, link); FTC imposed $5B fine (July 2019,
-> link)". Score paired with cited evidence; never the score alone.
->
-> Built solo, $29, open-source core, no telemetry, on MAS. Story
-> angle: surveillance-economy transparency that actually works
-> because it cites Apple's own data.
->
-> Demo + screenshots: https://splynek.app · DMG: github.com/Splynek/splynek/releases
->
-> Happy to walk through it.
+> Happy to walk through the legal reasoning if useful.
 >
 > Paulo Moura
 
-### Template C — Mac power-user (MacStories, 9to5Mac, etc.)
+### Template C — Mac power-user
 
-Subject: `Splynek 1.5 — Mac downloader with multi-NIC aggregation, MAS-bound`
+**Subject options:**
+1. `Splynek 1.5 — Mac downloader with multi-NIC aggregation, just shipped`
+2. `Pure-Swift Mac download manager + privacy-audit tabs, no deps, on MAS`
+3. `Splynek hits 1.5: 12k Swift LOC, zero deps, $29 one-time, MIT core`
+
+**Body:**
 
 > Hi [Name],
 >
-> Splynek v1.5.3 just shipped — pure-Swift Mac download manager that
-> uses every network interface you have in parallel via IP_BOUND_IF
-> (Wi-Fi + Ethernet + iPhone tether), with BitTorrent v1+v2, LAN
-> fleet cooperation over Bonjour, and a local-LLM Concierge (Apple
-> Intelligence on macOS 26+, Ollama / LM Studio fallback).
+> Splynek v1.5.3 just shipped.  Pure-Swift Mac download manager
+> that pins outbound sockets to every network interface (Wi-Fi +
+> Ethernet + iPhone tether) via IP_BOUND_IF, BitTorrent v1+v2, LAN
+> Bonjour fleet cooperation, local-LLM Concierge (Apple Intelligence
+> on macOS 26+, Ollama / LM Studio fallback).
 >
-> v1.5 added two unusual tabs: Sovereignty (1,150+ apps mapped to
-> EU/OSS alternatives) and Trust (public-record audit of installed
-> apps using App Store privacy labels + regulator data). Both
-> on-device, opt-in, zero telemetry.
+> v1.5 adds two unusual tabs: Sovereignty (1,150+ apps mapped to
+> EU/OSS alternatives) and Trust (public-record audit).  Both
+> on-device, opt-in.
 >
-> Tech specs: 12k lines pure Swift, no third-party deps, SPM
-> executable, Xcode-optional, ~3.8 MB DMG, notarised + stapled.
-> $29 one-time IAP unlocks Pro features (Concierge, Recipes,
-> Schedule, web dashboard); free tier is MIT.
+> 12k lines pure Swift, no third-party deps, ~3.8 MB DMG, notarised
+> + stapled.  $29 one-time IAP for Pro features; free tier is MIT.
 >
-> Mac App Store launching soon (v1.0 in re-review now).
->
-> Hopefully a fit for [outlet]. Demo + DMG + screenshots:
-> https://splynek.app
+> Hopefully a fit for [outlet].  Demo + DMG + screenshots:
+> https://splynek.app.
 >
 > Paulo Moura
 
-## Press assets
+---
 
-Save under `Branding/v1.5.3/` (will be created by `Scripts/capture-screenshots.sh`):
+## If a journalist responds
 
-- `screenshot-trust.png` — Trust tab with Chrome / Slack / Dropbox showing scores
-- `screenshot-sovereignty.png` — Sovereignty tab with results + filter chips
-- `screenshot-downloads.png` — Downloads tab showing live multi-interface aggregation
-- `screenshot-sidebar-tints.png` — Sidebar wide screenshot showing per-tab tints
-- `demo-trust-scan.mp4` — 10-15s screen recording of "Scan my Mac" → results
-- `splynek-app-icon.png` (existing in `Branding/`)
-- `splynek-logo-transparent.svg` (existing)
+This is the part most cold-email guides skip.
 
-## Outreach calendar
+### "Tell me more"
 
-Day 0 (T0): v1.0 clears App Store. Wait for `Ready for Sale`.
-Day 1: Update splynek.app landing. Submit Homebrew cask PR.
-Day 2 (Tuesday or Wednesday, 14:00-16:00 UTC): Show HN post.
-Day 2 + 3h: Cross-post to r/macapps + r/selfhosted (link back to HN).
-Day 3 (morning EU time): Press emails, in waves:
-  - Wave 1: EU sovereignty outlets (Template A)
-  - Wave 2: Privacy/surveillance outlets (Template B)
-  - Wave 3: Mac power-user outlets (Template C)
-Day 4-5: Reply to all emails, even "no thanks". Track in a spreadsheet.
-Day 7: Product Hunt launch (Thursday).
+Reply within 24 hours.  Send:
+1. **TestFlight build / DMG link** — `https://github.com/Splynek/splynek/releases/download/v1.5.3/Splynek-1.5.3.dmg`
+2. **Three screenshots inline** — Trust scan results, Sovereignty results, the per-tab tint sidebar (in `Branding/v1.5.3/`)
+3. **Three concrete numbers** — 1,155 Sovereignty entries, 30 Trust entries, 145 invariant tests
+4. **Offer 30-min video call** — Tuesday-Thursday 15:00-18:00 Lisbon is your safest window
 
-## Don't
+### "I'd like to interview you"
 
-- Don't email more than ~20 outlets total. Better deep + targeted than
-  shotgun. Reporters can spot a press blast.
-- Don't claim "first ever" of anything — there are usually prior arts.
-- Don't claim numbers you can't back up ("2-3× faster" is fine because
-  it's bounded with "if both lanes are bottlenecks").
-- Don't pitch outlets that don't review Mac apps (Bloomberg consumer
-  desk, etc.) — wastes everyone's time.
-- Don't pitch the same outlet via multiple journalists. Pick one.
+Things to push:
+- The **EU angle** if outlet is EU.  You're a Portuguese solo dev — they like that.
+- The **MAS source allowlist** as legal innovation.  Most privacy-audit tools can't ship on MAS.
+- The **"surfaces public record, never opinion"** framing.  Defamation surface is a real concern; you've solved it.
+- The **community pipeline** — JSON-backed catalog, GitHub Actions cron, monthly remote agents drafting PRs.
+
+Things to NOT say:
+- ❌ "Apple required us to..." → never speak for Apple.  Always "we chose to..."
+- ❌ "[Vendor] is bad" → always "[Vendor]'s App Store privacy label discloses X"
+- ❌ Numbers you can't back up — "2-3× faster" only works because both lanes need to be bottlenecks
+- ❌ Roadmap promises with dates — say "considering" not "Q3 2026"
+- ❌ Anything about the Pro repo's source code (it's closed)
+
+### "Can I have an exclusive?"
+
+Polite no.  Multiple outlets writing simultaneously is healthier than
+one having exclusive that the others ignore.  "Happy to give you a
+24-hour embargo before I email anyone else" is the compromise.
+
+---
+
+## Outreach calendar (post-MAS-clear)
+
+| Day | Action |
+|---|---|
+| Day 0 | Apple emails: v1.0 `Ready for Sale`. **Wait for it; don't trigger anything until then.** |
+| Day 1 | Update splynek.app landing.  Submit Homebrew cask PR (or just promote the existing tap). |
+| Day 2 (Tue/Wed, 14-16 UTC) | Show HN post. |
+| Day 2 (T+3h) | Cross-post to r/macapps + r/selfhosted (link back to HN comments). |
+| Day 3 morning EU time | Press emails in waves: EU sovereignty (Wave 1) → Privacy (Wave 2) → Mac power (Wave 3). 1 hour between waves. |
+| Day 3-7 | Reply to every email within 24h, even "no thanks". Track in a spreadsheet (Outlet / Contact / Date sent / Status / Reply date). |
+| Day 7 (Thu) | Product Hunt launch. |
+| Day 14 | Send retry to outlets with no reply, using a different subject line and a fresher hook ("Just reached X stars / Y downloads in week one"). |
+
+## Don'ts
+
+- ❌ More than ~25 outlets total.  Quality > quantity.  Reporters spot a press blast.
+- ❌ "First ever" claims.  There's always prior art.
+- ❌ Same outlet via multiple journalists.  Pick one.
+- ❌ Pitching outlets that don't review Mac apps (Bloomberg consumer desk, etc.).
+- ❌ Following up more than twice.  Two emails is persistent; three is annoying.
+- ❌ CCing PR firms or "looping in" mailing lists.  One email, one human, one inbox.
+
+## Press assets — already prepared
+
+- `Branding/v1.5.3/` directory ready (populates when you run
+  `Scripts/capture-screenshots.sh` after launching the v1.5.3 build).
+- 10 named screenshots: sidebar tints, Trust empty/results/detail,
+  Sovereignty results + EU filter, Downloads multi-NIC, Concierge,
+  Recipes, Fleet.
+- `Branding/Splynek-logo-transparent.svg` + `Splynek-square.png`
+  + `Splynek.icns` already exist for header art.
+- Suggested follow-up: 10-15s screen recording of the Trust scan
+  (`screencapture -v -V 15 /tmp/trust-scan.mov` then convert).

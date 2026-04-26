@@ -224,7 +224,9 @@ struct TrustView: View {
         let q = search.trimmingCharacters(in: .whitespaces).lowercased()
         return scanner.apps.compactMap { app -> Row? in
             guard let entry = TrustCatalog.profile(for: app.id) else { return nil }
-            let score = TrustScorer.score(entry)
+            // v1.5.4: pass user-customised weights (Settings → Trust
+            // weights card).  Defaults match TrustScorer.Weights.default.
+            let score = TrustScorer.score(entry, weights: vm.trustWeights)
             // Filter: severeOnly = high or severe.  Axis filters keep
             // entries that have at least one concern on that axis.
             switch filter {
