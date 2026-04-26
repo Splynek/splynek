@@ -459,7 +459,9 @@ Sovereignty tab fully localised as of v1.4 (`Sources/SplynekCore/Localizable.xcs
 - **Stripe + Postmark direct channel** — dual-channel revenue (see MONETIZATION.md). Not blocked; not started.
 - **Show HN** — draft at `SHOW_HN.md`. Best done after MAS goes live. Rewrite around the Sovereignty angle: "Splynek — a Mac download manager that also helps you audit your software supply chain. All local, all private."
 - **Product Hunt** — same timing.
-- **Homebrew cask** — template at `Packaging/splynek.rb`. Update SHA when new DMG lands on a Release asset. v1.3 SHA is `d08ee9f5546aa96f1c66b1011508f76e2c6852f0275f66fe7e5817ec7d7c73d4`.
+- **Homebrew cask** — `Packaging/splynek.rb` is source-of-truth. v1.5.3 SHA: `4fe61bab5ee2eb847d789c7f8b2245bf6b180936ec231241284f20b968c0e6cb`. Two distribution paths:
+  - **Splynek tap** ([github.com/Splynek/homebrew-splynek](https://github.com/Splynek/homebrew-splynek)) — live now. Install: `brew install --cask Splynek/splynek/splynek`. Bump for each release: clone the tap, copy the new `Packaging/splynek.rb` over `Casks/splynek.rb`, commit + push.
+  - **Upstream homebrew/cask** — first submission (PR #261294, 2026-04-26) auto-rejected by `khipp` on notability heuristic (need ≥75 stars OR ≥30 forks OR ≥30 watchers; we had 0/0/0). Resubmit after MAS launch + Show HN coverage push the upstream repo across the bar. Reuse `Packaging/splynek.rb` placed at `Casks/s/splynek.rb` in a `homebrew-cask` fork.
 - **EU press outreach** — Le Monde (FR), El País (ES), Der Spiegel (DE), Wired, FT. Hook: Sovereignty-tab scan video shot on a stock Mac. Co-ordinate with any MAS approval date to avoid review disruption.
 
 ### F — Future platform bets (scoped in STRATEGY-2026.md)

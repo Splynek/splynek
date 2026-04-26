@@ -75,7 +75,7 @@ Notarised + stapled by Apple. First launch opens cleanly via Gatekeeper.
 
 - **Direct DMG**: [Splynek-1.5.3.dmg](https://github.com/Splynek/splynek/releases/download/v1.5.3/Splynek-1.5.3.dmg)
   · `SHA-256: 4fe61bab5ee2eb847d789c7f8b2245bf6b180936ec231241284f20b968c0e6cb`
-- **Homebrew**: `brew install --cask splynek` *(once cask lands in homebrew-cask)*
+- **Homebrew**: `brew install --cask Splynek/splynek/splynek` *(via the [official Splynek tap](https://github.com/Splynek/homebrew-splynek); upstream `homebrew/cask` once we hit notability)*
 - **Mac App Store**: in review *(v1.0 awaiting Apple; v1.5.3 follows)*
 - **Build from source**: `./Scripts/build.sh`
 

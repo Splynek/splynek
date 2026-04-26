@@ -18,6 +18,8 @@ Apple event (drowned out by WWDC / iPhone keynote chatter).
   (so the post can include "MAS link" in the body, not just GitHub).
 - splynek.app landing must be live on the v1.5.3 copy.
 - Have the comment-seeding answers in a paste buffer.
+- Homebrew tap is live at `Splynek/homebrew-splynek` — install line
+  for HN body: `brew install --cask Splynek/splynek/splynek`.
 
 ---
 
