@@ -6,12 +6,11 @@
 # audit --new --cask Casks/splynek.rb` until they're real.
 
 cask "splynek" do
-  version "0.27.0"            # FILL IN (must match a published tag)
-  sha256 "FILL_IN_WITH_SHASUM_OF_DMG"
+  version "1.5.3"
+  sha256 "4fe61bab5ee2eb847d789c7f8b2245bf6b180936ec231241284f20b968c0e6cb"
 
-  # Drop this URL in after creating a GitHub Release that hosts the DMG.
-  url "https://github.com/splynek/splynek/releases/download/v#{version}/Splynek.dmg",
-      verified: "github.com/splynek/"
+  url "https://github.com/Splynek/splynek/releases/download/v#{version}/Splynek-#{version}.dmg",
+      verified: "github.com/Splynek/"
   name "Splynek"
   desc "Native macOS multi-interface download aggregator with BitTorrent v2"
   homepage "https://splynek.app/"
