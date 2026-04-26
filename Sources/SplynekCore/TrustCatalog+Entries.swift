@@ -244,7 +244,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.getdropbox.dropbox",
             targetDisplayName: "Dropbox",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-04-26",
             concerns: [
                 Concern(
                     id: "dropbox:breach-2012",
@@ -272,7 +272,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.lastpass.LastPass",
             targetDisplayName: "LastPass",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-04-26",
             concerns: [
                 Concern(
                     id: "lastpass:breach-2022",
@@ -374,7 +374,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.kaspersky.kes",
             targetDisplayName: "Kaspersky Endpoint Security",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-04-26",
             concerns: [
                 Concern(
                     id: "kaspersky:cisa-2017",
@@ -387,14 +387,14 @@ extension TrustCatalog {
                     sourceName: "US CISA"
                 ),
                 Concern(
-                    id: "kaspersky:bis-2024",
+                    id: "kaspersky:bis-2024-final-determination",
                     kind: .governmentSanction,
                     axis: .trust,
                     severity: .severe,
-                    summary: "US Commerce Bureau of Industry and Security prohibited Kaspersky software sales in the US effective September 29, 2024.",
-                    evidenceURL: URL(string: "https://www.bis.doc.gov/index.php/policy-guidance/ict-supply-chain")!,
-                    evidenceDate: "2024-06-20",
-                    sourceName: "US BIS"
+                    summary: "Federal Register Final Determination 2024-13869 (BIS): prohibits Kaspersky software sales in the US effective September 29, 2024.",
+                    evidenceURL: URL(string: "https://www.federalregister.gov/documents/2024/06/24/2024-13869/securing-the-information-and-communications-technology-and-services-supply-chain-final-determination")!,
+                    evidenceDate: "2024-06-24",
+                    sourceName: "Federal Register"
                 ),
             ],
             fallbackAlternatives: [
@@ -402,7 +402,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.adobe.acc.AdobeCreativeCloud",
             targetDisplayName: "Adobe Creative Cloud",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-04-26",
             concerns: [
                 Concern(
                     id: "adobe:breach-2013",
@@ -466,7 +466,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.evernote.Evernote",
             targetDisplayName: "Evernote",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-04-26",
             concerns: [
                 Concern(
                     id: "evernote:breach-2013",

@@ -151,10 +151,12 @@ After Apple v1.0 clears, these are unblocked. Priority is the maintainer's call:
 
 ### Pending tech debt (non-blocking)
 
-- 85 lint warnings in Sovereignty catalog (mostly short notes <30 chars on bulk-seeded entries from v1.4 — would benefit from a long-form pass when there's time)
-- `Marketing/screenshots/` and `Scripts/make-mas-screenshots.sh` are stale untracked files left from earlier sessions; safe to delete or just ignore
-- `homebrew-cask` upstream PR can be reopened or new PR submitted; thread is at https://github.com/Homebrew/homebrew-cask/pull/261294
-- 4 Trust catalog entries cite >18-month-old sources (Adobe 2013 breach, Evernote 2013 breach, Kaspersky CISA 2017, BIS 2024) — flagged by validator as info-only, no action needed but the next Trust cron run should re-verify the URLs still resolve
+All four debt items cleared 2026-04-26:
+
+- ~~85 lint warnings in Sovereignty catalog~~ — **resolved.** Two passes via `Scripts/sovereignty-catalog.json` enriched 189 short-note alternatives across 27 alt-template suffixes (grafana, loop, audacity, inkscape, gimp, restic, bitwarden, obs, keepassxc, mistral, tesseract, clamav, f-secure, jitsi, element + 12 more). Validator now reports 0 errors / 0 warnings / 0 info on 1155 entries.
+- ~~`Marketing/screenshots/` and `Scripts/make-mas-screenshots.sh` stale~~ — deleted (screenshots predated v1.5 redesign; capture fresh via `Scripts/capture-screenshots.sh` for MAS resubmission).
+- `homebrew-cask` upstream PR (#261294) closed at notability; resubmit when stars cross 75. Thread is the timestamp record — leave it.
+- ~~4 Trust catalog entries with >18-month-old sources~~ — **re-verified 2026-04-26.** BIS URL was actually dead (redirected to homepage); replaced with the canonical Federal Register Final Determination 2024-13869 URL. CISA URL blocks bots but works in browser. HIBP entries (Adobe 2013, Evernote 2013) are page-anchors that work in browser; substantively still correct (a 2013 breach is a 2013 breach). All 5 entries' `lastReviewed` bumped to 2026-04-26. Added `Federal Register` to validator's `knownSources` allowlist.
 
 ### Files added this session — quick reference
 

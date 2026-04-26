@@ -52,6 +52,7 @@ let knownSources: Set<String> = [
     "US OFAC",
     "US CISA",
     "US BIS",
+    "Federal Register",
     "NVD",
     "HIBP",
     "LastPass security advisory",

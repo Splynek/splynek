@@ -1,690 +1,700 @@
 {
-  "version": 1,
   "comment": "Splynek Trust catalog. Every concern MUST cite a primary source: Apple App Store privacy label, EU DPA / FTC / SEC ruling, NVD CVE, HIBP breach, or vendor security advisory. NEVER editorial. NEVER tech press. NEVER community ratings. Run 'swift Scripts/regenerate-trust-catalog.swift' to refresh the generated Swift. See TRUST-CONTRIBUTING.md for the source allowlist.",
   "entries": [
     {
-      "targetBundleID": "com.google.Chrome",
-      "targetDisplayName": "Google Chrome",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/google-chrome/id535886823",
           "id": "chrome:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: contact info, identifiers, usage data, and search history linked across apps and websites.",
-          "evidenceURL": "https://apps.apple.com/us/app/google-chrome/id535886823",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: contact info, identifiers, usage data, and search history linked across apps and websites."
         },
         {
+          "axis": "trust",
+          "evidenceDate": "2022-11-14",
+          "evidenceURL": "https://www.oag.ca.gov/news/press-releases/attorney-general-bonta-announces-multistate-3915-million-settlement-google",
           "id": "chrome:ftc-cookie-consent",
           "kind": "regulatoryFineFTC",
-          "axis": "trust",
           "severity": "high",
-          "summary": "Google paid $391.5M to 40 US state attorneys general in 2022 over location-tracking practices in Chrome and other products.",
-          "evidenceURL": "https://www.oag.ca.gov/news/press-releases/attorney-general-bonta-announces-multistate-3915-million-settlement-google",
-          "evidenceDate": "2022-11-14",
-          "sourceName": "California AG"
+          "sourceName": "California AG",
+          "summary": "Google paid $391.5M to 40 US state attorneys general in 2022 over location-tracking practices in Chrome and other products."
         },
         {
+          "axis": "trust",
+          "evidenceDate": "2022-01-06",
+          "evidenceURL": "https://www.cnil.fr/en/cookies-cnil-fines-google-total-150-million-euros-and-facebook-60-million-euros-non-compliance",
           "id": "chrome:cnil-fine-2022",
           "kind": "regulatoryFineGDPR",
-          "axis": "trust",
           "severity": "high",
-          "summary": "CNIL fined Google €150M in 2022 for cookie-consent UX in Chrome that made refusing cookies harder than accepting.",
-          "evidenceURL": "https://www.cnil.fr/en/cookies-cnil-fines-google-total-150-million-euros-and-facebook-60-million-euros-non-compliance",
-          "evidenceDate": "2022-01-06",
-          "sourceName": "CNIL"
+          "sourceName": "CNIL",
+          "summary": "CNIL fined Google €150M in 2022 for cookie-consent UX in Chrome that made refusing cookies harder than accepting."
         }
       ],
       "fallbackAlternatives": [
-        {"id": "chrome:safari", "name": "Safari", "homepage": "https://www.apple.com/safari/", "note": "Apple-built; on-device intelligence; default browser."}
-      ]
+        {
+          "homepage": "https://www.apple.com/safari/",
+          "id": "chrome:safari",
+          "name": "Safari",
+          "note": "Apple-built; on-device intelligence; default browser."
+        }
+      ],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.google.Chrome",
+      "targetDisplayName": "Google Chrome"
     },
     {
-      "targetBundleID": "com.microsoft.edgemac",
-      "targetDisplayName": "Microsoft Edge",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/microsoft-edge-ai-browser/id1288723196",
           "id": "edge:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: contact info, identifiers, usage data, browsing history, search history.",
-          "evidenceURL": "https://apps.apple.com/us/app/microsoft-edge-ai-browser/id1288723196",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: contact info, identifiers, usage data, browsing history, search history."
         }
       ],
       "fallbackAlternatives": [
-        {"id": "edge:safari", "name": "Safari", "homepage": "https://www.apple.com/safari/", "note": "Apple-built; default macOS browser; no cross-app tracking on Apple ID."}
-      ]
+        {
+          "homepage": "https://www.apple.com/safari/",
+          "id": "edge:safari",
+          "name": "Safari",
+          "note": "Apple-built; default macOS browser; no cross-app tracking on Apple ID."
+        }
+      ],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.microsoft.edgemac",
+      "targetDisplayName": "Microsoft Edge"
     },
     {
-      "targetBundleID": "com.facebook.archon.developerID",
-      "targetDisplayName": "Messenger",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/messenger/id454638411",
           "id": "messenger:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "severe",
-          "summary": "App Store privacy label discloses tracking across other companies' apps and websites: identifiers, usage, location, contact info, purchases.",
-          "evidenceURL": "https://apps.apple.com/us/app/messenger/id454638411",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking across other companies' apps and websites: identifiers, usage, location, contact info, purchases."
         },
         {
+          "axis": "trust",
+          "evidenceDate": "2023-05-22",
+          "evidenceURL": "https://www.dataprotection.ie/en/news-media/press-releases/Data-Protection-Commission-announces-conclusion-of-inquiry-into-Meta-Ireland",
           "id": "messenger:dpc-ireland-2023",
           "kind": "regulatoryFineGDPR",
-          "axis": "trust",
           "severity": "severe",
-          "summary": "Ireland's DPC fined Meta €1.2B in 2023 for unlawful EU-to-US data transfers — largest GDPR fine to date.",
-          "evidenceURL": "https://www.dataprotection.ie/en/news-media/press-releases/Data-Protection-Commission-announces-conclusion-of-inquiry-into-Meta-Ireland",
-          "evidenceDate": "2023-05-22",
-          "sourceName": "Irish DPC"
+          "sourceName": "Irish DPC",
+          "summary": "Ireland's DPC fined Meta €1.2B in 2023 for unlawful EU-to-US data transfers — largest GDPR fine to date."
         },
         {
+          "axis": "trust",
+          "evidenceDate": "2019-07-24",
+          "evidenceURL": "https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook",
           "id": "messenger:ftc-2019",
           "kind": "regulatoryFineFTC",
-          "axis": "trust",
           "severity": "severe",
-          "summary": "FTC imposed a $5B fine on Facebook (now Meta) in 2019 over privacy violations including Cambridge Analytica.",
-          "evidenceURL": "https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook",
-          "evidenceDate": "2019-07-24",
-          "sourceName": "FTC"
+          "sourceName": "FTC",
+          "summary": "FTC imposed a $5B fine on Facebook (now Meta) in 2019 over privacy violations including Cambridge Analytica."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.facebook.archon.developerID",
+      "targetDisplayName": "Messenger"
     },
     {
-      "targetBundleID": "com.whatsapp.WhatsApp",
-      "targetDisplayName": "WhatsApp",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/whatsapp-messenger/id310633997",
           "id": "whatsapp:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: device ID, advertising data, usage data, purchase history, contact info, location.",
-          "evidenceURL": "https://apps.apple.com/us/app/whatsapp-messenger/id310633997",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: device ID, advertising data, usage data, purchase history, contact info, location."
         },
         {
+          "axis": "trust",
+          "evidenceDate": "2021-09-02",
+          "evidenceURL": "https://www.dataprotection.ie/en/news-media/press-releases/data-protection-commission-announces-decision-whatsapp-inquiry",
           "id": "whatsapp:dpc-ireland-2021",
           "kind": "regulatoryFineGDPR",
-          "axis": "trust",
           "severity": "high",
-          "summary": "Ireland's DPC fined WhatsApp €225M in 2021 for transparency failures under GDPR Article 13 and 14.",
-          "evidenceURL": "https://www.dataprotection.ie/en/news-media/press-releases/data-protection-commission-announces-decision-whatsapp-inquiry",
-          "evidenceDate": "2021-09-02",
-          "sourceName": "Irish DPC"
+          "sourceName": "Irish DPC",
+          "summary": "Ireland's DPC fined WhatsApp €225M in 2021 for transparency failures under GDPR Article 13 and 14."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.whatsapp.WhatsApp",
+      "targetDisplayName": "WhatsApp"
     },
     {
-      "targetBundleID": "com.tinyspeck.slackmacgap",
-      "targetDisplayName": "Slack",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/slack/id803453959",
           "id": "slack:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label discloses linked data: contact info, identifiers, usage data, diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/slack/id803453959",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: contact info, identifiers, usage data, diagnostics."
         },
         {
+          "axis": "security",
+          "evidenceDate": "2022-12-31",
+          "evidenceURL": "https://slack.com/blog/news/slack-security-update",
           "id": "slack:breach-2022",
           "kind": "dataBreachConfirmed",
-          "axis": "security",
           "severity": "moderate",
-          "summary": "Confirmed breach in 2022: source-code repository access via stolen employee tokens. No customer data accessed per Slack's disclosure.",
-          "evidenceURL": "https://slack.com/blog/news/slack-security-update",
-          "evidenceDate": "2022-12-31",
-          "sourceName": "Slack security advisory"
+          "sourceName": "Slack security advisory",
+          "summary": "Confirmed breach in 2022: source-code repository access via stolen employee tokens. No customer data accessed per Slack's disclosure."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.tinyspeck.slackmacgap",
+      "targetDisplayName": "Slack"
     },
     {
-      "targetBundleID": "us.zoom.xos",
-      "targetDisplayName": "Zoom",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "trust",
+          "evidenceDate": "2020-11-09",
+          "evidenceURL": "https://www.ftc.gov/news-events/news/press-releases/2020/11/ftc-requires-zoom-enhance-its-security-practices-part-settlement",
           "id": "zoom:ftc-2020",
           "kind": "regulatoryFineFTC",
-          "axis": "trust",
           "severity": "high",
-          "summary": "FTC settlement in 2020: Zoom misled users about end-to-end encryption and installed software circumventing browser security.",
-          "evidenceURL": "https://www.ftc.gov/news-events/news/press-releases/2020/11/ftc-requires-zoom-enhance-its-security-practices-part-settlement",
-          "evidenceDate": "2020-11-09",
-          "sourceName": "FTC"
+          "sourceName": "FTC",
+          "summary": "FTC settlement in 2020: Zoom misled users about end-to-end encryption and installed software circumventing browser security."
         },
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/zoom-workplace/id546505307",
           "id": "zoom:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, audio data, financial info.",
-          "evidenceURL": "https://apps.apple.com/us/app/zoom-workplace/id546505307",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, audio data, financial info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "us.zoom.xos",
+      "targetDisplayName": "Zoom"
     },
     {
-      "targetBundleID": "com.microsoft.teams",
-      "targetDisplayName": "Microsoft Teams",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/microsoft-teams/id1113153706",
           "id": "teams:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, contact info, contacts, usage data, diagnostics, audio data.",
-          "evidenceURL": "https://apps.apple.com/us/app/microsoft-teams/id1113153706",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, contact info, contacts, usage data, diagnostics, audio data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.microsoft.teams",
+      "targetDisplayName": "Microsoft Teams"
     },
     {
-      "targetBundleID": "com.hnc.Discord",
-      "targetDisplayName": "Discord",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/discord-chat-talk-hangout/id985746746",
           "id": "discord:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses tracking data: identifiers and usage data used to track across other companies' apps and websites.",
-          "evidenceURL": "https://apps.apple.com/us/app/discord-chat-talk-hangout/id985746746",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers and usage data used to track across other companies' apps and websites."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.hnc.Discord",
+      "targetDisplayName": "Discord"
     },
     {
-      "targetBundleID": "com.getdropbox.dropbox",
-      "targetDisplayName": "Dropbox",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "security",
+          "evidenceDate": "2012-07-01",
+          "evidenceURL": "https://haveibeenpwned.com/PwnedWebsites#Dropbox",
           "id": "dropbox:breach-2012",
           "kind": "dataBreachConfirmed",
-          "axis": "security",
           "severity": "high",
-          "summary": "Confirmed breach in 2012 affecting 68M users; credentials including hashed passwords exposed. Indexed by HIBP.",
-          "evidenceURL": "https://haveibeenpwned.com/PwnedWebsites#Dropbox",
-          "evidenceDate": "2012-07-01",
-          "sourceName": "HIBP"
+          "sourceName": "HIBP",
+          "summary": "Confirmed breach in 2012 affecting 68M users; credentials including hashed passwords exposed. Indexed by HIBP."
         },
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/dropbox/id327630330",
           "id": "dropbox:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, financial info, contacts, location.",
-          "evidenceURL": "https://apps.apple.com/us/app/dropbox/id327630330",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, financial info, contacts, location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-26",
+      "targetBundleID": "com.getdropbox.dropbox",
+      "targetDisplayName": "Dropbox"
     },
     {
-      "targetBundleID": "com.lastpass.LastPass",
-      "targetDisplayName": "LastPass",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "security",
+          "evidenceDate": "2022-12-22",
+          "evidenceURL": "https://blog.lastpass.com/posts/notice-of-recent-security-incident",
           "id": "lastpass:breach-2022",
           "kind": "dataBreachConfirmed",
-          "axis": "security",
           "severity": "severe",
-          "summary": "Confirmed breach in 2022: encrypted password vaults exfiltrated. Vendor confirmed in formal disclosure.",
-          "evidenceURL": "https://blog.lastpass.com/posts/notice-of-recent-security-incident",
-          "evidenceDate": "2022-12-22",
-          "sourceName": "LastPass security advisory"
+          "sourceName": "LastPass security advisory",
+          "summary": "Confirmed breach in 2022: encrypted password vaults exfiltrated. Vendor confirmed in formal disclosure."
         },
         {
+          "axis": "security",
+          "evidenceDate": "2022-12-22",
+          "evidenceURL": "https://haveibeenpwned.com/PwnedWebsites#LastPass",
           "id": "lastpass:hibp",
           "kind": "dataBreachConfirmed",
-          "axis": "security",
           "severity": "high",
-          "summary": "HIBP indexed multiple LastPass-related breaches involving customer-vault metadata and source-code access.",
-          "evidenceURL": "https://haveibeenpwned.com/PwnedWebsites#LastPass",
-          "evidenceDate": "2022-12-22",
-          "sourceName": "HIBP"
+          "sourceName": "HIBP",
+          "summary": "HIBP indexed multiple LastPass-related breaches involving customer-vault metadata and source-code access."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-26",
+      "targetBundleID": "com.lastpass.LastPass",
+      "targetDisplayName": "LastPass"
     },
     {
-      "targetBundleID": "com.zhiliaoapp.musically",
-      "targetDisplayName": "TikTok",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "trust",
+          "evidenceDate": "2023-09-15",
+          "evidenceURL": "https://www.dataprotection.ie/en/news-media/press-releases/data-protection-commission-announces-345-million-euro-fine-of-tiktok",
           "id": "tiktok:dpc-ireland-2023",
           "kind": "regulatoryFineGDPR",
-          "axis": "trust",
           "severity": "severe",
-          "summary": "Irish DPC fined TikTok €345M in 2023 over child-data processing — public-by-default settings and improper handling of child data.",
-          "evidenceURL": "https://www.dataprotection.ie/en/news-media/press-releases/data-protection-commission-announces-345-million-euro-fine-of-tiktok",
-          "evidenceDate": "2023-09-15",
-          "sourceName": "Irish DPC"
+          "sourceName": "Irish DPC",
+          "summary": "Irish DPC fined TikTok €345M in 2023 over child-data processing — public-by-default settings and improper handling of child data."
         },
         {
+          "axis": "trust",
+          "evidenceDate": "2025-05-02",
+          "evidenceURL": "https://www.dataprotection.ie/en/news-media/press-releases/data-protection-commission-announces-decision-tiktok-inquiry",
           "id": "tiktok:dpc-ireland-2025",
           "kind": "regulatoryFineGDPR",
-          "axis": "trust",
           "severity": "severe",
-          "summary": "Irish DPC fined TikTok €530M in 2025 for unlawful EEA-to-China data transfers and transparency failures.",
-          "evidenceURL": "https://www.dataprotection.ie/en/news-media/press-releases/data-protection-commission-announces-decision-tiktok-inquiry",
-          "evidenceDate": "2025-05-02",
-          "sourceName": "Irish DPC"
+          "sourceName": "Irish DPC",
+          "summary": "Irish DPC fined TikTok €530M in 2025 for unlawful EEA-to-China data transfers and transparency failures."
         },
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/tiktok/id835599320",
           "id": "tiktok:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, location, browsing history, purchases used to track across apps and websites.",
-          "evidenceURL": "https://apps.apple.com/us/app/tiktok/id835599320",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, location, browsing history, purchases used to track across apps and websites."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.zhiliaoapp.musically",
+      "targetDisplayName": "TikTok"
     },
     {
-      "targetBundleID": "com.tencent.xinWeChat",
-      "targetDisplayName": "WeChat",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/wechat/id414478124",
           "id": "wechat:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking and linked data: identifiers, contact info, usage data, contacts.",
-          "evidenceURL": "https://apps.apple.com/us/app/wechat/id414478124",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking and linked data: identifiers, contact info, usage data, contacts."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.tencent.xinWeChat",
+      "targetDisplayName": "WeChat"
     },
     {
-      "targetBundleID": "ru.yandex.desktop.yandex-browser",
-      "targetDisplayName": "Yandex Browser",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "trust",
+          "evidenceDate": "2024-02-23",
+          "evidenceURL": "https://ofac.treasury.gov/recent-actions",
           "id": "yandex:ofac",
           "kind": "governmentSanction",
-          "axis": "trust",
           "severity": "severe",
-          "summary": "US OFAC has sanctioned multiple Russian-affiliated entities since 2022; Yandex was split in 2024 with Russian operations under sanctions risk.",
-          "evidenceURL": "https://ofac.treasury.gov/recent-actions",
-          "evidenceDate": "2024-02-23",
-          "sourceName": "US OFAC"
+          "sourceName": "US OFAC",
+          "summary": "US OFAC has sanctioned multiple Russian-affiliated entities since 2022; Yandex was split in 2024 with Russian operations under sanctions risk."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "ru.yandex.desktop.yandex-browser",
+      "targetDisplayName": "Yandex Browser"
     },
     {
-      "targetBundleID": "com.kaspersky.kes",
-      "targetDisplayName": "Kaspersky Endpoint Security",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "trust",
+          "evidenceDate": "2017-09-13",
+          "evidenceURL": "https://www.cisa.gov/news-events/directives/bod-17-01-removal-kaspersky-branded-products",
           "id": "kaspersky:cisa-2017",
           "kind": "governmentSanction",
-          "axis": "trust",
           "severity": "severe",
-          "summary": "US CISA Binding Operational Directive 17-01 (2017) ordered removal of Kaspersky products from federal systems; expanded by Commerce Dept ban in 2024.",
-          "evidenceURL": "https://www.cisa.gov/news-events/directives/bod-17-01-removal-kaspersky-branded-products",
-          "evidenceDate": "2017-09-13",
-          "sourceName": "US CISA"
+          "sourceName": "US CISA",
+          "summary": "US CISA Binding Operational Directive 17-01 (2017) ordered removal of Kaspersky products from federal systems; expanded by Commerce Dept ban in 2024."
         },
         {
-          "id": "kaspersky:bis-2024",
-          "kind": "governmentSanction",
           "axis": "trust",
+          "evidenceDate": "2024-06-24",
+          "evidenceURL": "https://www.federalregister.gov/documents/2024/06/24/2024-13869/securing-the-information-and-communications-technology-and-services-supply-chain-final-determination",
+          "id": "kaspersky:bis-2024-final-determination",
+          "kind": "governmentSanction",
           "severity": "severe",
-          "summary": "US Commerce Bureau of Industry and Security prohibited Kaspersky software sales in the US effective September 29, 2024.",
-          "evidenceURL": "https://www.bis.doc.gov/index.php/policy-guidance/ict-supply-chain",
-          "evidenceDate": "2024-06-20",
-          "sourceName": "US BIS"
+          "sourceName": "Federal Register",
+          "summary": "Federal Register Final Determination 2024-13869 (BIS): prohibits Kaspersky software sales in the US effective September 29, 2024."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-26",
+      "targetBundleID": "com.kaspersky.kes",
+      "targetDisplayName": "Kaspersky Endpoint Security"
     },
     {
-      "targetBundleID": "com.adobe.acc.AdobeCreativeCloud",
-      "targetDisplayName": "Adobe Creative Cloud",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "security",
+          "evidenceDate": "2013-10-04",
+          "evidenceURL": "https://haveibeenpwned.com/PwnedWebsites#Adobe",
           "id": "adobe:breach-2013",
           "kind": "dataBreachConfirmed",
-          "axis": "security",
           "severity": "high",
-          "summary": "Confirmed 2013 breach affecting 153M user records: usernames, encrypted passwords, hint plaintexts. Indexed by HIBP.",
-          "evidenceURL": "https://haveibeenpwned.com/PwnedWebsites#Adobe",
-          "evidenceDate": "2013-10-04",
-          "sourceName": "HIBP"
+          "sourceName": "HIBP",
+          "summary": "Confirmed 2013 breach affecting 153M user records: usernames, encrypted passwords, hint plaintexts. Indexed by HIBP."
         },
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/adobe-creative-cloud/id1481430488",
           "id": "adobe:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, purchases, diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/adobe-creative-cloud/id1481430488",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, purchases, diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-26",
+      "targetBundleID": "com.adobe.acc.AdobeCreativeCloud",
+      "targetDisplayName": "Adobe Creative Cloud"
     },
     {
-      "targetBundleID": "com.adobe.Acrobat.Pro",
-      "targetDisplayName": "Adobe Acrobat Pro",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "security",
+          "evidenceDate": "2024-12-10",
+          "evidenceURL": "https://helpx.adobe.com/security.html",
           "id": "acrobat:cve-2024-recurring",
           "kind": "vendorSecurityAdvisory",
-          "axis": "security",
           "severity": "high",
-          "summary": "Adobe issued multiple Acrobat security bulletins in 2024 patching critical RCE CVEs (e.g. APSB24-29, APSB24-86).",
-          "evidenceURL": "https://helpx.adobe.com/security.html",
-          "evidenceDate": "2024-12-10",
-          "sourceName": "Adobe Security Bulletin"
+          "sourceName": "Adobe Security Bulletin",
+          "summary": "Adobe issued multiple Acrobat security bulletins in 2024 patching critical RCE CVEs (e.g. APSB24-29, APSB24-86)."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.adobe.Acrobat.Pro",
+      "targetDisplayName": "Adobe Acrobat Pro"
     },
     {
-      "targetBundleID": "com.notion.id",
-      "targetDisplayName": "Notion",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/notion-notes-docs-tasks/id1232780281",
           "id": "notion:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, diagnostics, user content.",
-          "evidenceURL": "https://apps.apple.com/us/app/notion-notes-docs-tasks/id1232780281",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, diagnostics, user content."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.notion.id",
+      "targetDisplayName": "Notion"
     },
     {
-      "targetBundleID": "com.evernote.Evernote",
-      "targetDisplayName": "Evernote",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "security",
+          "evidenceDate": "2013-03-02",
+          "evidenceURL": "https://haveibeenpwned.com/PwnedWebsites#Evernote",
           "id": "evernote:breach-2013",
           "kind": "dataBreachConfirmed",
-          "axis": "security",
           "severity": "moderate",
-          "summary": "Confirmed 2013 breach: usernames, hashed passwords, email addresses for 50M users exposed. Indexed by HIBP.",
-          "evidenceURL": "https://haveibeenpwned.com/PwnedWebsites#Evernote",
-          "evidenceDate": "2013-03-02",
-          "sourceName": "HIBP"
+          "sourceName": "HIBP",
+          "summary": "Confirmed 2013 breach: usernames, hashed passwords, email addresses for 50M users exposed. Indexed by HIBP."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-26",
+      "targetBundleID": "com.evernote.Evernote",
+      "targetDisplayName": "Evernote"
     },
     {
-      "targetBundleID": "com.microsoft.OneDrive",
-      "targetDisplayName": "Microsoft OneDrive",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/microsoft-onedrive/id823766827",
           "id": "onedrive:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, contacts, user content, diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/microsoft-onedrive/id823766827",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, contacts, user content, diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.microsoft.OneDrive",
+      "targetDisplayName": "Microsoft OneDrive"
     },
     {
-      "targetBundleID": "com.google.drivefs",
-      "targetDisplayName": "Google Drive",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/google-drive/id507874739",
           "id": "gdrive:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, search history, user content.",
-          "evidenceURL": "https://apps.apple.com/us/app/google-drive/id507874739",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, search history, user content."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.google.drivefs",
+      "targetDisplayName": "Google Drive"
     },
     {
-      "targetBundleID": "com.openai.chat",
-      "targetDisplayName": "ChatGPT Desktop",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "trust",
+          "evidenceDate": "2024-12-20",
+          "evidenceURL": "https://www.garanteprivacy.it/web/guest/home/docweb/-/docweb-display/docweb/10085455",
           "id": "chatgpt:garante-2023",
           "kind": "regulatoryFineGDPR",
-          "axis": "trust",
           "severity": "high",
-          "summary": "Italy's Garante temporarily banned ChatGPT in 2023 over GDPR concerns; OpenAI fined €15M in 2024.",
-          "evidenceURL": "https://www.garanteprivacy.it/web/guest/home/docweb/-/docweb-display/docweb/10085455",
-          "evidenceDate": "2024-12-20",
-          "sourceName": "Garante per la protezione dei dati personali"
+          "sourceName": "Garante per la protezione dei dati personali",
+          "summary": "Italy's Garante temporarily banned ChatGPT in 2023 over GDPR concerns; OpenAI fined €15M in 2024."
         },
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/chatgpt/id6448311069",
           "id": "chatgpt:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, user content.",
-          "evidenceURL": "https://apps.apple.com/us/app/chatgpt/id6448311069",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, user content."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.openai.chat",
+      "targetDisplayName": "ChatGPT Desktop"
     },
     {
-      "targetBundleID": "com.spotify.client",
-      "targetDisplayName": "Spotify",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/spotify-music-and-podcasts/id324684580",
           "id": "spotify:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label discloses tracking data: identifiers and usage data used to track across other companies' apps and websites.",
-          "evidenceURL": "https://apps.apple.com/us/app/spotify-music-and-podcasts/id324684580",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers and usage data used to track across other companies' apps and websites."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.spotify.client",
+      "targetDisplayName": "Spotify"
     },
     {
-      "targetBundleID": "com.todesktop.230313mzl4w4u92",
-      "targetDisplayName": "Cursor",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "businessModel",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://cursor.com/privacy",
           "id": "cursor:business-model",
           "kind": "telemetryDefaultOn",
-          "axis": "businessModel",
           "severity": "low",
-          "summary": "Cursor's privacy policy discloses default-on telemetry; Privacy Mode toggle exists but is opt-in.",
-          "evidenceURL": "https://cursor.com/privacy",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Cursor privacy policy"
+          "sourceName": "Cursor privacy policy",
+          "summary": "Cursor's privacy policy discloses default-on telemetry; Privacy Mode toggle exists but is opt-in."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.todesktop.230313mzl4w4u92",
+      "targetDisplayName": "Cursor"
     },
     {
-      "targetBundleID": "com.grammarly.ProjectLlama",
-      "targetDisplayName": "Grammarly",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/grammarly-grammar-keyboard/id1462114288",
           "id": "grammarly:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, user content, diagnostics, search history.",
-          "evidenceURL": "https://apps.apple.com/us/app/grammarly-grammar-keyboard/id1462114288",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, user content, diagnostics, search history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.grammarly.ProjectLlama",
+      "targetDisplayName": "Grammarly"
     },
     {
-      "targetBundleID": "com.airtable.airtable",
-      "targetDisplayName": "Airtable",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/airtable/id914172636",
           "id": "airtable:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, contacts, user content, diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/airtable/id914172636",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, contacts, user content, diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.airtable.airtable",
+      "targetDisplayName": "Airtable"
     },
     {
-      "targetBundleID": "com.dashlane.dashlanephonefinal",
-      "targetDisplayName": "Dashlane",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/dashlane-password-manager/id517914548",
           "id": "dashlane:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, financial info, search history, diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/dashlane-password-manager/id517914548",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, financial info, search history, diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.dashlane.dashlanephonefinal",
+      "targetDisplayName": "Dashlane"
     },
     {
-      "targetBundleID": "com.linear",
-      "targetDisplayName": "Linear",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/linear/id1500768148",
           "id": "linear:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, user content.",
-          "evidenceURL": "https://apps.apple.com/us/app/linear/id1500768148",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, user content."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.linear",
+      "targetDisplayName": "Linear"
     },
     {
-      "targetBundleID": "com.amazon.Kindle",
-      "targetDisplayName": "Amazon Kindle",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/amazon-kindle/id302584613",
           "id": "kindle:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, browsing history, purchases, search history, diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/amazon-kindle/id302584613",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, browsing history, purchases, search history, diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.amazon.Kindle",
+      "targetDisplayName": "Amazon Kindle"
     },
     {
-      "targetBundleID": "com.amazon.music.mac",
-      "targetDisplayName": "Amazon Music",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/amazon-music-songs-podcasts/id510855668",
           "id": "amazon-music:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, purchases, diagnostics, audio data.",
-          "evidenceURL": "https://apps.apple.com/us/app/amazon-music-songs-podcasts/id510855668",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, purchases, diagnostics, audio data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.amazon.music.mac",
+      "targetDisplayName": "Amazon Music"
     },
     {
-      "targetBundleID": "com.netflix.Netflix",
-      "targetDisplayName": "Netflix",
-      "lastReviewed": "2026-04-25",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2025-09-15",
+          "evidenceURL": "https://apps.apple.com/us/app/netflix/id363590051",
           "id": "netflix:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label discloses linked data: identifiers, usage data, financial info, contact info, diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/netflix/id363590051",
-          "evidenceDate": "2025-09-15",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses linked data: identifiers, usage data, financial info, contact info, diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-25",
+      "targetBundleID": "com.netflix.Netflix",
+      "targetDisplayName": "Netflix"
     }
-  ]
+  ],
+  "version": 1
 }
