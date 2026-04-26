@@ -19,10 +19,180 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (144 tests, all green)
+**Tests:** `swift run splynek-test` (148 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
-**Current version: v1.5 — shipped 2026-04-25.** New **Trust** tab — public-record audit of installed apps (Apple App Store privacy labels + DPA/FTC/SEC rulings + NVD CVE + HIBP breaches + vendor advisories), 30 deeply-cited initial entries, MAS-safe source allowlist. Pairs with Sovereignty (Trust surfaces concerns; Sovereignty surfaces alternatives). v1.4 baseline still applies: **Catalog pipeline + 13× growth: 90 → 1155 entries.** AI-fallback hardening (FORBIDDEN PATTERNS + deny-list post-filter). FR/DE/ES/IT localisation for the Sovereignty tab. MAS archive waiting on v1.0 to clear App Store review before uploading as the update. Full release history + download URLs under § Shipped releases below.
+**Current version: v1.5.4 — shipped 2026-04-26.** v1.5.3 DMG live on GitHub Releases (notarised + stapled). v1.5.4 adds Trust score weights UI (Settings → 4 sliders), per-axis score breakdown in TrustView, Info.plist sync invariant test (caught real version-drift bug). Mac App Store v1.0 in re-review since 2026-04-26 (resubmitted with Resolution Center reply + edit-and-save touch). Full release history + download URLs under § Shipped releases below.
+
+---
+
+## ⚡ Session handoff — current state (2026-04-26)
+
+**For a fresh session picking this up.** TL;DR: shipped a lot, everything green, marketing is staged but not deployed, waiting on Apple, three scheduled cron triggers + two repos cleanly committed.
+
+### What's running
+
+| Track | State | Where |
+|---|---|---|
+| **Apple App Store v1.0 review** | ⏳ Resubmitted 2026-04-26 with VPN-clarification Resolution Center reply + App Review Notes update + clicked "Atualizar revisão". Status: `A aguardar revisão`. ETA `In Review`: 24-72h. ETA decision: +24h. | App Store Connect |
+| **Sovereignty cron trigger** | ⏳ First fire **2026-05-01 09:00 UTC**. Public repo only; drafts up to 20 catalog entries from `Scripts/sources/*.json`, opens PR. | https://claude.ai/code/scheduled/trig_01JEuDpurUC21nHkumwdEfaB |
+| **Trust cron trigger** | ⏳ First fire **2026-05-15 09:00 UTC**. Refreshes catalog entries with `lastReviewed > 90 days`, checks NVD + HIBP for new findings, opens PR. | https://claude.ai/code/scheduled/trig_01VZNTUM4ikbYH5XBtpnn1ER |
+| **Quarterly audit cron** | ⏳ First fire **2026-06-01 09:00 UTC**. Audits a rotating area (Q1=networking, Q2=views, Q3=scripts, Q4=build), opens GitHub issue with `audit` label. | https://claude.ai/code/scheduled/trig_0161CxCRWwnG5F48ynpTaspi |
+| **GitHub Actions weekly** | ✅ Live — runs Sovereignty validator + URL liveness check every Monday. | `.github/workflows/sovereignty-weekly.yml` |
+| **Homebrew tap** | ✅ Live at [`Splynek/homebrew-splynek`](https://github.com/Splynek/homebrew-splynek). Install: `brew install --cask Splynek/splynek/splynek`. | Self-hosted |
+| **Upstream homebrew/cask** | ❌ PR #261294 auto-rejected (notability: 0 stars / 0 forks / 0 watchers vs ≥75 / ≥30 / ≥30 needed). Resubmit after Show HN drives stars. | https://github.com/Homebrew/homebrew-cask/pull/261294 |
+| **splynek.app landing** | ⏸️ Still on v1.3 copy. New copy ready in `docs/index.v1.5.3.html.draft` (NOT live). Deploy: `mv docs/index.html docs/index.v1.4.previous.html && mv docs/index.v1.5.3.html.draft docs/index.html && git push` — **only after** v1.0 clears Apple. |
+| **Press / Show HN / directory submissions** | ⏸️ All staged in `PRESS_KIT.md`, `SHOW_HN.md`, `DIRECTORIES.md`. Don't trigger before v1.0 clears (App reviewers may visit splynek.app and reject for marketing-vs-build inconsistency). |
+
+### Repo state — both clean
+
+| Repo | Branch | Latest commit | Status |
+|---|---|---|---|
+| `Splynek/splynek` (public) | `main` | will be at HEAD after this session's commit | clean working tree |
+| `Splynek/splynek-pro` (private) | `main` | `893d5bc` (v1.5.3 ContextCard migration) | clean |
+| `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
+
+### Latest release artifact
+
+- **DMG**: [Splynek-1.5.3.dmg](https://github.com/Splynek/splynek/releases/tag/v1.5.3) — 3.8 MB
+- **SHA-256**: `4fe61bab5ee2eb847d789c7f8b2245bf6b180936ec231241284f20b968c0e6cb`
+- **Notarised + stapled**: ✅ Apple notary status `Accepted`
+- **Signed**: Developer ID Application: Paulo Moura (58C6YC5GB5)
+
+### Critical files (don't break / always update together)
+
+- **Version sources** (must stay in sync — `InfoPlistSyncTests` enforces):
+  - `Resources/Info.plist` → `CFBundleShortVersionString`
+  - `project.yml` → `MARKETING_VERSION`
+  - `Extensions/Alfred/Splynek.alfredworkflow/info.plist` → `CFBundleShortVersionString`
+- **Catalog generators** — never edit the generated `+Entries.swift` files directly:
+  - `Scripts/sovereignty-catalog.json` → `Scripts/regenerate-sovereignty-catalog.swift` → `Sources/SplynekCore/SovereigntyCatalog+Entries.swift`
+  - `Scripts/trust-catalog.json` → `Scripts/regenerate-trust-catalog.swift` → `Sources/SplynekCore/TrustCatalog+Entries.swift`
+- **Live website** — `docs/index.html` is what serves splynek.app. The `.draft` variant is staging.
+- **Splynek.entitlements** — minimal entitlement set; do not add `NetworkExtension` (Apple reviewer specifically asked about VPN; we declared none).
+
+### Common commands
+
+```bash
+# Build for testing
+swift build --product Splynek                                 # debug, ~30s
+.build/debug/Splynek                                          # run
+
+# Build for release
+SIGN_IDENTITY="Developer ID Application: Paulo Moura (58C6YC5GB5)" \
+  ENTITLEMENTS="Resources/Splynek.entitlements" ./Scripts/build.sh
+./Scripts/dmg.sh
+xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
+xcrun stapler staple build/Splynek.dmg
+
+# Tests + validators
+swift run splynek-test                                        # 148 tests
+swift Scripts/validate-catalog.swift                          # Sovereignty offline lint
+swift Scripts/validate-trust-catalog.swift --strict           # Trust offline lint
+swift Scripts/check-urls.swift --only-download                # online URL liveness (~3 min for 1155 entries)
+
+# Catalog round-trip
+swift run splynek-cli sovereignty-dump > Scripts/sovereignty-catalog.json   # Swift → JSON
+swift Scripts/regenerate-sovereignty-catalog.swift                          # JSON → Swift
+swift Scripts/regenerate-trust-catalog.swift
+
+# Bump cask after a new release
+git clone https://github.com/Splynek/homebrew-splynek /tmp/tap
+cp Packaging/splynek.rb /tmp/tap/Casks/splynek.rb
+cd /tmp/tap && git add . && git commit -m "splynek X.Y.Z" && git push
+
+# Capture press screenshots
+./Scripts/capture-screenshots.sh   # interactive — ~10 min for all 10
+```
+
+### When v1.0 clears Apple — the launch sequence
+
+```bash
+# 1. Update MAS version metadata → v1.5.3 (in App Store Connect, version page)
+
+# 2. Upload v1.5.3 archive via Xcode Organizer → Distribute App → MAS
+
+# 3. Deploy landing
+cd "/Users/pcgm/Claude Code"
+mv docs/index.html docs/index.v1.4.previous.html
+mv docs/index.v1.5.3.html.draft docs/index.html
+git add docs/ && git commit -m "landing: deploy v1.5.3" && git push
+
+# 4. Capture screenshots (skipped this session — script ready)
+./Scripts/capture-screenshots.sh
+
+# 5. Wait for MAS Ready for Sale (~24h)
+
+# 6. Show HN (Tuesday/Wednesday 14-16 UTC) — copy from SHOW_HN.md
+
+# 7. Press emails in waves — templates in PRESS_KIT.md
+#    Wave 1: EU sovereignty (Le Monde, Der Spiegel, El País, Repubblica, Politico EU, Heise)
+#    Wave 2 (1h later): Privacy (Wired, FT, The Information, MIT TR, EFF, The Markup)
+#    Wave 3 (1h later): Mac power-user (MacStories, 9to5Mac, Eclectic Light, MacRumors, Six Colors)
+
+# 8. Directory submissions — pre-filled forms in DIRECTORIES.md (Tier 1 first)
+
+# 9. Day 7: Product Hunt launch (Thursday)
+
+# 10. After 75 stars on the upstream repo: resubmit homebrew/cask PR
+```
+
+### v1.6 candidates (next-bites queue)
+
+After Apple v1.0 clears, these are unblocked. Priority is the maintainer's call:
+
+- **A.** Resubmit upstream homebrew/cask PR (after Show HN reaches 75 stars)
+- **B.** Stripe + Postmark direct channel (see `MONETIZATION.md`) — alternative to MAS for users who can't pay via App Store
+- **C.** Localise remaining tabs (Concierge, Recipes, Downloads — currently English-only; Sovereignty + Trust are FR/DE/ES/IT)
+- **D.** v1.6 features: shareable Trust-scan report (PDF / shareable PNG), Sovereignty CSV export, more Trust catalog entries (target 100 from current 30)
+- **E.** S2 — Unbreakable Resume (HTTP Range + NWPathMonitor + curated mirror failover) — see `STRATEGY-2026.md`
+- **F.** S5 — Splynek Accelerator (browser extension + HLS pre-buffer)
+- **G.** iOS Companion (Share Extension + Live Activity)
+
+### Pending tech debt (non-blocking)
+
+- 85 lint warnings in Sovereignty catalog (mostly short notes <30 chars on bulk-seeded entries from v1.4 — would benefit from a long-form pass when there's time)
+- `Marketing/screenshots/` and `Scripts/make-mas-screenshots.sh` are stale untracked files left from earlier sessions; safe to delete or just ignore
+- `homebrew-cask` upstream PR can be reopened or new PR submitted; thread is at https://github.com/Homebrew/homebrew-cask/pull/261294
+- 4 Trust catalog entries cite >18-month-old sources (Adobe 2013 breach, Evernote 2013 breach, Kaspersky CISA 2017, BIS 2024) — flagged by validator as info-only, no action needed but the next Trust cron run should re-verify the URLs still resolve
+
+### Files added this session — quick reference
+
+```
+Sources/SplynekCore/Views/SettingsView.swift   ← Trust weights card (4 sliders + reset)
+Sources/SplynekCore/Views/TrustView.swift      ← per-axis score breakdown
+Sources/SplynekCore/ViewModel.swift            ← trustWeight* @Published + sanitised computed
+Tests/SplynekTests/InfoPlistSyncTests.swift    ← version drift invariant
+PRESS_KIT.md                                   ← refined cold-pass press kit
+DIRECTORIES.md                                 ← pre-filled directory submission forms
+Scripts/capture-screenshots.sh                 ← interactive screenshot capture (10 named shots)
+Branding/v1.5.3/README.md                      ← screenshot conventions + post-capture pipeline
+docs/index.v1.5.3.html.draft                   ← staged landing (deploy on Apple clear)
+Packaging/splynek.rb                           ← v1.5.3 cask, brew-style clean
+.github/workflows/sovereignty-weekly.yml       ← Mon cron: validate + URL liveness
+```
+
+### Things to NOT do without thinking
+
+- **Don't push splynek.app changes** until v1.0 is `Ready for Sale` on App Store Connect.
+- **Don't send press emails** until the landing matches what reviewers might see.
+- **Don't merge cron-opened PRs blindly** — the agents draft, the maintainer approves.
+- **Don't delete the upstream homebrew/cask PR** — closed is fine; the thread is the timestamp record.
+- **Don't bump version in just one of the three plists** — InfoPlistSyncTests will fail.
+- **Don't add `NetworkExtension` entitlement** — Apple already asked about VPN; we explicitly declared none.
+- **Don't run cron triggers manually unless you understand they open PRs** — the dashboard has a "Run now" button; use it deliberately.
+
+### How to ramp a fresh session in 5 minutes
+
+```
+1. Read HANDOFF.md (this file) top 250 lines
+2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
+3. swift run splynek-test (must show 148/148 — anything less is a regression)
+4. Open https://claude.ai/code/scheduled and check the three triggers fired clean
+5. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
+```
+
+If everything green → ask the user what to work on. The "v1.6 candidates" list above is the queue.
 
 ---
 

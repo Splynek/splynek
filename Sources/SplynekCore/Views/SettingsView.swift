@@ -618,24 +618,28 @@ struct SettingsView: View {
 
                 trustWeightSlider(
                     label: "Privacy",
+                    accessibilityLabel: "Privacy",
                     systemImage: "eye.slash",
                     tint: .blue,
                     value: $vm.trustWeightPrivacy
                 )
                 trustWeightSlider(
                     label: "Security",
+                    accessibilityLabel: "Security",
                     systemImage: "shield.fill",
                     tint: .red,
                     value: $vm.trustWeightSecurity
                 )
                 trustWeightSlider(
                     label: "Trust / reputation",
+                    accessibilityLabel: "Trust",
                     systemImage: "scalemass",
                     tint: .orange,
                     value: $vm.trustWeightTrust
                 )
                 trustWeightSlider(
                     label: "Business model",
+                    accessibilityLabel: "Business model",
                     systemImage: "creditcard",
                     tint: .purple,
                     value: $vm.trustWeightBusinessModel
@@ -656,6 +660,7 @@ struct SettingsView: View {
     @ViewBuilder
     private func trustWeightSlider(
         label: LocalizedStringKey,
+        accessibilityLabel: String,
         systemImage: String,
         tint: Color,
         value: Binding<Double>
@@ -677,9 +682,15 @@ struct SettingsView: View {
             // at the leftmost position still produces a valid weight
             // (Weights.sanitised would clamp 0 → 0.1 anyway, but
             // showing "0.1" in the UI matches what's actually used).
+            //
+            // v1.5.4 fix: the accessibility label was previously built
+            // via `"\(label) weight"` where label was a LocalizedStringKey
+            // — Swift's interpolation produced unhelpful VoiceOver output.
+            // Now passed as a separate plain-String parameter so the
+            // axis name is read correctly by screen readers.
             Slider(value: value, in: 0.1...3.0, step: 0.1)
                 .tint(tint)
-                .accessibilityLabel("\(label) weight")
+                .accessibilityLabel(Text(accessibilityLabel + " weight"))
                 .accessibilityValue(String(format: "%.1f", value.wrappedValue))
         }
     }

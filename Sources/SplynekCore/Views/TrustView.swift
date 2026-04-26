@@ -282,6 +282,14 @@ struct TrustView: View {
 
             DisclosureGroup {
                 VStack(alignment: .leading, spacing: 12) {
+                    // v1.5.4: per-axis breakdown — shows the user how
+                    // their Settings weights translate into the score.
+                    // Only meaningful when there's at least one concern;
+                    // a 0/0/0/0 breakdown reads as misleading "no data".
+                    if !row.entry.concerns.isEmpty {
+                        scoreBreakdown(row.score)
+                        Divider()
+                    }
                     detailedConcerns(row.entry)
                     Divider()
                     alternatives(for: row)
@@ -311,6 +319,74 @@ struct TrustView: View {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .strokeBorder(scoreColor(row.score).opacity(0.2), lineWidth: 0.5)
         )
+    }
+
+    /// v1.5.4: per-axis score breakdown.  Shows the user how the
+    /// weights they set in Settings translate to the score they see.
+    /// Empty axes (no concerns of that axis) collapse out so the
+    /// breakdown isn't padded with zeros.
+    @ViewBuilder
+    private func scoreBreakdown(_ score: TrustScorer.Score) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: "chart.bar.xaxis")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text("Score breakdown")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text("Adjust weights in Settings → Trust")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+            VStack(spacing: 4) {
+                ForEach(TrustCatalog.Axis.allCases) { axis in
+                    if let points = score.breakdown[axis], points > 0 {
+                        breakdownRow(axis: axis, points: points)
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func breakdownRow(axis: TrustCatalog.Axis, points: Int) -> some View {
+        let pct = min(100, points)
+        HStack(spacing: 8) {
+            axisIcon(axis)
+                .font(.caption)
+                .frame(width: 16)
+            Text(axis.label)
+                .font(.caption)
+                .frame(width: 90, alignment: .leading)
+            // Mini bar — mirrors the score colour at this magnitude.
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(Color.secondary.opacity(0.12))
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(barColor(forPoints: points))
+                        .frame(width: geo.size.width * Double(pct) / 100.0)
+                }
+            }
+            .frame(height: 6)
+            Text("\(points)")
+                .font(.caption2.monospacedDigit())
+                .foregroundStyle(.secondary)
+                .frame(width: 24, alignment: .trailing)
+        }
+    }
+
+    /// Mini-bar colour mirrors the same band thresholds as
+    /// `scoreColor(_:)` so the visual reads consistently per row.
+    private func barColor(forPoints points: Int) -> Color {
+        switch points {
+        case 0..<20:  return .green
+        case 20..<50: return .yellow
+        case 50..<80: return .orange
+        default:      return .red
+        }
     }
 
     @ViewBuilder
