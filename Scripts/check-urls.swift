@@ -65,6 +65,42 @@ struct Check {
         default: return false
         }
     }
+
+    /// v1.5.6: classify *failures* — true rot vs transient.  The 2026-04-27
+    /// weekly run flagged 115 URLs but ~95 were transient: 429 rate-limits
+    /// (mubi.com, chat.mistral.ai hit dozens of times across the catalog),
+    /// 403 from CDN bot-blocks (clamxav.com), and -1003/-1004/-1005 network
+    /// blips from the runner.  Real rot is a small minority — separating
+    /// the two so the weekly issue isn't drowned in noise.
+    var isTransient: Bool {
+        switch status {
+        case .ok, .redirect: return false
+        case .clientError(let code):
+            // 429 = rate limit; 403 = often CDN bot-block (Cloudflare,
+            // AWS WAF, etc.); 405 after the HEAD→GET retry usually means
+            // the host is rejecting our UA on principle (mubi.com does
+            // this).  None of these prove the URL itself is rotted.
+            return code == 429 || code == 403 || code == 405
+        case .serverError(let code):
+            // 5xx is almost always transient — bad gateway, CF timeout,
+            // overloaded origin.  Worth re-checking next week, not
+            // worth a maintainer ping today.
+            return (500...599).contains(code)
+        case .networkError(let m):
+            // NSURLErrorDomain codes for transient: -1001 timed out,
+            // -1003 cannot find host (DNS hiccup), -1004 cannot connect,
+            // -1005 connection lost, -1009 not connected to internet.
+            // -1002 (unsupported URL) IS rot.
+            return m.contains("/-1001") || m.contains("/-1003")
+                || m.contains("/-1004") || m.contains("/-1005")
+                || m.contains("/-1009")
+        case .timeout:
+            return true
+        case .unparseable:
+            return false  // genuine — URL is malformed
+        }
+    }
+
     var shortMessage: String {
         switch status {
         case .ok(let code):              return "\(code)"
@@ -229,22 +265,39 @@ func run() async {
 
         let checks = results.compactMap { $0 }
         let failing = checks.filter { !$0.isOK }
+        // v1.5.6: split failures into transient (429 / 403 / 5xx /
+        // network blips) vs true rot.  Only true rot blocks `--fail-on-rot`
+        // and lands at the top of the report.  Transient flows into a
+        // secondary list so the maintainer can scan it but isn't paged.
+        let rotted    = failing.filter { !$0.isTransient }
+        let transient = failing.filter {  $0.isTransient }
 
         if emitJSON {
             struct Out: Encodable {
-                let total: Int; let ok: Int; let failing: Int; let rotted: [Item]
+                let total: Int
+                let ok: Int
+                let failing: Int
+                let rottedCount: Int
+                let transientCount: Int
+                let rotted: [Item]
+                let transient: [Item]
                 struct Item: Encodable {
                     let entry, alt, kind, url, status: String; let elapsedMs: Int
                 }
+            }
+            let mapper: (Check) -> Out.Item = {
+                .init(entry: $0.entry, alt: $0.altID, kind: $0.kind,
+                      url: $0.url, status: $0.shortMessage,
+                      elapsedMs: $0.elapsedMs)
             }
             let out = Out(
                 total: checks.count,
                 ok: checks.count - failing.count,
                 failing: failing.count,
-                rotted: failing.map { .init(entry: $0.entry, alt: $0.altID,
-                                            kind: $0.kind, url: $0.url,
-                                            status: $0.shortMessage,
-                                            elapsedMs: $0.elapsedMs) }
+                rottedCount: rotted.count,
+                transientCount: transient.count,
+                rotted: rotted.map(mapper),
+                transient: transient.map(mapper)
             )
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
@@ -256,19 +309,33 @@ func run() async {
             if failing.isEmpty {
                 print("✓ All \(checks.count) URLs respond with 2xx or 3xx.")
             } else {
-                print("")
-                print("Rotted URLs (\(failing.count) of \(checks.count)):")
-                print("")
-                for c in failing.sorted(by: { $0.entry < $1.entry }) {
-                    print("  [\(c.shortMessage)]  \(c.entry)  \(c.kind)  \(c.altID)")
-                    print("     → \(c.url)")
+                if !rotted.isEmpty {
+                    print("")
+                    print("Rotted URLs — likely real (\(rotted.count) of \(checks.count)):")
+                    print("")
+                    for c in rotted.sorted(by: { $0.entry < $1.entry }) {
+                        print("  [\(c.shortMessage)]  \(c.entry)  \(c.kind)  \(c.altID)")
+                        print("     → \(c.url)")
+                    }
+                }
+                if !transient.isEmpty {
+                    print("")
+                    print("Transient (rate-limit / CDN block / network blip) — re-check next run (\(transient.count)):")
+                    print("")
+                    for c in transient.sorted(by: { $0.entry < $1.entry }) {
+                        print("  [\(c.shortMessage)]  \(c.entry)  \(c.kind)  \(c.altID)")
+                        print("     → \(c.url)")
+                    }
                 }
             }
             print("")
-            print("Total: \(checks.count) · OK: \(checks.count - failing.count) · Rotted: \(failing.count)")
+            print("Total: \(checks.count) · OK: \(checks.count - failing.count) · Rotted: \(rotted.count) · Transient: \(transient.count)")
         }
 
-        if failOnRot && !failing.isEmpty {
+        // v1.5.6: only true rot fails the run — transient noise (rate
+        // limits, CDN bot-blocks, intermittent DNS / connection-reset)
+        // gets reported but doesn't page the maintainer.
+        if failOnRot && !rotted.isEmpty {
             exit(2)
         }
 }
