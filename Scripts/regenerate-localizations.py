@@ -131,7 +131,7 @@ PT_PT_FOR_EXISTING = {
     "Sovereignty pick": "Escolha de soberania",
     "Splynek cross-references your installed apps against Apple's App Store privacy labels, EU and US regulator decisions, the NVD CVE database, and the HIBP breach corpus. Every concern shown is a fact you can verify yourself — we surface public record, never opinion.":
         "O Splynek cruza as tuas apps instaladas com as etiquetas de privacidade da App Store da Apple, decisões dos reguladores da UE e dos EUA, a base de dados de CVEs do NVD e o corpus de violações da HIBP. Cada preocupação é um facto que podes verificar — apresentamos registos públicos, nunca opinião.",
-    "Stays on-device — no network calls, ever": "Permanece no dispositivo — nunca há chamadas à rede",
+    "Stays on-device — no network calls, ever": "Fica no dispositivo — nunca acede à rede",
     "The local LLM didn't know any good European or open-source alternatives. Contribute one at github.com/Splynek/splynek.":
         "O LLM local não conhecia boas alternativas europeias ou de código aberto. Contribui em github.com/Splynek/splynek.",
     "Trust": "Confiança",
@@ -219,21 +219,21 @@ NEW_V16_STRINGS = {
         "it": "Sovrano",
     },
     "See where the apps on your Mac come from, and what regulators say about them.": {
-        "pt-PT": "Vê de onde vêm as apps no teu Mac e o que os reguladores dizem sobre elas.",
+        "pt-PT": "Vê de onde vêm as apps do teu Mac e o que os reguladores dizem sobre elas.",
         "es": "Descubre de dónde vienen las apps de tu Mac y qué dicen los reguladores sobre ellas.",
         "fr": "Découvrez d'où viennent les apps de votre Mac et ce que disent les régulateurs.",
         "de": "Sehen Sie, woher die Apps auf Ihrem Mac stammen und was Regulierungsbehörden dazu sagen.",
         "it": "Scopri da dove vengono le app sul tuo Mac e cosa dicono i regolatori.",
     },
     "Where should downloads go?": {
-        "pt-PT": "Para onde devem ir as transferências?",
+        "pt-PT": "Onde guardar as transferências?",
         "es": "¿Dónde guardar las descargas?",
         "fr": "Où enregistrer les téléchargements ?",
         "de": "Wo sollen Downloads gespeichert werden?",
         "it": "Dove salvare i download?",
     },
     "Splynek will save files here. You can change this later in Settings — but picking once now means you'll always know where things land.": {
-        "pt-PT": "O Splynek guarda os ficheiros aqui. Podes mudar mais tarde nas Definições — mas escolher agora significa que vais saber sempre onde as coisas chegam.",
+        "pt-PT": "O Splynek guarda aqui os ficheiros transferidos. Podes mudar nas Definições mais tarde — mas escolher agora significa que vais saber sempre onde tudo aparece.",
         "es": "Splynek guardará los archivos aquí. Puedes cambiarlo más tarde en Ajustes — pero elegir ahora significa saber siempre dónde acaban las cosas.",
         "fr": "Splynek y enregistrera les fichiers. Vous pourrez modifier ce choix plus tard dans les Réglages — mais choisir maintenant garantit de toujours savoir où atterrissent les fichiers.",
         "de": "Splynek speichert Dateien hier. Sie können dies später in den Einstellungen ändern — aber jetzt zu wählen bedeutet, dass Sie immer wissen, wo Dateien landen.",
@@ -261,7 +261,7 @@ NEW_V16_STRINGS = {
         "it": "Scegli una cartella per i download",
     },
     "Tip: many users keep ~/Downloads. Splynek doesn't move files there — it goes straight to whatever you pick.": {
-        "pt-PT": "Dica: muitos utilizadores ficam-se por ~/Downloads. O Splynek não move ficheiros para lá — vai direto para o que escolheres.",
+        "pt-PT": "Dica: a maioria dos utilizadores fica por ~/Downloads. O Splynek não copia ficheiros para lá — vai diretamente para a pasta que escolheres.",
         "es": "Consejo: muchos usuarios se quedan con ~/Downloads. Splynek no mueve archivos allí — va directo a lo que elijas.",
         "fr": "Astuce : beaucoup d'utilisateurs gardent ~/Downloads. Splynek ne déplace pas les fichiers — il va directement vers le dossier que vous choisissez.",
         "de": "Tipp: Viele Nutzer behalten ~/Downloads. Splynek verschiebt keine Dateien dorthin — es geht direkt zu dem, was Sie auswählen.",
@@ -275,7 +275,7 @@ NEW_V16_STRINGS = {
         "it": "Fare una verifica rapida?",
     },
     "Splynek can scan the apps on your Mac and tell you where each one is controlled from, plus what public records say about its privacy and security. Local-only — nothing leaves your device.": {
-        "pt-PT": "O Splynek pode analisar as apps no teu Mac e dizer-te de onde cada uma é controlada, além do que os registos públicos dizem sobre privacidade e segurança. Apenas local — nada sai do teu dispositivo.",
+        "pt-PT": "O Splynek pode analisar as apps do teu Mac e dizer-te de onde cada uma é controlada, além do que os registos públicos dizem sobre privacidade e segurança. Apenas local — nada sai do teu dispositivo.",
         "es": "Splynek puede analizar las apps de tu Mac y decirte desde dónde se controla cada una, además de lo que los registros públicos dicen sobre su privacidad y seguridad. Solo local — nada sale del dispositivo.",
         "fr": "Splynek peut analyser les apps de votre Mac et vous indiquer d'où chacune est contrôlée, ainsi que ce que les registres publics disent de leur confidentialité et sécurité. Local uniquement — rien ne quitte votre appareil.",
         "de": "Splynek kann die Apps auf Ihrem Mac scannen und Ihnen sagen, von wo jede gesteuert wird, sowie was öffentliche Register zu Datenschutz und Sicherheit sagen. Nur lokal — nichts verlässt Ihr Gerät.",
@@ -289,7 +289,7 @@ NEW_V16_STRINGS = {
         "it": "Legge solo l'elenco dei bundle — non apre mai il contenuto delle app",
     },
     "Stays on-device — no network calls, ever": {
-        "pt-PT": "Permanece no dispositivo — nunca há chamadas à rede",
+        "pt-PT": "Fica no dispositivo — nunca acede à rede",
         "es": "Permanece en el dispositivo — nunca hay llamadas de red",
         "fr": "Reste sur l'appareil — aucun appel réseau, jamais",
         "de": "Bleibt auf dem Gerät — niemals Netzwerkaufrufe",
@@ -419,7 +419,7 @@ NEW_V16_STRINGS = {
         "it": "Endpoint",
     },
     "Off by default. Flip the switch above to enable agents to call Splynek.": {
-        "pt-PT": "Desligado por defeito. Liga o interruptor acima para permitir que agentes chamem o Splynek.",
+        "pt-PT": "Desligado por predefinição. Ativa o interruptor acima para permitir que agentes chamem o Splynek.",
         "es": "Desactivado por defecto. Activa el interruptor de arriba para permitir que los agentes llamen a Splynek.",
         "fr": "Désactivé par défaut. Activez le commutateur ci-dessus pour permettre aux agents d'appeler Splynek.",
         "de": "Standardmäßig deaktiviert. Aktivieren Sie den Schalter oben, damit Agenten Splynek aufrufen können.",
@@ -470,7 +470,7 @@ NEW_V16_STRINGS = {
         "it": "Verifica l'autenticità di questo download (opzionale)",
     },
     "Verified — Splynek will check the file matches the publisher's checksum": {
-        "pt-PT": "Verificado — o Splynek vai garantir que o ficheiro corresponde à soma de controlo do editor",
+        "pt-PT": "Verificado — o Splynek vai confirmar que o ficheiro corresponde à soma de controlo do editor",
         "es": "Verificado — Splynek comprobará que el archivo coincide con la suma del autor",
         "fr": "Vérifié — Splynek s'assurera que le fichier correspond à la somme de contrôle de l'éditeur",
         "de": "Verifiziert — Splynek prüft, ob die Datei mit der Prüfsumme des Herausgebers übereinstimmt",
@@ -500,7 +500,7 @@ NEW_V16_STRINGS = {
         "it": "Velocità per rete",
     },
     "polite": {
-        "pt-PT": "educado",
+        "pt-PT": "discreto",
         "es": "educado",
         "fr": "poli",
         "de": "höflich",

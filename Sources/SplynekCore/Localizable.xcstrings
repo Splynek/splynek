@@ -1937,7 +1937,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Desligado por defeito. Liga o interruptor acima para permitir que agentes chamem o Splynek."
+            "value": "Desligado por predefinição. Ativa o interruptor acima para permitir que agentes chamem o Splynek."
           }
         }
       }
@@ -2787,7 +2787,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vê de onde vêm as apps no teu Mac e o que os reguladores dizem sobre elas."
+            "value": "Vê de onde vêm as apps do teu Mac e o que os reguladores dizem sobre elas."
           }
         }
       }
@@ -3264,7 +3264,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "O Splynek pode analisar as apps no teu Mac e dizer-te de onde cada uma é controlada, além do que os registos públicos dizem sobre privacidade e segurança. Apenas local — nada sai do teu dispositivo."
+            "value": "O Splynek pode analisar as apps do teu Mac e dizer-te de onde cada uma é controlada, além do que os registos públicos dizem sobre privacidade e segurança. Apenas local — nada sai do teu dispositivo."
           }
         }
       }
@@ -3332,7 +3332,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "O Splynek guarda os ficheiros aqui. Podes mudar mais tarde nas Definições — mas escolher agora significa que vais saber sempre onde as coisas chegam."
+            "value": "O Splynek guarda aqui os ficheiros transferidos. Podes mudar nas Definições mais tarde — mas escolher agora significa que vais saber sempre onde tudo aparece."
           }
         }
       }
@@ -3434,7 +3434,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Permanece no dispositivo — nunca há chamadas à rede"
+            "value": "Fica no dispositivo — nunca acede à rede"
           }
         }
       }
@@ -3536,7 +3536,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dica: muitos utilizadores ficam-se por ~/Downloads. O Splynek não move ficheiros para lá — vai direto para o que escolheres."
+            "value": "Dica: a maioria dos utilizadores fica por ~/Downloads. O Splynek não copia ficheiros para lá — vai diretamente para a pasta que escolheres."
           }
         }
       }
@@ -3707,7 +3707,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verificado — o Splynek vai garantir que o ficheiro corresponde à soma de controlo do editor"
+            "value": "Verificado — o Splynek vai confirmar que o ficheiro corresponde à soma de controlo do editor"
           }
         }
       }
@@ -3843,7 +3843,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Para onde devem ir as transferências?"
+            "value": "Onde guardar as transferências?"
           }
         }
       }
@@ -3979,7 +3979,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "educado"
+            "value": "discreto"
           }
         }
       }

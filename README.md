@@ -1,5 +1,8 @@
 # Splynek
 
+> 🌍 **Não falas inglês? / ¿No hablas inglés? / Vous ne parlez pas anglais? / Sprechen Sie kein Englisch? / Non parli inglese?**
+> Versões abreviadas: **[Português](README.pt-PT.md)** · **[Español](README.es.md)** · **[Français](README.fr.md)** · **[Deutsch](README.de.md)** · **[Italiano](README.it.md)**.
+
 Native macOS multi-interface download aggregator. Binds outbound connections
 to every active network interface on your Mac (Wi-Fi, Ethernet, iPhone USB /
 Personal Hotspot, Thunderbolt NICs) and downloads a single HTTP file in
