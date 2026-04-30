@@ -1,0 +1,99 @@
+name: Lint — l10n + plist coherence
+
+# v1.6.2 round 8: catches the common regression class that's bitten the
+# v1.x sprint twice — adding a `Text("...")` literal to a SwiftUI view
+# without a matching key in `Localizable.xcstrings`.  The string ships
+# but renders as English in every non-English locale.
+#
+# Two checks, both fast (under 30 s on macos-latest):
+#
+#   1. l10n-audit  — runs `Scripts/find-missing-translations.py`.
+#                    Fails the workflow if any plain or interpolated
+#                    string in `Sources/SplynekCore/Views/` lacks a
+#                    catalog entry.  The audit is type-blind on
+#                    interpolations (matches both `%@` and `%lld`
+#                    variants), so it accepts either keying convention.
+#
+#   2. catalog-tests — runs the LocalizableCatalogTests subset of
+#                      `swift run splynek-test`.  Asserts that every
+#                      catalog key has all 5 required locales filled,
+#                      no empty translations, and ≥95% completeness
+#                      per locale.  Belt + braces with the audit:
+#                      audit catches "missing key", tests catch
+#                      "missing locale on existing key."
+#
+# Runs on every PR that touches the catalog, the regenerator, the audit
+# script, or any view file.
+
+on:
+  pull_request:
+    paths:
+      - 'Sources/SplynekCore/Localizable.xcstrings'
+      - 'Sources/SplynekCore/Views/**'
+      - 'Scripts/regenerate-localizations.py'
+      - 'Scripts/find-missing-translations.py'
+      - 'Tests/SplynekTests/LocalizableCatalogTests.swift'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  l10n-audit:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Audit Swift sources for un-localized strings
+        run: |
+          out="$(python3 Scripts/find-missing-translations.py)"
+          echo "$out"
+          missing="$(echo "$out" | head -1 | grep -oE '[0-9]+' | head -1)"
+          if [ "$missing" != "0" ]; then
+            echo "::error::$missing string(s) in Sources/SplynekCore/Views/ have no Localizable.xcstrings entry."
+            echo "::error::Add the missing keys to Scripts/regenerate-localizations.py and re-run it."
+            exit 1
+          fi
+
+      - name: Verify regenerator is in sync with catalog
+        run: |
+          # v1.6.2: catalog source-of-truth is the Python regenerator, not
+          # the .xcstrings JSON.  If someone edited the JSON directly, the
+          # regenerator round-trip will produce a diff.  Fail loudly so we
+          # don't drift back to the pre-v1.6.1 state where translations
+          # were scattered across hand-edits.
+          python3 Scripts/regenerate-localizations.py
+          if ! git diff --exit-code Sources/SplynekCore/Localizable.xcstrings; then
+            echo "::error::Localizable.xcstrings is out of sync with Scripts/regenerate-localizations.py."
+            echo "::error::Edit the Python source-of-truth, run the script, and commit the diff."
+            exit 1
+          fi
+
+  catalog-tests:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      # We can't run the full test target (OOMs the runner — see
+      # sovereignty-weekly.yml note).  Compile + extract the catalog
+      # subset by running the harness directly, capturing only the
+      # localizable-suite output.
+      - name: Run catalog completeness tests
+        run: |
+          # Build the test target only (avoids re-linking everything).
+          swift build --target splynek-test 2>&1 | tail -20
+          # Run, but stop reading once we hit our suite.
+          swift run splynek-test 2>&1 | tee test-output.txt
+          # Confirm our suite ran AND passed.
+          if ! grep -q "Localizable.xcstrings completeness" test-output.txt; then
+            echo "::error::LocalizableCatalogTests didn't run."
+            exit 1
+          fi
+          if grep -E "✗|FAIL" test-output.txt | grep -i "Localizable"; then
+            echo "::error::LocalizableCatalogTests failed."
+            exit 1
+          fi

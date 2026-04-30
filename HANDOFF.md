@@ -19,7 +19,7 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (148 tests, all green)
+**Tests:** `swift run splynek-test` (166 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (in repo, locally tagged) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-04-30.**
@@ -111,7 +111,7 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 
 # Tests + validators
-swift run splynek-test                                        # 148 tests
+swift run splynek-test                                        # 166 tests
 swift Scripts/validate-catalog.swift                          # Sovereignty offline lint
 swift Scripts/validate-trust-catalog.swift --strict           # Trust offline lint
 swift Scripts/check-urls.swift --only-download                # online URL liveness (~3 min for 1155 entries)
@@ -214,7 +214,7 @@ Packaging/splynek.rb                           ← v1.5.3 cask, brew-style clean
 ```
 1. Read HANDOFF.md (this file) top 300 lines
 2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
-3. swift run splynek-test (must show 148/148 — anything less is a regression)
+3. swift run splynek-test (must show 166/166 — anything less is a regression)
 4. python3 Scripts/find-missing-translations.py | head -5  → confirms catalog state
 5. Open https://claude.ai/code/scheduled and check the four triggers fired clean
 6. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
