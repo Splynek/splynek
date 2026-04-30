@@ -1329,6 +1329,40 @@
         }
       }
     },
+    "Avg throughput": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ø Durchsatz"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancho medio"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Débit moyen"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Velocità media"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Débito médio"
+          }
+        }
+      }
+    },
     "BYTES": {
       "localizations": {
         "de": {
@@ -1631,6 +1665,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modelo de negócio"
+          }
+        }
+      }
+    },
+    "Bytes": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bytes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bytes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Octets"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Byte"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bytes"
           }
         }
       }
@@ -6872,6 +6940,40 @@
         }
       }
     },
+    "Paste English like “the latest Ubuntu ISO” and the local LLM returns a direct URL. Natural-language history search too. Runs entirely on this Mac.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Englisch wie “die neueste Ubuntu-ISO” einfügen und das lokale LLM gibt eine direkte URL zurück. Auch Verlaufssuche in natürlicher Sprache. Läuft komplett auf diesem Mac."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pega inglés como “la última ISO de Ubuntu” y el LLM local devuelve una URL directa. Búsqueda de historial en lenguaje natural también. Corre por completo en este Mac."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collez de l'anglais comme “la dernière ISO Ubuntu” et le LLM local renvoie une URL directe. Recherche d'historique en langage naturel aussi. Tourne entièrement sur ce Mac."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla inglese come “l'ultima ISO di Ubuntu” e l'LLM locale restituisce un URL diretto. Ricerca cronologia in linguaggio naturale anche. Gira interamente su questo Mac."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cola inglês como “a última ISO do Ubuntu” e o LLM local devolve um URL direto. Pesquisa de histórico em linguagem natural também. Corre inteiramente neste Mac."
+          }
+        }
+      }
+    },
     "Paste a SHA-256 checksum here (64 hex characters)": {
       "localizations": {
         "de": {
@@ -9082,6 +9184,40 @@
         }
       }
     },
+    "Send links + current pages to Splynek with one click.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Links + aktuelle Seiten mit einem Klick an Splynek senden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envía enlaces + páginas actuales a Splynek con un clic."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoyez des liens + pages actuelles à Splynek en un clic."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invia link + pagine correnti a Splynek con un clic."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envia links + páginas atuais para o Splynek com um clique."
+          }
+        }
+      }
+    },
     "Serve completed pieces to other peers before the download finishes.": {
       "localizations": {
         "de": {
@@ -9729,6 +9865,40 @@
         }
       }
     },
+    "Splynek downloads the target URL through each interface individually, then through all of them aggregated. Temp files are placed in `/tmp/` and deleted after each probe, so the benchmark touches only network + CPU. The multi-path number is the real-world aggregate using keep-alive HTTP/1.1 lanes bound via `IP_BOUND_IF`.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek lädt die Ziel-URL über jede Schnittstelle einzeln herunter, dann über alle aggregiert. Temp-Dateien landen in `/tmp/` und werden nach jeder Sonde gelöscht; der Benchmark berührt also nur Netzwerk + CPU. Die Mehrpfad-Zahl ist der reale Aggregatwert mit HTTP/1.1-keep-alive-Spuren via `IP_BOUND_IF`."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek descarga la URL objetivo por cada interfaz individualmente, luego por todas agregadas. Los archivos temp van a `/tmp/` y se borran después de cada prueba, así que la prueba solo toca red + CPU. El número multi-ruta es el agregado real usando carriles HTTP/1.1 keep-alive vinculados vía `IP_BOUND_IF`."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek télécharge l'URL cible via chaque interface individuellement, puis via toutes agrégées. Les fichiers temp vont dans `/tmp/` et sont supprimés après chaque sonde, donc l'évaluation touche seulement réseau + CPU. Le nombre multi-chemin est l'agrégat réel utilisant des canaux HTTP/1.1 keep-alive liés via `IP_BOUND_IF`."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek scarica l'URL target attraverso ogni interfaccia individualmente, poi attraverso tutte aggregate. I file temp vanno in `/tmp/` e sono cancellati dopo ogni sonda, quindi il benchmark tocca solo rete + CPU. Il numero multi-percorso è l'aggregato reale usando corsie HTTP/1.1 keep-alive associate via `IP_BOUND_IF`."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek transfere o URL alvo por cada interface individualmente e depois por todas agregadas. Os ficheiros temporários ficam em `/tmp/` e são apagados após cada teste, por isso a avaliação toca apenas rede + CPU. O número multi-caminho é o agregado real usando vias HTTP/1.1 keep-alive vinculadas via `IP_BOUND_IF`."
+          }
+        }
+      }
+    },
     "Splynek found:": {
       "localizations": {
         "de": {
@@ -10269,6 +10439,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Este Mac"
+          }
+        }
+      }
+    },
+    "Time saved": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeit gespart"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiempo ahorrado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temps gagné"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo risparmiato"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo poupado"
           }
         }
       }

@@ -2020,6 +2020,60 @@ NEW_V16_STRINGS = {
     "Download url": {"pt-PT": "Transferir URL", "es": "Descargar URL", "fr": "Télécharger l'URL", "de": "URL herunterladen", "it": "Scarica URL"},
     "Queue url": {"pt-PT": "Enfileirar URL", "es": "Encolar URL", "fr": "Mettre URL en file", "de": "URL in Warteschlange", "it": "Accoda URL"},
     "Cancel all": {"pt-PT": "Cancelar tudo", "es": "Cancelar todo", "fr": "Tout annuler", "de": "Alle abbrechen", "it": "Annulla tutto"},
+
+    # ── v1.6.2 round 5: gap-fill from final visual audit. ──
+
+    # Browser helpers card body
+    "Send links + current pages to Splynek with one click.": {
+        "pt-PT": "Envia links + páginas atuais para o Splynek com um clique.",
+        "es": "Envía enlaces + páginas actuales a Splynek con un clic.",
+        "fr": "Envoyez des liens + pages actuelles à Splynek en un clic.",
+        "de": "Links + aktuelle Seiten mit einem Klick an Splynek senden.",
+        "it": "Invia link + pagine correnti a Splynek con un clic.",
+    },
+
+    # MetricView captions in HistoryView (mixed-case keys, uppercased at render)
+    "Downloads": {
+        "pt-PT": "Transferências", "es": "Descargas",
+        "fr": "Téléchargements", "de": "Downloads", "it": "Download",
+    },
+    "Bytes": {
+        "pt-PT": "Bytes", "es": "Bytes",
+        "fr": "Octets", "de": "Bytes", "it": "Byte",
+    },
+    "Avg throughput": {
+        "pt-PT": "Débito médio", "es": "Ancho medio",
+        "fr": "Débit moyen", "de": "Ø Durchsatz", "it": "Velocità media",
+    },
+    "Time saved": {
+        "pt-PT": "Tempo poupado", "es": "Tiempo ahorrado",
+        "fr": "Temps gagné", "de": "Zeit gespart", "it": "Tempo risparmiato",
+    },
+
+    # Empty-state for Queue (now translatable after EmptyStateView fix)
+    "Queue is empty": {
+        "pt-PT": "Fila vazia", "es": "Cola vacía",
+        "fr": "File vide", "de": "Warteschlange ist leer", "it": "Coda vuota",
+    },
+    # Already in catalog: "Add a URL to the queue from the Downloads tab — Splynek will run it when the current download finishes."
+
+    # Avaliação body — exact key with markdown backticks as in code
+    "Splynek downloads the target URL through each interface individually, then through all of them aggregated. Temp files are placed in `/tmp/` and deleted after each probe, so the benchmark touches only network + CPU. The multi-path number is the real-world aggregate using keep-alive HTTP/1.1 lanes bound via `IP_BOUND_IF`.": {
+        "pt-PT": "O Splynek transfere o URL alvo por cada interface individualmente e depois por todas agregadas. Os ficheiros temporários ficam em `/tmp/` e são apagados após cada teste, por isso a avaliação toca apenas rede + CPU. O número multi-caminho é o agregado real usando vias HTTP/1.1 keep-alive vinculadas via `IP_BOUND_IF`.",
+        "es": "Splynek descarga la URL objetivo por cada interfaz individualmente, luego por todas agregadas. Los archivos temp van a `/tmp/` y se borran después de cada prueba, así que la prueba solo toca red + CPU. El número multi-ruta es el agregado real usando carriles HTTP/1.1 keep-alive vinculados vía `IP_BOUND_IF`.",
+        "fr": "Splynek télécharge l'URL cible via chaque interface individuellement, puis via toutes agrégées. Les fichiers temp vont dans `/tmp/` et sont supprimés après chaque sonde, donc l'évaluation touche seulement réseau + CPU. Le nombre multi-chemin est l'agrégat réel utilisant des canaux HTTP/1.1 keep-alive liés via `IP_BOUND_IF`.",
+        "de": "Splynek lädt die Ziel-URL über jede Schnittstelle einzeln herunter, dann über alle aggregiert. Temp-Dateien landen in `/tmp/` und werden nach jeder Sonde gelöscht; der Benchmark berührt also nur Netzwerk + CPU. Die Mehrpfad-Zahl ist der reale Aggregatwert mit HTTP/1.1-keep-alive-Spuren via `IP_BOUND_IF`.",
+        "it": "Splynek scarica l'URL target attraverso ogni interfaccia individualmente, poi attraverso tutte aggregate. I file temp vanno in `/tmp/` e sono cancellati dopo ogni sonda, quindi il benchmark tocca solo rete + CPU. Il numero multi-percorso è l'aggregato reale usando corsie HTTP/1.1 keep-alive associate via `IP_BOUND_IF`.",
+    },
+
+    # Paste English body — uses curly quotes \u{201C}…\u{201D} — exact key
+    "Paste English like “the latest Ubuntu ISO” and the local LLM returns a direct URL. Natural-language history search too. Runs entirely on this Mac.": {
+        "pt-PT": "Cola inglês como “a última ISO do Ubuntu” e o LLM local devolve um URL direto. Pesquisa de histórico em linguagem natural também. Corre inteiramente neste Mac.",
+        "es": "Pega inglés como “la última ISO de Ubuntu” y el LLM local devuelve una URL directa. Búsqueda de historial en lenguaje natural también. Corre por completo en este Mac.",
+        "fr": "Collez de l'anglais comme “la dernière ISO Ubuntu” et le LLM local renvoie une URL directe. Recherche d'historique en langage naturel aussi. Tourne entièrement sur ce Mac.",
+        "de": "Englisch wie “die neueste Ubuntu-ISO” einfügen und das lokale LLM gibt eine direkte URL zurück. Auch Verlaufssuche in natürlicher Sprache. Läuft komplett auf diesem Mac.",
+        "it": "Incolla inglese come “l'ultima ISO di Ubuntu” e l'LLM locale restituisce un URL diretto. Ricerca cronologia in linguaggio naturale anche. Gira interamente su questo Mac.",
+    },
 }
 
 

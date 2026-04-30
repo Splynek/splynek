@@ -128,7 +128,12 @@ struct MetricView: View {
                 .font(.system(size: 22, weight: .semibold, design: monospaced ? .monospaced : .rounded))
                 .foregroundStyle(tint)
                 .contentTransition(.numericText())
-            Text(caption)
+            // v1.6.2: caption is rendered .textCase(.uppercase) but
+            // localization lookup happens on the original mixed-case
+            // string.  Route through LocalizedStringKey so catalog
+            // entries like "Downloads" / "Bytes" / "Avg throughput"
+            // resolve to translations before being uppercased.
+            Text(LocalizedStringKey(caption))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
@@ -302,6 +307,9 @@ struct ViewExplainer: View {
 
 struct EmptyStateView: View {
     let systemImage: String
+    // v1.6.2: title + message are String at the call site for ergonomics
+    // (callers pass dynamic Strings).  Render via LocalizedStringKey so
+    // the catalog can localize either fixed or computed text.
     let title: String
     let message: String?
 
@@ -310,11 +318,11 @@ struct EmptyStateView: View {
             Image(systemName: systemImage)
                 .font(.system(size: 28, weight: .regular))
                 .foregroundStyle(.secondary)
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.headline)
                 .foregroundStyle(.primary)
             if let message {
-                Text(message)
+                Text(LocalizedStringKey(message))
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
