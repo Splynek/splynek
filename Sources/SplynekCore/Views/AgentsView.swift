@@ -179,14 +179,16 @@ struct AgentsView: View {
                     .foregroundStyle(mut ? AnyShapeStyle(Color.orange)
                                           : AnyShapeStyle(Color.indigo))
                     .frame(width: 18)
-                Text(displayName(for: tool.name))
+                // v1.6.2: route both display name and tool description
+                // through LocalizedStringKey so the catalog can localize.
+                Text(LocalizedStringKey(displayName(for: tool.name)))
                     .font(.system(.callout, design: .rounded, weight: .semibold))
                 Spacer()
                 if mut {
                     StatusPill(text: "WRITES", style: .warning)
                 }
             }
-            Text(tool.description)
+            Text(LocalizedStringKey(tool.description))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -364,7 +366,8 @@ struct AgentsView: View {
                 .labelsHidden()
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(setupExplanation(for: selectedClient))
+                    // v1.6.2: setupExplanation returns String; wrap to localize.
+                    Text(LocalizedStringKey(setupExplanation(for: selectedClient)))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -469,11 +472,12 @@ struct AgentsView: View {
 
     @ViewBuilder
     private func privacyBullet(_ text: String) -> some View {
+        // v1.6.2: route through LocalizedStringKey so catalog can localize.
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(Color.green)
                 .font(.callout)
-            Text(text)
+            Text(LocalizedStringKey(text))
                 .font(.callout)
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)

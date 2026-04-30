@@ -188,10 +188,11 @@ struct SovereigntyView: View {
 
     @ViewBuilder
     private func privacyRow(_ text: String) -> some View {
+        // v1.6.2: route through LocalizedStringKey so catalog can localize.
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "lock.shield")
                 .foregroundStyle(.blue)
-            Text(text).font(.callout).foregroundStyle(.primary)
+            Text(LocalizedStringKey(text)).font(.callout).foregroundStyle(.primary)
             Spacer()
         }
     }

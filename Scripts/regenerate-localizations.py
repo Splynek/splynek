@@ -569,7 +569,7 @@ NEW_V16_STRINGS = {
         "it": "Velocità per rete",
     },
     "polite": {
-        "pt-PT": "discreto",
+        "pt-PT": "moderado",
         "es": "educado",
         "fr": "poli",
         "de": "höflich",
@@ -1637,6 +1637,389 @@ NEW_V16_STRINGS = {
         "de": "Integrität wird geprüft…",
         "it": "Verifica integrità…",
     },
+
+    # ── v1.6.2 round 4: massive sweep covering screenshots from
+    # 15-image review.  Settings cards, ContextCard subtitles,
+    # state labels, bullets across Concierge / Recipes /
+    # Sovereignty / Trust / Agents / History / Benchmark / Fleet /
+    # Queue / Live / Torrents.  ──
+
+    # ── Slider label (the yellow circle) ──
+    "Trust / reputation": {
+        "pt-PT": "Confiança / reputação",
+        "es": "Confianza / reputación",
+        "fr": "Confiance / réputation",
+        "de": "Vertrauen / Reputation",
+        "it": "Affidabilità / reputazione",
+    },
+
+    # ── ContextCard subtitles per tab ──
+    "Integrations, background behaviour, web dashboard, and security controls. Nothing here phones home.": {
+        "pt-PT": "Integrações, comportamento em segundo plano, painel web e controlos de segurança. Nada aqui contacta servidores externos.",
+        "es": "Integraciones, comportamiento en segundo plano, panel web y controles de seguridad. Nada aquí contacta con servidores externos.",
+        "fr": "Intégrations, comportement en arrière-plan, tableau de bord web et contrôles de sécurité. Rien ici ne contacte de serveurs externes.",
+        "de": "Integrationen, Hintergrund-Verhalten, Web-Dashboard und Sicherheits-Kontrollen. Nichts hier kontaktiert externe Server.",
+        "it": "Integrazioni, comportamento in background, dashboard web e controlli di sicurezza. Niente qui contatta server esterni.",
+    },
+    "Every completed download, searchable by filename, URL or host — and by natural language when a local LLM is available.": {
+        "pt-PT": "Todas as transferências concluídas, pesquisáveis por nome do ficheiro, URL ou servidor — e por linguagem natural quando um LLM local está disponível.",
+        "es": "Todas las descargas completadas, buscables por nombre de archivo, URL o host — y por lenguaje natural cuando hay un LLM local disponible.",
+        "fr": "Tous les téléchargements terminés, recherchables par nom de fichier, URL ou hôte — et en langage naturel quand un LLM local est disponible.",
+        "de": "Jeder abgeschlossene Download, durchsuchbar nach Dateiname, URL oder Host — und per natürlicher Sprache, wenn ein lokales LLM verfügbar ist.",
+        "it": "Ogni download completato, cercabile per nome file, URL o host — e in linguaggio naturale quando è disponibile un LLM locale.",
+    },
+    "Measure single-path versus multi-path throughput against a CDN-backed URL. Real engine, real bytes — export the result as a shareable PNG.": {
+        "pt-PT": "Mede o débito de caminho único versus múltiplo contra um URL servido por CDN. Motor real, bytes reais — exporta o resultado como PNG partilhável.",
+        "es": "Mide el ancho de banda de ruta única frente a múltiple contra una URL servida por CDN. Motor real, bytes reales — exporta el resultado como PNG compartible.",
+        "fr": "Mesure le débit chemin unique vs multi-chemin contre une URL servie par CDN. Moteur réel, octets réels — exporte le résultat en PNG partageable.",
+        "de": "Misst den Einzelpfad- vs. Mehrpfad-Durchsatz gegen eine CDN-bereitgestellte URL. Echte Engine, echte Bytes — Ergebnis als teilbares PNG exportieren.",
+        "it": "Misura il throughput a percorso singolo vs multi-percorso contro un URL servito da CDN. Motore reale, byte reali — esporta il risultato come PNG condivisibile.",
+    },
+    "Other Splynek Macs on your LAN, advertised over Bonjour. Shared files skip the internet — downloads go Mac-to-Mac at gigabit.": {
+        "pt-PT": "Outros Macs com Splynek na tua rede local, anunciados via Bonjour. Os ficheiros partilhados saltam a Internet — as transferências vão Mac-a-Mac a velocidades gigabit.",
+        "es": "Otros Macs con Splynek en tu red local, anunciados vía Bonjour. Los archivos compartidos se saltan internet — las descargas van Mac-a-Mac a gigabit.",
+        "fr": "Autres Macs avec Splynek sur votre réseau local, annoncés via Bonjour. Les fichiers partagés sautent Internet — les téléchargements vont Mac-à-Mac à gigabit.",
+        "de": "Andere Splynek-Macs in Ihrem lokalen Netzwerk, angekündigt über Bonjour. Geteilte Dateien überspringen das Internet — Downloads laufen Mac-zu-Mac mit Gigabit.",
+        "it": "Altri Mac con Splynek sulla tua rete locale, annunciati via Bonjour. I file condivisi saltano Internet — i download vanno Mac-a-Mac a gigabit.",
+    },
+    "URLs waiting their turn. Splynek starts each one automatically when an active slot frees up.": {
+        "pt-PT": "URLs à espera da vez. O Splynek inicia cada um automaticamente quando uma vaga ativa fica livre.",
+        "es": "URLs esperando su turno. Splynek inicia cada una automáticamente cuando se libera un slot activo.",
+        "fr": "URLs en attente de leur tour. Splynek démarre chacune automatiquement quand un emplacement actif se libère.",
+        "de": "URLs warten auf ihren Platz. Splynek startet jede automatisch, sobald ein aktiver Slot frei wird.",
+        "it": "URL in attesa del loro turno. Splynek avvia ognuna automaticamente quando si libera uno slot attivo.",
+    },
+    "What the engine is doing right now. One section per running download — throughput, interface breakdown, pipeline stage.": {
+        "pt-PT": "O que o motor está a fazer agora. Uma secção por transferência em curso — débito, divisão por interface, fase do pipeline.",
+        "es": "Lo que el motor está haciendo ahora. Una sección por descarga en curso — ancho de banda, desglose por interfaz, fase del pipeline.",
+        "fr": "Ce que le moteur fait en ce moment. Une section par téléchargement en cours — débit, répartition par interface, étape du pipeline.",
+        "de": "Was die Engine gerade tut. Ein Abschnitt pro laufendem Download — Durchsatz, Schnittstellen-Aufschlüsselung, Pipeline-Phase.",
+        "it": "Cosa sta facendo il motore in questo momento. Una sezione per ogni download in corso — throughput, suddivisione per interfaccia, fase pipeline.",
+    },
+    "Native BitTorrent v1 + v2 + hybrid. Paste a magnet, load a .torrent, or pick a web-seed mirror. Integrity is verified per piece.": {
+        "pt-PT": "BitTorrent v1 + v2 + híbrido nativo. Cola um magnet, carrega um .torrent ou escolhe um espelho web-seed. A integridade é verificada por fragmento.",
+        "es": "BitTorrent v1 + v2 + híbrido nativo. Pega un magnet, carga un .torrent o elige un mirror web-seed. La integridad se verifica por fragmento.",
+        "fr": "BitTorrent v1 + v2 + hybride natif. Collez un magnet, chargez un .torrent ou choisissez un miroir web-seed. L'intégrité est vérifiée par morceau.",
+        "de": "Natives BitTorrent v1 + v2 + Hybrid. Magnet einfügen, .torrent laden oder Web-Seed-Spiegel wählen. Integrität wird pro Stück verifiziert.",
+        "it": "BitTorrent v1 + v2 + ibrido nativo. Incolla un magnet, carica un .torrent o scegli un mirror web-seed. L'integrità è verificata per pezzo.",
+    },
+
+    # ── State labels + table headers ──
+    "Lifetime": {"pt-PT": "Total", "es": "Total", "fr": "Total", "de": "Gesamt", "it": "Totale"},
+    "DOWNLOADS": {"pt-PT": "TRANSFERÊNCIAS", "es": "DESCARGAS", "fr": "TÉLÉCHARGEMENTS", "de": "DOWNLOADS", "it": "DOWNLOAD"},
+    "BYTES": {"pt-PT": "BYTES", "es": "BYTES", "fr": "OCTETS", "de": "BYTES", "it": "BYTE"},
+    "AVG THROUGHPUT": {"pt-PT": "DÉBITO MÉDIO", "es": "ANCHO MEDIO", "fr": "DÉBIT MOYEN", "de": "Ø DURCHSATZ", "it": "VELOCITÀ MEDIA"},
+    "TIME SAVED": {"pt-PT": "TEMPO POUPADO", "es": "TIEMPO AHORRADO", "fr": "TEMPS GAGNÉ", "de": "ZEIT GESPART", "it": "TEMPO RISPARMIATO"},
+    "Usage timeline": {"pt-PT": "Linha temporal de uso", "es": "Línea de uso", "fr": "Chronologie d'usage", "de": "Nutzungs-Zeitleiste", "it": "Cronologia uso"},
+    "Host": {"pt-PT": "Anfitrião", "es": "Anfitrión", "fr": "Hôte", "de": "Host", "it": "Host"},
+    "Cellular": {"pt-PT": "Móvel", "es": "Móvil", "fr": "Cellulaire", "de": "Mobilfunk", "it": "Cellulare"},
+    "Recent": {"pt-PT": "Recentes", "es": "Recientes", "fr": "Récents", "de": "Neueste", "it": "Recenti"},
+    "Search by filename, URL, or host": {
+        "pt-PT": "Pesquisar por nome do ficheiro, URL ou anfitrião",
+        "es": "Buscar por nombre de archivo, URL o host",
+        "fr": "Rechercher par nom de fichier, URL ou hôte",
+        "de": "Nach Dateiname, URL oder Host suchen",
+        "it": "Cerca per nome file, URL o host",
+    },
+    "14 days": {"pt-PT": "14 dias", "es": "14 días", "fr": "14 jours", "de": "14 Tage", "it": "14 giorni"},
+
+    # ── Benchmark tab ──
+    "Benchmark target": {"pt-PT": "Alvo da avaliação", "es": "Objetivo de la prueba", "fr": "Cible de l'évaluation", "de": "Benchmark-Ziel", "it": "Target del benchmark"},
+    "Interfaces in play": {"pt-PT": "Interfaces em uso", "es": "Interfaces en juego", "fr": "Interfaces en jeu", "de": "Beteiligte Schnittstellen", "it": "Interfacce in uso"},
+    "What this measures": {"pt-PT": "O que isto mede", "es": "Qué mide esto", "fr": "Ce que cela mesure", "de": "Was dies misst", "it": "Cosa misura"},
+    "Splynek downloads the target URL through each interface individually, then through all of them aggregated. Temp files are placed in /tmp/ and deleted after each probe, so the benchmark touches only network + CPU. The multi-path number is the real-world aggregate using keep-alive HTTP/1.1 lanes bound via IP_BOUND_IF.": {
+        "pt-PT": "O Splynek transfere o URL alvo por cada interface individualmente e depois por todas agregadas. Os ficheiros temporários ficam em /tmp/ e são apagados após cada teste, por isso a avaliação toca apenas rede + CPU. O número multi-caminho é o agregado real usando vias HTTP/1.1 keep-alive vinculadas via IP_BOUND_IF.",
+        "es": "Splynek descarga la URL objetivo por cada interfaz individualmente, luego por todas agregadas. Los archivos temp van a /tmp/ y se borran después de cada prueba, así que la prueba solo toca red + CPU. El número multi-ruta es el agregado real usando carriles HTTP/1.1 keep-alive vinculados vía IP_BOUND_IF.",
+        "fr": "Splynek télécharge l'URL cible via chaque interface individuellement, puis via toutes agrégées. Les fichiers temp vont dans /tmp/ et sont supprimés après chaque sonde, donc l'évaluation touche seulement réseau + CPU. Le nombre multi-chemin est l'agrégat réel utilisant des canaux HTTP/1.1 keep-alive liés via IP_BOUND_IF.",
+        "de": "Splynek lädt die Ziel-URL über jede Schnittstelle einzeln herunter, dann über alle aggregiert. Temp-Dateien landen in /tmp/ und werden nach jeder Sonde gelöscht; der Benchmark berührt also nur Netzwerk + CPU. Die Mehrpfad-Zahl ist der reale Aggregatwert mit HTTP/1.1-keep-alive-Spuren via IP_BOUND_IF.",
+        "it": "Splynek scarica l'URL target attraverso ogni interfaccia individualmente, poi attraverso tutte aggregate. I file temp vanno in /tmp/ e sono cancellati dopo ogni sonda, quindi il benchmark tocca solo rete + CPU. Il numero multi-percorso è l'aggregato reale usando corsie HTTP/1.1 keep-alive associate via IP_BOUND_IF.",
+    },
+
+    # ── Fleet tab ──
+    "This Mac": {"pt-PT": "Este Mac", "es": "Este Mac", "fr": "Ce Mac", "de": "Dieser Mac", "it": "Questo Mac"},
+    "ADVERTISED": {"pt-PT": "ANUNCIADO", "es": "ANUNCIADO", "fr": "ANNONCÉ", "de": "ANGEKÜNDIGT", "it": "ANNUNCIATO"},
+    "DEVICE ID": {"pt-PT": "ID DO DISPOSITIVO", "es": "ID DEL DISPOSITIVO", "fr": "ID DE L'APPAREIL", "de": "GERÄTE-ID", "it": "ID DISPOSITIVO"},
+    "PORT": {"pt-PT": "PORTA", "es": "PUERTO", "fr": "PORT", "de": "PORT", "it": "PORTA"},
+    "ACTIVE": {"pt-PT": "ATIVOS", "es": "ACTIVOS", "fr": "ACTIFS", "de": "AKTIV", "it": "ATTIVI"},
+    "SHAREABLE": {"pt-PT": "PARTILHÁVEIS", "es": "COMPARTIBLES", "fr": "PARTAGEABLES", "de": "TEILBAR", "it": "CONDIVISIBILI"},
+    "HASHED": {"pt-PT": "HASHED", "es": "HASHED", "fr": "HASHED", "de": "HASHED", "it": "HASHED"},
+    "NAME": {"pt-PT": "NOME", "es": "NOMBRE", "fr": "NOM", "de": "NAME", "it": "NOME"},
+    "Peers on this LAN": {"pt-PT": "Pares nesta rede local", "es": "Pares en esta red local", "fr": "Pairs sur ce réseau local", "de": "Peers in diesem lokalen Netzwerk", "it": "Peer su questa rete locale"},
+    "No other Splynek Macs found": {"pt-PT": "Não foram encontrados outros Macs com Splynek", "es": "No se encontraron otros Macs con Splynek", "fr": "Aucun autre Mac Splynek trouvé", "de": "Keine anderen Splynek-Macs gefunden", "it": "Nessun altro Mac Splynek trovato"},
+    "Fleet advertises every Splynek install on this network over Bonjour. Anything else with Splynek open will show up here and can lend completed downloads to this Mac.": {
+        "pt-PT": "A Frota anuncia cada instalação do Splynek nesta rede via Bonjour. Qualquer outra coisa com o Splynek aberto vai aparecer aqui e pode emprestar transferências concluídas a este Mac.",
+        "es": "Flota anuncia cada instalación de Splynek en esta red vía Bonjour. Cualquier otra cosa con Splynek abierto aparecerá aquí y puede prestar descargas completadas a este Mac.",
+        "fr": "Flotte annonce chaque installation Splynek sur ce réseau via Bonjour. Tout autre Splynek ouvert apparaîtra ici et peut prêter des téléchargements terminés à ce Mac.",
+        "de": "Flotte meldet jede Splynek-Installation in diesem Netzwerk über Bonjour. Jedes andere geöffnete Splynek erscheint hier und kann fertige Downloads an diesen Mac verleihen.",
+        "it": "Flotta annuncia ogni installazione Splynek su questa rete via Bonjour. Qualsiasi altro Splynek aperto apparirà qui e può prestare download completati a questo Mac.",
+    },
+    "What this Mac is sharing": {"pt-PT": "O que este Mac está a partilhar", "es": "Qué está compartiendo este Mac", "fr": "Ce que ce Mac partage", "de": "Was dieser Mac teilt", "it": "Cosa sta condividendo questo Mac"},
+    "Nothing yet. Start a download — other Splyneks on this LAN will see it and can pull completed chunks from this Mac once they land on disk.": {
+        "pt-PT": "Ainda nada. Inicia uma transferência — outros Splyneks nesta rede local vão vê-la e podem puxar fragmentos concluídos deste Mac assim que chegarem ao disco.",
+        "es": "Aún nada. Inicia una descarga — otros Splyneks en esta red local la verán y podrán tirar fragmentos completados desde este Mac cuando lleguen al disco.",
+        "fr": "Rien pour l'instant. Démarrez un téléchargement — les autres Splyneks de ce réseau local le verront et pourront récupérer les morceaux terminés depuis ce Mac dès qu'ils atteindront le disque.",
+        "de": "Noch nichts. Starten Sie einen Download — andere Splyneks im lokalen Netzwerk sehen ihn und können fertige Chunks von diesem Mac abrufen, sobald sie auf der Festplatte landen.",
+        "it": "Ancora niente. Avvia un download — gli altri Splynek su questa rete locale lo vedranno e potranno scaricare frammenti completati da questo Mac appena arrivano sul disco.",
+    },
+
+    # ── Queue tab ──
+    "Queue is empty": {"pt-PT": "Fila vazia", "es": "Cola vacía", "fr": "File vide", "de": "Warteschlange ist leer", "it": "Coda vuota"},
+    "Add a URL to the queue from the Downloads tab — Splynek will run it when the current download finishes.": {
+        "pt-PT": "Adiciona um URL à fila a partir do separador Transferências — o Splynek executa-o quando a transferência atual terminar.",
+        "es": "Añade una URL a la cola desde la pestaña Descargas — Splynek la ejecutará cuando termine la descarga actual.",
+        "fr": "Ajoutez une URL à la file depuis l'onglet Téléchargements — Splynek l'exécutera quand le téléchargement actuel se terminera.",
+        "de": "Fügen Sie eine URL aus dem Downloads-Tab zur Warteschlange hinzu — Splynek führt sie aus, wenn der aktuelle Download fertig ist.",
+        "it": "Aggiungi un URL alla coda dalla scheda Download — Splynek lo eseguirà quando il download attuale finisce.",
+    },
+    "Start one from the Downloads tab or the Assistant, and it'll show up here in real time.": {
+        "pt-PT": "Inicia uma a partir do separador Transferências ou do Assistente e aparece aqui em tempo real.",
+        "es": "Inicia una desde la pestaña Descargas o el Asistente, y aparecerá aquí en tiempo real.",
+        "fr": "Démarrez-en un depuis l'onglet Téléchargements ou l'Assistant, et il apparaîtra ici en temps réel.",
+        "de": "Starten Sie einen aus dem Downloads-Tab oder dem Assistenten, und er erscheint hier in Echtzeit.",
+        "it": "Avviane uno dalla scheda Download o dall'Assistente e apparirà qui in tempo reale.",
+    },
+
+    # ── Concierge free-tier bullets ──
+    "Talk to Splynek in plain English": {
+        "pt-PT": "Fala com o Splynek em linguagem natural",
+        "es": "Habla con Splynek en lenguaje natural",
+        "fr": "Parlez à Splynek en langage naturel",
+        "de": "Mit Splynek in natürlicher Sprache reden",
+        "it": "Parla con Splynek in linguaggio naturale",
+    },
+    "Chat-routed downloads, queue, cancellations, pauses": {
+        "pt-PT": "Transferências, fila, cancelamentos e pausas via chat",
+        "es": "Descargas, cola, cancelaciones y pausas vía chat",
+        "fr": "Téléchargements, file, annulations et pauses via chat",
+        "de": "Downloads, Warteschlange, Abbrüche und Pausen per Chat",
+        "it": "Download, coda, annullamenti e pause via chat",
+    },
+    "Natural-language search of your download history": {
+        "pt-PT": "Pesquisa em linguagem natural no histórico de transferências",
+        "es": "Búsqueda en lenguaje natural del historial de descargas",
+        "fr": "Recherche en langage naturel dans l'historique de téléchargement",
+        "de": "Sprachsuche in Ihrem Download-Verlauf",
+        "it": "Ricerca in linguaggio naturale nella cronologia dei download",
+    },
+    "100% local LLM (LM Studio or Ollama) — no cloud, no account": {
+        "pt-PT": "LLM 100% local (LM Studio ou Ollama) — sem cloud, sem conta",
+        "es": "LLM 100% local (LM Studio u Ollama) — sin nube, sin cuenta",
+        "fr": "LLM 100% local (LM Studio ou Ollama) — pas de cloud, pas de compte",
+        "de": "100% lokales LLM (LM Studio oder Ollama) — keine Cloud, kein Konto",
+        "it": "LLM 100% locale (LM Studio o Ollama) — niente cloud, niente account",
+    },
+
+    # ── Recipes free-tier bullets ──
+    "Type a goal like \"set up my Mac for iOS dev\"": {
+        "pt-PT": "Escreve um objetivo como \"configurar o meu Mac para desenvolvimento iOS\"",
+        "es": "Escribe un objetivo como \"configurar mi Mac para desarrollo iOS\"",
+        "fr": "Tapez un objectif comme \"configurer mon Mac pour le développement iOS\"",
+        "de": "Tippen Sie ein Ziel ein wie \"Mac für iOS-Entwicklung einrichten\"",
+        "it": "Scrivi un obiettivo come \"configura il mio Mac per sviluppo iOS\"",
+    },
+    "The local LLM proposes each download with URL + rationale": {
+        "pt-PT": "O LLM local propõe cada transferência com URL + justificação",
+        "es": "El LLM local propone cada descarga con URL + justificación",
+        "fr": "Le LLM local propose chaque téléchargement avec URL + justification",
+        "de": "Das lokale LLM schlägt jeden Download mit URL + Begründung vor",
+        "it": "L'LLM locale propone ogni download con URL + motivazione",
+    },
+    "Review, uncheck, and queue the whole batch in one click": {
+        "pt-PT": "Revê, desmarca e enfileira o lote inteiro com um clique",
+        "es": "Revisa, desmarca y pon en cola el lote entero con un clic",
+        "fr": "Examinez, décochez et mettez en file tout le lot en un clic",
+        "de": "Prüfen, abwählen und das ganze Paket mit einem Klick in die Warteschlange",
+        "it": "Rivedi, deseleziona e accoda l'intero lotto con un clic",
+    },
+    "24 themed starter goals across 6 categories": {
+        "pt-PT": "24 objetivos temáticos iniciais em 6 categorias",
+        "es": "24 objetivos temáticos iniciales en 6 categorías",
+        "fr": "24 objectifs thématiques de démarrage dans 6 catégories",
+        "de": "24 thematische Start-Ziele in 6 Kategorien",
+        "it": "24 obiettivi tematici iniziali in 6 categorie",
+    },
+
+    # ── Settings: large card descriptions + titles ──
+    "Splynek Pro (Mac App Store) — AI features aren't in the free build.": {
+        "pt-PT": "Splynek Pro (Mac App Store) — as funcionalidades de IA não estão na versão gratuita.",
+        "es": "Splynek Pro (Mac App Store) — las funciones de IA no están en la versión gratuita.",
+        "fr": "Splynek Pro (Mac App Store) — les fonctions IA ne sont pas dans la version gratuite.",
+        "de": "Splynek Pro (Mac App Store) — KI-Funktionen sind nicht in der kostenlosen Version.",
+        "it": "Splynek Pro (Mac App Store) — le funzioni IA non sono nella versione gratuita.",
+    },
+    "Unlock the AI Concierge, AI-powered history search, scheduled downloads, and phone-accessible LAN dashboard. One-time $29; lifetime 0.x updates.": {
+        "pt-PT": "Desbloqueia o Concierge IA, pesquisa de histórico com IA, transferências agendadas e painel acessível pelo telemóvel via rede local. Compra única $29; atualizações 0.x para sempre.",
+        "es": "Desbloquea el Concierge IA, búsqueda de historial con IA, descargas programadas y panel accesible desde el teléfono vía red local. Compra única $29; actualizaciones 0.x de por vida.",
+        "fr": "Débloquez le Concierge IA, recherche d'historique IA, téléchargements planifiés et tableau de bord accessible par téléphone via réseau local. Achat unique $29 ; mises à jour 0.x à vie.",
+        "de": "Schalten Sie KI-Concierge, KI-Verlaufssuche, geplante Downloads und vom Telefon zugängliches Dashboard über lokales Netzwerk frei. Einmaliger Kauf $29; lebenslange 0.x-Updates.",
+        "it": "Sblocca il Concierge IA, ricerca cronologia con IA, download programmati e dashboard accessibile dal telefono via rete locale. Acquisto unico $29; aggiornamenti 0.x a vita.",
+    },
+    "Get Splynek Pro on the Mac App Store": {
+        "pt-PT": "Obter o Splynek Pro na Mac App Store",
+        "es": "Obtener Splynek Pro en la Mac App Store",
+        "fr": "Obtenir Splynek Pro sur le Mac App Store",
+        "de": "Splynek Pro im Mac App Store holen",
+        "it": "Scarica Splynek Pro dal Mac App Store",
+    },
+    "Splynek Pro is available only in the Mac App Store build. The free DMG build has the full download engine — torrents, multi-interface HTTP, everything non-AI.": {
+        "pt-PT": "O Splynek Pro só está disponível na versão da Mac App Store. A versão DMG gratuita tem o motor de transferências completo — torrents, HTTP multi-interface, tudo o que não envolve IA.",
+        "es": "Splynek Pro solo está disponible en la versión de Mac App Store. La versión DMG gratuita tiene el motor de descargas completo — torrents, HTTP multi-interfaz, todo lo no-IA.",
+        "fr": "Splynek Pro est disponible uniquement dans la version Mac App Store. La version DMG gratuite a le moteur de téléchargement complet — torrents, HTTP multi-interfaces, tout sauf l'IA.",
+        "de": "Splynek Pro ist nur in der Mac-App-Store-Version verfügbar. Die kostenlose DMG-Version hat die vollständige Download-Engine — Torrents, Multi-Schnittstellen-HTTP, alles außer KI.",
+        "it": "Splynek Pro è disponibile solo nella versione Mac App Store. La versione DMG gratuita ha il motore di download completo — torrent, HTTP multi-interfaccia, tutto tranne l'IA.",
+    },
+    "Browser helpers": {"pt-PT": "Auxiliares de navegador", "es": "Auxiliares de navegador", "fr": "Assistants navigateur", "de": "Browser-Helfer", "it": "Aiuti per browser"},
+    "Mobile web dashboard": {"pt-PT": "Painel web móvel", "es": "Panel web móvil", "fr": "Tableau de bord mobile", "de": "Mobiles Web-Dashboard", "it": "Dashboard web mobile"},
+    "Splynek Pro feature": {"pt-PT": "Funcionalidade Splynek Pro", "es": "Función Splynek Pro", "fr": "Fonctionnalité Splynek Pro", "de": "Splynek Pro-Funktion", "it": "Funzione Splynek Pro"},
+    "Let your phone submit downloads to this Mac over the LAN — QR pairing, live progress, token-gated submit. Free tier runs the dashboard loopback-only; Pro opens it to the LAN.": {
+        "pt-PT": "Deixa o teu telemóvel enviar transferências para este Mac via rede local — emparelhamento QR, progresso ao vivo, envio com token. A versão gratuita corre o painel apenas em loopback; o Pro abre-o à rede local.",
+        "es": "Deja que tu teléfono envíe descargas a este Mac vía red local — emparejamiento QR, progreso en vivo, envío con token. La versión gratuita ejecuta el panel solo en loopback; Pro lo abre a la red local.",
+        "fr": "Laissez votre téléphone soumettre des téléchargements à ce Mac via le réseau local — appairage QR, progression en direct, soumission avec jeton. La version gratuite exécute le tableau de bord en boucle locale uniquement ; Pro l'ouvre au réseau local.",
+        "de": "Lassen Sie Ihr Telefon Downloads über das lokale Netzwerk an diesen Mac senden — QR-Pairing, Live-Fortschritt, Token-Übergabe. Die kostenlose Version läuft nur im Loopback; Pro öffnet sie für das lokale Netzwerk.",
+        "it": "Lascia che il tuo telefono invii download a questo Mac via rete locale — abbinamento QR, progresso in diretta, invio con token. La versione gratuita esegue la dashboard solo in loopback; Pro la apre alla rete locale.",
+    },
+    "Local AI assistant": {"pt-PT": "Assistente de IA local", "es": "Asistente IA local", "fr": "Assistant IA local", "de": "Lokaler KI-Assistent", "it": "Assistente IA locale"},
+    "Download schedule": {"pt-PT": "Agendamento de transferências", "es": "Programación de descargas", "fr": "Planification des téléchargements", "de": "Download-Zeitplan", "it": "Pianificazione download"},
+    "Watched folder": {"pt-PT": "Pasta vigiada", "es": "Carpeta vigilada", "fr": "Dossier surveillé", "de": "Überwachter Ordner", "it": "Cartella monitorata"},
+    "Drop `.txt` (one URL per line), `.torrent`, or `.metalink` files here. Splynek queues each new file within 5 seconds, then moves it to a `processed/` subfolder.": {
+        "pt-PT": "Larga aqui ficheiros `.txt` (um URL por linha), `.torrent` ou `.metalink`. O Splynek enfileira cada ficheiro novo em 5 segundos e depois move-o para a subpasta `processed/`.",
+        "es": "Suelta aquí archivos `.txt` (una URL por línea), `.torrent` o `.metalink`. Splynek pone en cola cada nuevo archivo en 5 segundos y luego lo mueve a la subcarpeta `processed/`.",
+        "fr": "Déposez ici des fichiers `.txt` (une URL par ligne), `.torrent` ou `.metalink`. Splynek met en file chaque nouveau fichier en 5 secondes, puis le déplace dans le sous-dossier `processed/`.",
+        "de": "Legen Sie hier `.txt`- (eine URL pro Zeile), `.torrent`- oder `.metalink`-Dateien ab. Splynek stellt jede neue Datei innerhalb von 5 Sekunden in die Warteschlange und verschiebt sie dann in den Unterordner `processed/`.",
+        "it": "Trascina qui file `.txt` (un URL per riga), `.torrent` o `.metalink`. Splynek mette in coda ogni nuovo file entro 5 secondi, poi lo sposta nella sottocartella `processed/`.",
+    },
+    "Polled every 5 s. `# comments` and blank lines in .txt files are ignored.": {
+        "pt-PT": "Verificada de 5 em 5 s. Comentários `# ...` e linhas em branco em ficheiros .txt são ignorados.",
+        "es": "Sondeada cada 5 s. Los comentarios `# ...` y las líneas en blanco en archivos .txt se ignoran.",
+        "fr": "Sondé toutes les 5 s. Les commentaires `# ...` et les lignes vides dans les fichiers .txt sont ignorés.",
+        "de": "Alle 5 s abgefragt. `# Kommentare` und leere Zeilen in .txt-Dateien werden ignoriert.",
+        "it": "Sondata ogni 5 s. I commenti `# ...` e le righe vuote nei file .txt vengono ignorati.",
+    },
+    "Background mode": {"pt-PT": "Modo em segundo plano", "es": "Modo en segundo plano", "fr": "Mode arrière-plan", "de": "Hintergrund-Modus", "it": "Modalità background"},
+    "Hide the dock icon and/or launch Splynek when you log in.": {
+        "pt-PT": "Esconde o ícone do Dock e/ou inicia o Splynek quando inicias sessão.",
+        "es": "Oculta el icono del Dock y/o inicia Splynek al iniciar sesión.",
+        "fr": "Masquez l'icône du Dock et/ou lancez Splynek à la connexion.",
+        "de": "Dock-Symbol ausblenden und/oder Splynek beim Anmelden starten.",
+        "it": "Nascondi l'icona del Dock e/o avvia Splynek all'accesso.",
+    },
+    "Click the menu bar icon or press ⌘⇧D to surface the main window.": {
+        "pt-PT": "Clica no ícone da barra de menus ou prime ⌘⇧D para mostrar a janela principal.",
+        "es": "Haz clic en el icono de la barra de menú o pulsa ⌘⇧D para mostrar la ventana principal.",
+        "fr": "Cliquez sur l'icône de la barre de menus ou appuyez sur ⌘⇧D pour afficher la fenêtre principale.",
+        "de": "Klicken Sie auf das Menüleisten-Symbol oder drücken Sie ⌘⇧D, um das Hauptfenster anzuzeigen.",
+        "it": "Fai clic sull'icona della barra dei menu o premi ⌘⇧D per mostrare la finestra principale.",
+    },
+    "Unavailable: Move Splynek to /Applications first, then toggle this on.": {
+        "pt-PT": "Indisponível: move primeiro o Splynek para /Applications e depois ativa esta opção.",
+        "es": "No disponible: mueve primero Splynek a /Applications y luego activa esta opción.",
+        "fr": "Indisponible : déplacez d'abord Splynek vers /Applications, puis activez cette option.",
+        "de": "Nicht verfügbar: Verschieben Sie Splynek zuerst nach /Applications und aktivieren Sie dann diese Option.",
+        "it": "Non disponibile: sposta prima Splynek in /Applications, poi attiva questa opzione.",
+    },
+    "Adjust how the Trust tab weighs each axis when scoring your installed apps.  A user who cares mostly about privacy can dial security down — the underlying concerns don't change, only the score that summarises them.  Defaults: security 1.5, privacy 1.0, trust 1.0, business model 0.6.": {
+        "pt-PT": "Ajusta como o separador Confiança pesa cada eixo ao pontuar as tuas apps instaladas. Quem se preocupa mais com privacidade pode reduzir a segurança — as preocupações subjacentes não mudam, só a pontuação que as resume. Predefinições: segurança 1.5, privacidade 1.0, confiança 1.0, modelo de negócio 0.6.",
+        "es": "Ajusta cómo la pestaña Confianza pondera cada eje al puntuar tus apps instaladas. Quien se preocupa sobre todo por la privacidad puede bajar la seguridad — las preocupaciones subyacentes no cambian, solo la puntuación que las resume. Por defecto: seguridad 1.5, privacidad 1.0, confianza 1.0, modelo de negocio 0.6.",
+        "fr": "Ajustez comment l'onglet Confiance pondère chaque axe lors de l'évaluation de vos apps installées. Un utilisateur qui se soucie surtout de la confidentialité peut diminuer la sécurité — les préoccupations sous-jacentes ne changent pas, seule la note qui les résume. Par défaut : sécurité 1.5, confidentialité 1.0, confiance 1.0, modèle économique 0.6.",
+        "de": "Passen Sie an, wie der Vertrauen-Tab jede Achse bei der Bewertung Ihrer installierten Apps gewichtet. Wer sich vor allem um Datenschutz sorgt, kann Sicherheit zurückdrehen — die zugrundeliegenden Bedenken ändern sich nicht, nur die Bewertung, die sie zusammenfasst. Standard: Sicherheit 1.5, Datenschutz 1.0, Vertrauen 1.0, Geschäftsmodell 0.6.",
+        "it": "Regola come la scheda Affidabilità pesa ogni asse nel valutare le tue app installate. Chi si preoccupa soprattutto della privacy può abbassare la sicurezza — le preoccupazioni sottostanti non cambiano, solo il punteggio che le riassume. Predefiniti: sicurezza 1.5, privacy 1.0, affidabilità 1.0, modello di business 0.6.",
+    },
+    "Security & privacy": {"pt-PT": "Segurança e privacidade", "es": "Seguridad y privacidad", "fr": "Sécurité et confidentialité", "de": "Sicherheit & Datenschutz", "it": "Sicurezza e privacy"},
+    "Controls over what the LAN can see and who can submit downloads to this Mac.": {
+        "pt-PT": "Controlos sobre o que a rede local consegue ver e quem pode enviar transferências para este Mac.",
+        "es": "Controles sobre lo que la red local puede ver y quién puede enviar descargas a este Mac.",
+        "fr": "Contrôles sur ce que le réseau local peut voir et qui peut soumettre des téléchargements à ce Mac.",
+        "de": "Steuerungen darüber, was das lokale Netzwerk sehen kann und wer Downloads an diesen Mac senden darf.",
+        "it": "Controlli su cosa la rete locale può vedere e chi può inviare download a questo Mac.",
+    },
+    "Rate limit: 60 req / 10 s per remote IP.": {
+        "pt-PT": "Limite de taxa: 60 pedidos / 10 s por IP remoto.",
+        "es": "Límite de tasa: 60 peticiones / 10 s por IP remota.",
+        "fr": "Limite de débit : 60 requêtes / 10 s par IP distante.",
+        "de": "Rate-Limit: 60 Anfragen / 10 s pro Remote-IP.",
+        "it": "Limite di tasso: 60 richieste / 10 s per IP remoto.",
+    },
+
+    # ── Sovereignty bullets (also used by privacyRow code path) ──
+    # (Already in catalog.)
+
+    # ── Agents tab privacy bullets ──
+    "Off by default. The toggle above is the only way in.": {
+        "pt-PT": "Desligado por predefinição. O interruptor acima é a única forma de entrar.",
+        "es": "Desactivado por defecto. El interruptor de arriba es la única forma de entrar.",
+        "fr": "Désactivé par défaut. Le commutateur ci-dessus est la seule façon d'entrer.",
+        "de": "Standardmäßig aus. Der Schalter oben ist der einzige Weg hinein.",
+        "it": "Disattivato per impostazione predefinita. L'interruttore sopra è l'unico modo per entrare.",
+    },
+    "No new sandbox entitlements. The MCP route reuses the existing local-network listener that powers Splynek's web dashboard.": {
+        "pt-PT": "Sem novos privilégios de sandbox. A rota MCP reutiliza o ouvinte de rede local que já alimenta o painel web do Splynek.",
+        "es": "Sin nuevos permisos de sandbox. La ruta MCP reutiliza el listener de red local existente que impulsa el panel web de Splynek.",
+        "fr": "Aucune nouvelle autorisation sandbox. La route MCP réutilise l'écouteur de réseau local existant qui alimente le tableau de bord web de Splynek.",
+        "de": "Keine neuen Sandbox-Berechtigungen. Die MCP-Route nutzt den bestehenden Local-Network-Listener, der Splyneks Web-Dashboard antreibt.",
+        "it": "Nessun nuovo permesso sandbox. Il percorso MCP riutilizza il listener di rete locale esistente che alimenta la dashboard web di Splynek.",
+    },
+    "Mutating tools (download / queue / cancel) route through the same ingest path as drag-drop and the browser extension. Every scheme guard, size confirmation, and host cap still fires.": {
+        "pt-PT": "Ferramentas que modificam estado (transferir / enfileirar / cancelar) seguem o mesmo caminho de ingestão que o arrastar-e-largar e a extensão do navegador. Todas as proteções de esquema, confirmações de tamanho e limites por servidor continuam a disparar.",
+        "es": "Las herramientas que modifican estado (descargar / encolar / cancelar) siguen la misma ruta de ingesta que arrastrar-y-soltar y la extensión del navegador. Todas las protecciones de esquema, confirmaciones de tamaño y límites por host siguen activándose.",
+        "fr": "Les outils modificateurs (télécharger / mettre en file / annuler) passent par le même chemin d'ingestion que le glisser-déposer et l'extension navigateur. Toutes les protections de schéma, confirmations de taille et limites par hôte se déclenchent toujours.",
+        "de": "Verändernde Werkzeuge (download / queue / cancel) durchlaufen denselben Aufnahmepfad wie Drag-Drop und die Browser-Erweiterung. Alle Schema-Schutzmechanismen, Größen-Bestätigungen und Host-Limits feuern weiterhin.",
+        "it": "Gli strumenti che modificano lo stato (scarica / accoda / annulla) seguono lo stesso percorso di ingestione di trascina-e-rilascia e dell'estensione browser. Tutte le protezioni di schema, conferme di dimensione e limiti per host continuano a scattare.",
+    },
+    "All tool calls are logged via os.Logger under subsystem app.splynek, category system. View with: log stream --predicate 'subsystem == \"app.splynek\"' --info": {
+        "pt-PT": "Todas as chamadas de ferramentas são registadas via os.Logger no subsistema app.splynek, categoria system. Vê com: log stream --predicate 'subsystem == \"app.splynek\"' --info",
+        "es": "Todas las llamadas a herramientas se registran vía os.Logger bajo subsistema app.splynek, categoría system. Ver con: log stream --predicate 'subsystem == \"app.splynek\"' --info",
+        "fr": "Tous les appels d'outils sont consignés via os.Logger sous le sous-système app.splynek, catégorie system. À voir avec : log stream --predicate 'subsystem == \"app.splynek\"' --info",
+        "de": "Alle Tool-Aufrufe werden über os.Logger unter Subsystem app.splynek, Kategorie system protokolliert. Anzeige mit: log stream --predicate 'subsystem == \"app.splynek\"' --info",
+        "it": "Tutte le chiamate agli strumenti sono registrate via os.Logger sotto sottosistema app.splynek, categoria system. Vedi con: log stream --predicate 'subsystem == \"app.splynek\"' --info",
+    },
+    "Catalog data ships in the app — neither Sovereignty nor Trust lookups query a network service. Your installed-app list never leaves your Mac.": {
+        "pt-PT": "Os dados do catálogo são enviados na app — nem as consultas Soberania nem Confiança consultam um serviço de rede. A tua lista de apps instaladas nunca sai do Mac.",
+        "es": "Los datos del catálogo se envían en la app — ni Soberanía ni Confianza consultan un servicio de red. Tu lista de apps instaladas nunca sale del Mac.",
+        "fr": "Les données du catalogue sont incluses dans l'app — ni Souveraineté ni Confiance n'interrogent un service réseau. Votre liste d'apps installées ne quitte jamais votre Mac.",
+        "de": "Katalog-Daten werden mit der App ausgeliefert — weder Souveränität- noch Vertrauen-Abfragen kontaktieren einen Netzwerkdienst. Ihre Liste installierter Apps verlässt Ihren Mac nie.",
+        "it": "I dati del catalogo vengono distribuiti nell'app — né Sovranità né Affidabilità interrogano un servizio di rete. Il tuo elenco di app installate non lascia mai il Mac.",
+    },
+
+    # ── Agents tab setup explanations + custom client tab ──
+    "Custom (any MCP client)": {"pt-PT": "Personalizado (qualquer cliente MCP)", "es": "Personalizado (cualquier cliente MCP)", "fr": "Personnalisé (tout client MCP)", "de": "Eigene (jeder MCP-Client)", "it": "Personalizzato (qualsiasi client MCP)"},
+    "Claude Desktop's MCP transport is currently stdio-only. Use a small HTTP-bridge shim like mcp-proxy to bridge to Splynek's HTTP endpoint. When Claude Desktop ships HTTP transport, drop the snippet into ~/Library/Application Support/Claude/claude_desktop_config.json directly.": {
+        "pt-PT": "O transporte MCP do Claude Desktop é atualmente só por stdio. Usa um pequeno adaptador HTTP como o mcp-proxy para fazer a ponte ao endpoint HTTP do Splynek. Quando o Claude Desktop tiver transporte HTTP, coloca o snippet diretamente em ~/Library/Application Support/Claude/claude_desktop_config.json.",
+        "es": "El transporte MCP de Claude Desktop actualmente es solo stdio. Usa un pequeño puente HTTP como mcp-proxy para conectar con el endpoint HTTP de Splynek. Cuando Claude Desktop tenga transporte HTTP, coloca el snippet directamente en ~/Library/Application Support/Claude/claude_desktop_config.json.",
+        "fr": "Le transport MCP de Claude Desktop est actuellement stdio uniquement. Utilisez un petit shim HTTP comme mcp-proxy pour ponter vers le point d'accès HTTP de Splynek. Quand Claude Desktop livrera le transport HTTP, placez l'extrait directement dans ~/Library/Application Support/Claude/claude_desktop_config.json.",
+        "de": "Claude Desktops MCP-Transport ist aktuell nur stdio. Verwenden Sie einen kleinen HTTP-Bridge-Shim wie mcp-proxy, um zum HTTP-Endpunkt von Splynek zu verbinden. Wenn Claude Desktop HTTP-Transport ausliefert, fügen Sie das Snippet direkt in ~/Library/Application Support/Claude/claude_desktop_config.json ein.",
+        "it": "Il trasporto MCP di Claude Desktop è attualmente solo stdio. Usa un piccolo shim HTTP come mcp-proxy per fare da ponte verso l'endpoint HTTP di Splynek. Quando Claude Desktop avrà il trasporto HTTP, metti lo snippet direttamente in ~/Library/Application Support/Claude/claude_desktop_config.json.",
+    },
+    "Claude.ai supports remote MCP HTTP transport. Add a remote MCP server in your workspace settings and paste the endpoint URL above.": {
+        "pt-PT": "O Claude.ai suporta transporte MCP HTTP remoto. Adiciona um servidor MCP remoto nas definições da tua área de trabalho e cola o URL do endpoint acima.",
+        "es": "Claude.ai soporta transporte MCP HTTP remoto. Añade un servidor MCP remoto en los ajustes de tu espacio de trabajo y pega la URL del endpoint de arriba.",
+        "fr": "Claude.ai supporte le transport MCP HTTP distant. Ajoutez un serveur MCP distant dans les réglages de votre espace de travail et collez l'URL du point d'accès ci-dessus.",
+        "de": "Claude.ai unterstützt Remote-MCP-HTTP-Transport. Fügen Sie einen Remote-MCP-Server in Ihren Workspace-Einstellungen hinzu und fügen Sie die Endpunkt-URL oben ein.",
+        "it": "Claude.ai supporta il trasporto MCP HTTP remoto. Aggiungi un server MCP remoto nelle impostazioni del tuo workspace e incolla l'URL dell'endpoint sopra.",
+    },
+    "Quick sanity check — list every available tool. Useful for verifying the server is reachable before configuring a real client.": {
+        "pt-PT": "Verificação rápida — lista todas as ferramentas disponíveis. Útil para confirmar que o servidor está acessível antes de configurar um cliente real.",
+        "es": "Verificación rápida — lista todas las herramientas disponibles. Útil para verificar que el servidor es accesible antes de configurar un cliente real.",
+        "fr": "Vérification rapide — liste tous les outils disponibles. Utile pour vérifier que le serveur est joignable avant de configurer un vrai client.",
+        "de": "Schnelle Prüfung — listet alle verfügbaren Werkzeuge auf. Nützlich, um zu verifizieren, dass der Server erreichbar ist, bevor ein echter Client konfiguriert wird.",
+        "it": "Controllo rapido — elenca tutti gli strumenti disponibili. Utile per verificare che il server sia raggiungibile prima di configurare un client reale.",
+    },
+    "Any client speaking JSON-RPC 2.0 over HTTP POST works. Minimum methods: initialize, tools/list, tools/call. Notifications return 204 (no body).": {
+        "pt-PT": "Qualquer cliente que fale JSON-RPC 2.0 sobre HTTP POST funciona. Métodos mínimos: initialize, tools/list, tools/call. Notificações devolvem 204 (sem corpo).",
+        "es": "Cualquier cliente que hable JSON-RPC 2.0 sobre HTTP POST funciona. Métodos mínimos: initialize, tools/list, tools/call. Las notificaciones devuelven 204 (sin cuerpo).",
+        "fr": "Tout client parlant JSON-RPC 2.0 sur HTTP POST fonctionne. Méthodes minimales : initialize, tools/list, tools/call. Les notifications renvoient 204 (sans corps).",
+        "de": "Jeder Client, der JSON-RPC 2.0 über HTTP POST spricht, funktioniert. Mindestmethoden: initialize, tools/list, tools/call. Benachrichtigungen geben 204 zurück (kein Body).",
+        "it": "Qualsiasi client che parli JSON-RPC 2.0 su HTTP POST funziona. Metodi minimi: initialize, tools/list, tools/call. Le notifiche restituiscono 204 (nessun corpo).",
+    },
+
+    # ── Agents tool gallery display names ──
+    "Get progress": {"pt-PT": "Obter progresso", "es": "Obtener progreso", "fr": "Obtenir progression", "de": "Fortschritt abrufen", "it": "Ottieni progresso"},
+    "List history": {"pt-PT": "Listar histórico", "es": "Listar historial", "fr": "Lister l'historique", "de": "Verlauf auflisten", "it": "Elenca cronologia"},
+    "Lookup sovereignty": {"pt-PT": "Consultar soberania", "es": "Consultar soberanía", "fr": "Consulter la souveraineté", "de": "Souveränität abfragen", "it": "Consulta sovranità"},
+    "Lookup trust": {"pt-PT": "Consultar confiança", "es": "Consultar confianza", "fr": "Consulter la confiance", "de": "Vertrauen abfragen", "it": "Consulta affidabilità"},
+    "Run sovereignty scan": {"pt-PT": "Executar análise de soberania", "es": "Ejecutar análisis de soberanía", "fr": "Exécuter l'analyse de souveraineté", "de": "Souveränitäts-Scan ausführen", "it": "Esegui scansione sovranità"},
+    "Download url": {"pt-PT": "Transferir URL", "es": "Descargar URL", "fr": "Télécharger l'URL", "de": "URL herunterladen", "it": "Scarica URL"},
+    "Queue url": {"pt-PT": "Enfileirar URL", "es": "Encolar URL", "fr": "Mettre URL en file", "de": "URL in Warteschlange", "it": "Accoda URL"},
+    "Cancel all": {"pt-PT": "Cancelar tudo", "es": "Cancelar todo", "fr": "Tout annuler", "de": "Alle abbrechen", "it": "Annulla tutto"},
 }
 
 

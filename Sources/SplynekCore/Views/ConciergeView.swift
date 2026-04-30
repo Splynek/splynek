@@ -72,10 +72,11 @@ struct ConciergeView: View {
 
     @ViewBuilder
     private func bulletRow(_ text: String) -> some View {
+        // v1.6.2: route through LocalizedStringKey so catalog can localize.
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(Color.accentColor)
-            Text(text)
+            Text(LocalizedStringKey(text))
                 .font(.callout)
                 .foregroundStyle(.primary)
             Spacer(minLength: 0)
