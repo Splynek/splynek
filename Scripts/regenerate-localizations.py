@@ -691,22 +691,25 @@ NEW_V16_STRINGS = {
         "de": "Zur Warteschlange hinzufügen",
         "it": "Aggiungi alla coda",
     },
-    "Downloading — \(Int(job.progress.fraction * 100))%": {
+    # Raw strings (r"...") because the Swift \(...) interpolation reads
+    # like a Python escape sequence and trips a SyntaxWarning otherwise.
+    # The catalog still receives literal `\(...)` text at runtime.
+    r"Downloading — \(Int(job.progress.fraction * 100))%": {
         # Pane title for one active download, e.g. "Downloading — 42%".
         # The `\()` interpolation is part of the LocalizedStringKey
         # itself; SwiftUI substitutes the integer at render time.
-        "pt-PT": "A transferir — \(Int(job.progress.fraction * 100))%",
-        "es": "Descargando — \(Int(job.progress.fraction * 100))%",
-        "fr": "Téléchargement — \(Int(job.progress.fraction * 100)) %",
-        "de": "Lädt — \(Int(job.progress.fraction * 100))%",
-        "it": "Scaricando — \(Int(job.progress.fraction * 100))%",
+        "pt-PT": r"A transferir — \(Int(job.progress.fraction * 100))%",
+        "es": r"Descargando — \(Int(job.progress.fraction * 100))%",
+        "fr": r"Téléchargement — \(Int(job.progress.fraction * 100)) %",
+        "de": r"Lädt — \(Int(job.progress.fraction * 100))%",
+        "it": r"Scaricando — \(Int(job.progress.fraction * 100))%",
     },
-    "Downloading — \(running.count) active": {
-        "pt-PT": "A transferir — \(running.count) ativas",
-        "es": "Descargando — \(running.count) activas",
-        "fr": "Téléchargement — \(running.count) actifs",
-        "de": "Lädt — \(running.count) aktiv",
-        "it": "Scaricando — \(running.count) attivi",
+    r"Downloading — \(running.count) active": {
+        "pt-PT": r"A transferir — \(running.count) ativas",
+        "es": r"Descargando — \(running.count) activas",
+        "fr": r"Téléchargement — \(running.count) actifs",
+        "de": r"Lädt — \(running.count) aktiv",
+        "it": r"Scaricando — \(running.count) attivi",
     },
 
     # ── Splash banners + page-level subtitles ──
@@ -2619,6 +2622,219 @@ NEW_V16_STRINGS = {
         "fr": "Collez de l'anglais comme “la dernière ISO Ubuntu” et le LLM local renvoie une URL directe. Recherche d'historique en langage naturel aussi. Tout s'exécute sur ce Mac.",
         "de": "Fügen Sie englischen Text wie “das neueste Ubuntu-ISO” ein und das lokale LLM liefert eine direkte URL. Auch Verlaufssuche in natürlicher Sprache. Läuft komplett auf diesem Mac.",
         "it": "Incolla inglese come “l'ultima ISO di Ubuntu” e l'LLM locale restituisce un URL diretto. Anche ricerca cronologia in linguaggio naturale. Tutto in esecuzione su questo Mac.",
+    },
+
+    # ── Round 8 — interpolated strings keyed by format spec ─────────
+    # These match SwiftUI's runtime-converted catalog lookup form
+    # (each `\(expr)` becomes %@ for strings or %lld for integers;
+    # multi-arg strings use positional %1$@ / %2$lld so translators
+    # can rearrange).  See `_swift_interp_to_format_specs` in
+    # find-missing-translations.py for the matching heuristic.
+
+    # Single-arg, single-locale-typical patterns first.
+    "Fetch %@ using Splynek's own multi-interface download engine.": {
+        "pt-PT": "Obter %@ com o próprio motor de transferência multi-interface do Splynek.",
+        "es": "Obtener %@ con el propio motor de descarga multi-interfaz de Splynek.",
+        "fr": "Récupérer %@ avec le moteur de téléchargement multi-interfaces propre à Splynek.",
+        "de": "%@ mit Splyneks eigener Multi-Schnittstellen-Download-Engine abrufen.",
+        "it": "Scarica %@ con il motore di download multi-interfaccia di Splynek.",
+    },
+    "Version %@ is available": {
+        "pt-PT": "Está disponível a versão %@",
+        "es": "La versión %@ está disponible",
+        "fr": "La version %@ est disponible",
+        "de": "Version %@ ist verfügbar",
+        "it": "È disponibile la versione %@",
+    },
+    "Version %@": {
+        "pt-PT": "Versão %@",
+        "es": "Versión %@",
+        "fr": "Version %@",
+        "de": "Version %@",
+        "it": "Versione %@",
+    },
+    "v%@": {
+        # Universal "v1.6.2" prefix — kept as-is across locales.
+        "pt-PT": "v%@",
+        "es": "v%@",
+        "fr": "v%@",
+        "de": "v%@",
+        "it": "v%@",
+    },
+    "Clear %lld finished": {
+        "pt-PT": "Limpar %lld concluídas",
+        "es": "Limpiar %lld terminadas",
+        "fr": "Effacer %lld terminés",
+        "de": "%lld abgeschlossene löschen",
+        "it": "Cancella %lld completate",
+    },
+    "Retry %lld failed": {
+        "pt-PT": "Tentar de novo %lld falhadas",
+        "es": "Reintentar %lld fallidas",
+        "fr": "Réessayer %lld échoués",
+        "de": "%lld fehlgeschlagene erneut versuchen",
+        "it": "Riprova %lld fallite",
+    },
+    "Could not load %@ from the app bundle. Please report this as a packaging issue.": {
+        "pt-PT": "Não foi possível carregar %@ a partir do pacote da aplicação. Reporta isto como um problema de empacotamento.",
+        "es": "No se pudo cargar %@ desde el paquete de la app. Por favor, repórtalo como un problema de empaquetado.",
+        "fr": "Impossible de charger %@ depuis le bundle de l'app. Veuillez signaler ce problème d'empaquetage.",
+        "de": "%@ konnte nicht aus dem App-Bundle geladen werden. Bitte melden Sie dies als Paketierungsproblem.",
+        "it": "Impossibile caricare %@ dal bundle dell'app. Segnalalo come problema di packaging.",
+    },
+    "Install %@ via Splynek": {
+        "pt-PT": "Instalar %@ via Splynek",
+        "es": "Instalar %@ con Splynek",
+        "fr": "Installer %@ via Splynek",
+        "de": "%@ über Splynek installieren",
+        "it": "Installa %@ tramite Splynek",
+    },
+    "Visit %@ homepage in browser": {
+        "pt-PT": "Visitar a página inicial de %@ no navegador",
+        "es": "Visitar la página de inicio de %@ en el navegador",
+        "fr": "Visiter la page d'accueil de %@ dans le navigateur",
+        "de": "Startseite von %@ im Browser öffnen",
+        "it": "Visita la home page di %@ nel browser",
+    },
+    "Next opening %@.": {
+        "pt-PT": "Próxima abertura %@.",
+        "es": "Próxima apertura %@.",
+        "fr": "Prochaine ouverture %@.",
+        "de": "Nächste Öffnung %@.",
+        "it": "Prossima apertura %@.",
+    },
+    "Port %lld": {
+        "pt-PT": "Porta %lld",
+        "es": "Puerto %lld",
+        "fr": "Port %lld",
+        "de": "Port %lld",
+        "it": "Porta %lld",
+    },
+    "Step %lld of 3": {
+        "pt-PT": "Passo %lld de 3",
+        "es": "Paso %lld de 3",
+        "fr": "Étape %lld sur 3",
+        "de": "Schritt %lld von 3",
+        "it": "Passaggio %lld di 3",
+    },
+    "Shareable (%lld):": {
+        "pt-PT": "Partilháveis (%lld):",
+        "es": "Compartibles (%lld):",
+        "fr": "Partageables (%lld) :",
+        "de": "Teilbar (%lld):",
+        "it": "Condivisibili (%lld):",
+    },
+    "This download has %lld fleet-peer mirror(s) cooperating on the LAN.": {
+        "pt-PT": "Esta transferência tem %lld espelho(s) na Frota a cooperar na rede local.",
+        "es": "Esta descarga tiene %lld mirror(s) de la flota cooperando en la red local.",
+        "fr": "Ce téléchargement a %lld miroir(s) de flotte coopérant sur le réseau local.",
+        "de": "Dieser Download hat %lld Flotten-Peer-Spiegel, die im LAN kooperieren.",
+        "it": "Questo download ha %lld mirror della flotta che cooperano sulla rete locale.",
+    },
+    "This download is %@. Continue?": {
+        "pt-PT": "Esta transferência tem %@. Continuar?",
+        "es": "Esta descarga es de %@. ¿Continuar?",
+        "fr": "Ce téléchargement fait %@. Continuer ?",
+        "de": "Dieser Download ist %@. Fortfahren?",
+        "it": "Questo download è di %@. Continuare?",
+    },
+    "Today you've already used %1$@ from %2$@, past your %3$@ daily cap. Downloading anyway will clear today's cap for this host.": {
+        "pt-PT": "Hoje já usaste %1$@ de %2$@, ultrapassando o limite diário de %3$@. Transferir mesmo assim limpa o limite de hoje para este servidor.",
+        "es": "Hoy ya has usado %1$@ de %2$@, superando tu límite diario de %3$@. Descargar igualmente borrará el límite de hoy para este servidor.",
+        "fr": "Vous avez déjà utilisé %1$@ depuis %2$@ aujourd'hui, dépassant votre plafond quotidien de %3$@. Télécharger quand même réinitialisera le plafond du jour pour cet hôte.",
+        "de": "Sie haben heute bereits %1$@ von %2$@ verbraucht und damit Ihr Tageslimit von %3$@ überschritten. Trotzdem herunterzuladen setzt das heutige Limit für diesen Host zurück.",
+        "it": "Oggi hai già usato %1$@ da %2$@, superando il limite giornaliero di %3$@. Scaricare comunque azzererà il limite di oggi per questo host.",
+    },
+    "Trust score %1$lld of 100, level %2$@": {
+        # Accessibility label.
+        "pt-PT": "Pontuação de confiança %1$lld em 100, nível %2$@",
+        "es": "Puntuación de confianza %1$lld de 100, nivel %2$@",
+        "fr": "Score de confiance %1$lld sur 100, niveau %2$@",
+        "de": "Vertrauenswert %1$lld von 100, Stufe %2$@",
+        "it": "Punteggio di affidabilità %1$lld su 100, livello %2$@",
+    },
+    "Unavailable: %@": {
+        "pt-PT": "Indisponível: %@",
+        "es": "No disponible: %@",
+        "fr": "Indisponible : %@",
+        "de": "Nicht verfügbar: %@",
+        "it": "Non disponibile: %@",
+    },
+    "%1$@, %2$@ severity: %3$@": {
+        # Accessibility label for trust concern (axis, severity, summary).
+        "pt-PT": "%1$@, gravidade %2$@: %3$@",
+        "es": "%1$@, gravedad %2$@: %3$@",
+        "fr": "%1$@, gravité %2$@ : %3$@",
+        "de": "%1$@, Schweregrad %2$@: %3$@",
+        "it": "%1$@, gravità %2$@: %3$@",
+    },
+    "%1$lld chunks · %2$@": {
+        "pt-PT": "%1$lld pedaços · %2$@",
+        "es": "%1$lld fragmentos · %2$@",
+        "fr": "%1$lld morceaux · %2$@",
+        "de": "%1$lld Stücke · %2$@",
+        "it": "%1$lld pezzi · %2$@",
+    },
+    "%lld chunks": {
+        "pt-PT": "%lld pedaços",
+        "es": "%lld fragmentos",
+        "fr": "%lld morceaux",
+        "de": "%lld Stücke",
+        "it": "%lld pezzi",
+    },
+    "%1$@ · %2$@ · %3$@ ago": {
+        # History match line: filename · size · time-ago.
+        "pt-PT": "%1$@ · %2$@ · há %3$@",
+        "es": "%1$@ · %2$@ · hace %3$@",
+        "fr": "%1$@ · %2$@ · il y a %3$@",
+        "de": "%1$@ · %2$@ · vor %3$@",
+        "it": "%1$@ · %2$@ · %3$@ fa",
+    },
+    "%lld days": {
+        "pt-PT": "%lld dias",
+        "es": "%lld días",
+        "fr": "%lld jours",
+        "de": "%lld Tage",
+        "it": "%lld giorni",
+    },
+    "%1$@ — next opening %2$@.": {
+        "pt-PT": "%1$@ — próxima abertura %2$@.",
+        "es": "%1$@ — próxima apertura %2$@.",
+        "fr": "%1$@ — prochaine ouverture %2$@.",
+        "de": "%1$@ — nächste Öffnung %2$@.",
+        "it": "%1$@ — prossima apertura %2$@.",
+    },
+    "%1$lld of %2$lld": {
+        # History "X of Y" filter results.
+        "pt-PT": "%1$lld de %2$lld",
+        "es": "%1$lld de %2$lld",
+        "fr": "%1$lld sur %2$lld",
+        "de": "%1$lld von %2$lld",
+        "it": "%1$lld di %2$lld",
+    },
+    "of %@": {
+        # Bytes-of-total: "5 MB of 100 MB".
+        "pt-PT": "de %@",
+        "es": "de %@",
+        "fr": "sur %@",
+        "de": "von %@",
+        "it": "di %@",
+    },
+    "saved %@": {
+        # "saved 8.2 s" — time saved by multi-interface aggregation.
+        "pt-PT": "poupados %@",
+        "es": "ahorrado %@",
+        "fr": "économisés %@",
+        "de": "%@ gespart",
+        "it": "risparmiati %@",
+    },
+    "took %@": {
+        # "took 14.3 s" — total elapsed time.
+        "pt-PT": "demorou %@",
+        "es": "tardó %@",
+        "fr": "a pris %@",
+        "de": "dauerte %@",
+        "it": "impiegato %@",
     },
 }
 
