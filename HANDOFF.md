@@ -26,12 +26,12 @@ xcrun stapler staple build/Splynek.dmg
 
 The `main` branch carries v1.6.0 → v1.6.2 commits and an annotated `v1.6.2` tag (locally only — NOT pushed).  Holding all release gestures (push tag, cut DMG, deploy landing, push cask) until Apple v1.0 clears Mac App Store re-review.
 
-Catalog state at v1.6.2:
-- Localizable.xcstrings: **255 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **1,275 translations**.
+Catalog state at v1.6.2 (after rounds 1–6 of the localization sprint):
+- Localizable.xcstrings: **387 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **1,935 translations**.
 - Trust catalog: **151 entries** (was 30 at v1.6.0 start; +121 across the v1.6.x sprint).
 - Sovereignty catalog: 1,155 entries (unchanged this sprint).
 
-The `main` branch carries v1.5.4 → v1.6.0 commits but **none are tagged or uploaded yet**. They're staged to ship as a single rolled-up `v1.6.0` release once Apple clears v1.0 (we hold the DMG cut so an Apple Reviewer who URL-spelunks doesn't pull in newer behaviour they didn't approve).
+The `main` branch carries v1.5.4 → v1.6.2 commits but **none are tagged or uploaded yet**. They're staged to ship as a single rolled-up `v1.6.2` release once Apple clears v1.0 (we hold the DMG cut so an Apple Reviewer who URL-spelunks doesn't pull in newer behaviour they didn't approve).
 
 What's bundled:
 
@@ -40,6 +40,10 @@ What's bundled:
 - **v1.5.6** — weekly workflow hardening: real-rot-vs-transient classification in `check-urls.swift`, `permissions: issues: write`, `swift run splynek-test` removed from lint job (OOM on the 22k-line generated catalog).
 - **v1.5.6+** — hardening pass: `os.Logger` framework added, `LANPeer` GCD/Task tangle untangled, `FleetCoordinator` rate-limit GC moved off hot path, `WatchedFolder` reentrancy guard, `TorrentEngine` force-unwrap rewritten, accessibility pass on TrustView / SovereigntyView / SettingsView, release-coherence invariant test.
 - **v1.6.0** — Splynek as a programmable platform: **MCP server** (8 tools, JSON-RPC 2.0 over POST, off by default, opt-in via Settings), **Spotlight catalog indexing** (Sovereignty + Trust now system-wide searchable), **3 new catalog-aware App Intents** (`LookupSovereigntyIntent`, `LookupTrustIntent`, `RunSovereigntyScanIntent`).  Setup docs in `MCP_SETUP.md`.
+- **v1.6.1** — onboarding sheet (3-step first-run), audit hardening (validate-mcp.sh stdout fix, AppShortcut phrase repair, `SplynekVersion` single-source-of-truth, `Scripts/compile-xcstrings.py` for SwiftPM .xcstrings → .strings, `.lproj` mirroring in build.sh), Bundle.module → Bundle.main fix for SwiftUI Text resolution.
+- **v1.6.2 round 1–6** — full localization sweep. Catalog grew **56 → 387 strings** (×7) across 6 rounds:
+  - Round 1: long-tail sweep (139 → 194). Round 2: pt-PT critical pass + Trust 60→101 (194→221).  Round 3: Branding + docs (221→255 + Trust 101→151).  Round 4: 255→340 + 5 verbatim-Text code fixes (label two-builder form, MetricView caption, Markdown body keys with backticks/curly quotes).  Round 5: full audit fixes — EmptyStateView wrap, MetricView caption, ContextCard giant-rectangle bug.  Round 6: Frota column captions (ADVERTISED→ANUNCIADO etc.), 8 MCP tool descriptions, ~30 long-tail strings.
+  - Patterns established: every `String` rendered as user text is now wrapped in `LocalizedStringKey` (`Text(LocalizedStringKey(s))`) — see `Components.swift::StatusPill / EmptyStateView / MetricView / TitledCard`. Catalog source-of-truth is `Scripts/regenerate-localizations.py`; never hand-edit `Localizable.xcstrings`. Audit script at `Scripts/find-missing-translations.py` flags any view-layer string literal not in the catalog (currently reports 97 — split 42 plain + 55 interpolated; plain pile is the next round's target).
 
 Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution Center reply + edit-and-save touch). **DO NOT `xcodebuild archive -scheme Splynek-MAS` and submit while v1.0 is in flight** — that replaces the in-queue binary with one carrying the v1.6 metadata Apple Reviewer would never have looked at. The DMG / Developer-ID stream (`./Scripts/build.sh`) is independent and safe to re-cut at any time.
 
@@ -47,15 +51,15 @@ Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution
 
 ---
 
-## ⚡ Session handoff — current state (2026-04-26)
+## ⚡ Session handoff — current state (2026-04-30)
 
-**For a fresh session picking this up.** TL;DR: shipped a lot, everything green, marketing is staged but not deployed, waiting on Apple, three scheduled cron triggers + two repos cleanly committed.
+**For a fresh session picking this up.** TL;DR: v1.6.2 round 6 committed (catalog at 387 × 5 = 1,935 translations), pt-PT visually verified end-to-end, marketing still staged, Apple v1.0 still pending re-review (day 4), ASC monitor running daily.
 
 ### What's running
 
 | Track | State | Where |
 |---|---|---|
-| **Apple App Store v1.0 review** | ⏳ Resubmitted 2026-04-26 with VPN-clarification Resolution Center reply + App Review Notes update + clicked "Atualizar revisão". Status: `A aguardar revisão`. ETA `In Review`: 24-72h. ETA decision: +24h. | App Store Connect |
+| **Apple App Store v1.0 review** | ⏳ Resubmitted 2026-04-26 (VPN-clarification Resolution Center reply + App Review Notes update + clicked "Atualizar revisão"). Status as of 2026-04-30: still in re-review, day 4 of typical 1-7 day window. ASC monitor cron `trig_01FdTsuA5J9d85sknvtFZTHj` fires daily 09:00 UTC against iTunes Lookup API; will send HIGH-priority notification when the binary lands. | App Store Connect |
 | **Sovereignty cron trigger** | ⏳ First fire **2026-05-01 09:00 UTC**. Public repo only; drafts up to 20 catalog entries from `Scripts/sources/*.json`, opens PR. | https://claude.ai/code/scheduled/trig_01JEuDpurUC21nHkumwdEfaB |
 | **Trust cron trigger** | ⏳ First fire **2026-05-15 09:00 UTC**. Refreshes catalog entries with `lastReviewed > 90 days`, checks NVD + HIBP for new findings, opens PR. | https://claude.ai/code/scheduled/trig_01VZNTUM4ikbYH5XBtpnn1ER |
 | **Quarterly audit cron** | ⏳ First fire **2026-06-01 09:00 UTC**. Audits a rotating area (Q1=networking, Q2=views, Q3=scripts, Q4=build), opens GitHub issue with `audit` label. | https://claude.ai/code/scheduled/trig_0161CxCRWwnG5F48ynpTaspi |
@@ -208,14 +212,43 @@ Packaging/splynek.rb                           ← v1.5.3 cask, brew-style clean
 ### How to ramp a fresh session in 5 minutes
 
 ```
-1. Read HANDOFF.md (this file) top 250 lines
+1. Read HANDOFF.md (this file) top 300 lines
 2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
 3. swift run splynek-test (must show 148/148 — anything less is a regression)
-4. Open https://claude.ai/code/scheduled and check the three triggers fired clean
-5. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
+4. python3 Scripts/find-missing-translations.py | head -5  → confirms catalog state
+5. Open https://claude.ai/code/scheduled and check the four triggers fired clean
+6. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
 ```
 
-If everything green → ask the user what to work on. The "v1.6 candidates" list above is the queue.
+If everything green → ask the user what to work on. The "v1.6 candidates" list below is the queue.
+
+### Localization state machine — where round 7 picks up
+
+```
+v1.6.2 catalog: 387 strings × 5 locales = 1,935 translations.
+Audit: python3 Scripts/find-missing-translations.py
+       → 97 unique strings still missing (97 / (387+97) = 20% gap)
+       → 42 plain literals (round 7 target — same playbook as round 6)
+       → 55 interpolated (round 8 — needs xcstrings %@/%lld parameterization)
+
+Pipeline:
+  1. Edit Scripts/regenerate-localizations.py (add 5-locale tuples)
+  2. python3 Scripts/regenerate-localizations.py
+  3. swift build --target SplynekCore  (must compile clean)
+  4. killall Splynek; rm -rf build/Splynek.app; SKIP_APP_INTENTS=1 ./Scripts/build.sh
+  5. open build/Splynek.app
+  6. Visually walk pt-PT (or any locale via System Settings → Language)
+  7. git commit "v1.6.2 round N: NNN→NNN catalog strings — <area>"
+
+Visual walk-through harness:
+  - Set system language to Portuguese (Portugal) before running.
+  - Tabs to verify: Concierge / Receitas / Soberania / Confiança / Transferências /
+    Torrents / Ao Vivo / Fila / Frota / Avaliação / Histórico / Agentes /
+    Definições / Sobre / Legal / Onboarding sheet (first launch).
+  - Already verified pt-PT through round 6: ✓ Frota labels, ✓ tab names, ✓ Trust /
+    Sovereignty body, ✓ MCP descriptions, ✓ status messages.
+  - Untested locales: de / es / fr / it (round 7+ should sanity-sweep at least one).
+```
 
 ---
 
@@ -639,12 +672,15 @@ v1.4 shipped a FORBIDDEN PATTERNS block in the system prompt + a `sovereigntyDen
 - **Homepage TLD check**: reject suggestions whose homepage host resolves to a US-registered domain. Brittle (CloudFlare / CDN hosts confuse this); parking it.
 - **Extend the deny-list** with new mis-suggestions as they surface in production. The deny-list is intentionally short and high-signal — false positives drop legit suggestions silently.
 
-### D — Localisation (v1.4 shipped FR/DE/ES/IT for Sovereignty; roll out to rest)
+### D — Localisation (v1.6.2 has shipped 387 strings × 5 locales; round 7+ continues the long-tail)
 
-Sovereignty tab fully localised as of v1.4 (`Sources/SplynekCore/Localizable.xcstrings`, ~30 strings × 4 languages). Pattern to extend:
-- **Next tab**: Concierge. `Sources/SplynekCore/Views/ConciergeView.swift` has ~40 localisable strings. Same xcstrings file, same `LocalizedStringKey` pattern.
-- **After that**: Recipes, Downloads, Sidebar (tab names), Settings. ~200 strings total.
-- **Native-speaker review**: current translations are Claude-generated. Before major marketing push, flag FR + DE for a native-speaker pass — those are the two markets where Sovereignty has the biggest credibility lift.
+The catalog is now at **387 strings × 5 locales = 1,935 translations** as of v1.6.2 round 6 (2026-04-30). Pipeline matures: source-of-truth is `Scripts/regenerate-localizations.py`, audit is `Scripts/find-missing-translations.py`, build pipeline auto-compiles xcstrings → .lproj.
+
+Remaining work (in order of value):
+- **Round 7 — 42 plain long-tail strings.** Same playbook as round 6: tooltip help texts, accessibility labels, secondary buttons ("Refresh", "Quick Look", "Import…", "Retry", "Reveal the downloaded file in Finder."). ~30 min.
+- **Round 8 — 55 interpolated strings.** Needs xcstrings parameterization (`%@`/`%lld` format specifiers + per-locale parameter ordering). Interpolated strings include `\(formatBytes(...))`, `Step \(s.rawValue + 1) of 3`, `Port \(seed.port)`, peer-counts, throughput labels. 1-2 hours of careful per-call-site work.
+- **Visual sanity-sweep on de / es / fr / it.** Only pt-PT has been visually walked end-to-end. The other 4 locales' translations are catalog-correct but unvalidated for layout overflow + idiom appropriateness.
+- **Native-speaker review** before any major marketing push — current translations are Claude-generated; flag FR + DE for a native-speaker pass first (where Sovereignty has the biggest credibility lift).
 - **Arabic / ZH-HANS?** Only if Pro uptake in those markets warrants it. Not a priority.
 
 ### E — Monetization / marketing (unchanged from prior sessions)
