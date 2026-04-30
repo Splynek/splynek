@@ -36,9 +36,7 @@ enum UpdateChecker {
         return nil
     }
 
-    static var currentVersion: String {
-        (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "0.0.0"
-    }
+    static var currentVersion: String { SplynekVersion.current }
 
     /// Fire-and-forget check. Returns an `UpdateInfo` only if the feed
     /// advertises a strictly-higher semver than the running build; nil

@@ -77,9 +77,7 @@ struct AboutView: View {
         }
     }
 
-    private var version: String {
-        (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "0.6.0"
-    }
+    private var version: String { SplynekVersion.current }
 
     @ViewBuilder
     private func updateBanner(_ info: UpdateInfo) -> some View {

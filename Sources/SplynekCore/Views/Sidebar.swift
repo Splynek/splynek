@@ -319,9 +319,7 @@ struct Sidebar: View {
         )
     }
 
-    private func appVersion() -> String {
-        (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "0.0.0"
-    }
+    private func appVersion() -> String { SplynekVersion.current }
 
     @ViewBuilder
     private func sidebarRow(title: String, systemImage: String, accessory: AnyView? = nil) -> some View {

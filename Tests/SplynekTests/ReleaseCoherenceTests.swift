@@ -1,4 +1,5 @@
 import Foundation
+@testable import SplynekCore
 
 /// v1.5.6+: invariant test that catches the *broader* drift class
 /// `InfoPlistSyncTests` cannot — when commit subjects, CHANGELOG
@@ -94,6 +95,19 @@ enum ReleaseCoherenceTests {
                     """
                     Info.plist version '\(p)' is OLDER than the latest git tag 'v\(tag)'.
                     Did a release get reverted?  Bump the plist forward, or revert the tag.
+                    """
+                )
+            }
+
+            TestHarness.test("SplynekVersion.fallback matches Info.plist") {
+                guard let p = plistVersion else { return }
+                try expect(
+                    SplynekVersion.fallback == p,
+                    """
+                    SplynekVersion.fallback ('\(SplynekVersion.fallback)') drifted \
+                    from Info.plist ('\(p)').  Bump SplynekVersion.fallback to match \
+                    or screenshots taken without an .app bundle (e.g. `swift run`) \
+                    will show the wrong version.
                     """
                 )
             }
