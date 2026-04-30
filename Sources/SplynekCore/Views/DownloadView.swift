@@ -738,38 +738,51 @@ struct DownloadView: View {
     private var optionsCard: some View {
         TitledCard(title: "Options", systemImage: "slider.horizontal.3") {
             VStack(alignment: .leading, spacing: 12) {
+                // v1.6.1: human-language relabel of the three core
+                // settings.  Was: "Connections per interface" / "Max
+                // concurrent downloads" / "Per-interface DoH" — three
+                // jargon labels with tooltips most users wouldn't
+                // hover.  Now: friendlier verbs + a one-line subtitle
+                // visible without hover.  Underlying bindings unchanged.
                 HStack(spacing: 20) {
                     VStack(alignment: .leading, spacing: 4) {
                         labelWithInfo(
-                            "Connections per interface",
-                            tooltip: "How many parallel HTTP connections to open per network interface. More = higher peak throughput, but also more load on origin servers. 1–2 is polite; 4–6 is aggressive."
+                            "Speed per network",
+                            tooltip: "Splynek opens this many parallel connections on each network you have available (Wi-Fi, Ethernet, iPhone tether, etc.). 1–2 is polite to the server; 4–6 is faster but uses more of the server's capacity."
                         )
                         Stepper(value: $vm.connectionsPerInterface, in: 1...8) {
-                            Text("\(vm.connectionsPerInterface)")
-                                .font(.system(.body, design: .monospaced))
-                                .frame(width: 24, alignment: .leading)
+                            HStack(spacing: 6) {
+                                Text("\(vm.connectionsPerInterface)")
+                                    .font(.system(.body, design: .monospaced))
+                                    .frame(width: 24, alignment: .leading)
+                                Text(vm.connectionsPerInterface <= 2 ? "polite"
+                                     : vm.connectionsPerInterface <= 4 ? "balanced"
+                                     : "aggressive")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                        .help("Set the per-interface parallel-connection count.")
+                        .help("How many parallel connections to open on each network interface.")
                     }
                     Divider().frame(height: 36)
                     VStack(alignment: .leading, spacing: 4) {
                         labelWithInfo(
-                            "Max concurrent downloads",
-                            tooltip: "The most downloads Splynek will run at the same time. Extra URLs queue up and start as slots free. Keep low if your link is thin; higher is fine on a fat pipe."
+                            "Downloads at once",
+                            tooltip: "If you start more URLs than this number, the extras wait their turn and start as slots free up. Keep low if your network is thin; higher is fine on fast connections."
                         )
                         Stepper(value: $vm.maxConcurrentDownloads, in: 1...10) {
                             Text("\(vm.maxConcurrentDownloads)")
                                 .font(.system(.body, design: .monospaced))
                                 .frame(width: 24, alignment: .leading)
                         }
-                        .help("Set the concurrent-download cap.")
+                        .help("How many downloads Splynek will run in parallel.")
                     }
                     Divider().frame(height: 36)
                     Toggle(isOn: $vm.useDoH) {
-                        Label("Per-interface DoH", systemImage: "lock.shield")
+                        Label("Encrypt DNS lookups", systemImage: "lock.shield")
                     }
                     .toggleStyle(.switch)
-                    .help("DNS-over-HTTPS, per interface. Each lane resolves hostnames through Cloudflare (1.1.1.1) using encrypted DNS over the same interface it downloads through — prevents DNS leaks across networks and keeps your ISP from seeing which hosts you query. Slight latency penalty on first request.")
+                    .help("Splynek looks up hostnames over Cloudflare's encrypted DNS (DNS-over-HTTPS, port 443). Stops your internet provider from seeing which sites you download from. Tiny latency cost on the first request to each hostname.")
                     Spacer()
                 }
 
@@ -777,35 +790,65 @@ struct DownloadView: View {
                     cellularBudgetRow
                 }
 
-                Divider()
-
-                HStack(spacing: 12) {
-                    Button { vm.loadMetalink() } label: {
-                        Label("Load Metalink…", systemImage: "square.stack.3d.up")
+                // v1.6.1: Metalink + Merkle hidden behind a friendly
+                // disclosure.  Both are real features but ~99% of users
+                // have never heard of them.  The disclosure auto-opens
+                // when one's loaded so the user always sees what's
+                // active; collapsed otherwise so the card reads as
+                // "the things I actually configure".
+                if !vm.mirrors.isEmpty || vm.merkleManifest != nil {
+                    Divider()
+                    advancedFormatRow
+                } else {
+                    DisclosureGroup {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Splynek understands two extra file formats some publishers ship next to their main download. Pick one if you've got it; otherwise skip — they're optional speed-ups, not required.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                            advancedFormatRow
+                        }
+                        .padding(.top, 8)
+                    } label: {
+                        Label("Advanced source formats", systemImage: "chevron.down.square")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
                     }
-                    .buttonStyle(.bordered)
-                    .help("Load a .metalink / .meta4 file — an XML list of mirror URLs + checksums. Splynek fans the download across every mirror in parallel, one per interface, and verifies against the checksum when done. Common on Linux distros.")
-                    if !vm.mirrors.isEmpty {
-                        StatusPill(text: "\(vm.mirrors.count) MIRRORS", style: .info)
-                        Button("Clear") { vm.clearMirrors() }
-                            .buttonStyle(.borderless).controlSize(.small)
-                            .help("Drop the mirror list and fall back to the single URL above.")
-                    }
-                    Divider().frame(height: 20)
-                    Button { vm.loadMerkleManifest() } label: {
-                        Label("Load Merkle…", systemImage: "checkmark.seal")
-                    }
-                    .buttonStyle(.bordered)
-                    .help("Load a .splynek-manifest with a precomputed Merkle tree of the file's contents. Splynek verifies each chunk against its expected leaf hash on arrival — any corrupted byte triggers a re-fetch inline, without waiting for a full-file SHA-256 at the end.")
-                    if let m = vm.merkleManifest {
-                        StatusPill(text: "\(m.leafHexes.count) LEAVES", style: .success)
-                        Button("Clear") { vm.clearMerkleManifest() }
-                            .buttonStyle(.borderless).controlSize(.small)
-                            .help("Drop the Merkle manifest and fall back to end-of-file SHA-256 verification (or none if unset).")
-                    }
-                    Spacer()
+                    .padding(.top, 4)
                 }
             }
+        }
+    }
+
+    /// The Metalink + Merkle button row.  Extracted so the disclosure
+    /// path and the auto-shown path share one definition.
+    @ViewBuilder
+    private var advancedFormatRow: some View {
+        HStack(spacing: 12) {
+            Button { vm.loadMetalink() } label: {
+                Label("Load Metalink…", systemImage: "square.stack.3d.up")
+            }
+            .buttonStyle(.bordered)
+            .help("A .metalink / .meta4 file is an XML list of mirror URLs + checksums some publishers (Linux distros, Apache, KDE) ship next to their main download. Splynek fans the download across every mirror you've got in parallel — one mirror per network interface — then verifies the assembled file against the publisher's checksum.")
+            if !vm.mirrors.isEmpty {
+                StatusPill(text: "\(vm.mirrors.count) MIRRORS", style: .info)
+                Button("Clear") { vm.clearMirrors() }
+                    .buttonStyle(.borderless).controlSize(.small)
+                    .help("Drop the mirror list and fall back to the single URL above.")
+            }
+            Divider().frame(height: 20)
+            Button { vm.loadMerkleManifest() } label: {
+                Label("Load Merkle…", systemImage: "checkmark.seal")
+            }
+            .buttonStyle(.bordered)
+            .help("A .splynek-manifest is a chunk-by-chunk fingerprint of the original file. With one loaded, Splynek verifies each piece as it arrives — bad bytes get re-fetched on the spot instead of waiting until the whole download finishes to discover something corrupted. Useful for very large files (10+ GB).")
+            if let m = vm.merkleManifest {
+                StatusPill(text: "\(m.leafHexes.count) CHUNKS", style: .success)
+                Button("Clear") { vm.clearMerkleManifest() }
+                    .buttonStyle(.borderless).controlSize(.small)
+                    .help("Drop the chunk-fingerprint file and fall back to end-of-file integrity check.")
+            }
+            Spacer()
         }
     }
 

@@ -22,6 +22,19 @@ struct RootView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .task { await vm.refreshInterfaces() }
+        // v1.6.1: first-launch onboarding sheet.  Auto-presents when
+        // the persisted flag is false; user dismisses (Skip / Finish)
+        // and the flag flips so it never reappears.  Bound to a
+        // computed Binding so dismiss-by-X-button still flips the
+        // flag (otherwise the sheet would re-present on next launch).
+        .sheet(isPresented: Binding(
+            get: { !vm.hasCompletedOnboarding },
+            set: { newValue in
+                if !newValue { vm.hasCompletedOnboarding = true }
+            }
+        )) {
+            OnboardingSheet(vm: vm)
+        }
         .onDrop(of: [.url, .fileURL, .plainText], isTargeted: nil) { providers in
             vm.handleDrop(providers: providers)
         }

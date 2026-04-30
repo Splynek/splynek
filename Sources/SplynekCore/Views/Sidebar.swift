@@ -381,4 +381,9 @@ extension Notification.Name {
     /// and `splynek://trust/<id>`.
     static let splynekShowSovereignty = Notification.Name("splynek.showSovereignty")
     static let splynekShowTrust       = Notification.Name("splynek.showTrust")
+
+    /// v1.6.1: posted by `OnboardingSheet` when the user clicks
+    /// "Run audit + finish".  SovereigntyView's onReceive catches
+    /// this and triggers its `@StateObject` scanner.scan().
+    static let splynekRunSovereigntyScan = Notification.Name("splynek.runSovereigntyScan")
 }

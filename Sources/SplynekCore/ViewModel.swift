@@ -605,6 +605,17 @@ final class SplynekViewModel: ObservableObject {
     private var torrentEngine: TorrentEngine?
     private var torrentTask: Task<Void, Never>?
 
+    /// v1.6.1: first-launch onboarding flag.  Flipped to true when
+    /// the user finishes (or skips) `OnboardingSheet`, which then
+    /// never appears again.  Persisted so re-launching doesn't
+    /// re-prompt.  Default false → onboarding shows on first run.
+    @Published var hasCompletedOnboarding: Bool {
+        didSet {
+            UserDefaults.standard.set(hasCompletedOnboarding,
+                                      forKey: "hasCompletedOnboarding")
+        }
+    }
+
     /// v1.6: Spotlight deep-link focus.  When the user activates a
     /// `splynek://sovereignty/<bundle-id>` Spotlight hit, this gets
     /// set so SovereigntyView can scroll to + auto-expand that row.
@@ -648,6 +659,7 @@ final class SplynekViewModel: ObservableObject {
         self.seedAfterCompletion = defaults.bool(forKey: "seedAfterCompletion")
         self.seedWhileLeeching = defaults.bool(forKey: "seedWhileLeeching")
         self.mcpEnabled = defaults.bool(forKey: "mcpEnabled")
+        self.hasCompletedOnboarding = defaults.bool(forKey: "hasCompletedOnboarding")
         let savedMax = defaults.integer(forKey: "maxConcurrentDownloads")
         self.maxConcurrentDownloads = (1...10).contains(savedMax) ? savedMax : 3
 
