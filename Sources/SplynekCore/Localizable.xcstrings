@@ -206,6 +206,74 @@
         }
       }
     },
+    "A .metalink / .meta4 file is an XML list of mirror URLs + checksums some publishers (Linux distros, Apache, KDE) ship next to their main download. Splynek fans the download across every mirror you've got in parallel — one mirror per network interface — then verifies the assembled file against the publisher's checksum.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine .metalink / .meta4-Datei ist eine XML-Liste von Spiegel-URLs + Prüfsummen, die manche Herausgeber (Linux-Distros, Apache, KDE) neben dem Hauptdownload veröffentlichen. Splynek verteilt den Download parallel auf alle verfügbaren Spiegel — ein Spiegel pro Netzwerkschnittstelle — und prüft anschließend die zusammengesetzte Datei gegen die Prüfsumme des Herausgebers."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un archivo .metalink / .meta4 es una lista XML de URLs de mirrors + sumas de comprobación que algunos autores (distros de Linux, Apache, KDE) publican junto a su descarga principal. Splynek distribuye la descarga entre todos los mirrors disponibles en paralelo — un mirror por interfaz de red — y luego verifica el archivo ensamblado contra la suma de comprobación del autor."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un fichier .metalink / .meta4 est une liste XML d'URLs de miroirs + sommes de contrôle que certains éditeurs (distros Linux, Apache, KDE) publient à côté de leur téléchargement principal. Splynek répartit le téléchargement sur tous les miroirs disponibles en parallèle — un miroir par interface réseau — puis vérifie le fichier assemblé avec la somme de contrôle de l'éditeur."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un file .metalink / .meta4 è un elenco XML di URL di mirror + checksum che alcuni editori (distro Linux, Apache, KDE) pubblicano accanto al download principale. Splynek distribuisce il download su tutti i mirror disponibili in parallelo — un mirror per interfaccia di rete — quindi verifica il file assemblato confrontandolo con il checksum dell'editore."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um ficheiro .metalink / .meta4 é uma lista XML de URLs de espelhos + somas de controlo que alguns editores (distribuições Linux, Apache, KDE) publicam junto à transferência principal. O Splynek distribui a transferência por todos os espelhos disponíveis em paralelo — um espelho por interface de rede — e depois verifica o ficheiro montado contra a soma de controlo do editor."
+          }
+        }
+      }
+    },
+    "A .splynek-manifest is a chunk-by-chunk fingerprint of the original file. With one loaded, Splynek verifies each piece as it arrives — bad bytes get re-fetched on the spot instead of waiting until the whole download finishes to discover something corrupted. Useful for very large files (10+ GB).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein .splynek-manifest ist ein stückweiser Fingerabdruck der Originaldatei. Mit einem geladenen Manifest verifiziert Splynek jedes Stück, sobald es eintrifft — fehlerhafte Bytes werden sofort neu geladen, statt bis zum Ende des Downloads zu warten, um eine Beschädigung zu entdecken. Nützlich für sehr große Dateien (10+ GB)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un .splynek-manifest es una huella digital trozo a trozo del archivo original. Con uno cargado, Splynek verifica cada pieza a medida que llega — los bytes erróneos se vuelven a descargar al instante, en lugar de esperar a que termine la descarga para descubrir que algo está corrupto. Útil para archivos muy grandes (10+ GB)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un .splynek-manifest est une empreinte morceau par morceau du fichier original. Avec un manifeste chargé, Splynek vérifie chaque pièce à mesure qu'elle arrive — les octets erronés sont retéléchargés sur place au lieu d'attendre la fin du téléchargement pour découvrir une corruption. Utile pour les fichiers très volumineux (10+ Go)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un .splynek-manifest è un'impronta digitale pezzo per pezzo del file originale. Con uno caricato, Splynek verifica ogni parte mentre arriva — i byte errati vengono riscaricati sul momento, invece di attendere la fine del download per scoprire una corruzione. Utile per file molto grandi (10+ GB)."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um .splynek-manifest é uma impressão digital pedaço-a-pedaço do ficheiro original. Com um carregado, o Splynek verifica cada peça assim que chega — bytes inválidos são re-obtidos na hora, em vez de esperar até ao fim da transferência para descobrir que algo está corrompido. Útil para ficheiros muito grandes (10+ GB)."
+          }
+        }
+      }
+    },
     "A download manager that pools every network connection your Mac has — Wi-Fi, Ethernet, your iPhone's tether, all at once.": {
       "localizations": {
         "de": {
@@ -1631,6 +1699,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Alvo da avaliação"
+          }
+        }
+      }
+    },
+    "Best historical throughput for this host.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bester historischer Durchsatz für diesen Host."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejor velocidad histórica para este servidor."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meilleur débit historique pour cet hôte."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miglior velocità storica per questo host."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melhor débito histórico para este servidor."
           }
         }
       }
@@ -3335,6 +3437,40 @@
         }
       }
     },
+    "Describe downloads in plain English": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads in einfachem Englisch beschreiben"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Describe descargas en inglés sencillo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Décrivez vos téléchargements en anglais courant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descrivi i download in inglese semplice"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descrever transferências em inglês corrente"
+          }
+        }
+      }
+    },
     "Detached signature available": {
       "localizations": {
         "de": {
@@ -3604,6 +3740,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Transferir %@ pelo Splynek"
+          }
+        }
+      }
+    },
+    "Download anyway": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trotzdem herunterladen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar igualmente"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger quand même"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarica comunque"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transferir mesmo assim"
           }
         }
       }
@@ -4152,6 +4322,40 @@
         }
       }
     },
+    "Email info@splynek.app": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-Mail an info@splynek.app senden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar correo a info@splynek.app"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoyer un e-mail à info@splynek.app"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scrivi a info@splynek.app"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar e-mail para info@splynek.app"
+          }
+        }
+      }
+    },
     "Encrypt DNS lookups": {
       "localizations": {
         "de": {
@@ -4216,6 +4420,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fim"
+          }
+        }
+      }
+    },
+    "End-User Licence, Privacy Policy, and Acceptable Use — bundled into this app, viewable offline. See the *Legal* sidebar entry.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endnutzerlizenz, Datenschutzrichtlinie und Akzeptable Nutzung — in diese App eingebettet, offline einsehbar. Siehe Eintrag *Legal* in der Seitenleiste."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licencia de Usuario Final, Política de Privacidad y Uso Aceptable — incluidos en esta app, visibles sin conexión. Consulta la entrada *Legal* en la barra lateral."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licence Utilisateur Final, Politique de Confidentialité et Usage Acceptable — inclus dans cette app, consultables hors ligne. Voir l'entrée *Legal* dans la barre latérale."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licenza per l'Utente Finale, Informativa sulla Privacy e Uso Accettabile — inclusi in questa app, consultabili offline. Vedi la voce *Legal* nella barra laterale."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licença de Utilizador Final, Política de Privacidade e Uso Aceitável — incluídos nesta aplicação, visíveis offline. Vê a entrada *Legal* na barra lateral."
           }
         }
       }
@@ -4590,6 +4828,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Exportar CSV"
+          }
+        }
+      }
+    },
+    "Export the full timeline as CSV.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vollständige Zeitleiste als CSV exportieren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar la línea de tiempo completa como CSV."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter la chronologie complète au format CSV."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta la cronologia completa come CSV."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar a cronologia completa como CSV."
           }
         }
       }
@@ -5444,6 +5716,40 @@
         }
       }
     },
+    "Import…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importieren…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importar…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importer…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importa…"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importar…"
+          }
+        }
+      }
+    },
     "Install": {
       "localizations": {
         "de": {
@@ -5474,6 +5780,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Instalar"
+          }
+        }
+      }
+    },
+    "Install Chrome extension…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chrome-Erweiterung installieren…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalar extensión de Chrome…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installer l'extension Chrome…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installa estensione di Chrome…"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalar extensão do Chrome…"
+          }
+        }
+      }
+    },
+    "Install Ollama": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ollama installieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalar Ollama"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installer Ollama"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installa Ollama"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalar o Ollama"
           }
         }
       }
@@ -5576,6 +5950,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Interfaces em uso"
+          }
+        }
+      }
+    },
+    "Invalidate any QR code you've already shared. CLI / Raycast / Alfred re-pair automatically.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bereits geteilten QR-Code ungültig machen. CLI / Raycast / Alfred koppeln sich automatisch neu."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalidar cualquier código QR que ya hayas compartido. CLI / Raycast / Alfred se vuelven a emparejar automáticamente."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalider tout code QR déjà partagé. CLI / Raycast / Alfred se réappairent automatiquement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalida qualsiasi codice QR già condiviso. CLI / Raycast / Alfred si riassociano automaticamente."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalidar qualquer código QR que já tenhas partilhado. CLI / Raycast / Alfred voltam a emparelhar automaticamente."
           }
         }
       }
@@ -6022,6 +6430,40 @@
         }
       }
     },
+    "Load queue entries from a JSON file produced by Export.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warteschlangeneinträge aus einer von Export erzeugten JSON-Datei laden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargar entradas de la cola desde un archivo JSON producido por Exportar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charger les entrées de la file depuis un fichier JSON produit par l'export."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carica le voci della coda da un file JSON prodotto dall'esportazione."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carregar entradas da fila a partir de um ficheiro JSON produzido pela exportação."
+          }
+        }
+      }
+    },
     "Local AI assistant": {
       "localizations": {
         "de": {
@@ -6256,6 +6698,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Baixa"
+          }
+        }
+      }
+    },
+    "MB/s": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MB/s"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MB/s"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mo/s"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MB/s"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MB/s"
           }
         }
       }
@@ -7246,6 +7722,40 @@
         }
       }
     },
+    "Only start queued downloads inside a time window — e.g., overnight on home Wi-Fi. Running downloads are never interrupted; the schedule only gates starts.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geplante Downloads nur innerhalb eines Zeitfensters starten — z. B. nachts im Heim-WLAN. Laufende Downloads werden nie unterbrochen; der Zeitplan reguliert nur Starts."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar las descargas en cola solo dentro de una ventana horaria — por ejemplo, de noche en el Wi-Fi de casa. Las descargas en curso nunca se interrumpen; la planificación solo regula los inicios."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lancer les téléchargements en file uniquement dans une fenêtre horaire — par exemple la nuit sur le Wi-Fi domestique. Les téléchargements en cours ne sont jamais interrompus ; la planification ne contrôle que les démarrages."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvia i download in coda solo all'interno di una finestra temporale — ad esempio di notte sul Wi-Fi di casa. I download in corso non vengono mai interrotti; la pianificazione regola solo gli avvii."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar transferências em fila apenas dentro de uma janela horária — por exemplo, de noite no Wi-Fi de casa. As transferências em curso nunca são interrompidas; o agendamento controla apenas o arranque."
+          }
+        }
+      }
+    },
     "Open": {
       "localizations": {
         "de": {
@@ -7310,6 +7820,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abrir %@ no navegador"
+          }
+        }
+      }
+    },
+    "Open URL in browser": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL im Browser öffnen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir URL en el navegador"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir l'URL dans le navigateur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri URL nel browser"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir URL no navegador"
           }
         }
       }
@@ -7625,31 +8169,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Englisch wie “die neueste Ubuntu-ISO” einfügen und das lokale LLM gibt eine direkte URL zurück. Auch Verlaufssuche in natürlicher Sprache. Läuft komplett auf diesem Mac."
+            "value": "Fügen Sie englischen Text wie “das neueste Ubuntu-ISO” ein und das lokale LLM liefert eine direkte URL. Auch Verlaufssuche in natürlicher Sprache. Läuft komplett auf diesem Mac."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pega inglés como “la última ISO de Ubuntu” y el LLM local devuelve una URL directa. Búsqueda de historial en lenguaje natural también. Corre por completo en este Mac."
+            "value": "Pega inglés como “la última ISO de Ubuntu” y el LLM local devuelve una URL directa. Búsqueda del historial en lenguaje natural también. Todo se ejecuta en este Mac."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Collez de l'anglais comme “la dernière ISO Ubuntu” et le LLM local renvoie une URL directe. Recherche d'historique en langage naturel aussi. Tourne entièrement sur ce Mac."
+            "value": "Collez de l'anglais comme “la dernière ISO Ubuntu” et le LLM local renvoie une URL directe. Recherche d'historique en langage naturel aussi. Tout s'exécute sur ce Mac."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Incolla inglese come “l'ultima ISO di Ubuntu” e l'LLM locale restituisce un URL diretto. Ricerca cronologia in linguaggio naturale anche. Gira interamente su questo Mac."
+            "value": "Incolla inglese come “l'ultima ISO di Ubuntu” e l'LLM locale restituisce un URL diretto. Anche ricerca cronologia in linguaggio naturale. Tutto in esecuzione su questo Mac."
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cola inglês como “a última ISO do Ubuntu” e o LLM local devolve um URL direto. Pesquisa de histórico em linguagem natural também. Corre inteiramente neste Mac."
+            "value": "Cola inglês como “o ISO mais recente do Ubuntu” e o LLM local devolve um URL direto. Pesquisa do histórico em linguagem natural também. Tudo a correr neste Mac."
           }
         }
       }
@@ -7956,6 +8500,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pares nesta rede local"
+          }
+        }
+      }
+    },
+    "Per-interface bandwidth cap (applies across all concurrent downloads).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bandbreitenlimit pro Schnittstelle (gilt für alle gleichzeitigen Downloads)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Límite de ancho de banda por interfaz (se aplica a todas las descargas simultáneas)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limite de bande passante par interface (s'applique à tous les téléchargements simultanés)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limite di banda per interfaccia (si applica a tutti i download in corso)."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limite de largura de banda por interface (aplica-se a todas as transferências em curso)."
           }
         }
       }
@@ -8402,6 +8980,40 @@
         }
       }
     },
+    "Quick Look": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersicht"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vista Rápida"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coup d'œil"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visualizzazione rapida"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vista Rápida"
+          }
+        }
+      }
+    },
     "Quick sanity check — list every available tool. Useful for verifying the server is reachable before configuring a real client.": {
       "localizations": {
         "de": {
@@ -8640,6 +9252,74 @@
         }
       }
     },
+    "Re-query every fleet peer for current downloads": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden Flotten-Peer erneut nach aktuellen Downloads abfragen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a consultar a cada par de la flota por sus descargas actuales"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinterroger chaque pair de la flotte sur ses téléchargements actuels"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interroga di nuovo ogni peer della flotta per i download attuali"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reconsultar cada par da Frota para ver as transferências atuais"
+          }
+        }
+      }
+    },
+    "Re-queue every failed or cancelled entry. Runs immediately if nothing else is running.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle fehlgeschlagenen oder abgebrochenen Einträge erneut einreihen. Startet sofort, wenn nichts anderes läuft."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a poner en cola cada entrada fallida o cancelada. Comienza de inmediato si no hay nada más en marcha."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remettre en file toutes les entrées ayant échoué ou annulées. Démarre immédiatement si rien d'autre n'est en cours."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimetti in coda ogni voce fallita o annullata. Parte subito se non c'è nient'altro in esecuzione."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar a colocar na fila todas as entradas falhadas ou canceladas. Inicia de imediato se nada estiver em curso."
+          }
+        }
+      }
+    },
     "Re-run with the same target. Useful after switching networks.": {
       "localizations": {
         "de": {
@@ -8810,6 +9490,40 @@
         }
       }
     },
+    "Refresh": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualisieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualizar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualiser"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiorna"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atualizar"
+          }
+        }
+      }
+    },
     "Refresh login-item status from macOS": {
       "localizations": {
         "de": {
@@ -8908,6 +9622,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Registado. O macOS vai iniciar o Splynek no próximo início de sessão."
+          }
+        }
+      }
+    },
+    "Remove every completed, failed, and cancelled entry. Running and pending entries are kept.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle abgeschlossenen, fehlgeschlagenen und abgebrochenen Einträge entfernen. Laufende und ausstehende Einträge bleiben erhalten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar todas las entradas completadas, fallidas y canceladas. Las entradas en curso y pendientes se conservan."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer toutes les entrées terminées, échouées et annulées. Les entrées en cours et en attente sont conservées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi tutte le voci completate, fallite e annullate. Le voci in esecuzione e in attesa vengono mantenute."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remover todas as entradas concluídas, falhadas e canceladas. As entradas em curso e pendentes são mantidas."
+          }
+        }
+      }
+    },
+    "Remove from queue": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus Warteschlange entfernen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitar de la cola"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retirer de la file"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi dalla coda"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remover da fila"
           }
         }
       }
@@ -9150,6 +9932,40 @@
         }
       }
     },
+    "Restore all": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle wiederherstellen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar todo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout restaurer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina tutto"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar tudo"
+          }
+        }
+      }
+    },
     "Results below ↓": {
       "localizations": {
         "de": {
@@ -9252,6 +10068,40 @@
         }
       }
     },
+    "Retry": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut versuchen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reintentar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réessayer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprova"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repetir"
+          }
+        }
+      }
+    },
     "Reveal": {
       "localizations": {
         "de": {
@@ -9350,6 +10200,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrar no Finder."
+          }
+        }
+      }
+    },
+    "Reveal the downloaded file in Finder.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heruntergeladene Datei im Finder anzeigen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar el archivo descargado en el Finder."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher le fichier téléchargé dans le Finder."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra il file scaricato nel Finder."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar o ficheiro transferido no Finder."
+          }
+        }
+      }
+    },
+    "Reveal the source Markdown in Finder": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quell-Markdown im Finder anzeigen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar el Markdown original en el Finder"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher le Markdown source dans le Finder"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra il Markdown originale nel Finder"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar o Markdown de origem no Finder"
           }
         }
       }
@@ -9694,6 +10612,40 @@
         }
       }
     },
+    "Safari bookmarklets…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safari-Bookmarklets…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookmarklets de Safari…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookmarklets Safari…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookmarklet di Safari…"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookmarklets do Safari…"
+          }
+        }
+      }
+    },
     "Save": {
       "localizations": {
         "de": {
@@ -9826,6 +10778,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Análise iniciada — os resultados aparecem nos separadores Sovereignty e Trust."
+          }
+        }
+      }
+    },
+    "Scan the QR with a phone on the same LAN to submit downloads to this Mac. Read-only state is open to the LAN; submit requires the token embedded in the QR.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scannen Sie den QR-Code mit einem Telefon im selben LAN, um Downloads an diesen Mac zu übermitteln. Der schreibgeschützte Status ist im LAN offen; das Übermitteln erfordert das im QR eingebettete Token."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanea el QR con un teléfono en la misma red local para enviar descargas a este Mac. El estado de solo lectura está abierto a la red local; enviar requiere el token incrustado en el QR."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scannez le QR avec un téléphone sur le même réseau local pour soumettre des téléchargements à ce Mac. L'état en lecture seule est ouvert au réseau local ; la soumission requiert le jeton intégré dans le QR."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scansiona il QR con un telefono sulla stessa rete locale per inviare download a questo Mac. Lo stato in sola lettura è aperto alla rete locale; l'invio richiede il token incorporato nel QR."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lê o código QR com um telemóvel na mesma rede local para submeter transferências a este Mac. O estado de leitura está aberto à rede local; submeter requer o token embutido no QR."
           }
         }
       }
@@ -10510,6 +11496,40 @@
         }
       }
     },
+    "Show details — speedup, per-interface contribution, SHA-256.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Details anzeigen — Beschleunigung, Beitrag pro Schnittstelle, SHA-256."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar detalles — aceleración, contribución por interfaz, SHA-256."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher les détails — accélération, contribution par interface, SHA-256."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra dettagli — accelerazione, contributo per interfaccia, SHA-256."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar detalhes — aceleração, contribuição por interface, SHA-256."
+          }
+        }
+      }
+    },
     "Show in Finder": {
       "localizations": {
         "de": {
@@ -10574,6 +11594,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ignorar"
+          }
+        }
+      }
+    },
+    "Some publishers list a **checksum** (also called a *hash* or *SHA-256*) next to their download link. It's a fingerprint of the original file. If you have one, paste it below and Splynek will refuse to save the download if even a single byte doesn't match — protects you against corrupted downloads or files swapped at a malicious mirror.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manche Herausgeber geben eine **Prüfsumme** (auch *Hash* oder *SHA-256* genannt) neben dem Download-Link an. Sie ist ein Fingerabdruck der Originaldatei. Wenn Sie eine haben, fügen Sie sie unten ein und Splynek weigert sich, den Download zu speichern, sobald auch nur ein einziges Byte abweicht — schützt Sie vor beschädigten Downloads oder bei einem böswilligen Spiegel ausgetauschten Dateien."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algunos autores publican una **suma de comprobación** (también llamada *hash* o *SHA-256*) junto al enlace de descarga. Es la huella digital del archivo original. Si tienes una, pégala abajo y Splynek se negará a guardar la descarga si aunque sea un solo byte no coincide — te protege contra descargas corruptas o archivos sustituidos en un mirror malicioso."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Certains éditeurs publient une **somme de contrôle** (aussi appelée *hash* ou *SHA-256*) à côté de leur lien de téléchargement. C'est une empreinte du fichier original. Si vous en avez une, collez-la ci-dessous et Splynek refusera d'enregistrer le téléchargement si un seul octet diffère — vous protège contre les téléchargements corrompus ou les fichiers substitués sur un miroir malveillant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcuni editori pubblicano un **checksum** (chiamato anche *hash* o *SHA-256*) accanto al link di download. È un'impronta del file originale. Se ne hai uno, incollalo qui sotto e Splynek si rifiuterà di salvare il download anche se differisce di un solo byte — ti protegge da download corrotti o file sostituiti su un mirror malevolo."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alguns editores indicam uma **soma de controlo** (também chamada *hash* ou *SHA-256*) ao lado do link de transferência. É uma impressão digital do ficheiro original. Se tiveres uma, cola-a abaixo e o Splynek recusa-se a guardar a transferência se um único byte não corresponder — protege-te contra transferências corrompidas ou ficheiros trocados num espelho malicioso."
           }
         }
       }
@@ -11157,6 +12211,74 @@
         }
       }
     },
+    "Splynek looks up hostnames over Cloudflare's encrypted DNS (DNS-over-HTTPS, port 443). Stops your internet provider from seeing which sites you download from. Tiny latency cost on the first request to each hostname.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek löst Hostnamen über Cloudflares verschlüsseltes DNS auf (DNS-over-HTTPS, Port 443). Verhindert, dass Ihr Internetanbieter sieht, von welchen Seiten Sie herunterladen. Kleine Latenzkosten bei der ersten Anfrage zu jedem Hostnamen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek resuelve los nombres de servidor a través del DNS cifrado de Cloudflare (DNS-over-HTTPS, puerto 443). Evita que tu proveedor de internet vea de qué sitios descargas. Pequeño coste de latencia en la primera solicitud a cada nombre."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek résout les noms d'hôte via le DNS chiffré de Cloudflare (DNS-over-HTTPS, port 443). Empêche votre fournisseur d'accès de voir depuis quels sites vous téléchargez. Léger surcoût de latence à la première requête vers chaque nom."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek risolve i nomi host tramite il DNS cifrato di Cloudflare (DNS-over-HTTPS, porta 443). Impedisce al tuo provider di vedere da quali siti scarichi. Piccolo costo di latenza alla prima richiesta verso ogni nome."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek resolve nomes de servidor através do DNS encriptado da Cloudflare (DNS-over-HTTPS, porta 443). Impede que o teu fornecedor de internet veja de que sites transferes. Pequeno custo de latência no primeiro pedido a cada nome."
+          }
+        }
+      }
+    },
+    "Splynek understands two extra file formats some publishers ship next to their main download. Pick one if you've got it; otherwise skip — they're optional speed-ups, not required.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek versteht zwei zusätzliche Dateiformate, die manche Herausgeber neben dem Hauptdownload veröffentlichen. Wählen Sie eines, wenn Sie es haben; ansonsten überspringen — sie sind optionale Beschleuniger, nicht erforderlich."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek reconoce dos formatos extra que algunos autores publican junto a su descarga principal. Elige uno si lo tienes; si no, omítelo — son aceleradores opcionales, no obligatorios."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek comprend deux formats supplémentaires que certains éditeurs publient à côté de leur téléchargement principal. Choisissez-en un si vous en disposez ; sinon, passez — ce sont des accélérations facultatives, pas obligatoires."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek comprende due formati aggiuntivi che alcuni editori pubblicano accanto al download principale. Scegline uno se ce l'hai; altrimenti ignora — sono acceleratori facoltativi, non obbligatori."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek reconhece dois formatos extra que alguns editores publicam junto à transferência principal. Escolhe um se tiveres; caso contrário, ignora — são acelerações opcionais, não obrigatórias."
+          }
+        }
+      }
+    },
     "Splynek will save files here. You can change this later in Settings — but picking once now means you'll always know where things land.": {
       "localizations": {
         "de": {
@@ -11463,6 +12585,40 @@
         }
       }
     },
+    "Stop sharing this file with other Splyneks on the LAN. The file and history entry are kept; only fleet sharing stops.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Datei nicht mehr mit anderen Splyneks im LAN teilen. Datei und Verlaufseintrag bleiben erhalten; nur die Flotten-Freigabe wird beendet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dejar de compartir este archivo con otros Splyneks en la red local. El archivo y la entrada en el historial se conservan; solo se detiene el uso compartido por la flota."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cesser de partager ce fichier avec les autres Splyneks du réseau local. Le fichier et l'entrée d'historique sont conservés ; seul le partage par la flotte s'arrête."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smetti di condividere questo file con gli altri Splynek nella rete locale. Il file e la voce di cronologia vengono mantenuti; si interrompe solo la condivisione tramite flotta."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parar de partilhar este ficheiro com outros Splyneks na rede local. O ficheiro e a entrada no histórico são mantidos; só a partilha pela Frota termina."
+          }
+        }
+      }
+    },
     "TIME SAVED": {
       "localizations": {
         "de": {
@@ -11731,6 +12887,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "O LLM local propõe cada transferência com URL + justificação"
+          }
+        }
+      }
+    },
+    "The three documents above form the complete agreement between you and Splynek's maintainers. If anything is unclear, or if you think a clause needs to change for your specific use, reach out:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die drei Dokumente oben bilden die vollständige Vereinbarung zwischen Ihnen und den Maintainern von Splynek. Wenn etwas unklar ist oder Sie eine Klausel für Ihren konkreten Einsatz anpassen möchten, melden Sie sich:"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los tres documentos anteriores constituyen el acuerdo completo entre tú y los mantenedores de Splynek. Si algo no está claro, o si crees que alguna cláusula debe cambiar para tu uso específico, ponte en contacto:"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les trois documents ci-dessus forment l'accord complet entre vous et les mainteneurs de Splynek. Si quoi que ce soit n'est pas clair, ou si vous pensez qu'une clause doit être modifiée pour votre usage spécifique, contactez-nous :"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I tre documenti qui sopra costituiscono l'accordo completo tra te e i manutentori di Splynek. Se qualcosa non è chiaro, o se ritieni che una clausola debba cambiare per il tuo uso specifico, contattaci:"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Os três documentos acima constituem o acordo completo entre ti e os mantenedores do Splynek. Se algo não for claro, ou se achares que uma cláusula precisa de mudar para o teu caso específico, contacta-nos:"
+          }
+        }
+      }
+    },
+    "These documents are templates provided in good faith. Before deploying Splynek in a context where legal precision matters (business use, enterprise distribution, unusual jurisdictions), have your own counsel review them.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Dokumente sind Vorlagen, die nach bestem Wissen bereitgestellt werden. Bevor Sie Splynek in einem Kontext einsetzen, in dem juristische Präzision wichtig ist (geschäftliche Nutzung, Unternehmensverteilung, ungewöhnliche Jurisdiktionen), lassen Sie sie von Ihrem eigenen Rechtsbeistand prüfen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estos documentos son plantillas proporcionadas de buena fe. Antes de desplegar Splynek en un contexto donde la precisión jurídica sea importante (uso empresarial, distribución corporativa, jurisdicciones atípicas), haz que tu propio abogado los revise."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ces documents sont des modèles fournis de bonne foi. Avant de déployer Splynek dans un contexte où la précision juridique compte (usage professionnel, distribution en entreprise, juridictions atypiques), faites-les relire par votre propre conseil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questi documenti sono modelli forniti in buona fede. Prima di adottare Splynek in un contesto in cui la precisione legale è rilevante (uso commerciale, distribuzione aziendale, giurisdizioni atipiche), fai esaminare i documenti da un legale di tua fiducia."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estes documentos são modelos fornecidos de boa-fé. Antes de implementares o Splynek num contexto em que a precisão jurídica seja relevante (uso comercial, distribuição empresarial, jurisdições atípicas), pede a um advogado teu para os rever."
           }
         }
       }
@@ -12212,6 +13436,40 @@
         }
       }
     },
+    "Type “the latest Ubuntu ISO” instead of a URL. Splynek Pro feature — powered by a local LLM (LM Studio or Ollama) on your Mac.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tippen Sie “das neueste Ubuntu-ISO” statt einer URL. Splynek-Pro-Funktion — angetrieben von einem lokalen LLM (LM Studio oder Ollama) auf Ihrem Mac."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escribe “la última ISO de Ubuntu” en lugar de una URL. Función de Splynek Pro — impulsada por un LLM local (LM Studio u Ollama) en tu Mac."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tapez “la dernière ISO Ubuntu” au lieu d'une URL. Fonctionnalité Splynek Pro — propulsée par un LLM local (LM Studio ou Ollama) sur votre Mac."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scrivi “l'ultima ISO di Ubuntu” invece di un URL. Funzione di Splynek Pro — basata su un LLM locale (LM Studio o Ollama) sul tuo Mac."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escreve “o ISO mais recente do Ubuntu” em vez de um URL. Funcionalidade do Splynek Pro — alimentada por um LLM local (LM Studio ou Ollama) no teu Mac."
+          }
+        }
+      }
+    },
     "URLs waiting their turn. Splynek starts each one automatically when an active slot frees up.": {
       "localizations": {
         "de": {
@@ -12242,6 +13500,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "URLs à espera da vez. O Splynek inicia cada um automaticamente quando uma vaga ativa fica livre."
+          }
+        }
+      }
+    },
+    "Unavailable.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht verfügbar."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No disponible."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indisponible."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non disponibile."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indisponível."
           }
         }
       }
@@ -12586,6 +13878,40 @@
         }
       }
     },
+    "Waiting for the fleet listener to bind…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warte, bis der Flotten-Listener gebunden wird…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando a que el escuchador de la flota se vincule…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En attente de la liaison de l'écouteur de flotte…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In attesa che il listener della flotta si colleghi…"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À espera que o ouvinte da Frota se ligue…"
+          }
+        }
+      }
+    },
     "Watch folder for drops": {
       "localizations": {
         "de": {
@@ -12892,6 +14218,40 @@
         }
       }
     },
+    "Write the current queue to a JSON file.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuelle Warteschlange in eine JSON-Datei schreiben."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escribir la cola actual en un archivo JSON."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Écrire la file actuelle dans un fichier JSON."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scrivi la coda attuale in un file JSON."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escrever a fila atual num ficheiro JSON."
+          }
+        }
+      }
+    },
     "Yesterday": {
       "localizations": {
         "de": {
@@ -13126,6 +14486,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "moderado"
+          }
+        }
+      }
+    },
+    "vs. best single-path estimate": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ggü. bester Einzelpfad-Schätzung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs. mejor estimación de ruta única"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs. meilleure estimation à voie unique"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs. miglior stima a percorso singolo"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs. melhor estimativa de caminho único"
           }
         }
       }

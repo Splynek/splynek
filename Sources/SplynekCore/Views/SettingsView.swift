@@ -256,7 +256,10 @@ struct SettingsView: View {
             )
         ) {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Paste English like \u{201C}the latest Ubuntu ISO\u{201D} and the local LLM returns a direct URL. Natural-language history search too. Runs entirely on this Mac.")
+                // v1.6.2 round 7: switched from \u{201C}/\u{201D} escapes to
+                // real curly-quote glyphs so the audit script's regex matches
+                // the string literal against the catalog key. Renders identically.
+                Text("Paste English like “the latest Ubuntu ISO” and the local LLM returns a direct URL. Natural-language history search too. Runs entirely on this Mac.")
                     .font(.callout).foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                 if vm.aiAvailable, let model = vm.aiModel {
