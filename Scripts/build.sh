@@ -53,6 +53,15 @@ cp Resources/Info.plist "$APP/Contents/Info.plist"
 if [[ -f Resources/Splynek.icns ]]; then
     cp Resources/Splynek.icns "$APP/Contents/Resources/Splynek.icns"
 fi
+# v1.6.1: SPM resource bundle for localization.  SwiftPM compiles
+# Localizable.xcstrings into a per-target .bundle (Splynek_SplynekCore.bundle).
+# At runtime SwiftUI's LocalizedStringKey lookup walks Bundle.module
+# which resolves via this bundle.  Without copying it into the .app,
+# every locale falls through to source English.
+SPM_BUNDLE="$BIN_PATH/Splynek_SplynekCore.bundle"
+if [[ -d "$SPM_BUNDLE" ]]; then
+    cp -R "$SPM_BUNDLE" "$APP/Contents/Resources/Splynek_SplynekCore.bundle"
+fi
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
 # Ship the browser-integration helpers inside the bundle so the About

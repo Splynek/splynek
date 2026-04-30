@@ -9,9 +9,9 @@
     <key>CFBundleIdentifier</key>
     <string>app.splynek.Splynek</string>
     <key>CFBundleVersion</key>
-    <string>1600</string>
+    <string>1610</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.6.0</string>
+    <string>1.6.1</string>
     <key>CFBundleExecutable</key>
     <string>Splynek</string>
     <key>CFBundleIconFile</key>
@@ -32,6 +32,21 @@
     <true/>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
+    <!-- v1.6.1: localization.  Source language is English; Splynek
+         ships pt-PT / es / fr / de / it via Sources/SplynekCore/
+         Localizable.xcstrings.  Apple's Mac App Store reads this
+         array to populate the "Languages" section of the listing. -->
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>pt-PT</string>
+        <string>es</string>
+        <string>fr</string>
+        <string>de</string>
+        <string>it</string>
+    </array>
     <key>CFBundleURLTypes</key>
     <array>
         <dict>
