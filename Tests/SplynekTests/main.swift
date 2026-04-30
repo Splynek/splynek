@@ -26,6 +26,7 @@ TorrentResumeTests.run()
 SovereigntyCatalogTests.run()
 TrustCatalogTests.run()
 InfoPlistSyncTests.run()
+ReleaseCoherenceTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

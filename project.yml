@@ -43,8 +43,15 @@ settings:
     DEVELOPMENT_TEAM: 58C6YC5GB5
     MACOSX_DEPLOYMENT_TARGET: "13.0"
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: "1.5.3"
-    CURRENT_PROJECT_VERSION: "1530"
+    # ⚠️  v1.0 (App Store) IS IN APPLE REVIEW.  Do NOT `xcodebuild
+    # archive -scheme Splynek-MAS` and submit while review is in
+    # flight — that replaces the in-queue v1.0 binary with whatever
+    # version this file currently declares.  Wait for "Pronto para
+    # venda" (Ready for Sale) before MAS resubmissions.  The DMG /
+    # Developer-ID stream (`./Scripts/build.sh`) is independent and
+    # safe to re-cut at any time.
+    MARKETING_VERSION: "1.5.6"
+    CURRENT_PROJECT_VERSION: "1560"
     ENABLE_HARDENED_RUNTIME: "YES"
     CODE_SIGN_STYLE: Automatic
     PRODUCT_BUNDLE_IDENTIFIER: app.splynek.Splynek

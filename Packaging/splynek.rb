@@ -2,8 +2,11 @@
 # frozen_string_literal: true
 
 cask "splynek" do
-  version "1.5.3"
-  sha256 "4fe61bab5ee2eb847d789c7f8b2245bf6b180936ec231241284f20b968c0e6cb"
+  version "1.5.6"
+  # ⚠️  sha256 placeholder — replace with the real hash once the
+  # v1.5.6 DMG is built + uploaded to GitHub Releases.
+  # Compute via: shasum -a 256 dist/Splynek-1.5.6.dmg
+  sha256 :no_check
 
   url "https://github.com/Splynek/splynek/releases/download/v#{version}/Splynek-#{version}.dmg",
       verified: "github.com/Splynek/"

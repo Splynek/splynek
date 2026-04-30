@@ -193,8 +193,19 @@ public final class FleetCoordinator: ObservableObject {
     // checker that we've taken responsibility for concurrency here.
     private let rateLock = NSLock()
     nonisolated(unsafe) private var rateHits: [String: [Date]] = [:]
+    /// v1.5.6+: counts insertions since last GC.  When this hits
+    /// `rateGCEvery` we run a single full sweep — replaces the
+    /// previous "if rateHits.count > 256, walk the whole dict on
+    /// EVERY call" pattern, which under SYN-flood-like load was
+    /// doing an O(n) walk on the hot path 60× per second per peer.
+    /// Now we do at most one walk per `rateGCEvery` admitted requests.
+    nonisolated(unsafe) private var rateInsertSinceGC: Int = 0
     private static let rateWindow: TimeInterval = 10
     private static let rateMaxPerWindow = 60
+    /// Number of admitted-request inserts between dict GCs.  Tuned so
+    /// a benign LAN with ~5 peers GCs roughly every minute, while a
+    /// hostile flood doesn't get more than ~1 GC walk per second.
+    private static let rateGCEvery = 1024
 
     /// Returns true iff the request should be served; false iff we
     /// should respond with 429. Thread-safe.
@@ -206,16 +217,23 @@ public final class FleetCoordinator: ObservableObject {
         var hits = (rateHits[remote] ?? []).filter { $0 > cutoff }
         if hits.count >= Self.rateMaxPerWindow {
             rateHits[remote] = hits     // keep the compacted list
+            Log.fleet.notice("rate-limited remote (HTTP 429)")
             return false
         }
         hits.append(now)
         rateHits[remote] = hits
-        // Opportunistic GC — prune stale entries occasionally to keep
-        // the dict from growing without bound.
-        if rateHits.count > 256 {
-            for (k, v) in rateHits where v.allSatisfy({ $0 < cutoff }) {
-                rateHits.removeValue(forKey: k)
+        rateInsertSinceGC &+= 1
+        // Periodic GC: every `rateGCEvery` admitted inserts, prune
+        // entries whose ALL hits are older than the rate window.
+        // O(n) walk amortised over `rateGCEvery` calls — cheap.
+        if rateInsertSinceGC >= Self.rateGCEvery {
+            rateInsertSinceGC = 0
+            let before = rateHits.count
+            rateHits = rateHits.compactMapValues { hits in
+                let live = hits.filter { $0 > cutoff }
+                return live.isEmpty ? nil : live
             }
+            Log.fleet.debug("rate-dict GC: \(before - self.rateHits.count, privacy: .public) entries pruned")
         }
         return true
     }

@@ -251,9 +251,16 @@ struct TrustView: View {
     @ViewBuilder
     private func resultRow(_ row: Row) -> some View {
         VStack(alignment: .leading, spacing: 12) {
+            // v1.5.6+: the visual header reads as four separate
+            // elements to a sighted user but that's noisy via
+            // VoiceOver.  Combine into one utterance: app name,
+            // version, score, level.  Each individual element keeps
+            // its own a11y label for users who turn on Element-only
+            // navigation, but Group-level traversal hits this once.
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Image(systemName: "app.fill")
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Text(row.app.name)
                     .font(.system(.headline, design: .rounded))
                 if let v = row.app.version {
@@ -264,6 +271,8 @@ struct TrustView: View {
                 Spacer()
                 scoreBadge(row.score)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(rowHeaderAccessibilityLabel(row))
 
             // Concern labels — top 3 visible inline; full list inside
             // the disclosure below so the row stays compact.
@@ -504,6 +513,9 @@ struct TrustView: View {
     /// gets the same behaviour across tabs.
     @ViewBuilder
     private func altActionButton(name: String, homepage: URL, downloadURL: URL?) -> some View {
+        // v1.5.6+: explicit accessibilityLabel naming the alternative
+        // — VoiceOver was reading "Install" without context, which
+        // is useless when there are 5 alternatives in a row.
         if let dl = downloadURL, isSafeDownloadScheme(dl) {
             Button {
                 vm.urlText = dl.absoluteString
@@ -516,6 +528,7 @@ struct TrustView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
             .help("Download \(name) via Splynek")
+            .accessibilityLabel("Install \(name) via Splynek")
         } else if isSafeHomepageScheme(homepage) {
             Link(destination: homepage) {
                 Label("Visit", systemImage: "arrow.up.right.square")
@@ -525,6 +538,7 @@ struct TrustView: View {
             .buttonStyle(.bordered)
             .controlSize(.small)
             .help("Open \(homepage.host ?? name) in your browser")
+            .accessibilityLabel("Visit \(name) homepage in browser")
         }
     }
 
@@ -591,6 +605,21 @@ struct TrustView: View {
         case .high:      return "High"
         case .severe:    return "Severe"
         }
+    }
+
+    /// v1.5.6+: combined-utterance row header for VoiceOver.  Reads
+    /// as one sentence, e.g. "TikTok version 28.4.0, trust score 85
+    /// out of 100, severe risk, 7 concerns".  Matches the visual
+    /// hierarchy a sighted user gets without four separate stops.
+    private func rowHeaderAccessibilityLabel(_ row: Row) -> String {
+        var parts: [String] = []
+        parts.append(row.app.name)
+        if let v = row.app.version { parts.append("version \(v)") }
+        parts.append("trust score \(row.score.value) of 100")
+        parts.append(levelAccessibilityLabel(row.score.level))
+        let n = row.entry.concerns.count
+        parts.append(n == 1 ? "1 concern" : "\(n) concerns")
+        return parts.joined(separator: ", ")
     }
 
     private func levelAccessibilityLabel(_ level: TrustScorer.Level) -> String {

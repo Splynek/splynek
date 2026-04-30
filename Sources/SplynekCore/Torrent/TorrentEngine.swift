@@ -577,14 +577,27 @@ final class PiecePicker: @unchecked Sendable {
         lock.lock(); defer { lock.unlock() }
         let remaining = done.filter { !$0 }.count
         let endgame = remaining > 0 && remaining <= Self.endgameThreshold
-        var best: (Int, Int)? = nil
+        // v1.5.6+: rewrote `best == nil || avail < best!.0 || ...`
+        // (which mixed force-unwrap with logical guards) into a
+        // structured switch.  Same picker semantics — rarest piece
+        // first, ties broken by Bool.random — but no force-unwrap.
+        // Refactor-safer: future logic changes can't accidentally
+        // turn an unreachable path into a crash.
+        var best: (avail: Int, idx: Int)? = nil
         for i in 0..<numPieces
             where !done[i]
                && (endgame || !inFlight.contains(i))
                && bitfield.isSet(i) {
             let avail = availability[i]
-            if best == nil || avail < best!.0 || (avail == best!.0 && Bool.random()) {
+            switch best {
+            case nil:
                 best = (avail, i)
+            case let .some(cur) where avail < cur.avail:
+                best = (avail, i)
+            case let .some(cur) where avail == cur.avail && Bool.random():
+                best = (avail, i)
+            default:
+                break
             }
         }
         guard let (_, idx) = best else { return nil }

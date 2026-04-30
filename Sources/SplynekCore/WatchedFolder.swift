@@ -56,17 +56,36 @@ final class WatchedFolder {
     /// Create the folder (if missing), kick off the first scan, then
     /// install a repeating Timer. Safe to call repeatedly — `stop` is
     /// invoked internally before re-installing.
+    /// v1.5.6+: reentrancy guard — if a previous tick's scan is still
+    /// in flight (slow disk, network volume, big folder), we drop this
+    /// tick rather than stacking another scan on top of it.  Without
+    /// this guard, a folder containing 10k files on a network mount
+    /// could pile up dozens of overlapping scans on the main actor.
+    private var scanInFlight: Bool = false
+
     func start() {
         stop()
         ensureDirectories()
         // Immediate first scan so users don't wait 5 seconds after
         // enabling for nothing to happen.
-        scan()
+        scanGuarded()
         let t = Timer(timeInterval: Self.scanIntervalSeconds, repeats: true) { [weak self] _ in
-            Task { @MainActor in self?.scan() }
+            Task { @MainActor in self?.scanGuarded() }
         }
         RunLoop.main.add(t, forMode: .common)
         timer = t
+    }
+
+    /// Wrap `scan()` with a reentrancy guard.  Drops the tick (with a
+    /// `Log.scan.notice`) if a previous tick is still running.
+    private func scanGuarded() {
+        guard !scanInFlight else {
+            Log.scan.notice("watched-folder scan tick dropped (previous still in flight)")
+            return
+        }
+        scanInFlight = true
+        defer { scanInFlight = false }
+        scan()
     }
 
     func stop() {

@@ -438,9 +438,12 @@ struct SovereigntyView: View {
     @ViewBuilder
     private func resultRow(_ row: Row) -> some View {
         VStack(alignment: .leading, spacing: 10) {
+            // v1.5.6+: combine the row header into one VoiceOver
+            // utterance.  Previously read as four fragments.
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Image(systemName: "app.fill")
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
                 Text(row.app.name)
                     .font(.system(.headline, design: .rounded))
                 if let v = row.app.version {
@@ -453,6 +456,8 @@ struct SovereigntyView: View {
                 // controlled from.  US / CN / RU / OTHER.
                 originBadge(for: row.entry.targetOrigin)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(rowHeaderAccessibilityLabel(row))
             VStack(spacing: 8) {
                 ForEach(row.visibleAlternatives) { alt in
                     alternativeRow(alt)
@@ -504,6 +509,9 @@ struct SovereigntyView: View {
     /// reaches the download engine even if validation upstream fails.
     @ViewBuilder
     private func actionButton(for alt: SovereigntyCatalog.Alternative) -> some View {
+        // v1.5.6+: explicit accessibilityLabel naming the alternative
+        // — VoiceOver was reading "Install" generically, which is
+        // useless when there are 5 alternatives stacked in one row.
         if let dl = alt.downloadURL, isSafeDownloadScheme(dl) {
             Button {
                 vm.urlText = dl.absoluteString
@@ -516,6 +524,7 @@ struct SovereigntyView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
             .help("Download \(alt.name) via Splynek")
+            .accessibilityLabel("Install \(alt.name) via Splynek")
         } else if isSafeHomepageScheme(alt.homepage) {
             Link(destination: alt.homepage) {
                 Label("Visit", systemImage: "arrow.up.right.square")
@@ -525,6 +534,7 @@ struct SovereigntyView: View {
             .buttonStyle(.bordered)
             .controlSize(.small)
             .help("Open \(alt.homepage.host ?? alt.name) in your browser")
+            .accessibilityLabel("Visit \(alt.name) homepage in browser")
         }
     }
 
@@ -544,6 +554,20 @@ struct SovereigntyView: View {
     private func isSafeHomepageScheme(_ url: URL) -> Bool {
         let s = (url.scheme ?? "").lowercased()
         return s == "https" || s == "http"
+    }
+
+    /// v1.5.6+: combined-utterance row header for VoiceOver.  Reads
+    /// as one sentence, e.g. "TikTok version 28.4.0, controlled from
+    /// China, 5 alternatives".  Matches the visual hierarchy a sighted
+    /// user gets without four separate stops.
+    private func rowHeaderAccessibilityLabel(_ row: Row) -> String {
+        var parts: [String] = []
+        parts.append(row.app.name)
+        if let v = row.app.version { parts.append("version \(v)") }
+        parts.append("controlled from \(row.entry.targetOrigin.accessibilityLabel)")
+        let n = row.visibleAlternatives.count
+        parts.append(n == 1 ? "1 alternative" : "\(n) alternatives")
+        return parts.joined(separator: ", ")
     }
 
     @ViewBuilder

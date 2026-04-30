@@ -186,7 +186,18 @@ actor LANPeerBrowser {
         let browser = NWBrowser(for: descriptor, using: params)
         self.browser = browser
 
-        let gate = ResumeGate()
+        // v1.5.6+: was `DispatchQueue.global().asyncAfter { Task { ... } }`
+        // — a GCD-into-Task bridge that ignored caller-side cancellation
+        // and required a `ResumeGate` defensive belt.  The new shape is
+        // structured: a single `Task { Task.sleep + resume }` whose
+        // `try? await Task.sleep` propagates cancellation from the
+        // surrounding async context (so abort-then-search returns
+        // immediately, not after `timeout` seconds).
+        //
+        // ResumeGate dropped here — the browser callback above never
+        // resumed the continuation; only the timer does, exactly once.
+        // Empty `[URL]` is the natural-cancellation result.
+        Log.lan.debug("LAN peer search starting, timeout \(timeout, privacy: .public)s")
         return await withCheckedContinuation { (cont: CheckedContinuation<[URL], Never>) in
             browser.browseResultsChangedHandler = { results, _ in
                 Task { [weak self] in
@@ -207,12 +218,12 @@ actor LANPeerBrowser {
                 }
             }
             browser.start(queue: DispatchQueue(label: "splynek.lan.browser"))
-            DispatchQueue.global().asyncAfter(deadline: .now() + timeout) {
-                Task { [weak self] in
-                    guard let self else { cont.resume(returning: []); return }
-                    let urls = await self.stop()
-                    if gate.fire() { cont.resume(returning: urls) }
-                }
+            Task { [weak self] in
+                try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+                guard let self else { cont.resume(returning: []); return }
+                let urls = await self.stop()
+                Log.lan.debug("LAN peer search done, \(urls.count, privacy: .public) found")
+                cont.resume(returning: urls)
             }
         }
     }

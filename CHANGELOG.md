@@ -3,6 +3,83 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.5.6 — weekly workflow hardening (2026-04-28)
+
+CI: real-rot vs transient classification in `Scripts/check-urls.swift`
+so 429 / 403 / 5xx / `-1003` / `-1004` / `-1005` / timeout no longer
+page as "rotted URLs". Workflow now reads the new `rotted` /
+`transient` JSON arrays separately, only opens an issue on true rot,
+and lists the transient-set's first 10 with a link to the artifact
+for the rest.
+
+Also: `permissions: issues: write` at workflow level (default
+GITHUB_TOKEN went read-only in 2023, blocking the issue-create call
+with a 403). Removed `swift run splynek-test` from the lint job —
+emit-module on the 22k-line generated `SovereigntyCatalog+Entries.swift`
+was OOM-killed (signal 9) on macos-latest's 7 GB runner. Catalog
+invariants are still covered by the offline validator + the
+regenerator round-trip step. General test-suite coverage will move
+to a dedicated `test.yml` workflow with reduced parallelism.
+
+## v1.5.5 — debt clearance (2026-04-26)
+
+Sovereignty validator runs at zero warnings. Replaced the dead BIS
+URL (`bis.doc.gov/index.php/policy-guidance/ict-supply-chain` →
+homepage redirect) with the canonical Federal Register Final
+Determination 2024-13869 reference; added "Federal Register" to the
+validator's known-source allowlist. Stale files purged.
+
+## v1.5.4 — Trust score weights + version-sync test (2026-04-26)
+
+Settings card with four sliders for the per-axis Trust weights
+(privacy / security / trust / business model). Each setter persists
+to its own UserDefaults key (`trustWeight.privacy` etc.) so a
+corrupted preference can only break one axis. `Reset to defaults`
+button restores the documented defaults via
+`SplynekViewModel.resetTrustWeightsToDefault()`.
+
+Added `InfoPlistSyncTests` — invariant test that catches the bug we
+shipped twice in v1.4 + v1.5.x where `Resources/Info.plist` (DMG /
+SPM build) drifted out of sync with `project.yml`'s
+`MARKETING_VERSION` (XcodeGen / MAS build) and the Alfred workflow's
+plist. Caught a real drift on first run and forced this fix.
+
+A11y polish on the Trust slider labels (`accessibilityLabel(_:)`
+takes plain `String` not `LocalizedStringKey`, otherwise VoiceOver
+reads the raw key). Score-breakdown disclosure with per-axis bars on
+each row. Refined press-kit angles + comprehensive HANDOFF rewrite.
+
+## v1.5.3 — ContextCard refactor + marketing prep (2026-04-25)
+
+Replaced `PageHeader` (which duplicated the tab name shown by
+`.navigationTitle(_:)` in the window chrome) with a new sticky
+`ContextCard` component across all tabs. Card sits above the scroll
+area with a per-tab tint accent + subtle outer glow. Background is
+`.ultraThinMaterial`; SF Symbols rendered `.hierarchical` for
+natural depth. PageHeader stays in the codebase for fallback but is
+deprecated for new tabs.
+
+Marketing materials shipped: `LANDING.md`, `SHOW_HN.md`, `PRESS_KIT.md`,
+`DIRECTORIES.md`, `Scripts/capture-screenshots.sh`,
+`docs/index.v1.5.3.html.draft`. Homebrew cask cleaned up (Splynek's
+own self-hosted tap at `Splynek/homebrew-splynek` after upstream
+rejection on notability heuristics).
+
+## v1.5.2 — Trust polish, sticky context card (2026-04-25)
+
+Trust tab: `Install` button on each fallback alternative
+(downloadURL added to `FallbackAlternative`). Neutral copy
+("better alternatives" → "fallback options"). Settings gear moved
+from sidebar menu to bottom-right of the pane near the logo. Pill
+chip contrast inverted when selected so PRO / NEW tags stay legible.
+
+## v1.5.1 — Trust tab polish round 1 (2026-04-25)
+
+Better alternatives now have an `Install` button beside the existing
+homepage / store-page links. Pill chips on selected sidebar items
+flip to inverted colour scheme so the white-on-white legibility
+issue is fixed.
+
 ## v1.5 — Trust tab: public-record audit of installed apps (2026-04-25)
 
 A new tab paired with Sovereignty: where Sovereignty asks "where is
