@@ -1,6 +1,6 @@
-# Branding/v1.5.3 — Press kit assets
+# Branding/v1.6.2 — Press kit assets
 
-This directory holds the v1.5.3 press / landing screenshots.  It's
+This directory holds the v1.6.2 press / landing screenshots.  It's
 empty by default; populate with:
 
 ```sh

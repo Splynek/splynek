@@ -22,7 +22,14 @@ xcrun stapler staple build/Splynek.dmg
 **Tests:** `swift run splynek-test` (148 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
-**Current version: v1.6.0 (in repo) / v1.5.3 (last tagged & uploaded DMG) — 2026-04-29.**
+**Current version: v1.6.2 (in repo, locally tagged) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-04-30.**
+
+The `main` branch carries v1.6.0 → v1.6.2 commits and an annotated `v1.6.2` tag (locally only — NOT pushed).  Holding all release gestures (push tag, cut DMG, deploy landing, push cask) until Apple v1.0 clears Mac App Store re-review.
+
+Catalog state at v1.6.2:
+- Localizable.xcstrings: **255 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **1,275 translations**.
+- Trust catalog: **151 entries** (was 30 at v1.6.0 start; +121 across the v1.6.x sprint).
+- Sovereignty catalog: 1,155 entries (unchanged this sprint).
 
 The `main` branch carries v1.5.4 → v1.6.0 commits but **none are tagged or uploaded yet**. They're staged to ship as a single rolled-up `v1.6.0` release once Apple clears v1.0 (we hold the DMG cut so an Apple Reviewer who URL-spelunks doesn't pull in newer behaviour they didn't approve).
 
@@ -55,7 +62,7 @@ Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution
 | **GitHub Actions weekly** | ✅ Live — runs Sovereignty validator + URL liveness check every Monday. | `.github/workflows/sovereignty-weekly.yml` |
 | **Homebrew tap** | ✅ Live at [`Splynek/homebrew-splynek`](https://github.com/Splynek/homebrew-splynek). Install: `brew install --cask Splynek/splynek/splynek`. | Self-hosted |
 | **Upstream homebrew/cask** | ❌ PR #261294 auto-rejected (notability: 0 stars / 0 forks / 0 watchers vs ≥75 / ≥30 / ≥30 needed). Resubmit after Show HN drives stars. | https://github.com/Homebrew/homebrew-cask/pull/261294 |
-| **splynek.app landing** | ⏸️ Still on v1.3 copy. New copy ready in `docs/index.v1.5.3.html.draft` (NOT live). Deploy: `mv docs/index.html docs/index.v1.4.previous.html && mv docs/index.v1.5.3.html.draft docs/index.html && git push` — **only after** v1.0 clears Apple. |
+| **splynek.app landing** | ⏸️ Still on v1.3 copy. New copy ready in `docs/index.v1.6.2.html.draft` (NOT live). Deploy: `mv docs/index.html docs/index.v1.4.previous.html && mv docs/index.v1.6.2.html.draft docs/index.html && git push` — **only after** v1.0 clears Apple. |
 | **Press / Show HN / directory submissions** | ⏸️ All staged in `PRESS_KIT.md`, `SHOW_HN.md`, `DIRECTORIES.md`. Don't trigger before v1.0 clears (App reviewers may visit splynek.app and reject for marketing-vs-build inconsistency). |
 
 ### Repo state — both clean
@@ -129,7 +136,7 @@ cd /tmp/tap && git add . && git commit -m "splynek X.Y.Z" && git push
 # 3. Deploy landing
 cd "/Users/pcgm/Claude Code"
 mv docs/index.html docs/index.v1.4.previous.html
-mv docs/index.v1.5.3.html.draft docs/index.html
+mv docs/index.v1.6.2.html.draft docs/index.html
 git add docs/ && git commit -m "landing: deploy v1.5.3" && git push
 
 # 4. Capture screenshots (skipped this session — script ready)
@@ -182,8 +189,8 @@ Tests/SplynekTests/InfoPlistSyncTests.swift    ← version drift invariant
 PRESS_KIT.md                                   ← refined cold-pass press kit
 DIRECTORIES.md                                 ← pre-filled directory submission forms
 Scripts/capture-screenshots.sh                 ← interactive screenshot capture (10 named shots)
-Branding/v1.5.3/README.md                      ← screenshot conventions + post-capture pipeline
-docs/index.v1.5.3.html.draft                   ← staged landing (deploy on Apple clear)
+Branding/v1.6.2/README.md                      ← screenshot conventions + post-capture pipeline
+docs/index.v1.6.2.html.draft                   ← staged landing (deploy on Apple clear)
 Packaging/splynek.rb                           ← v1.5.3 cask, brew-style clean
 .github/workflows/sovereignty-weekly.yml       ← Mon cron: validate + URL liveness
 ```

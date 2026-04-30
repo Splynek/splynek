@@ -483,6 +483,292 @@ NEW = [
          "App Store privacy label declares Linked Data: Identifiers, Usage Data, Diagnostics — moderate collection for a browser.",
          989804926),
     ]),
+
+    # ── v1.6.2 round 3: 50 more entries.  Brings Trust catalog
+    # 101 → ~150.  Mix of: Apple's own apps (typically clean labels,
+    # gives users a baseline), EU banking (CNIL/DPA-relevant
+    # context for European users), more iOS-on-Mac mobile apps,
+    # crypto/wellness/education categories. ──
+
+    # ── Apple's own apps (Mac App Store, well-disclosed) ────────────
+    ("apple-pages", "com.apple.iWork.Pages", "Apple Pages", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking — Apple's typical first-party posture.",
+         409201541),
+    ]),
+    ("apple-numbers", "com.apple.iWork.Numbers", "Apple Numbers", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking.",
+         409203825),
+    ]),
+    ("apple-keynote", "com.apple.iWork.Keynote", "Apple Keynote", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking.",
+         409183694),
+    ]),
+    ("apple-finalcut", "com.apple.FinalCut", "Final Cut Pro", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Diagnostics. No Linked Data, no tracking.",
+         424389933),
+    ]),
+    ("apple-logicpro", "com.apple.logic10", "Logic Pro", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Diagnostics. No Linked Data, no tracking.",
+         634148309),
+    ]),
+    ("apple-xcode", "com.apple.dt.Xcode", "Xcode", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Diagnostics, Usage Data. Minimal collection consistent with Apple's first-party data policy.",
+         497799835),
+    ]),
+
+    # ── EU banking ──────────────────────────────────────────────────
+    ("revolut", "com.revolut.RevolutApp", "Revolut", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 11 categories including Financial Info, Sensitive Info, precise Location, Identifiers, Contacts.",
+         932493382),
+    ]),
+    ("n26", "com.number26.iphone", "N26", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Contact Info.",
+         956428662),
+    ]),
+    ("wise", "com.transferwise.TransferWise", "Wise", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Contact Info, Identifiers, Diagnostics.",
+         612261027),
+    ]),
+    ("bunq", "com.bunq.bunqapp", "bunq", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Contact Info, Identifiers — Dutch challenger bank under DNB supervision.",
+         567067561),
+    ]),
+    ("ing", "com.ing.diba.ingdibaapp", "ING", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Diagnostics.",
+         467082749),
+    ]),
+
+    # ── Crypto / fintech ────────────────────────────────────────────
+    ("coinbase", "com.vilcsak.bitcoins2", "Coinbase", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Identifiers, Contact Info, Health & Fitness.",
+         886427730),
+    ]),
+    ("kraken", "com.kraken.kraken", "Kraken Crypto", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Contact Info.",
+         1481947260),
+    ]),
+    ("binance", "com.czzhao.binance", "Binance", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, Sensitive Info, precise Location, Identifiers.",
+         1436799971),
+    ]),
+    ("crypto-com", "co.mona.app", "Crypto.com", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, Sensitive Info, precise Location, Contacts.",
+         1262148500),
+    ]),
+
+    # ── Wellness / fitness ──────────────────────────────────────────
+    ("myfitnesspal", "com.myfitnesspal.MyFitnessPal-tablet", "MyFitnessPal", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 11 categories including Health & Fitness, Sensitive Info, Identifiers, Usage Data.",
+         341232718),
+    ]),
+    ("nike-run-club", "com.nike.nikeplus-gps", "Nike Run Club", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 11 categories including Health & Fitness, precise Location, Sensitive Info, Identifiers.",
+         387771637),
+    ]),
+    ("peloton", "com.onepeloton.peloton", "Peloton", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 12 categories including Health & Fitness, Financial Info, Sensitive Info, Photos, Identifiers.",
+         792750948),
+    ]),
+    ("fitbit", "com.fitbit.FitbitMobile", "Fitbit", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 12 categories including Health & Fitness, Sensitive Info, precise Location, Identifiers, Diagnostics.",
+         462638897),
+    ]),
+
+    # ── Education ───────────────────────────────────────────────────
+    ("khan-academy", "com.khanacademy.Khan-Academy", "Khan Academy", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 7 categories including User Content, Identifiers, Usage Data, Diagnostics.",
+         469863705),
+    ]),
+    ("coursera", "org.coursera.coursera", "Coursera", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 8 categories including Contact Info, User Content, Identifiers, Usage Data.",
+         736535961),
+    ]),
+    ("udemy", "com.udemy.UdemyiOS", "Udemy", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 9 categories including Identifiers, Usage Data, Advertising Data.",
+         562413829),
+    ]),
+    ("quizlet", "com.quizlet.quizletapp", "Quizlet", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 8 categories including Contact Info, User Content, Identifiers, Usage Data.",
+         360452360),
+    ]),
+
+    # ── Photo / video ───────────────────────────────────────────────
+    ("vsco", "com.visualsupply.cam", "VSCO", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 9 categories including Photos, Identifiers, Contact Info, Usage Data.",
+         588013838),
+    ]),
+    ("adobe-express", "com.adobe.spark", "Adobe Express", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 7 categories including User Content, Photos, Identifiers, Contact Info.",
+         1051937863),
+    ]),
+    ("procreate-pocket", "com.savage.Procreate-Pocket", "Procreate Pocket", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Diagnostics, Identifiers — minimal collection from a paid creative-tool indie.",
+         1037778262),
+    ]),
+
+    # ── Browsers (additional iOS) ───────────────────────────────────
+    ("chrome-ios", "com.google.chrome.ios", "Chrome (iOS)", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking: identifiers, advertising data, search history, browsing history, usage data.",
+         535886823),
+    ]),
+    ("duckduckgo", "com.duckduckgo.mobile.ios", "DuckDuckGo", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Diagnostics — DuckDuckGo's privacy-first stance reflected in its self-disclosed minimum.",
+         663592361),
+    ]),
+
+    # ── Reading / content ───────────────────────────────────────────
+    ("pocket", "com.ideashower.ReadItLaterPro", "Pocket", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 6 categories including Browsing History, Usage Data, Identifiers, Contact Info.",
+         309601447),
+    ]),
+    ("goodreads", "com.goodreads.goodreadsapp", "Goodreads", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 10 categories including Contacts, Identifiers, Search History, Usage Data.",
+         355833469),
+    ]),
+    ("medium", "com.medium.reader", "Medium", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 7 categories including Identifiers, Usage Data, Search History.",
+         828256236),
+    ]),
+    ("substack", "com.substack.app", "Substack", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 8 categories including Contact Info, Financial Info, User Content, Identifiers.",
+         1574515480),
+    ]),
+
+    # ── Mobile apps installable on Apple Silicon Macs ───────────────
+    ("messenger-ios", "com.facebook.Messenger", "Messenger (iOS)", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 18 categories — Meta apps consistently disclose extensive cross-product data collection.",
+         454638411),
+    ]),
+    ("facebook", "com.facebook.Facebook", "Facebook", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 18 categories including Health & Fitness, Sensitive Info, precise Location, Financial Info, Photos.",
+         284882215),
+    ]),
+    ("whatsapp-business", "net.whatsapp.WhatsAppSMB", "WhatsApp Business", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 9 categories including Contact Info, Contacts, Financial Info, Identifiers — Meta-owned, business-tier disclosures.",
+         1386412985),
+    ]),
+
+    # ── Productivity / notes ────────────────────────────────────────
+    ("evernote-ios", "com.evernote.iPhone.Evernote", "Evernote (iOS)", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 8 categories including User Content, Contact Info, Identifiers, Usage Data.",
+         281796108),
+    ]),
+    ("dropbox-ios", "com.getdropbox.Dropbox", "Dropbox (iOS)", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 8 categories including User Content, Contact Info, Identifiers, Usage Data.",
+         327630330),
+    ]),
+    ("box-ios", "com.box.iosapp", "Box", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 7 categories including User Content, Identifiers, Diagnostics.",
+         290853822),
+    ]),
+
+    # ── Maps / navigation ──────────────────────────────────────────
+    ("waze", "com.waze.iphone", "Waze", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 10 categories including precise Location, Contact Info, Audio Data — Google-owned navigation app.",
+         323229106),
+    ]),
+    ("citymapper", "com.citymapper.CityMapper", "Citymapper", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 7 categories including precise Location, Identifiers, Usage Data.",
+         469463298),
+    ]),
+
+    # ── Communication (additional) ──────────────────────────────────
+    ("slack-ios", "com.tinyspeck.chatlyio", "Slack (iOS)", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 11 categories including Contacts, User Content, Identifiers, Usage Data.",
+         618783545),
+    ]),
+    ("discord-ios", "com.hammerandchisel.discord", "Discord (iOS)", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 8 categories including User Content, Identifiers, Usage Data, Diagnostics.",
+         985746746),
+    ]),
+    ("zoom-ios", "us.zoom.videomeetings", "Zoom (iOS)", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 9 categories including Contact Info, User Content, Identifiers, Usage Data.",
+         546505307),
+    ]),
+
+    # ── Mobile games (often installed on Mac via Designed-for-iPad) ─
+    ("monument-valley", "com.ustwo.monumentvalley", "Monument Valley", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Diagnostics — paid indie game with minimal collection.",
+         728293409),
+    ]),
+    ("alto-odyssey", "com.snowmanlabs.alto.odyssey", "Alto's Odyssey", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data: Identifiers, Purchase History, Diagnostics.",
+         1182456409),
+    ]),
+    ("genshin-impact", "com.miHoYo.GenshinImpact", "Genshin Impact", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 8 categories including Identifiers, Purchase History, User Content, Usage Data — Chinese-developed; data may transit infrastructure outside the EU.",
+         1517783697),
+    ]),
+    ("roblox", "com.roblox.robloxmobile", "Roblox", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 11 categories including Contacts, Identifiers, Audio Data, Photos, Usage Data.",
+         431946152),
+    ]),
+
+    # ── Music creation / DJ ─────────────────────────────────────────
+    ("garageband", "com.apple.mobilegarageband", "GarageBand", [
+        ("appStoreUnlinkedData", "low",
+         "App Store privacy label declares only Unlinked Data: Diagnostics, Identifiers. Apple first-party posture.",
+         408709785),
+    ]),
+
+    # ── News ────────────────────────────────────────────────────────
+    ("bbc-news", "uk.co.bbc.news", "BBC News", [
+        ("appStoreLinkedData", "moderate",
+         "App Store privacy label declares Linked Data across 6 categories including Identifiers, Usage Data, Diagnostics.",
+         377382937),
+    ]),
+    ("nyt", "com.nytimes.NYTimes", "The New York Times", [
+        ("appStoreTrackingData", "high",
+         "App Store privacy label discloses tracking + Linked Data across 9 categories including Identifiers, Usage Data, Search History, Advertising Data.",
+         284862083),
+    ]),
 ]
 
 
