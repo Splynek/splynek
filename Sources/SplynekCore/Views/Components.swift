@@ -84,7 +84,13 @@ struct StatusPill: View {
     var inverted: Bool = false
 
     var body: some View {
-        Text(text)
+        // v1.6.2: route through LocalizedStringKey so callers like
+        // FleetView's "ADVERTISED" / "STARTING" can translate via the
+        // catalog.  Tech-style international labels (PRO / NEW / ON /
+        // OFF / FREE / LIVE / NOW / SEED / WRITES / AUTO-DETECTED)
+        // simply have no catalog entry and fall through to source
+        // English — explicit by design.
+        Text(LocalizedStringKey(text))
             .font(.system(size: 10, weight: .bold, design: .monospaced))
             .foregroundStyle(inverted ? Color.white : color)
             .padding(.horizontal, 6)

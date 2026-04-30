@@ -455,13 +455,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Activo"
+            "value": "Activos"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Actif"
+            "value": "Actifs"
           }
         },
         "it": {
@@ -474,6 +474,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ativos"
+          }
+        }
+      }
+    },
+    "Active days": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktive Tage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días activos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jours actifs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giorni attivi"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dias ativos"
           }
         }
       }
@@ -1125,6 +1159,74 @@
         }
       }
     },
+    "Append a URL to Splynek's download queue (instead of starting it immediately).  Useful when the user wants to batch up several URLs and let Splynek process them sequentially.  Same URL + sha256 schema as `splynek_download_url`.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hängt eine URL an die Splynek-Download-Warteschlange an (anstatt sie sofort zu starten). Nützlich, wenn der Benutzer mehrere URLs bündeln und Splynek sequentiell verarbeiten lassen möchte. Gleiches URL + sha256-Schema wie `splynek_download_url`."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade una URL a la cola de descargas de Splynek (en lugar de iniciarla inmediatamente). Útil cuando el usuario quiere agrupar varias URLs y dejar que Splynek las procese en secuencia. Mismo esquema URL + sha256 que `splynek_download_url`."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoute une URL à la file d'attente de téléchargement de Splynek (au lieu de la démarrer immédiatement). Utile quand l'utilisateur veut grouper plusieurs URLs et laisser Splynek les traiter en séquence. Même schéma URL + sha256 que `splynek_download_url`."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiunge un URL alla coda di download di Splynek (invece di avviarlo immediatamente). Utile quando l'utente vuole raggruppare più URL e lasciare che Splynek li elabori in sequenza. Stesso schema URL + sha256 di `splynek_download_url`."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adiciona um URL à fila de transferências do Splynek (em vez de iniciar imediatamente). Útil quando o utilizador quer agrupar vários URLs e deixar o Splynek processá-los em sequência. Mesmo esquema URL + sha256 que `splynek_download_url`."
+          }
+        }
+      }
+    },
+    "Approval required — open System Settings → Login Items.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genehmigung erforderlich — Systemeinstellungen → Anmeldeobjekte öffnen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprobación requerida — abre Ajustes del Sistema → Elementos de inicio."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Approbation requise — ouvrez Réglages Système → Éléments d'ouverture de session."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Approvazione richiesta — apri Impostazioni Sistema → Elementi all'avvio."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprovação necessária — abre Definições do Sistema → Itens de início de sessão."
+          }
+        }
+      }
+    },
     "Apps we don't know yet (%lld)": {
       "localizations": {
         "de": {
@@ -1669,6 +1771,40 @@
         }
       }
     },
+    "Buy Splynek Pro — $29": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek Pro kaufen — $29"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprar Splynek Pro — $29"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acheter Splynek Pro — $29"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acquista Splynek Pro — $29"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprar Splynek Pro — $29"
+          }
+        }
+      }
+    },
     "Bytes": {
       "localizations": {
         "de": {
@@ -1805,6 +1941,40 @@
         }
       }
     },
+    "Cancel every active and queued Splynek download.  This does not delete already-downloaded data; partial files are preserved on disk.  Use cautiously — there's no undo.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bricht alle aktiven und in der Warteschlange befindlichen Splynek-Downloads ab. Dies löscht keine bereits heruntergeladenen Daten; Teil-Dateien bleiben auf der Festplatte erhalten. Mit Vorsicht verwenden — kein Rückgängig."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancela todas las descargas activas y en cola de Splynek. Esto no borra datos ya descargados; los archivos parciales se conservan en disco. Úsalo con cuidado — no hay deshacer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annule tous les téléchargements actifs et en file de Splynek. Ceci ne supprime pas les données déjà téléchargées ; les fichiers partiels sont conservés sur disque. À utiliser avec précaution — il n'y a pas d'annulation."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla tutti i download attivi e in coda di Splynek. Questo non elimina i dati già scaricati; i file parziali vengono conservati su disco. Usa con cautela — non c'è annulla."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancela todas as transferências ativas e em fila do Splynek. Isto não apaga dados já transferidos; ficheiros parciais são preservados no disco. Usa com cautela — não há anular."
+          }
+        }
+      }
+    },
     "Cancel every running download (⌘.).": {
       "localizations": {
         "de": {
@@ -1835,6 +2005,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancelar todas as transferências em curso (⌘.)."
+          }
+        }
+      }
+    },
+    "Cancel.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbrechen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar."
           }
         }
       }
@@ -3097,6 +3301,40 @@
         }
       }
     },
+    "Deactivate on this Mac": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf diesem Mac deaktivieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desactivar en este Mac"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Désactiver sur ce Mac"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disattiva su questo Mac"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desativar neste Mac"
+          }
+        }
+      }
+    },
     "Detached signature available": {
       "localizations": {
         "de": {
@@ -3162,6 +3400,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Detalhes + alternativas"
+          }
+        }
+      }
+    },
+    "Detected Ollama —": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ollama erkannt —"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ollama detectado —"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ollama détecté —"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ollama rilevato —"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detetado Ollama —"
+          }
+        }
+      }
+    },
+    "Device ID": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geräte-ID"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID del dispositivo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID de l'appareil"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID dispositivo"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID do dispositivo"
           }
         }
       }
@@ -3608,6 +3914,40 @@
         }
       }
     },
+    "Drop the .splynek-manifest with a precomputed Merkle tree of the file's contents. Splynek verifies each chunk against its expected leaf hash on arrival — any corrupted byte triggers a re-fetch inline, without waiting for a full-file SHA-256 at the end.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legen Sie das .splynek-manifest mit einem vorab berechneten Merkle-Baum des Dateiinhalts ab. Splynek verifiziert jeden Chunk gegen seinen erwarteten Blatt-Hash bei Ankunft — jedes beschädigte Byte löst einen Inline-Neu-Abruf aus, ohne am Ende auf einen vollständigen Datei-SHA-256 warten zu müssen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suelta el .splynek-manifest con un árbol Merkle precalculado del contenido del archivo. Splynek verifica cada fragmento contra su hash de hoja esperado a la llegada — cualquier byte corrupto activa una re-descarga en línea, sin esperar a un SHA-256 del archivo completo al final."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déposez le .splynek-manifest avec un arbre Merkle précalculé du contenu du fichier. Splynek vérifie chaque morceau par rapport à son hash de feuille attendu à l'arrivée — tout octet corrompu déclenche un re-téléchargement en ligne, sans attendre un SHA-256 du fichier entier à la fin."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina il .splynek-manifest con un albero Merkle precalcolato del contenuto del file. Splynek verifica ogni frammento rispetto al suo hash foglia atteso all'arrivo — qualsiasi byte corrotto attiva un re-download in linea, senza attendere un SHA-256 dell'intero file alla fine."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Largar o .splynek-manifest com uma árvore Merkle pré-calculada do conteúdo do ficheiro. O Splynek verifica cada fragmento contra o hash de folha esperado à chegada — qualquer byte corrompido desencadeia uma re-transferência em linha, sem esperar por um SHA-256 do ficheiro inteiro no fim."
+          }
+        }
+      }
+    },
     "Drop the chunk-fingerprint file and fall back to end-of-file integrity check.": {
       "localizations": {
         "de": {
@@ -3842,6 +4182,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Encriptar consultas de DNS"
+          }
+        }
+      }
+    },
+    "End": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ende"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fin"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fin"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fine"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fim"
           }
         }
       }
@@ -4114,6 +4488,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cada preocupação cita uma fonte primária que podes abrir"
+          }
+        }
+      }
+    },
+    "Every day": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden Tag"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos los días"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tous les jours"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni giorno"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos os dias"
           }
         }
       }
@@ -4492,6 +4900,40 @@
         }
       }
     },
+    "GB": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GB"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GB"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GB"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GB"
+          }
+        }
+      }
+    },
     "Get Splynek Pro on the Mac App Store": {
       "localizations": {
         "de": {
@@ -4624,6 +5066,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "HASHED"
+          }
+        }
+      }
+    },
+    "Hashed": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit Hash"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con hash"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hashés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con hash"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Em hash"
           }
         }
       }
@@ -4939,13 +5415,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "So funktioniert das"
+            "value": "So funktioniert es"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cómo funciona esto"
+            "value": "Cómo funciona"
           }
         },
         "fr": {
@@ -5308,6 +5784,40 @@
         }
       }
     },
+    "List currently-active Splynek download jobs with their progress (downloaded / total bytes), throughput in bytes per second, and lifecycle state (running, paused, queued, completed, failed). Returns an empty list if nothing is in flight.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listet aktuell laufende Splynek-Download-Jobs auf, mit Fortschritt (heruntergeladene / Gesamt-Bytes), Durchsatz in Bytes pro Sekunde und Lebenszyklus-Status (läuft, pausiert, in Warteschlange, abgeschlossen, fehlgeschlagen). Gibt eine leere Liste zurück, wenn nichts läuft."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista los trabajos de descarga activos de Splynek con su progreso (bytes descargados / total), ancho de banda en bytes por segundo y estado de ciclo de vida (en ejecución, pausado, en cola, completado, fallado). Devuelve una lista vacía si no hay nada en curso."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liste les tâches de téléchargement actives de Splynek avec leur progression (octets téléchargés / total), débit en octets par seconde et état du cycle de vie (en cours, en pause, en file, terminé, échoué). Renvoie une liste vide si rien n'est en cours."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elenca i lavori di download attivi di Splynek con il loro progresso (byte scaricati / totali), throughput in byte al secondo e stato del ciclo di vita (in esecuzione, in pausa, in coda, completato, fallito). Restituisce un elenco vuoto se non c'è nulla in corso."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista os trabalhos de transferência ativos do Splynek com o progresso (bytes transferidos / total), débito em bytes por segundo e estado do ciclo de vida (em execução, em pausa, em fila, concluído, falhado). Devolve uma lista vazia se não houver nada em curso."
+          }
+        }
+      }
+    },
     "List history": {
       "localizations": {
         "de": {
@@ -5338,6 +5848,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Listar histórico"
+          }
+        }
+      }
+    },
+    "List recently completed Splynek downloads.  Each item includes the original URL, filename, byte count, finish time, and on-disk path.  `limit` defaults to 10 and is capped at 50.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listet kürzlich abgeschlossene Splynek-Downloads auf. Jeder Eintrag enthält die Original-URL, den Dateinamen, die Byte-Anzahl, die Endzeit und den Pfad auf der Festplatte. `limit` ist standardmäßig 10, maximal 50."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista las descargas de Splynek completadas recientemente. Cada elemento incluye la URL original, nombre de archivo, conteo de bytes, hora de finalización y ruta en disco. `limit` por defecto es 10, máximo 50."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liste les téléchargements Splynek récemment terminés. Chaque élément inclut l'URL originale, le nom du fichier, le nombre d'octets, l'heure de fin et le chemin sur disque. `limit` vaut 10 par défaut, plafonné à 50."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elenca i download Splynek completati di recente. Ogni elemento include l'URL originale, nome del file, conteggio byte, ora di fine e percorso su disco. `limit` predefinito 10, massimo 50."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista as transferências do Splynek concluídas recentemente. Cada item inclui o URL original, nome do ficheiro, contagem de bytes, hora de conclusão e caminho no disco. `limit` é 10 por predefinição e tem limite máximo de 50."
           }
         }
       }
@@ -5508,6 +6052,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Assistente de IA local"
+          }
+        }
+      }
+    },
+    "Look up an app in the Splynek Trust catalog — public-record audit of privacy, security, trust, and business-model concerns.  Returns the 0–100 score, severity level, and a list of cited concerns (each with a primary-source URL: App Store privacy labels, EU DPA / FTC enforcement, NVD CVEs, HIBP breaches, vendor advisories — never tech press).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlägt eine App im Splynek-Vertrauen-Katalog nach — Audit öffentlicher Aufzeichnungen zu Datenschutz, Sicherheit, Vertrauen und Geschäftsmodell. Gibt die 0–100-Bewertung, das Schweregradlevel und eine Liste zitierter Bedenken zurück (jedes mit Primärquellen-URL: App-Store-Datenschutzlabels, EU-DPA-/FTC-Verfahren, NVD-CVEs, HIBP-Datenlecks, Hersteller-Hinweise — niemals Tech-Presse)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulta una app en el catálogo Confianza de Splynek — auditoría de registro público sobre privacidad, seguridad, confianza y modelo de negocio. Devuelve la puntuación 0–100, nivel de gravedad y lista de preocupaciones citadas (cada una con URL de fuente primaria: etiquetas de privacidad de App Store, acciones de DPA UE / FTC, CVE de NVD, filtraciones HIBP, avisos de proveedores — nunca prensa tecnológica)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recherche une app dans le catalogue Confiance de Splynek — audit des registres publics sur la confidentialité, la sécurité, la confiance et le modèle économique. Renvoie le score 0–100, le niveau de gravité et une liste de préoccupations citées (chacune avec une URL de source primaire : étiquettes de confidentialité App Store, actions DPA UE / FTC, CVE NVD, fuites HIBP, avis éditeurs — jamais la presse tech)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca un'app nel catalogo Affidabilità di Splynek — verifica dei registri pubblici su privacy, sicurezza, affidabilità e modello di business. Restituisce il punteggio 0–100, livello di gravità ed elenco delle preoccupazioni citate (ciascuna con URL di fonte primaria: etichette privacy App Store, azioni DPA UE / FTC, CVE NVD, fughe HIBP, avvisi vendor — mai stampa tech)."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulta uma app no catálogo Confiança do Splynek — auditoria de registo público sobre privacidade, segurança, confiança e modelo de negócio. Devolve a pontuação 0–100, nível de gravidade e uma lista de preocupações citadas (cada uma com URL de fonte primária: etiquetas de privacidade da App Store, ações de DPA da UE / FTC, CVEs do NVD, violações HIBP, avisos de fornecedores — nunca imprensa tecnológica)."
+          }
+        }
+      }
+    },
+    "Look up an installed app in the Splynek Sovereignty catalog. Returns the app's target-origin (where it's controlled from: EU, US, OSS, China, Russia, Other) plus a list of EU-or-OSS-controlled alternatives the user could switch to. `query` accepts either a bundle identifier (e.g. `com.spotify.client`) or a display name (e.g. `Spotify`).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlägt eine installierte App im Splynek-Souveränitäts-Katalog nach. Gibt das Ziel-Herkunftsland der App zurück (woher sie gesteuert wird: EU, USA, OSS, China, Russland, Andere) sowie eine Liste von EU- oder Open-Source-kontrollierten Alternativen, auf die der Benutzer wechseln könnte. `query` akzeptiert eine Bundle-ID (z. B. `com.spotify.client`) oder einen Anzeigenamen (z. B. `Spotify`)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulta una app instalada en el catálogo Soberanía de Splynek. Devuelve el origen-objetivo de la app (desde dónde se controla: UE, EE. UU., OSS, China, Rusia, Otro) y una lista de alternativas controladas en UE u open source a las que el usuario puede cambiar. `query` acepta un identificador de paquete (p. ej. `com.spotify.client`) o un nombre visible (p. ej. `Spotify`)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recherche une app installée dans le catalogue Souveraineté de Splynek. Renvoie l'origine cible de l'app (d'où elle est contrôlée : UE, États-Unis, OSS, Chine, Russie, Autre) ainsi qu'une liste d'alternatives contrôlées en UE ou open source. `query` accepte un identifiant de bundle (ex. `com.spotify.client`) ou un nom affiché (ex. `Spotify`)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca un'app installata nel catalogo Sovranità di Splynek. Restituisce l'origine-target dell'app (da dove è controllata: UE, USA, OSS, Cina, Russia, Altro) e un elenco di alternative controllate UE o open source a cui l'utente potrebbe passare. `query` accetta un identificatore di bundle (es. `com.spotify.client`) o un nome visualizzato (es. `Spotify`)."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulta uma app instalada no catálogo Soberania do Splynek. Devolve a origem-alvo da app (de onde é controlada: UE, EUA, OSS, China, Rússia, Outra) e uma lista de alternativas controladas na UE ou de código aberto para as quais o utilizador pode mudar. `query` aceita um identificador de pacote (ex.: `com.spotify.client`) ou um nome a apresentar (ex.: `Spotify`)."
           }
         }
       }
@@ -5988,6 +6600,40 @@
         }
       }
     },
+    "Name": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nome"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nome"
+          }
+        }
+      }
+    },
     "Native BitTorrent v1 + v2 + hybrid. Paste a magnet, load a .torrent, or pick a web-seed mirror. Integrity is verified per piece.": {
       "localizations": {
         "de": {
@@ -6324,6 +6970,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sem preocupações de registo público para as tuas apps instaladas"
+          }
+        }
+      }
+    },
+    "Not registered.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht registriert."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No registrado."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non enregistré."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non registrato."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não registado."
           }
         }
       }
@@ -7178,6 +7858,40 @@
         }
       }
     },
+    "Pause; sidecar is retained so resume picks up here.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause; Sidecar wird beibehalten, damit das Fortsetzen hier weitermacht."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa; el sidecar se conserva para que reanudar continúe desde aquí."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause ; le sidecar est conservé pour que la reprise continue ici."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa; il sidecar viene mantenuto in modo che la ripresa continui da qui."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa; o sidecar é preservado para que o retomar continue daqui."
+          }
+        }
+      }
+    },
     "Paused": {
       "localizations": {
         "de": {
@@ -7314,6 +8028,40 @@
         }
       }
     },
+    "Port": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puerto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Port"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porta"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porta"
+          }
+        }
+      }
+    },
     "Privacy": {
       "localizations": {
         "de": {
@@ -7446,6 +8194,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Privado"
+          }
+        }
+      }
+    },
+    "Projected split — based on prior runs against this host": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projizierte Aufteilung — basierend auf vorherigen Läufen gegen diesen Host"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "División proyectada — basada en ejecuciones previas contra este host"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Répartition projetée — basée sur les exécutions précédentes contre cet hôte"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suddivisione prevista — basata sulle esecuzioni precedenti verso questo host"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Divisão prevista — com base em execuções anteriores contra este servidor"
           }
         }
       }
@@ -7756,6 +8538,40 @@
         }
       }
     },
+    "Re-download from origin (does not pull from fleet peers).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut von der Quelle herunterladen (zieht nicht von Flotten-Peers)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a descargar desde el origen (no tira de pares de la flota)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Re-télécharger depuis l'origine (ne tire pas des pairs de la flotte)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riscarica dall'origine (non preleva dai peer della flotta)."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar a transferir da origem (não puxa de pares na frota)."
+          }
+        }
+      }
+    },
     "Re-enumerate installed apps": {
       "localizations": {
         "de": {
@@ -7786,6 +8602,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Re-enumerar apps instaladas"
+          }
+        }
+      }
+    },
+    "Re-probe localhost:11434 for Ollama": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "localhost:11434 erneut auf Ollama prüfen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a sondear localhost:11434 para Ollama"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Re-sonder localhost:11434 pour Ollama"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprova localhost:11434 per Ollama"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar a sondar localhost:11434 para o Ollama"
+          }
+        }
+      }
+    },
+    "Re-run with the same target. Useful after switching networks.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit demselben Ziel erneut ausführen. Nützlich nach einem Netzwerkwechsel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a ejecutar con el mismo objetivo. Útil tras cambiar de red."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relancer avec la même cible. Utile après avoir changé de réseau."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riesegui con lo stesso target. Utile dopo aver cambiato rete."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar a executar com o mesmo alvo. Útil após mudar de rede."
           }
         }
       }
@@ -7926,6 +8810,40 @@
         }
       }
     },
+    "Refresh login-item status from macOS": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Login-Item-Status von macOS aktualisieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualizar estado de elemento de inicio del macOS"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualiser l'état de l'élément d'ouverture de session depuis macOS"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiorna stato elemento di avvio da macOS"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atualizar estado de item de início de sessão do macOS"
+          }
+        }
+      }
+    },
     "Regenerate token": {
       "localizations": {
         "de": {
@@ -7956,6 +8874,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Regenerar token"
+          }
+        }
+      }
+    },
+    "Registered. macOS will start Splynek at next login.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registriert. macOS wird Splynek bei der nächsten Anmeldung starten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrado. macOS iniciará Splynek en el próximo inicio de sesión."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistré. macOS lancera Splynek à la prochaine connexion."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrato. macOS avvierà Splynek al prossimo accesso."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registado. O macOS vai iniciar o Splynek no próximo início de sessão."
           }
         }
       }
@@ -8062,6 +9014,40 @@
         }
       }
     },
+    "Reset to default URL.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf Standard-URL zurücksetzen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restablecer la URL predeterminada."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser à l'URL par défaut."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reimposta all'URL predefinito."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repor o URL predefinido."
+          }
+        }
+      }
+    },
     "Reset to defaults": {
       "localizations": {
         "de": {
@@ -8092,6 +9078,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Repor predefinições"
+          }
+        }
+      }
+    },
+    "Respect schedule": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitplan einhalten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respetar programación"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respecter la planification"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rispetta pianificazione"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respeitar agendamento"
+          }
+        }
+      }
+    },
+    "Restore Purchase": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kauf wiederherstellen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar compra"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurer l'achat"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina acquisto"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar compra"
           }
         }
       }
@@ -8199,6 +9253,40 @@
       }
     },
     "Reveal": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Finder anzeigen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar en Finder"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher dans le Finder"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra nel Finder"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar no Finder"
+          }
+        }
+      }
+    },
+    "Reveal in Finder": {
       "localizations": {
         "de": {
           "stringUnit": {
@@ -8572,6 +9660,40 @@
         }
       }
     },
+    "STARTING": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "STARTET"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "INICIANDO"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DÉMARRAGE"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AVVIO"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A INICIAR"
+          }
+        }
+      }
+    },
     "Save": {
       "localizations": {
         "de": {
@@ -8704,6 +9826,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Análise iniciada — os resultados aparecem nos separadores Sovereignty e Trust."
+          }
+        }
+      }
+    },
+    "Scan the user's installed apps and return a summary count of how many were matched against the Sovereignty catalog. Use this before `splynek_lookup_sovereignty` to understand the user's overall exposure.  All scanning is on-device; no app list leaves the user's machine.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scannt die installierten Apps des Benutzers und gibt eine zusammenfassende Anzahl zurück, wie viele mit dem Souveränitäts-Katalog übereinstimmen. Verwenden Sie dies vor `splynek_lookup_sovereignty`, um die Gesamtexposition des Benutzers zu verstehen. Der gesamte Scan erfolgt auf dem Gerät; keine App-Liste verlässt den Computer des Benutzers."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analiza las apps instaladas del usuario y devuelve un conteo resumido de cuántas coinciden con el catálogo Soberanía. Úsalo antes de `splynek_lookup_sovereignty` para entender la exposición general del usuario. Todo el análisis es en el dispositivo; ninguna lista de apps sale de la máquina del usuario."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analyse les apps installées de l'utilisateur et renvoie un nombre récapitulatif de celles qui correspondent au catalogue Souveraineté. Utilisez-le avant `splynek_lookup_sovereignty` pour comprendre l'exposition globale de l'utilisateur. Toute l'analyse est sur l'appareil ; aucune liste d'apps ne quitte la machine de l'utilisateur."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scansiona le app installate dell'utente e restituisce un conteggio riassuntivo di quante corrispondono al catalogo Sovranità. Usalo prima di `splynek_lookup_sovereignty` per capire l'esposizione complessiva dell'utente. Tutta la scansione è sul dispositivo; nessun elenco di app lascia la macchina dell'utente."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analisa as apps instaladas do utilizador e devolve uma contagem resumida de quantas correspondem ao catálogo Soberania. Usa isto antes de `splynek_lookup_sovereignty` para perceber a exposição geral do utilizador. Toda a análise é no dispositivo; nenhuma lista de apps sai da máquina do utilizador."
           }
         }
       }
@@ -9320,6 +10476,40 @@
         }
       }
     },
+    "Shareable": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teilbar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compartibles"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partageables"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condivisibili"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partilháveis"
+          }
+        }
+      }
+    },
     "Show in Finder": {
       "localizations": {
         "de": {
@@ -9589,6 +10779,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Velocidade por rede"
+          }
+        }
+      }
+    },
+    "Splynek": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek"
           }
         }
       }
@@ -9978,25 +11202,59 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iniciar"
+            "value": "Inicio"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Démarrer"
+            "value": "Début"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avvia"
+            "value": "Inizio"
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iniciar"
+            "value": "Início"
+          }
+        }
+      }
+    },
+    "Start an immediate download via Splynek's multi-interface HTTP aggregator.  The URL must be HTTP(S) or a `magnet:` BitTorrent magnet link.  Optional `sha256` enables integrity verification — when present, the download is rejected on hash mismatch.  Output goes to the user's configured Splynek output directory.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startet einen sofortigen Download über Splyneks Multi-Schnittstellen-HTTP-Aggregator. Die URL muss HTTP(S) oder ein BitTorrent-Magnet-Link `magnet:` sein. Der optionale `sha256` aktiviert die Integritätsprüfung — wenn vorhanden, wird der Download bei Hash-Abweichung abgelehnt. Die Ausgabe geht ins konfigurierte Splynek-Ausgabeverzeichnis."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia una descarga inmediata vía el agregador HTTP multi-interfaz de Splynek. La URL debe ser HTTP(S) o un enlace `magnet:` BitTorrent. El `sha256` opcional activa la verificación de integridad — cuando está presente, la descarga se rechaza en caso de discrepancia de hash. La salida va al directorio de salida configurado de Splynek."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Démarre un téléchargement immédiat via l'agrégateur HTTP multi-interface de Splynek. L'URL doit être HTTP(S) ou un lien `magnet:` BitTorrent. Le `sha256` optionnel active la vérification d'intégrité — s'il est présent, le téléchargement est rejeté en cas de divergence de hash. La sortie va vers le répertoire de sortie configuré de Splynek."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvia un download immediato tramite l'aggregatore HTTP multi-interfaccia di Splynek. L'URL deve essere HTTP(S) o un link `magnet:` BitTorrent. Il `sha256` opzionale abilita la verifica di integrità — se presente, il download è rifiutato in caso di mismatch hash. L'output va nella directory di output configurata di Splynek."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia uma transferência imediata via o agregador HTTP multi-interface do Splynek. O URL tem de ser HTTP(S) ou um link `magnet:` BitTorrent. O `sha256` opcional ativa a verificação de integridade — quando presente, a transferência é rejeitada em caso de divergência. A saída vai para o diretório de saída configurado do Splynek."
           }
         }
       }
@@ -10133,6 +11391,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Estado"
+          }
+        }
+      }
+    },
+    "Status unknown.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status unbekannt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado desconocido."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "État inconnu."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stato sconosciuto."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado desconhecido."
           }
         }
       }
@@ -10303,6 +11595,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diz-lhe o que queres configurar. Recebe um plano de transferências."
+          }
+        }
+      }
+    },
+    "Thanks for supporting Splynek. AI Concierge, AI history search, scheduled downloads, and LAN-accessible dashboard are unlocked.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Danke, dass Sie Splynek unterstützen. KI-Concierge, KI-Verlaufssuche, geplante Downloads und lokal-Netzwerk-zugängliches Dashboard sind freigeschaltet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gracias por apoyar Splynek. El Concierge IA, búsqueda de historial con IA, descargas programadas y panel accesible por red local están desbloqueados."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merci de soutenir Splynek. Le Concierge IA, la recherche d'historique IA, les téléchargements planifiés et le tableau de bord accessible par réseau local sont débloqués."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grazie per supportare Splynek. Il Concierge IA, ricerca cronologia con IA, download programmati e dashboard accessibile via rete locale sono sbloccati."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obrigado por apoiares o Splynek. O Concierge IA, pesquisa de histórico com IA, transferências agendadas e painel acessível pela rede local estão desbloqueados."
           }
         }
       }
@@ -11328,6 +12654,40 @@
         }
       }
     },
+    "Weekdays": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wochentage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días laborables"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jours ouvrés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giorni feriali"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dias úteis"
+          }
+        }
+      }
+    },
     "Welcome to Splynek": {
       "localizations": {
         "de": {
@@ -11494,6 +12854,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Onde guardar as transferências?"
+          }
+        }
+      }
+    },
+    "Window is open — queued items will start as slots free up.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Fenster ist offen — Elemente in der Warteschlange starten, sobald Slots frei werden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La ventana está abierta — los elementos en cola comenzarán a medida que se liberen los slots."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fenêtre est ouverte — les éléments en file commenceront à mesure que les emplacements se libèrent."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La finestra è aperta — gli elementi in coda partiranno man mano che si liberano gli slot."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A janela está aberta — os itens em fila vão começar à medida que as vagas ficam livres."
           }
         }
       }

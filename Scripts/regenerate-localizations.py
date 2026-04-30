@@ -2074,6 +2074,246 @@ NEW_V16_STRINGS = {
         "de": "Englisch wie “die neueste Ubuntu-ISO” einfügen und das lokale LLM gibt eine direkte URL zurück. Auch Verlaufssuche in natürlicher Sprache. Läuft komplett auf diesem Mac.",
         "it": "Incolla inglese come “l'ultima ISO di Ubuntu” e l'LLM locale restituisce un URL diretto. Ricerca cronologia in linguaggio naturale anche. Gira interamente su questo Mac.",
     },
+
+    # ── v1.6.2 round 6: Frota MetricView captions + StatusPill
+    # labels + 8 MCP tool descriptions + top long-tail strings. ──
+
+    # ── Frota column labels (mixed-case keys, MetricView .uppercase()) ──
+    "Name": {"pt-PT": "Nome", "es": "Nombre", "fr": "Nom", "de": "Name", "it": "Nome"},
+    "Device ID": {"pt-PT": "ID do dispositivo", "es": "ID del dispositivo", "fr": "ID de l'appareil", "de": "Geräte-ID", "it": "ID dispositivo"},
+    "Port": {"pt-PT": "Porta", "es": "Puerto", "fr": "Port", "de": "Port", "it": "Porta"},
+    "Active": {"pt-PT": "Ativos", "es": "Activos", "fr": "Actifs", "de": "Aktiv", "it": "Attivi"},
+    "Shareable": {"pt-PT": "Partilháveis", "es": "Compartibles", "fr": "Partageables", "de": "Teilbar", "it": "Condivisibili"},
+    "Hashed": {"pt-PT": "Em hash", "es": "Con hash", "fr": "Hashés", "de": "Mit Hash", "it": "Con hash"},
+
+    # ── Frota StatusPill labels ──
+    "ADVERTISED": {"pt-PT": "ANUNCIADO", "es": "ANUNCIADO", "fr": "ANNONCÉ", "de": "ANGEKÜNDIGT", "it": "ANNUNCIATO"},
+    "STARTING": {"pt-PT": "A INICIAR", "es": "INICIANDO", "fr": "DÉMARRAGE", "de": "STARTET", "it": "AVVIO"},
+
+    # ── 8 MCP tool descriptions (paragraphs from MCPTools.swift) ──
+    "List currently-active Splynek download jobs with their progress (downloaded / total bytes), throughput in bytes per second, and lifecycle state (running, paused, queued, completed, failed). Returns an empty list if nothing is in flight.": {
+        "pt-PT": "Lista os trabalhos de transferência ativos do Splynek com o progresso (bytes transferidos / total), débito em bytes por segundo e estado do ciclo de vida (em execução, em pausa, em fila, concluído, falhado). Devolve uma lista vazia se não houver nada em curso.",
+        "es": "Lista los trabajos de descarga activos de Splynek con su progreso (bytes descargados / total), ancho de banda en bytes por segundo y estado de ciclo de vida (en ejecución, pausado, en cola, completado, fallado). Devuelve una lista vacía si no hay nada en curso.",
+        "fr": "Liste les tâches de téléchargement actives de Splynek avec leur progression (octets téléchargés / total), débit en octets par seconde et état du cycle de vie (en cours, en pause, en file, terminé, échoué). Renvoie une liste vide si rien n'est en cours.",
+        "de": "Listet aktuell laufende Splynek-Download-Jobs auf, mit Fortschritt (heruntergeladene / Gesamt-Bytes), Durchsatz in Bytes pro Sekunde und Lebenszyklus-Status (läuft, pausiert, in Warteschlange, abgeschlossen, fehlgeschlagen). Gibt eine leere Liste zurück, wenn nichts läuft.",
+        "it": "Elenca i lavori di download attivi di Splynek con il loro progresso (byte scaricati / totali), throughput in byte al secondo e stato del ciclo di vita (in esecuzione, in pausa, in coda, completato, fallito). Restituisce un elenco vuoto se non c'è nulla in corso.",
+    },
+    "List recently completed Splynek downloads.  Each item includes the original URL, filename, byte count, finish time, and on-disk path.  `limit` defaults to 10 and is capped at 50.": {
+        "pt-PT": "Lista as transferências do Splynek concluídas recentemente. Cada item inclui o URL original, nome do ficheiro, contagem de bytes, hora de conclusão e caminho no disco. `limit` é 10 por predefinição e tem limite máximo de 50.",
+        "es": "Lista las descargas de Splynek completadas recientemente. Cada elemento incluye la URL original, nombre de archivo, conteo de bytes, hora de finalización y ruta en disco. `limit` por defecto es 10, máximo 50.",
+        "fr": "Liste les téléchargements Splynek récemment terminés. Chaque élément inclut l'URL originale, le nom du fichier, le nombre d'octets, l'heure de fin et le chemin sur disque. `limit` vaut 10 par défaut, plafonné à 50.",
+        "de": "Listet kürzlich abgeschlossene Splynek-Downloads auf. Jeder Eintrag enthält die Original-URL, den Dateinamen, die Byte-Anzahl, die Endzeit und den Pfad auf der Festplatte. `limit` ist standardmäßig 10, maximal 50.",
+        "it": "Elenca i download Splynek completati di recente. Ogni elemento include l'URL originale, nome del file, conteggio byte, ora di fine e percorso su disco. `limit` predefinito 10, massimo 50.",
+    },
+    "Look up an installed app in the Splynek Sovereignty catalog. Returns the app's target-origin (where it's controlled from: EU, US, OSS, China, Russia, Other) plus a list of EU-or-OSS-controlled alternatives the user could switch to. `query` accepts either a bundle identifier (e.g. `com.spotify.client`) or a display name (e.g. `Spotify`).": {
+        "pt-PT": "Consulta uma app instalada no catálogo Soberania do Splynek. Devolve a origem-alvo da app (de onde é controlada: UE, EUA, OSS, China, Rússia, Outra) e uma lista de alternativas controladas na UE ou de código aberto para as quais o utilizador pode mudar. `query` aceita um identificador de pacote (ex.: `com.spotify.client`) ou um nome a apresentar (ex.: `Spotify`).",
+        "es": "Consulta una app instalada en el catálogo Soberanía de Splynek. Devuelve el origen-objetivo de la app (desde dónde se controla: UE, EE. UU., OSS, China, Rusia, Otro) y una lista de alternativas controladas en UE u open source a las que el usuario puede cambiar. `query` acepta un identificador de paquete (p. ej. `com.spotify.client`) o un nombre visible (p. ej. `Spotify`).",
+        "fr": "Recherche une app installée dans le catalogue Souveraineté de Splynek. Renvoie l'origine cible de l'app (d'où elle est contrôlée : UE, États-Unis, OSS, Chine, Russie, Autre) ainsi qu'une liste d'alternatives contrôlées en UE ou open source. `query` accepte un identifiant de bundle (ex. `com.spotify.client`) ou un nom affiché (ex. `Spotify`).",
+        "de": "Schlägt eine installierte App im Splynek-Souveränitäts-Katalog nach. Gibt das Ziel-Herkunftsland der App zurück (woher sie gesteuert wird: EU, USA, OSS, China, Russland, Andere) sowie eine Liste von EU- oder Open-Source-kontrollierten Alternativen, auf die der Benutzer wechseln könnte. `query` akzeptiert eine Bundle-ID (z. B. `com.spotify.client`) oder einen Anzeigenamen (z. B. `Spotify`).",
+        "it": "Cerca un'app installata nel catalogo Sovranità di Splynek. Restituisce l'origine-target dell'app (da dove è controllata: UE, USA, OSS, Cina, Russia, Altro) e un elenco di alternative controllate UE o open source a cui l'utente potrebbe passare. `query` accetta un identificatore di bundle (es. `com.spotify.client`) o un nome visualizzato (es. `Spotify`).",
+    },
+    "Look up an app in the Splynek Trust catalog — public-record audit of privacy, security, trust, and business-model concerns.  Returns the 0–100 score, severity level, and a list of cited concerns (each with a primary-source URL: App Store privacy labels, EU DPA / FTC enforcement, NVD CVEs, HIBP breaches, vendor advisories — never tech press).": {
+        "pt-PT": "Consulta uma app no catálogo Confiança do Splynek — auditoria de registo público sobre privacidade, segurança, confiança e modelo de negócio. Devolve a pontuação 0–100, nível de gravidade e uma lista de preocupações citadas (cada uma com URL de fonte primária: etiquetas de privacidade da App Store, ações de DPA da UE / FTC, CVEs do NVD, violações HIBP, avisos de fornecedores — nunca imprensa tecnológica).",
+        "es": "Consulta una app en el catálogo Confianza de Splynek — auditoría de registro público sobre privacidad, seguridad, confianza y modelo de negocio. Devuelve la puntuación 0–100, nivel de gravedad y lista de preocupaciones citadas (cada una con URL de fuente primaria: etiquetas de privacidad de App Store, acciones de DPA UE / FTC, CVE de NVD, filtraciones HIBP, avisos de proveedores — nunca prensa tecnológica).",
+        "fr": "Recherche une app dans le catalogue Confiance de Splynek — audit des registres publics sur la confidentialité, la sécurité, la confiance et le modèle économique. Renvoie le score 0–100, le niveau de gravité et une liste de préoccupations citées (chacune avec une URL de source primaire : étiquettes de confidentialité App Store, actions DPA UE / FTC, CVE NVD, fuites HIBP, avis éditeurs — jamais la presse tech).",
+        "de": "Schlägt eine App im Splynek-Vertrauen-Katalog nach — Audit öffentlicher Aufzeichnungen zu Datenschutz, Sicherheit, Vertrauen und Geschäftsmodell. Gibt die 0–100-Bewertung, das Schweregradlevel und eine Liste zitierter Bedenken zurück (jedes mit Primärquellen-URL: App-Store-Datenschutzlabels, EU-DPA-/FTC-Verfahren, NVD-CVEs, HIBP-Datenlecks, Hersteller-Hinweise — niemals Tech-Presse).",
+        "it": "Cerca un'app nel catalogo Affidabilità di Splynek — verifica dei registri pubblici su privacy, sicurezza, affidabilità e modello di business. Restituisce il punteggio 0–100, livello di gravità ed elenco delle preoccupazioni citate (ciascuna con URL di fonte primaria: etichette privacy App Store, azioni DPA UE / FTC, CVE NVD, fughe HIBP, avvisi vendor — mai stampa tech).",
+    },
+    "Scan the user's installed apps and return a summary count of how many were matched against the Sovereignty catalog. Use this before `splynek_lookup_sovereignty` to understand the user's overall exposure.  All scanning is on-device; no app list leaves the user's machine.": {
+        "pt-PT": "Analisa as apps instaladas do utilizador e devolve uma contagem resumida de quantas correspondem ao catálogo Soberania. Usa isto antes de `splynek_lookup_sovereignty` para perceber a exposição geral do utilizador. Toda a análise é no dispositivo; nenhuma lista de apps sai da máquina do utilizador.",
+        "es": "Analiza las apps instaladas del usuario y devuelve un conteo resumido de cuántas coinciden con el catálogo Soberanía. Úsalo antes de `splynek_lookup_sovereignty` para entender la exposición general del usuario. Todo el análisis es en el dispositivo; ninguna lista de apps sale de la máquina del usuario.",
+        "fr": "Analyse les apps installées de l'utilisateur et renvoie un nombre récapitulatif de celles qui correspondent au catalogue Souveraineté. Utilisez-le avant `splynek_lookup_sovereignty` pour comprendre l'exposition globale de l'utilisateur. Toute l'analyse est sur l'appareil ; aucune liste d'apps ne quitte la machine de l'utilisateur.",
+        "de": "Scannt die installierten Apps des Benutzers und gibt eine zusammenfassende Anzahl zurück, wie viele mit dem Souveränitäts-Katalog übereinstimmen. Verwenden Sie dies vor `splynek_lookup_sovereignty`, um die Gesamtexposition des Benutzers zu verstehen. Der gesamte Scan erfolgt auf dem Gerät; keine App-Liste verlässt den Computer des Benutzers.",
+        "it": "Scansiona le app installate dell'utente e restituisce un conteggio riassuntivo di quante corrispondono al catalogo Sovranità. Usalo prima di `splynek_lookup_sovereignty` per capire l'esposizione complessiva dell'utente. Tutta la scansione è sul dispositivo; nessun elenco di app lascia la macchina dell'utente.",
+    },
+    "Start an immediate download via Splynek's multi-interface HTTP aggregator.  The URL must be HTTP(S) or a `magnet:` BitTorrent magnet link.  Optional `sha256` enables integrity verification — when present, the download is rejected on hash mismatch.  Output goes to the user's configured Splynek output directory.": {
+        "pt-PT": "Inicia uma transferência imediata via o agregador HTTP multi-interface do Splynek. O URL tem de ser HTTP(S) ou um link `magnet:` BitTorrent. O `sha256` opcional ativa a verificação de integridade — quando presente, a transferência é rejeitada em caso de divergência. A saída vai para o diretório de saída configurado do Splynek.",
+        "es": "Inicia una descarga inmediata vía el agregador HTTP multi-interfaz de Splynek. La URL debe ser HTTP(S) o un enlace `magnet:` BitTorrent. El `sha256` opcional activa la verificación de integridad — cuando está presente, la descarga se rechaza en caso de discrepancia de hash. La salida va al directorio de salida configurado de Splynek.",
+        "fr": "Démarre un téléchargement immédiat via l'agrégateur HTTP multi-interface de Splynek. L'URL doit être HTTP(S) ou un lien `magnet:` BitTorrent. Le `sha256` optionnel active la vérification d'intégrité — s'il est présent, le téléchargement est rejeté en cas de divergence de hash. La sortie va vers le répertoire de sortie configuré de Splynek.",
+        "de": "Startet einen sofortigen Download über Splyneks Multi-Schnittstellen-HTTP-Aggregator. Die URL muss HTTP(S) oder ein BitTorrent-Magnet-Link `magnet:` sein. Der optionale `sha256` aktiviert die Integritätsprüfung — wenn vorhanden, wird der Download bei Hash-Abweichung abgelehnt. Die Ausgabe geht ins konfigurierte Splynek-Ausgabeverzeichnis.",
+        "it": "Avvia un download immediato tramite l'aggregatore HTTP multi-interfaccia di Splynek. L'URL deve essere HTTP(S) o un link `magnet:` BitTorrent. Il `sha256` opzionale abilita la verifica di integrità — se presente, il download è rifiutato in caso di mismatch hash. L'output va nella directory di output configurata di Splynek.",
+    },
+    "Append a URL to Splynek's download queue (instead of starting it immediately).  Useful when the user wants to batch up several URLs and let Splynek process them sequentially.  Same URL + sha256 schema as `splynek_download_url`.": {
+        "pt-PT": "Adiciona um URL à fila de transferências do Splynek (em vez de iniciar imediatamente). Útil quando o utilizador quer agrupar vários URLs e deixar o Splynek processá-los em sequência. Mesmo esquema URL + sha256 que `splynek_download_url`.",
+        "es": "Añade una URL a la cola de descargas de Splynek (en lugar de iniciarla inmediatamente). Útil cuando el usuario quiere agrupar varias URLs y dejar que Splynek las procese en secuencia. Mismo esquema URL + sha256 que `splynek_download_url`.",
+        "fr": "Ajoute une URL à la file d'attente de téléchargement de Splynek (au lieu de la démarrer immédiatement). Utile quand l'utilisateur veut grouper plusieurs URLs et laisser Splynek les traiter en séquence. Même schéma URL + sha256 que `splynek_download_url`.",
+        "de": "Hängt eine URL an die Splynek-Download-Warteschlange an (anstatt sie sofort zu starten). Nützlich, wenn der Benutzer mehrere URLs bündeln und Splynek sequentiell verarbeiten lassen möchte. Gleiches URL + sha256-Schema wie `splynek_download_url`.",
+        "it": "Aggiunge un URL alla coda di download di Splynek (invece di avviarlo immediatamente). Utile quando l'utente vuole raggruppare più URL e lasciare che Splynek li elabori in sequenza. Stesso schema URL + sha256 di `splynek_download_url`.",
+    },
+    "Cancel every active and queued Splynek download.  This does not delete already-downloaded data; partial files are preserved on disk.  Use cautiously — there's no undo.": {
+        "pt-PT": "Cancela todas as transferências ativas e em fila do Splynek. Isto não apaga dados já transferidos; ficheiros parciais são preservados no disco. Usa com cautela — não há anular.",
+        "es": "Cancela todas las descargas activas y en cola de Splynek. Esto no borra datos ya descargados; los archivos parciales se conservan en disco. Úsalo con cuidado — no hay deshacer.",
+        "fr": "Annule tous les téléchargements actifs et en file de Splynek. Ceci ne supprime pas les données déjà téléchargées ; les fichiers partiels sont conservés sur disque. À utiliser avec précaution — il n'y a pas d'annulation.",
+        "de": "Bricht alle aktiven und in der Warteschlange befindlichen Splynek-Downloads ab. Dies löscht keine bereits heruntergeladenen Daten; Teil-Dateien bleiben auf der Festplatte erhalten. Mit Vorsicht verwenden — kein Rückgängig.",
+        "it": "Annulla tutti i download attivi e in coda di Splynek. Questo non elimina i dati già scaricati; i file parziali vengono conservati su disco. Usa con cautela — non c'è annulla.",
+    },
+
+    # ── Top long-tail strings (DownloadView tooltips, AboutView,
+    # SettingsView details, BenchmarkView interactives) ──
+
+    "Splynek": {"pt-PT": "Splynek", "es": "Splynek", "fr": "Splynek", "de": "Splynek", "it": "Splynek"},
+    "Splynek Pro feature": {"pt-PT": "Funcionalidade Splynek Pro", "es": "Función Splynek Pro", "fr": "Fonctionnalité Splynek Pro", "de": "Splynek Pro-Funktion", "it": "Funzione Splynek Pro"},
+    "How this works": {"pt-PT": "Como funciona", "es": "Cómo funciona", "fr": "Comment ça marche", "de": "So funktioniert es", "it": "Come funziona"},
+    "Cancel.": {"pt-PT": "Cancelar.", "es": "Cancelar.", "fr": "Annuler.", "de": "Abbrechen.", "it": "Annulla."},
+    "Pause; sidecar is retained so resume picks up here.": {
+        "pt-PT": "Pausa; o sidecar é preservado para que o retomar continue daqui.",
+        "es": "Pausa; el sidecar se conserva para que reanudar continúe desde aquí.",
+        "fr": "Pause ; le sidecar est conservé pour que la reprise continue ici.",
+        "de": "Pause; Sidecar wird beibehalten, damit das Fortsetzen hier weitermacht.",
+        "it": "Pausa; il sidecar viene mantenuto in modo che la ripresa continui da qui.",
+    },
+    "Projected split — based on prior runs against this host": {
+        "pt-PT": "Divisão prevista — com base em execuções anteriores contra este servidor",
+        "es": "División proyectada — basada en ejecuciones previas contra este host",
+        "fr": "Répartition projetée — basée sur les exécutions précédentes contre cet hôte",
+        "de": "Projizierte Aufteilung — basierend auf vorherigen Läufen gegen diesen Host",
+        "it": "Suddivisione prevista — basata sulle esecuzioni precedenti verso questo host",
+    },
+    "GB": {"pt-PT": "GB", "es": "GB", "fr": "Go", "de": "GB", "it": "GB"},
+    "Type a goal like \"set up my Mac for iOS dev\"": {
+        # Already in catalog — no-op duplicate but harmless if regenerator is idempotent.
+        "pt-PT": "Escreve um objetivo como \"configurar o meu Mac para desenvolvimento iOS\"",
+        "es": "Escribe un objetivo como \"configurar mi Mac para desarrollo iOS\"",
+        "fr": "Tapez un objectif comme \"configurer mon Mac pour le développement iOS\"",
+        "de": "Tippen Sie ein Ziel ein wie \"Mac für iOS-Entwicklung einrichten\"",
+        "it": "Scrivi un obiettivo come \"configura il mio Mac per sviluppo iOS\"",
+    },
+
+    # ── DownloadView tooltips (.help() — hover-only, but still
+    # user-visible) ──
+    "Drop the .splynek-manifest with a precomputed Merkle tree of the file's contents. Splynek verifies each chunk against its expected leaf hash on arrival — any corrupted byte triggers a re-fetch inline, without waiting for a full-file SHA-256 at the end.": {
+        "pt-PT": "Largar o .splynek-manifest com uma árvore Merkle pré-calculada do conteúdo do ficheiro. O Splynek verifica cada fragmento contra o hash de folha esperado à chegada — qualquer byte corrompido desencadeia uma re-transferência em linha, sem esperar por um SHA-256 do ficheiro inteiro no fim.",
+        "es": "Suelta el .splynek-manifest con un árbol Merkle precalculado del contenido del archivo. Splynek verifica cada fragmento contra su hash de hoja esperado a la llegada — cualquier byte corrupto activa una re-descarga en línea, sin esperar a un SHA-256 del archivo completo al final.",
+        "fr": "Déposez le .splynek-manifest avec un arbre Merkle précalculé du contenu du fichier. Splynek vérifie chaque morceau par rapport à son hash de feuille attendu à l'arrivée — tout octet corrompu déclenche un re-téléchargement en ligne, sans attendre un SHA-256 du fichier entier à la fin.",
+        "de": "Legen Sie das .splynek-manifest mit einem vorab berechneten Merkle-Baum des Dateiinhalts ab. Splynek verifiziert jeden Chunk gegen seinen erwarteten Blatt-Hash bei Ankunft — jedes beschädigte Byte löst einen Inline-Neu-Abruf aus, ohne am Ende auf einen vollständigen Datei-SHA-256 warten zu müssen.",
+        "it": "Trascina il .splynek-manifest con un albero Merkle precalcolato del contenuto del file. Splynek verifica ogni frammento rispetto al suo hash foglia atteso all'arrivo — qualsiasi byte corrotto attiva un re-download in linea, senza attendere un SHA-256 dell'intero file alla fine.",
+    },
+    "Active downloads": {
+        "pt-PT": "Transferências ativas", "es": "Descargas activas",
+        "fr": "Téléchargements actifs", "de": "Aktive Downloads",
+        "it": "Download attivi",
+    },
+    "Reveal in Finder": {
+        "pt-PT": "Mostrar no Finder", "es": "Mostrar en Finder",
+        "fr": "Afficher dans le Finder", "de": "Im Finder anzeigen",
+        "it": "Mostra nel Finder",
+    },
+    "Re-download from origin (does not pull from fleet peers).": {
+        "pt-PT": "Voltar a transferir da origem (não puxa de pares na frota).",
+        "es": "Volver a descargar desde el origen (no tira de pares de la flota).",
+        "fr": "Re-télécharger depuis l'origine (ne tire pas des pairs de la flotte).",
+        "de": "Erneut von der Quelle herunterladen (zieht nicht von Flotten-Peers).",
+        "it": "Riscarica dall'origine (non preleva dai peer della flotta).",
+    },
+    "Detached signature available": {
+        "pt-PT": "Assinatura separada disponível",
+        "es": "Firma separada disponible",
+        "fr": "Signature détachée disponible",
+        "de": "Separate Signatur verfügbar",
+        "it": "Firma separata disponibile",
+    },
+
+    # ── BenchmarkView interactives ──
+    "Re-run with the same target. Useful after switching networks.": {
+        "pt-PT": "Voltar a executar com o mesmo alvo. Útil após mudar de rede.",
+        "es": "Volver a ejecutar con el mismo objetivo. Útil tras cambiar de red.",
+        "fr": "Relancer avec la même cible. Utile après avoir changé de réseau.",
+        "de": "Mit demselben Ziel erneut ausführen. Nützlich nach einem Netzwerkwechsel.",
+        "it": "Riesegui con lo stesso target. Utile dopo aver cambiato rete.",
+    },
+    "Reset to default URL.": {
+        "pt-PT": "Repor o URL predefinido.",
+        "es": "Restablecer la URL predeterminada.",
+        "fr": "Réinitialiser à l'URL par défaut.",
+        "de": "Auf Standard-URL zurücksetzen.",
+        "it": "Reimposta all'URL predefinito.",
+    },
+
+    # ── Settings: schedule details ──
+    "Active days": {"pt-PT": "Dias ativos", "es": "Días activos", "fr": "Jours actifs", "de": "Aktive Tage", "it": "Giorni attivi"},
+    "Start": {"pt-PT": "Início", "es": "Inicio", "fr": "Début", "de": "Start", "it": "Inizio"},
+    "End": {"pt-PT": "Fim", "es": "Fin", "fr": "Fin", "de": "Ende", "it": "Fine"},
+    "Every day": {"pt-PT": "Todos os dias", "es": "Todos los días", "fr": "Tous les jours", "de": "Jeden Tag", "it": "Ogni giorno"},
+    "Weekdays": {"pt-PT": "Dias úteis", "es": "Días laborables", "fr": "Jours ouvrés", "de": "Wochentage", "it": "Giorni feriali"},
+    "Respect schedule": {"pt-PT": "Respeitar agendamento", "es": "Respetar programación", "fr": "Respecter la planification", "de": "Zeitplan einhalten", "it": "Rispetta pianificazione"},
+    "Window is open — queued items will start as slots free up.": {
+        "pt-PT": "A janela está aberta — os itens em fila vão começar à medida que as vagas ficam livres.",
+        "es": "La ventana está abierta — los elementos en cola comenzarán a medida que se liberen los slots.",
+        "fr": "La fenêtre est ouverte — les éléments en file commenceront à mesure que les emplacements se libèrent.",
+        "de": "Das Fenster ist offen — Elemente in der Warteschlange starten, sobald Slots frei werden.",
+        "it": "La finestra è aperta — gli elementi in coda partiranno man mano che si liberano gli slot.",
+    },
+    "Detected Ollama —": {"pt-PT": "Detetado Ollama —", "es": "Ollama detectado —", "fr": "Ollama détecté —", "de": "Ollama erkannt —", "it": "Ollama rilevato —"},
+    "Re-probe localhost:11434 for Ollama": {
+        "pt-PT": "Voltar a sondar localhost:11434 para o Ollama",
+        "es": "Volver a sondear localhost:11434 para Ollama",
+        "fr": "Re-sonder localhost:11434 pour Ollama",
+        "de": "localhost:11434 erneut auf Ollama prüfen",
+        "it": "Riprova localhost:11434 per Ollama",
+    },
+    "Refresh login-item status from macOS": {
+        "pt-PT": "Atualizar estado de item de início de sessão do macOS",
+        "es": "Actualizar estado de elemento de inicio del macOS",
+        "fr": "Actualiser l'état de l'élément d'ouverture de session depuis macOS",
+        "de": "Login-Item-Status von macOS aktualisieren",
+        "it": "Aggiorna stato elemento di avvio da macOS",
+    },
+    "Restore Purchase": {
+        "pt-PT": "Restaurar compra",
+        "es": "Restaurar compra",
+        "fr": "Restaurer l'achat",
+        "de": "Kauf wiederherstellen",
+        "it": "Ripristina acquisto",
+    },
+    "Status unknown.": {
+        "pt-PT": "Estado desconhecido.",
+        "es": "Estado desconocido.",
+        "fr": "État inconnu.",
+        "de": "Status unbekannt.",
+        "it": "Stato sconosciuto.",
+    },
+    "Not registered.": {
+        "pt-PT": "Não registado.",
+        "es": "No registrado.",
+        "fr": "Non enregistré.",
+        "de": "Nicht registriert.",
+        "it": "Non registrato.",
+    },
+    "Approval required — open System Settings → Login Items.": {
+        "pt-PT": "Aprovação necessária — abre Definições do Sistema → Itens de início de sessão.",
+        "es": "Aprobación requerida — abre Ajustes del Sistema → Elementos de inicio.",
+        "fr": "Approbation requise — ouvrez Réglages Système → Éléments d'ouverture de session.",
+        "de": "Genehmigung erforderlich — Systemeinstellungen → Anmeldeobjekte öffnen.",
+        "it": "Approvazione richiesta — apri Impostazioni Sistema → Elementi all'avvio.",
+    },
+    "Registered. macOS will start Splynek at next login.": {
+        "pt-PT": "Registado. O macOS vai iniciar o Splynek no próximo início de sessão.",
+        "es": "Registrado. macOS iniciará Splynek en el próximo inicio de sesión.",
+        "fr": "Enregistré. macOS lancera Splynek à la prochaine connexion.",
+        "de": "Registriert. macOS wird Splynek bei der nächsten Anmeldung starten.",
+        "it": "Registrato. macOS avvierà Splynek al prossimo accesso.",
+    },
+    "Deactivate on this Mac": {
+        "pt-PT": "Desativar neste Mac",
+        "es": "Desactivar en este Mac",
+        "fr": "Désactiver sur ce Mac",
+        "de": "Auf diesem Mac deaktivieren",
+        "it": "Disattiva su questo Mac",
+    },
+    "Buy Splynek Pro — $29": {
+        "pt-PT": "Comprar Splynek Pro — $29",
+        "es": "Comprar Splynek Pro — $29",
+        "fr": "Acheter Splynek Pro — $29",
+        "de": "Splynek Pro kaufen — $29",
+        "it": "Acquista Splynek Pro — $29",
+    },
+    "Thanks for supporting Splynek. AI Concierge, AI history search, scheduled downloads, and LAN-accessible dashboard are unlocked.": {
+        "pt-PT": "Obrigado por apoiares o Splynek. O Concierge IA, pesquisa de histórico com IA, transferências agendadas e painel acessível pela rede local estão desbloqueados.",
+        "es": "Gracias por apoyar Splynek. El Concierge IA, búsqueda de historial con IA, descargas programadas y panel accesible por red local están desbloqueados.",
+        "fr": "Merci de soutenir Splynek. Le Concierge IA, la recherche d'historique IA, les téléchargements planifiés et le tableau de bord accessible par réseau local sont débloqués.",
+        "de": "Danke, dass Sie Splynek unterstützen. KI-Concierge, KI-Verlaufssuche, geplante Downloads und lokal-Netzwerk-zugängliches Dashboard sind freigeschaltet.",
+        "it": "Grazie per supportare Splynek. Il Concierge IA, ricerca cronologia con IA, download programmati e dashboard accessibile via rete locale sono sbloccati.",
+    },
 }
 
 
