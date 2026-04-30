@@ -389,6 +389,75 @@ NEW_V16_STRINGS = {
         "it": "Agenti",
     },
 
+    # ── Sidebar tab labels (v1.6.2: previously bypassed
+    # localization because Sidebar.swift used Label(_:systemImage:)
+    # with a String, which is verbatim.  Fixed by routing the
+    # String through LocalizedStringKey; these entries make the
+    # catalog hit translate. ──
+    "Downloads": {
+        "pt-PT": "Transferências",
+        "es": "Descargas",
+        "fr": "Téléchargements",
+        "de": "Downloads",
+        "it": "Download",
+    },
+    "Torrents": {
+        "pt-PT": "Torrents",
+        "es": "Torrents",
+        "fr": "Torrents",
+        "de": "Torrents",
+        "it": "Torrent",
+    },
+    "Live": {
+        "pt-PT": "Ao Vivo",
+        "es": "En Vivo",
+        "fr": "En Direct",
+        "de": "Live",
+        "it": "Live",
+    },
+    "Concierge": {
+        "pt-PT": "Concierge",
+        "es": "Concierge",
+        "fr": "Concierge",
+        "de": "Concierge",
+        "it": "Concierge",
+    },
+    "Recipes": {
+        "pt-PT": "Receitas",
+        "es": "Recetas",
+        "fr": "Recettes",
+        "de": "Rezepte",
+        "it": "Ricette",
+    },
+    "Queue": {
+        "pt-PT": "Fila",
+        "es": "Cola",
+        "fr": "File d'attente",
+        "de": "Warteschlange",
+        "it": "Coda",
+    },
+    "Fleet": {
+        "pt-PT": "Frota",
+        "es": "Flota",
+        "fr": "Flotte",
+        "de": "Flotte",
+        "it": "Flotta",
+    },
+    "Benchmark": {
+        "pt-PT": "Avaliação",
+        "es": "Prueba de rendimiento",
+        "fr": "Évaluation",
+        "de": "Benchmark",
+        "it": "Benchmark",
+    },
+    "History": {
+        "pt-PT": "Histórico",
+        "es": "Historial",
+        "fr": "Historique",
+        "de": "Verlauf",
+        "it": "Cronologia",
+    },
+
     # ── Agents tab ───────────────────────────────────────────────
     "Splynek as a programmable platform — let Claude, ChatGPT, or any MCP-compatible agent drive downloads, run audits, and search your history through one HTTP endpoint.": {
         "pt-PT": "O Splynek como plataforma programável — deixa o Claude, o ChatGPT ou qualquer agente compatível com MCP gerir transferências, executar auditorias e pesquisar o teu histórico através de um único endpoint HTTP.",

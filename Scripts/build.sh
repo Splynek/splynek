@@ -61,6 +61,31 @@ fi
 SPM_BUNDLE="$BIN_PATH/Splynek_SplynekCore.bundle"
 if [[ -d "$SPM_BUNDLE" ]]; then
     cp -R "$SPM_BUNDLE" "$APP/Contents/Resources/Splynek_SplynekCore.bundle"
+    # v1.6.2: compile Localizable.xcstrings → per-locale
+    # Localizable.strings.  SwiftPM's `.process()` for .xcstrings
+    # ships the raw catalog but Foundation reads only the compiled
+    # form (`<locale>.lproj/Localizable.strings`).  Xcode runs the
+    # equivalent step automatically; SwiftPM-from-CLI does not.
+    # Without this, every locale falls through to source English.
+    if command -v python3 > /dev/null; then
+        echo "• Compiling localizations"
+        python3 "$ROOT/Scripts/compile-xcstrings.py" \
+            "$APP/Contents/Resources/Splynek_SplynekCore.bundle"
+        # v1.6.2: SwiftUI's `Text("foo")` default-resolves through
+        # `Bundle.main` (the .app), NOT `Bundle.module` (the SwiftPM
+        # resource bundle).  Most Splynek views use the bare `Text(_:)`
+        # without an explicit `bundle: .module` argument.  So the
+        # compiled .lproj files inside the SPM bundle aren't reached.
+        # Fix: mirror them up to the .app's top-level Resources/ so
+        # Bundle.main finds them.  Both bundles now resolve.
+        for lproj in "$APP/Contents/Resources/Splynek_SplynekCore.bundle"/*.lproj; do
+            [ -d "$lproj" ] || continue
+            cp -R "$lproj" "$APP/Contents/Resources/"
+        done
+        echo "  mirrored .lproj into .app's main Resources"
+    else
+        echo "  ⚠  python3 not found — localization will fall back to English"
+    fi
 fi
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 

@@ -50,19 +50,23 @@ fi
 echo "→ Endpoint: $ENDPOINT"
 echo
 
+# All display output goes to stderr (>&2) so the function's stdout is
+# the RAW JSON response only — captured cleanly by `$(call …)` callers.
+# Earlier revision mixed display + return on stdout, which broke jq
+# parsing in the caller (it'd see "▸ desc\n{pretty}\n\n{raw}").
 call() {
     local desc="$1" body="$2"
-    echo "▸ $desc"
+    echo "▸ $desc" >&2
     local resp
     resp="$(curl -s --max-time 5 -X POST "$ENDPOINT" \
          -H 'Content-Type: application/json' \
          -d "$body")"
     if [[ -z "$resp" ]]; then
-        echo "  ✗ empty response (server disabled? token wrong?)"
+        echo "  ✗ empty response (server disabled? token wrong?)" >&2
         return 1
     fi
-    echo "$resp" | jq .
-    echo
+    echo "$resp" | jq . >&2
+    echo "" >&2
     printf '%s' "$resp"
 }
 

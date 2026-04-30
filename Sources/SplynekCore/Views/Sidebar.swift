@@ -348,8 +348,18 @@ struct Sidebar: View {
 
     @ViewBuilder
     private func sidebarRow(title: String, systemImage: String, accessory: AnyView? = nil) -> some View {
+        // v1.6.2: route the title String through LocalizedStringKey so
+        // the Localizable.xcstrings catalog gets a chance to resolve
+        // it.  `Label(_:systemImage:)`'s String overload uses
+        // verbatim text — bypasses localization entirely, which left
+        // every sidebar tab label in English even when the rest of
+        // the UI was rendering in pt-PT / fr / de / etc.
         HStack {
-            Label(title, systemImage: systemImage)
+            Label {
+                Text(LocalizedStringKey(title))
+            } icon: {
+                Image(systemName: systemImage)
+            }
             Spacer()
             accessory
         }
