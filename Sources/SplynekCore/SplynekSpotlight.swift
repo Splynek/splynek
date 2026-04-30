@@ -126,10 +126,32 @@ enum SplynekSpotlight {
 
         // Replace any prior catalog index in one transaction so a
         // catalog rev doesn't leave stale entries in Spotlight.
+        //
+        // v1.6.2: previously swallowed all errors silently — `{ _ in }`.
+        // Field investigation showed `mdfind` returned empty for the
+        // Splynek domains even after a clean app launch, meaning the
+        // index calls were either never firing or erroring.  Now we
+        // log the outcome so the user can diagnose via:
+        //
+        //   log show --predicate 'subsystem == "app.splynek"
+        //                         AND category == "scan"' --info --last 5m
+        let totalItems = items.count
+        Log.scan.info("Spotlight reindex starting: \(totalItems, privacy: .public) items across sovereignty + trust domains")
         index.deleteSearchableItems(withDomainIdentifiers: [
             sovereigntyDomain, trustDomain,
-        ]) { _ in
-            index.indexSearchableItems(items) { _ in /* silent */ }
+        ]) { deleteError in
+            if let err = deleteError {
+                Log.scan.error("Spotlight delete-pre-reindex failed: \(String(describing: err), privacy: .public)")
+                // Continue anyway — the indexer will overwrite by
+                // uniqueIdentifier.
+            }
+            index.indexSearchableItems(items) { indexError in
+                if let err = indexError {
+                    Log.scan.error("Spotlight indexSearchableItems failed: \(String(describing: err), privacy: .public)")
+                } else {
+                    Log.scan.info("Spotlight reindex done: \(totalItems, privacy: .public) items indexed")
+                }
+            }
         }
     }
 }

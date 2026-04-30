@@ -89,6 +89,41 @@ if [[ -d "$SPM_BUNDLE" ]]; then
 fi
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
+# v1.6.2: App Intents metadata.  SwiftPM's `swift build` does not
+# run `appintentsmetadataprocessor`, so the SPM-built .app ships
+# without `Contents/Resources/Metadata.appintents` — Shortcuts.app
+# and Siri can't discover Splynek's App Intents.  Xcode's build
+# pipeline does run it.  If xcodegen + xcodebuild are available,
+# do a one-shot Xcode build of the (non-MAS) Splynek scheme into a
+# scratch DerivedData, then graft just the metadata file into our
+# real .app.  Adds ~60 s to the build; opt out with
+# SKIP_APP_INTENTS=1.
+if [[ "${SKIP_APP_INTENTS:-0}" != "1" ]] \
+   && command -v xcodegen > /dev/null \
+   && command -v xcodebuild > /dev/null; then
+    echo "• Generating App Intents metadata (via Xcode)"
+    XC_DERIVED="$ROOT/.build/AppIntentsMetadata.derivedData"
+    rm -rf "$XC_DERIVED"
+    xcodegen generate > /dev/null 2>&1
+    if xcodebuild -project Splynek.xcodeproj -scheme Splynek \
+                  -configuration Debug -derivedDataPath "$XC_DERIVED" \
+                  build > /tmp/splynek-appintents-build.log 2>&1; then
+        SRC="$XC_DERIVED/Build/Products/Debug/Splynek.app/Contents/Resources/Metadata.appintents"
+        if [[ -d "$SRC" || -f "$SRC" ]]; then
+            cp -R "$SRC" "$APP/Contents/Resources/Metadata.appintents"
+            echo "  ✓ Metadata.appintents grafted into .app"
+        else
+            echo "  ⚠  Xcode build OK but Metadata.appintents not found — check /tmp/splynek-appintents-build.log"
+        fi
+    else
+        echo "  ⚠  Xcode build for App Intents metadata failed; SPM .app will lack Shortcuts.app discovery"
+        echo "     See /tmp/splynek-appintents-build.log"
+    fi
+else
+    echo "  ⚠  Skipping App Intents metadata (no xcodegen / xcodebuild, or SKIP_APP_INTENTS=1)"
+    echo "     The SPM-built .app will work but Shortcuts.app won't see Splynek's Intents."
+fi
+
 # Ship the browser-integration helpers inside the bundle so the About
 # pane can reveal them without any external dependency. Copy only the
 # user-facing files — no dev-only markdown that looks like app

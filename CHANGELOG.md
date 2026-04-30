@@ -3,6 +3,92 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.6.2 — validation pass + build-pipeline fixes (2026-04-30)
+
+End-to-end validation of v1.6 surfaces via computer-use surfaced
+three real bugs along the way; all fixed.
+
+**Localization gaps fixed across the rest of the UI**:
+
+- `TitledCard.title` was `String` (verbatim) — every card title
+  ("Source", "Options", "Trust score weights", "MCP server", etc.)
+  bypassed localization.  Type changed to `LocalizedStringKey`;
+  string-literal call sites auto-coerce.  Two dynamic-String
+  callers (LegalView, ProLockedView) explicitly wrap their
+  Strings in `LocalizedStringKey(...)`.
+- `DownloadView.windowTitle` was `String` returned to
+  `.navigationTitle(_:)` (verbatim overload) — pane title stuck
+  in English even when the rest of the UI rendered in pt-PT.
+  Type changed to `LocalizedStringKey`.
+- `labelWithInfo(_:tooltip:)` Text rendered the label String
+  verbatim — "Speed per network" / "Downloads at once" stayed
+  English on translated locales.  Now wraps in
+  `LocalizedStringKey(text)`.
+- 12 new strings added to the catalog: tab pane titles
+  (Downloads / Torrents / Live / Concierge / Recipes / Queue /
+  Fleet / Benchmark / History — translated across all 5 locales,
+  Concierge + Torrents kept identical to English as international
+  proper nouns), card titles, common buttons (Save / Done / Open /
+  Close), pane subtitles ("Paste a URL...").
+- Catalog: 127 → 139 strings × 5 locales = 695 translations.
+
+**App Intents metadata for SPM-built DMG**:
+
+- `swift build` doesn't run `appintentsmetadataprocessor`, so the
+  SPM-built .app shipped without `Metadata.appintents` —
+  Shortcuts.app and Siri couldn't discover Splynek's 10 Intents.
+  Verified against `pluginkit -m -A | grep splynek` (empty) and
+  `nm` (all 10 Intent symbols present in binary).
+- `Scripts/build.sh` now opt-in-runs an Xcode build of the
+  Splynek scheme (NOT the MAS scheme — no Pro deps needed) into
+  scratch DerivedData, copies the generated Metadata.appintents
+  into the SPM .app's Resources/.  Adds ~60 s; opt out with
+  `SKIP_APP_INTENTS=1`.
+- Hit a real bug along the way: `LookupSovereigntyIntent` and
+  `LookupTrustIntent` had AppShortcut phrases interpolating
+  `\(\.$query)` — the metadata extractor only allows AppEntity
+  / AppEnum interpolations, not String.  Phrases simplified to
+  static text; the user types the query in the Shortcuts editor.
+
+**Spotlight indexing**:
+
+- `mdfind` was returning empty for the Splynek catalog domains
+  even after a clean app launch — initially looked like a
+  regression.  Investigation: `mdfind` queries the filesystem
+  metadata index (`.pdf`, etc.), while `CSSearchableIndex` writes
+  to a SEPARATE app-provided-items index queryable via Cmd+Space
+  Spotlight UI or `CSSearchQuery`.  Two different indexes.
+- Verified working via the new explicit logging:
+  `Spotlight reindex done: 1215 items indexed`
+  (1155 Sovereignty + 60 Trust).
+- `SplynekSpotlight.reindexCatalog` now logs success/failure via
+  `Log.scan` so future false alarms are diagnosable in
+  `log show --predicate 'subsystem == "app.splynek"'`.
+
+**MCP smoke test (Scripts/validate-mcp.sh)**:
+
+- The `call()` function leaked display output onto stdout,
+  breaking jq parsing in callers ("▸ desc\n{pretty}\n\n{raw}"
+  instead of just `{raw}`).  Display output now goes to stderr;
+  stdout is the raw JSON only.  All 4 smoke tests pass against
+  the live endpoint.
+
+**Build pipeline (Scripts/build.sh)**:
+
+- Compiles `Localizable.xcstrings` → per-locale
+  `Localizable.strings` files via the new
+  `Scripts/compile-xcstrings.py` (SwiftPM ships the raw catalog;
+  Foundation reads only compiled .strings).
+- Mirrors the compiled .lproj/ directories from the SwiftPM
+  resource bundle up to the .app's main `Contents/Resources/` —
+  SwiftUI's `Text("foo")` resolves through `Bundle.main`, not
+  `Bundle.module`.
+- Accepts positional `debug`/`release` arg in addition to env var.
+
+Tests: 166/166 pass.  Catalog: 139 strings × 5 locales.  App
+builds clean to v1.6.2 .app with localizations + App Intents
+metadata + os.Logger output for Spotlight reindex.
+
 ## v1.6.1 — onboarding, human-language sweep, ASC monitor, localization (2026-04-30)
 
 **First-launch onboarding** (`Sources/SplynekCore/Views/OnboardingSheet.swift`):

@@ -679,6 +679,107 @@ NEW_V16_STRINGS = {
         "de": "Download starten",
         "it": "Avvia download",
     },
+
+    # ── Common card titles + button labels (v1.6.2: TitledCard +
+    # labelWithInfo + button labels now route through
+    # LocalizedStringKey, so adding the source-language entries
+    # here makes them translate.) ──
+    "Add to queue": {
+        "pt-PT": "Adicionar à fila",
+        "es": "Añadir a la cola",
+        "fr": "Ajouter à la file",
+        "de": "Zur Warteschlange hinzufügen",
+        "it": "Aggiungi alla coda",
+    },
+    "Downloading — \(Int(job.progress.fraction * 100))%": {
+        # Pane title for one active download, e.g. "Downloading — 42%".
+        # The `\()` interpolation is part of the LocalizedStringKey
+        # itself; SwiftUI substitutes the integer at render time.
+        "pt-PT": "A transferir — \(Int(job.progress.fraction * 100))%",
+        "es": "Descargando — \(Int(job.progress.fraction * 100))%",
+        "fr": "Téléchargement — \(Int(job.progress.fraction * 100)) %",
+        "de": "Lädt — \(Int(job.progress.fraction * 100))%",
+        "it": "Scaricando — \(Int(job.progress.fraction * 100))%",
+    },
+    "Downloading — \(running.count) active": {
+        "pt-PT": "A transferir — \(running.count) ativas",
+        "es": "Descargando — \(running.count) activas",
+        "fr": "Téléchargement — \(running.count) actifs",
+        "de": "Lädt — \(running.count) aktiv",
+        "it": "Scaricando — \(running.count) attivi",
+    },
+
+    # ── Splash banners + page-level subtitles ──
+    "Paste a URL. Splynek fans it out across every interface you have — Wi-Fi, Ethernet, tether — and reassembles a verified file.": {
+        "pt-PT": "Cola um URL. O Splynek distribui-o por todas as ligações que tens — Wi-Fi, Ethernet, partilha — e recompõe um ficheiro verificado.",
+        "es": "Pega una URL. Splynek la reparte por todas tus conexiones — Wi-Fi, Ethernet, conexión compartida — y reensambla un archivo verificado.",
+        "fr": "Collez une URL. Splynek la répartit sur toutes vos interfaces — Wi-Fi, Ethernet, partage — et reconstruit un fichier vérifié.",
+        "de": "URL einfügen. Splynek verteilt sie auf alle Verbindungen — WLAN, Ethernet, Tethering — und setzt eine verifizierte Datei zusammen.",
+        "it": "Incolla un URL. Splynek lo distribuisce su tutte le tue connessioni — Wi-Fi, Ethernet, hotspot — e ricompone un file verificato.",
+    },
+
+    # ── Card titles ──
+    "Interfaces": {
+        "pt-PT": "Interfaces",
+        "es": "Interfaces",
+        "fr": "Interfaces",
+        "de": "Schnittstellen",
+        "it": "Interfacce",
+    },
+
+    # ── Pro card ──
+    "Splynek Pro": {
+        "pt-PT": "Splynek Pro",
+        "es": "Splynek Pro",
+        "fr": "Splynek Pro",
+        "de": "Splynek Pro",
+        "it": "Splynek Pro",
+    },
+
+    # ── Generic actions / status (v1.6.2: needed by various
+    # buttons across tabs.) ──
+    "Save": {
+        "pt-PT": "Guardar",
+        "es": "Guardar",
+        "fr": "Enregistrer",
+        "de": "Speichern",
+        "it": "Salva",
+    },
+    "Done": {
+        "pt-PT": "Concluído",
+        "es": "Hecho",
+        "fr": "Terminé",
+        "de": "Fertig",
+        "it": "Fine",
+    },
+    "Open": {
+        "pt-PT": "Abrir",
+        "es": "Abrir",
+        "fr": "Ouvrir",
+        "de": "Öffnen",
+        "it": "Apri",
+    },
+    "Close": {
+        "pt-PT": "Fechar",
+        "es": "Cerrar",
+        "fr": "Fermer",
+        "de": "Schließen",
+        "it": "Chiudi",
+    },
+    "About": {
+        "pt-PT": "Acerca",
+        "es": "Acerca de",
+        "fr": "À propos",
+        "de": "Über",
+        "it": "Info",
+    },
+    "Legal": {
+        "pt-PT": "Avisos legais",
+        "es": "Avisos legales",
+        "fr": "Mentions légales",
+        "de": "Rechtliches",
+        "it": "Note legali",
+    },
 }
 
 

@@ -312,11 +312,18 @@ struct RunSovereigntyScanIntent: AppIntent {
 @available(macOS 13.0, *)
 struct SplynekAppShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
+        // v1.6.2: AppShortcut phrases only support `\(\.$param)`
+        // interpolation when the param type is `AppEntity` or
+        // `AppEnum`.  Our query params are `String` (so the user can
+        // enter any bundle ID or display name) — wrapping each in an
+        // AppEntity would be overkill.  So phrases are static; the
+        // user types the query in the Shortcuts editor or after Siri
+        // says "what's the query?".
         AppShortcut(
             intent: LookupSovereigntyIntent(),
             phrases: [
-                "Look up \(.applicationName) sovereignty for \(\.$query)",
-                "Where is \(\.$query) controlled from",
+                "Look up \(.applicationName) sovereignty",
+                "Where is this app controlled from in \(.applicationName)",
             ],
             shortTitle: "Lookup Sovereignty",
             systemImageName: "shield.lefthalf.filled"
@@ -324,8 +331,8 @@ struct SplynekAppShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: LookupTrustIntent(),
             phrases: [
-                "What's \(.applicationName)'s trust score for \(\.$query)",
-                "Audit \(\.$query) with \(.applicationName)",
+                "Get \(.applicationName) trust score",
+                "Audit an app with \(.applicationName)",
             ],
             shortTitle: "Lookup Trust Score",
             systemImageName: "checkmark.seal"

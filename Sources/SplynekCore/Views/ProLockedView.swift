@@ -16,7 +16,8 @@ struct ProLockedView: View {
     let onUnlock: () -> Void
 
     var body: some View {
-        TitledCard(title: featureTitle, systemImage: systemImage) {
+        // v1.6.2: TitledCard's title is LocalizedStringKey now; wrap.
+        TitledCard(title: LocalizedStringKey(featureTitle), systemImage: systemImage) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
                     Image(systemName: "sparkles")

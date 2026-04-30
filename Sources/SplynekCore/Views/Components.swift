@@ -32,8 +32,16 @@ struct SectionCard<Header: View, Content: View>: View {
 }
 
 /// Convenience: a SectionCard with a standard title + SF Symbol header.
+///
+/// v1.6.2: title type changed from `String` to `LocalizedStringKey` so
+/// every TitledCard call site (Source / Options / MCP server / Trust
+/// score weights / Pro card / etc.) routes through the
+/// Localizable.xcstrings catalog.  String literals at call sites
+/// auto-coerce to `LocalizedStringKey` — no source breakage.  Code
+/// that builds the title dynamically as `String` will need to wrap
+/// it in `LocalizedStringKey(...)` explicitly.
 struct TitledCard<Content: View>: View {
-    let title: String
+    let title: LocalizedStringKey
     let systemImage: String
     var accessory: AnyView? = nil
     @ViewBuilder let content: () -> Content

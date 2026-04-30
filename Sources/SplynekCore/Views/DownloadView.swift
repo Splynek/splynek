@@ -119,7 +119,13 @@ struct DownloadView: View {
         )
     }
 
-    private var windowTitle: String {
+    /// v1.6.2: was `String` returned to `.navigationTitle(_ title: String)`,
+    /// which is verbatim — bypassed localization.  Now returns
+    /// `LocalizedStringKey` so the catalog gets a chance.  Idle state
+    /// ("Downloads") translates via the existing tab-name catalog entry;
+    /// the active-state composites use string interpolation, which the
+    /// catalog also resolves as compound keys.
+    private var windowTitle: LocalizedStringKey {
         let running = vm.activeJobs.filter { $0.lifecycle == .running }
         if running.count == 1, let job = running.first {
             return "Downloading — \(Int(job.progress.fraction * 100))%"
@@ -583,10 +589,17 @@ struct DownloadView: View {
     /// tooltip explains what the option does. For non-techie users
     /// who look at "Connections per interface" or "Per-interface DoH"
     /// and don't know what those mean.
+    /// v1.6.2: `text` rendered as `Text(LocalizedStringKey(text))` so
+    /// the catalog gets a chance.  Was `Text(text)` (verbatim, i.e.
+    /// `String` overload) which left "Speed per network" / "Downloads
+    /// at once" stuck in English even on translated locales.  Tooltip
+    /// is `.help(_ verbatim: String)` and SwiftUI's `.help(_:)` does
+    /// take a localized variant — but switching that would force a
+    /// wider tooltip refactor; left as-is for v1.6.2.
     @ViewBuilder
     private func labelWithInfo(_ text: String, tooltip: String) -> some View {
         HStack(spacing: 4) {
-            Text(text)
+            Text(LocalizedStringKey(text))
                 .font(.caption).foregroundStyle(.secondary)
             Image(systemName: "info.circle")
                 .font(.system(size: 11))

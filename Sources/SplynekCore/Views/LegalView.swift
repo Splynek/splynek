@@ -77,8 +77,10 @@ struct LegalView: View {
     // MARK: Document viewer
 
     private var viewer: some View {
+        // v1.6.2: TitledCard's title is now LocalizedStringKey.  Wrap
+        // dynamic Strings explicitly so the catalog gets a chance.
         TitledCard(
-            title: selected.title,
+            title: LocalizedStringKey(selected.title),
             systemImage: selected.systemImage,
             accessory: AnyView(
                 HStack(spacing: 6) {
