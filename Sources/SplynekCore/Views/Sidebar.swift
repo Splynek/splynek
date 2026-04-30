@@ -2,8 +2,9 @@ import SwiftUI
 
 /// Which top-level section the sidebar is currently displaying.
 enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
-    case downloads, live, torrents, concierge, recipes, sovereignty, trust, queue,
-         fleet, benchmark, history, settings, legal, about
+    case downloads, live, torrents, concierge, recipes, sovereignty, trust,
+         agents,
+         queue, fleet, benchmark, history, settings, legal, about
 
     var id: String { rawValue }
 
@@ -16,6 +17,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .recipes:     return "Recipes"
         case .sovereignty: return "Sovereignty"
         case .trust:       return "Trust"
+        case .agents:      return "Agents"
         case .queue:       return "Queue"
         case .fleet:       return "Fleet"
         case .benchmark:   return "Benchmark"
@@ -35,6 +37,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .recipes:     return "list.star"
         case .sovereignty: return "shield.lefthalf.filled"
         case .trust:       return "checkmark.seal"
+        case .agents:      return "antenna.radiowaves.left.and.right"
         case .queue:       return "line.3.horizontal.decrease.circle"
         case .fleet:       return "laptopcomputer.and.arrow.down"
         case .benchmark:   return "bolt.fill"
@@ -230,6 +233,28 @@ struct Sidebar: View {
                     }
                 } header: {
                     Text("Library")
+                }
+
+                // MARK: CONNECT — programmable surfaces (v1.6.1).
+                // MCP started life as a single Settings card.  It's a
+                // big surface — 8 tools, live status, per-client setup
+                // snippets, recent-calls log — and its own tab makes
+                // it findable.  Group name "Connect" keeps the door
+                // open for future agents (Spotlight bridge, IPC API,
+                // etc.) without renaming.
+                Section {
+                    NavigationLink(value: SidebarSection.agents) {
+                        sidebarRow(
+                            title: "Agents",
+                            systemImage: "antenna.radiowaves.left.and.right",
+                            accessory: vm.mcpEnabled
+                                ? AnyView(StatusPill(text: "ON", style: .success,
+                                                     inverted: selection == .agents))
+                                : nil
+                        )
+                    }
+                } header: {
+                    Text("Connect")
                 }
             }
             .listStyle(.sidebar)

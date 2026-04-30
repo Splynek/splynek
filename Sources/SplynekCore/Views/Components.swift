@@ -218,6 +218,16 @@ struct ContextCard: View {
         // Faint outer glow in the tab's tint.  Extremely subtle — just
         // enough to separate the card from the window background.
         .shadow(color: tint.opacity(0.10), radius: 12, y: 3)
+        // v1.6.1 fix: hug content vertically.  Parent layouts that hand
+        // a fixed height to the enclosing VStack (e.g. TrustView's
+        // GeometryReader-driven .frame(width:height:)) otherwise
+        // distribute leftover height between flexible children.  The
+        // leading accent bar is a Shape with no intrinsic height, so the
+        // card was happily growing to ~600 px — visible as a giant empty
+        // rectangle on Trust + Sovereignty.  fixedSize-vertical pins
+        // the card to its content height; the next sibling absorbs the
+        // leftover, which is what every caller actually wants.
+        .fixedSize(horizontal: false, vertical: true)
         // Card decoration is purely visual; the subtitle text carries
         // all semantic content for VoiceOver.
         .accessibilityElement(children: .contain)

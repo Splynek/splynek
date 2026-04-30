@@ -14,6 +14,16 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+# v1.6.1: accept `debug` / `release` as a positional arg too.  The
+# env-var-only contract was unfriendly — `./Scripts/build.sh debug`
+# is what people instinctively try, and silently building release
+# instead is a footgun.  Env var still works and takes precedence
+# when both are set, so existing scripts don't break.
+case "${1:-}" in
+    debug|release) CONFIG="${CONFIG:-$1}" ;;
+    "")            ;;
+    *)             echo "Unknown arg '$1' — expected 'debug' or 'release'." >&2; exit 2 ;;
+esac
 CONFIG="${CONFIG:-release}"
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 ENTITLEMENTS="${ENTITLEMENTS:-}"

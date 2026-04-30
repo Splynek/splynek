@@ -111,51 +111,70 @@ struct SovereigntyView: View {
     // v1.5.3: PageHeader retired — see ContextCard above (rendered
     // inline in body so the empty-state branch doesn't show it).
 
+    // v1.6.1: empty state rewritten to match the Concierge / Recipes
+    // splash rhythm exactly — 56pt icon, .title.rounded.bold,
+    // .title3.secondary subtitle, maxWidth 440 bullets, padding(24)
+    // outer.  All four Ask-group tabs now share the same vertical
+    // cadence so flipping between them feels coherent instead of
+    // jittery.
     @ViewBuilder
     private var emptyState: some View {
-        VStack(spacing: 18) {
-            Spacer()
-            Image(systemName: "shield.lefthalf.filled")
-                .font(.system(size: 44, weight: .semibold))
-                .foregroundStyle(
-                    LinearGradient(colors: [.blue, .purple],
-                                   startPoint: .top, endPoint: .bottom)
-                )
-            Text("Your software supply chain")
-                .font(.system(.title2, design: .rounded, weight: .semibold))
-            Text("Most Mac apps are controlled from outside the European Union. Splynek lists your third-party apps with their country-of-origin, and points to European or open-source alternatives where they exist. Nothing is uploaded, logged, or remembered across launches.")
-                .font(.callout).foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 500)
+        ScrollView {
+            VStack(spacing: 18) {
+                Image(systemName: "shield.lefthalf.filled")
+                    .font(.system(size: 56, weight: .semibold))
+                    .foregroundStyle(
+                        LinearGradient(colors: [.blue, .purple],
+                                       startPoint: .top, endPoint: .bottom)
+                    )
+                    .padding(.top, 20)
 
-            VStack(alignment: .leading, spacing: 10) {
-                privacyRow("Enumeration only — never reads app contents")
-                privacyRow("Stays on-device — no network calls, ever")
-                privacyRow("Opt-in — you click Scan, nothing runs in the background")
-                privacyRow("Open-source scanner in the public repo")
-            }
-            .frame(maxWidth: 500)
-            .padding(.top, 8)
+                VStack(spacing: 6) {
+                    Text("Your software supply chain")
+                        .font(.system(.title, design: .rounded, weight: .bold))
+                    Text("See where your Mac's apps come from, and which have European or open-source alternatives.")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
 
-            Button {
-                scanner.scan()
-            } label: {
-                Label("Scan my Mac", systemImage: "magnifyingglass")
-                    .frame(minWidth: 180)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .padding(.top, 6)
-            .disabled(scanner.isScanning)
+                VStack(alignment: .leading, spacing: 10) {
+                    privacyRow("Enumeration only — never reads app contents")
+                    privacyRow("Stays on-device — no network calls, ever")
+                    privacyRow("Opt-in — you click Scan, nothing runs in the background")
+                    privacyRow("Open-source scanner in the public repo")
+                }
+                .frame(maxWidth: 440)
+                .padding(.top, 4)
 
-            if let err = scanner.lastError {
-                Text(err)
-                    .font(.caption).foregroundStyle(.red)
+                Button {
+                    scanner.scan()
+                } label: {
+                    Label("Scan my Mac", systemImage: "magnifyingglass")
+                        .frame(minWidth: 220)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .padding(.top, 8)
+                .disabled(scanner.isScanning)
+
+                if let err = scanner.lastError {
+                    Text(err)
+                        .font(.caption).foregroundStyle(.red)
+                        .padding(.bottom, 24)
+                } else {
+                    Text("Catalog covers 1,100+ apps. Community PRs at github.com/Splynek/splynek expand it.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 440)
+                        .padding(.bottom, 24)
+                }
             }
-            Spacer()
+            .frame(maxWidth: .infinity)
+            .padding(24)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(20)
     }
 
     @ViewBuilder

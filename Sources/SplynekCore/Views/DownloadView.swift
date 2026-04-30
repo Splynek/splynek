@@ -10,6 +10,12 @@ struct DownloadView: View {
     /// probe from slamming the network on every keypress while still
     /// firing before the user clicks Start for typical paste flows.
     @State private var enrichDebounce: Task<Void, Never>?
+    /// v1.6.1: integrity-check disclosure.  SHA-256 is jargon and a
+    /// tiny minority of users have a hash to paste.  Hide the field
+    /// behind a friendly disclosure by default; auto-open it when
+    /// `vm.autoDetectSha256(for:)` populates `sha256Expected` from
+    /// the publisher's web page so the user sees what we found.
+    @State private var verifyIntegrityOpen = false
 
     init(vm: SplynekViewModel) { self.vm = vm }
 
@@ -216,13 +222,15 @@ struct DownloadView: View {
                         await vm.autoDetectSha256(for: u)
                     }
                 }
-                inputRow(icon: "checkmark.shield",
-                         placeholder: "optional SHA-256 for integrity",
-                         text: $vm.sha256Expected, mono: true, accessory: {
-                    if !vm.sha256Expected.isEmpty {
-                        AnyView(StatusPill(text: "SHA-256", style: .success))
-                    } else { nil }
-                })
+                // v1.6.1: integrity-verification UX rewrite.  Was a
+                // monospaced inputRow with placeholder "optional
+                // SHA-256 for integrity" — opaque jargon for ~99%
+                // of users who never have a hash.  Now hidden behind
+                // a plain-language disclosure that auto-opens when
+                // the auto-detector finds a hash on the publisher's
+                // page (so users see what was found and can verify
+                // the checkmark).
+                verifyIntegrityDisclosure
                 if vm.aiAvailable && vm.license.isPro {
                     aiRow
                 }
@@ -584,6 +592,118 @@ struct DownloadView: View {
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary.opacity(0.6))
                 .help(tooltip)
+        }
+    }
+
+    /// v1.6.1: plain-language replacement for the old "optional
+    /// SHA-256 for integrity" input row.  Three states:
+    ///
+    ///   1. **Auto-detected** (auto-opens, green check) — Splynek
+    ///      pulled a hash from the publisher's page; the user sees
+    ///      the value and a "verified" pill.  No action needed.
+    ///   2. **Closed** (default) — small disclosure row with a
+    ///      friendly label and a "Why?" tooltip that explains the
+    ///      concept in plain English.
+    ///   3. **Open** (user clicked the row, no hash detected) —
+    ///      explanation paragraph + paste field.
+    ///
+    /// Field shown is the same `vm.sha256Expected` binding as
+    /// before; engine-side semantics are unchanged.
+    @ViewBuilder
+    private var verifyIntegrityDisclosure: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Header row: icon + plain-language label + open/close
+            // toggle.  Tappable as a whole so the affordance reads
+            // as a single thing.
+            Button {
+                withAnimation(.easeInOut(duration: 0.18)) {
+                    verifyIntegrityOpen.toggle()
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: vm.sha256Expected.isEmpty
+                          ? "checkmark.shield"
+                          : "checkmark.shield.fill")
+                        .foregroundStyle(vm.sha256Expected.isEmpty
+                                         ? AnyShapeStyle(.secondary)
+                                         : AnyShapeStyle(Color.green))
+                    Text(vm.sha256Expected.isEmpty
+                         ? "Verify this download is authentic (optional)"
+                         : "Verified — Splynek will check the file matches the publisher's checksum")
+                        .font(.callout)
+                        .foregroundStyle(vm.sha256Expected.isEmpty
+                                         ? AnyShapeStyle(.secondary)
+                                         : AnyShapeStyle(.primary))
+                    Spacer()
+                    if vm.sha256Expected.isEmpty {
+                        Image(systemName: verifyIntegrityOpen
+                              ? "chevron.up" : "chevron.down")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        StatusPill(text: "AUTO-DETECTED", style: .success)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(vm.sha256Expected.isEmpty
+                                ? "Verify download authenticity, optional, click to expand"
+                                : "Splynek will verify this download against the publisher's checksum")
+
+            if verifyIntegrityOpen || !vm.sha256Expected.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Some publishers list a **checksum** (also called a *hash* or *SHA-256*) next to their download link. It's a fingerprint of the original file. If you have one, paste it below and Splynek will refuse to save the download if even a single byte doesn't match — protects you against corrupted downloads or files swapped at a malicious mirror.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "number")
+                            .foregroundStyle(.secondary)
+                        TextField("Paste a SHA-256 checksum here (64 hex characters)",
+                                  text: $vm.sha256Expected)
+                            .textFieldStyle(.plain)
+                            .font(.system(.body, design: .monospaced))
+                        if !vm.sha256Expected.isEmpty {
+                            Button {
+                                vm.sha256Expected = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.borderless)
+                            .help("Clear")
+                            .accessibilityLabel("Clear checksum")
+                        }
+                    }
+                    .padding(10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color.primary.opacity(0.04))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
+                    )
+
+                    Text("Don't have one? Skip this — Splynek will still download the file, just without the extra integrity check.")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(10)
+                .background(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.primary.opacity(0.025))
+                )
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+        .onChange(of: vm.sha256Expected) { newValue in
+            // Auto-open when a hash arrives (typed or auto-detected)
+            // so the user sees the verification status.  Don't auto-
+            // close when cleared — the user might want to type one.
+            if !newValue.isEmpty { verifyIntegrityOpen = true }
         }
     }
 

@@ -96,51 +96,69 @@ struct TrustView: View {
 
     // v1.5.3: contextCard moved to shared `ContextCard` in Components.swift
 
+    // v1.6.1: empty state rewritten to match the Concierge / Recipes
+    // splash rhythm exactly — 56pt icon, .title.rounded.bold,
+    // .title3.secondary subtitle, maxWidth 440 bullets, padding(24)
+    // outer, ScrollView-friendly so it survives narrow windows.  All
+    // four Ask-group tabs now share the same vertical cadence.
     @ViewBuilder
     private var emptyState: some View {
-        VStack(spacing: 18) {
-            Spacer()
-            Image(systemName: "checkmark.seal")
-                .font(.system(size: 44, weight: .semibold))
-                .foregroundStyle(
-                    LinearGradient(colors: [.orange, .pink],
-                                   startPoint: .top, endPoint: .bottom)
-                )
-            Text("Public-record audit of your apps")
-                .font(.system(.title2, design: .rounded, weight: .semibold))
-            Text("Splynek cross-references your installed apps against Apple's App Store privacy labels, EU and US regulator decisions, the NVD CVE database, and the HIBP breach corpus. Every concern shown is a fact you can verify yourself — we surface public record, never opinion.")
-                .font(.callout).foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 540)
+        ScrollView {
+            VStack(spacing: 18) {
+                Image(systemName: "checkmark.seal")
+                    .font(.system(size: 56, weight: .semibold))
+                    .foregroundStyle(
+                        LinearGradient(colors: [.orange, .pink],
+                                       startPoint: .top, endPoint: .bottom)
+                    )
+                    .padding(.top, 20)
 
-            VStack(alignment: .leading, spacing: 10) {
-                privacyRow("Enumeration only — never reads app contents")
-                privacyRow("Stays on-device — no network calls, ever")
-                privacyRow("Opt-in — you click Scan, nothing runs in the background")
-                privacyRow("Every concern cites a primary source you can open")
-            }
-            .frame(maxWidth: 540)
-            .padding(.top, 8)
+                VStack(spacing: 6) {
+                    Text("Public-record audit of your apps")
+                        .font(.system(.title, design: .rounded, weight: .bold))
+                    Text("See what regulators, app stores, and breach databases say about the software on your Mac.")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
 
-            Button {
-                scanner.scan()
-            } label: {
-                Label("Scan my Mac", systemImage: "magnifyingglass")
-                    .frame(minWidth: 180)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .padding(.top, 6)
-            .disabled(scanner.isScanning)
+                VStack(alignment: .leading, spacing: 10) {
+                    privacyRow("Enumeration only — never reads app contents")
+                    privacyRow("Stays on-device — no network calls, ever")
+                    privacyRow("Opt-in — you click Scan, nothing runs in the background")
+                    privacyRow("Every concern cites a primary source you can open")
+                }
+                .frame(maxWidth: 440)
+                .padding(.top, 4)
 
-            if let err = scanner.lastError {
-                Text(err)
-                    .font(.caption).foregroundStyle(.red)
+                Button {
+                    scanner.scan()
+                } label: {
+                    Label("Scan my Mac", systemImage: "magnifyingglass")
+                        .frame(minWidth: 220)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .padding(.top, 8)
+                .disabled(scanner.isScanning)
+
+                if let err = scanner.lastError {
+                    Text(err)
+                        .font(.caption).foregroundStyle(.red)
+                        .padding(.bottom, 24)
+                } else {
+                    Text("Sources: Apple App Store, EU and US regulators, NVD CVE database, HIBP, vendor advisories.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 440)
+                        .padding(.bottom, 24)
+                }
             }
-            Spacer()
+            .frame(maxWidth: .infinity)
+            .padding(24)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(20)
     }
 
     @ViewBuilder
