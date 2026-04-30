@@ -274,6 +274,40 @@
         }
       }
     },
+    "Active downloads": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktive Downloads"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargas activas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Téléchargements actifs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download attivi"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transferências ativas"
+          }
+        }
+      }
+    },
     "Add": {
       "localizations": {
         "de": {
@@ -342,36 +376,104 @@
         }
       }
     },
-    "Adjust weights in Settings → Trust": {
+    "Add to queue (⌘⇧Q). Runs when the current download finishes.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gewichtungen in Einstellungen → Trust anpassen"
+            "value": "Zur Warteschlange hinzufügen (⌘⇧Q). Startet, wenn der aktuelle Download fertig ist."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajusta los pesos en Ajustes → Trust"
+            "value": "Añadir a la cola (⌘⇧Q). Empieza cuando termine la descarga actual."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajustez les pondérations dans Réglages → Trust"
+            "value": "Ajouter à la file (⌘⇧Q). Démarre quand le téléchargement actuel se termine."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Regola i pesi in Impostazioni → Trust"
+            "value": "Aggiungi alla coda (⌘⇧Q). Parte quando il download attuale finisce."
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ajusta os pesos em Definições → Trust"
+            "value": "Adicionar à fila (⌘⇧Q). Começa quando a transferência atual terminar."
+          }
+        }
+      }
+    },
+    "Adjust weights in Settings → Trust": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gewichtungen in Einstellungen → Vertrauen anpassen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajusta los pesos en Ajustes → Confianza"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustez les pondérations dans Réglages → Confiance"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regola i pesi in Impostazioni → Affidabilità"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajusta os pesos em Definições → Confiança"
+          }
+        }
+      }
+    },
+    "Advanced": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erweitert"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avanzado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avancé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avanzato"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avançado"
           }
         }
       }
@@ -950,7 +1052,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vincular o painel e a API apenas a 127.0.0.1. O teu telemóvel não consegue aceder por Wi-Fi."
+            "value": "Vincula o painel e a API apenas a 127.0.0.1. O teu telemóvel não vai conseguir aceder via Wi-Fi."
           }
         }
       }
@@ -1091,6 +1193,40 @@
         }
       }
     },
+    "Cancel every running download (⌘.).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle laufenden Downloads abbrechen (⌘.)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar todas las descargas en curso (⌘.)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler tous les téléchargements en cours (⌘.)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla tutti i download in corso (⌘.)."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar todas as transferências em curso (⌘.)."
+          }
+        }
+      }
+    },
     "Catalog covers 1,100+ apps. Community PRs at github.com/Splynek/splynek expand it.": {
       "localizations": {
         "de": {
@@ -1121,6 +1257,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "O catálogo cobre mais de 1100 apps. PRs da comunidade em github.com/Splynek/splynek alargam-no."
+          }
+        }
+      }
+    },
+    "Cellular used today": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute verwendete Mobildaten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datos móviles usados hoy"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Données cellulaires utilisées aujourd'hui"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rete mobile usata oggi"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rede móvel usada hoje"
           }
         }
       }
@@ -1256,7 +1426,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Limpar soma"
+            "value": "Apagar checksum"
           }
         }
       }
@@ -1533,6 +1703,74 @@
         }
       }
     },
+    "Copy a curl equivalent to the clipboard.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "curl-Äquivalent in die Zwischenablage kopieren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar un equivalente curl al portapapeles."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier un équivalent curl dans le presse-papiers."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia un equivalente curl negli appunti."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar um equivalente curl para a área de transferência."
+          }
+        }
+      }
+    },
+    "Copy a plain-text summary of the results to the clipboard.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Klartext-Zusammenfassung der Ergebnisse in die Zwischenablage kopieren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar un resumen en texto plano de los resultados al portapapeles."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier un résumé en texte brut des résultats dans le presse-papiers."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia un riepilogo in testo semplice dei risultati negli appunti."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar um resumo em texto simples dos resultados para a área de transferência."
+          }
+        }
+      }
+    },
     "Copy curl": {
       "localizations": {
         "de": {
@@ -1601,6 +1839,40 @@
         }
       }
     },
+    "Copy endpoint URL to clipboard": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endpunkt-URL in die Zwischenablage kopieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar URL del endpoint al portapapeles"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier l'URL du point d'accès dans le presse-papiers"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia URL endpoint negli appunti"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar URL do endpoint para a área de transferência"
+          }
+        }
+      }
+    },
     "Copy results": {
       "localizations": {
         "de": {
@@ -1631,6 +1903,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiar resultados"
+          }
+        }
+      }
+    },
+    "Copy setup snippet to clipboard": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konfigurations-Snippet in die Zwischenablage kopieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar snippet de configuración al portapapeles"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier l'extrait de configuration dans le presse-papiers"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia snippet di configurazione negli appunti"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar snippet de configuração para a área de transferência"
           }
         }
       }
@@ -1669,6 +1975,108 @@
         }
       }
     },
+    "Custom HTTP headers": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benutzerdefinierte HTTP-Header"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cabeceras HTTP personalizadas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En-têtes HTTP personnalisés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intestazioni HTTP personalizzate"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cabeçalhos HTTP personalizados"
+          }
+        }
+      }
+    },
+    "Daily cap": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tageslimit"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Límite diario"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limite quotidienne"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limite giornaliero"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limite diário"
+          }
+        }
+      }
+    },
+    "Detached signature available": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separate Signatur verfügbar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firma separada disponible"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signature détachée disponible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firma separata disponibile"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assinatura separada disponível"
+          }
+        }
+      }
+    },
     "Details + alternatives": {
       "comment": "v1.5.1 — was 'Details + better alternatives'; dropped 'better' as editorial.",
       "localizations": {
@@ -1700,6 +2108,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Detalhes + alternativas"
+          }
+        }
+      }
+    },
+    "Don't have one? Skip this — Splynek will still download the file, just without the extra integrity check.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine zur Hand? Überspringen Sie — Splynek lädt die Datei trotzdem herunter, nur ohne die zusätzliche Integritätsprüfung."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿No tienes? Omite esto — Splynek descargará el archivo igualmente, solo sin la comprobación extra."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous n'en avez pas ? Passez — Splynek téléchargera quand même le fichier, juste sans la vérification supplémentaire."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non ne hai? Salta — Splynek scaricherà comunque il file, solo senza il controllo extra."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não tens nenhuma? Salta isto — o Splynek transfere o ficheiro à mesma, só sem a verificação extra."
           }
         }
       }
@@ -1938,6 +2380,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Transferências simultâneas"
+          }
+        }
+      }
+    },
+    "Drop the chunk-fingerprint file and fall back to end-of-file integrity check.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chunk-Fingerprint-Datei verwerfen und zur Integritätsprüfung am Dateiende zurückkehren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soltar el archivo de huellas digitales por fragmentos y volver a la comprobación al final del archivo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abandonner le fichier d'empreintes par fragments et revenir à la vérification en fin de fichier."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lascia il file di impronte per frammenti e torna al controllo a fine file."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Largar o ficheiro de impressão digital de fragmentos e voltar à verificação no fim do ficheiro."
+          }
+        }
+      }
+    },
+    "Drop the mirror list and fall back to the single URL above.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spiegel-Liste verwerfen und zur einzelnen URL oben zurückkehren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soltar la lista de mirrors y volver a la URL única de arriba."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abandonner la liste des miroirs et revenir à l'URL unique ci-dessus."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lascia l'elenco dei mirror e torna all'URL singolo sopra."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Largar a lista de espelhos e voltar ao URL único acima."
           }
         }
       }
@@ -2656,6 +3166,74 @@
         }
       }
     },
+    "How many downloads Splynek will run in parallel.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie viele Downloads Splynek parallel ausführt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuántas descargas ejecutará Splynek en paralelo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Combien de téléchargements Splynek exécutera en parallèle."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanti download Splynek eseguirà in parallelo."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quantas transferências o Splynek vai correr em paralelo."
+          }
+        }
+      }
+    },
+    "How many parallel connections to open on each network interface.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie viele parallele Verbindungen pro Netzwerkschnittstelle geöffnet werden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuántas conexiones paralelas abrir en cada interfaz de red."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Combien de connexions parallèles ouvrir sur chaque interface réseau."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quante connessioni parallele aprire su ogni interfaccia di rete."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quantas ligações paralelas abrir em cada interface de rede."
+          }
+        }
+      }
+    },
     "How this works": {
       "localizations": {
         "de": {
@@ -2821,7 +3399,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iniciar ao iniciar sessão"
+            "value": "Arrancar ao iniciar sessão"
           }
         }
       }
@@ -2962,6 +3540,74 @@
         }
       }
     },
+    "Load Merkle…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merkle laden…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargar Merkle…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charger Merkle…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carica Merkle…"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carregar Merkle…"
+          }
+        }
+      }
+    },
+    "Load Metalink…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metalink laden…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargar Metalink…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charger Metalink…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carica Metalink…"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carregar Metalink…"
+          }
+        }
+      }
+    },
     "Loopback only (takes effect at next launch)": {
       "localizations": {
         "de": {
@@ -2991,7 +3637,7 @@
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apenas loopback (efetiva no próximo arranque)"
+            "value": "Apenas loopback (entra em vigor no próximo arranque)"
           }
         }
       }
@@ -3264,6 +3910,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ainda não há uma alternativa curada para esta app. Contribui em github.com/Splynek/splynek."
+          }
+        }
+      }
+    },
+    "No custom headers — the request will use the defaults.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine benutzerdefinierten Header — die Anfrage verwendet die Standardwerte."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin cabeceras personalizadas — la petición usará los valores por defecto."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun en-tête personnalisé — la requête utilisera les valeurs par défaut."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna intestazione personalizzata — la richiesta userà i valori predefiniti."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem cabeçalhos personalizados — o pedido vai usar as predefinições."
           }
         }
       }
@@ -4254,6 +4934,40 @@
         }
       }
     },
+    "Render a 1200×630 PNG for sharing on social media.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein 1200×630 PNG zum Teilen in sozialen Netzwerken erstellen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renderizar un PNG 1200×630 para compartir en redes sociales."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Générer un PNG 1200×630 pour partager sur les réseaux sociaux."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renderizza un PNG 1200×630 per condividere sui social."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renderizar um PNG 1200×630 para partilhar em redes sociais."
+          }
+        }
+      }
+    },
     "Rescan": {
       "localizations": {
         "de": {
@@ -4356,6 +5070,40 @@
         }
       }
     },
+    "Results below ↓": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ergebnisse unten ↓"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resultados abajo ↓"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Résultats ci-dessous ↓"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risultati sotto ↓"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resultados em baixo ↓"
+          }
+        }
+      }
+    },
     "Reveal": {
       "localizations": {
         "de": {
@@ -4386,6 +5134,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrar no Finder"
+          }
+        }
+      }
+    },
+    "Reveal in Finder.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Finder anzeigen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar en Finder."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher dans le Finder."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra nel Finder."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar no Finder."
           }
         }
       }
@@ -5513,6 +6295,40 @@
         }
       }
     },
+    "Splynek found:": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek hat gefunden:"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek encontró:"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek a trouvé :"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek ha trovato:"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek encontrou:"
+          }
+        }
+      }
+    },
     "Splynek will save files here. You can change this later in Settings — but picking once now means you'll always know where things land.": {
       "localizations": {
         "de": {
@@ -5611,6 +6427,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Iniciar transferência"
+          }
+        }
+      }
+    },
+    "Start download now (⏎). Pulls the URL across every selected interface in parallel.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download jetzt starten (⏎). Lädt die URL parallel über alle ausgewählten Schnittstellen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar descarga ahora (⏎). Tira de la URL por todas las interfaces seleccionadas en paralelo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Démarrer le téléchargement maintenant (⏎). Tire l'URL sur toutes les interfaces sélectionnées en parallèle."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvia download ora (⏎). Preleva l'URL su tutte le interfacce selezionate in parallelo."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar transferência agora (⏎). Puxa o URL por todas as interfaces selecionadas em paralelo."
           }
         }
       }
@@ -5995,31 +6845,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trust-Audit"
+            "value": "Vertrauensprüfung"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Auditoría Trust"
+            "value": "Auditoría de confianza"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Audit Trust"
+            "value": "Audit de confiance"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verifica Trust"
+            "value": "Verifica di affidabilità"
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Auditoria Trust"
+            "value": "Auditoria de confiança"
           }
         }
       }
@@ -6122,6 +6972,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "O Trust apresenta factos de registo público sobre as tuas apps instaladas — as próprias etiquetas de privacidade da App Store da Apple (que os programadores divulgam), decisões dos reguladores da UE e dos EUA, a base de dados de CVEs do NVD, o corpus de violações da HIBP e os avisos de segurança dos fornecedores. Não editorializamos. Cada preocupação tem ligação à fonte primária para que possas verificar a afirmação. Se vires informação imprecisa ou desactualizada, abre um PR ou issue em github.com/Splynek/splynek."
+          }
+        }
+      }
+    },
+    "Unlock Pro — $29": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro freischalten — $29"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear Pro — $29"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Débloquer Pro — $29"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sblocca Pro — $29"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear Pro — $29"
           }
         }
       }
@@ -6301,31 +7185,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ordner auf Ablagen überwachen"
+            "value": "Ordner auf neue Dateien überwachen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vigilar carpeta para depósitos"
+            "value": "Vigilar carpeta para archivos nuevos"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Surveiller le dossier pour les dépôts"
+            "value": "Surveiller le dossier pour les nouveaux fichiers"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Monitora cartella per depositi"
+            "value": "Monitora cartella per nuovi file"
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vigiar pasta para depósitos"
+            "value": "Vigiar pasta para ficheiros novos"
           }
         }
       }
@@ -6394,6 +7278,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Onde guardar as transferências?"
+          }
+        }
+      }
+    },
+    "You already have this file": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie haben diese Datei bereits"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya tienes este archivo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous avez déjà ce fichier"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hai già questo file"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Já tens este ficheiro"
           }
         }
       }

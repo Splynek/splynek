@@ -817,7 +817,7 @@ NEW_V16_STRINGS = {
         "it": "Cancella completati",
     },
     "Clear checksum": {
-        "pt-PT": "Limpar soma",
+        "pt-PT": "Apagar checksum",
         "es": "Borrar suma",
         "fr": "Effacer la somme",
         "de": "Prüfsumme löschen",
@@ -1035,14 +1035,14 @@ NEW_V16_STRINGS = {
         "it": "Nasconde i download attivi e completati da altri Splynek su questa rete locale. Cache cooperativa disattivata.",
     },
     "Loopback only (takes effect at next launch)": {
-        "pt-PT": "Apenas loopback (efetiva no próximo arranque)",
+        "pt-PT": "Apenas loopback (entra em vigor no próximo arranque)",
         "es": "Solo loopback (se aplica en el próximo lanzamiento)",
         "fr": "Boucle locale uniquement (effectif au prochain lancement)",
         "de": "Nur Loopback (wird beim nächsten Start wirksam)",
         "it": "Solo loopback (effettivo al prossimo avvio)",
     },
     "Bind the dashboard + API to 127.0.0.1 only. Your phone won't reach it over Wi-Fi.": {
-        "pt-PT": "Vincular o painel e a API apenas a 127.0.0.1. O teu telemóvel não consegue aceder por Wi-Fi.",
+        "pt-PT": "Vincula o painel e a API apenas a 127.0.0.1. O teu telemóvel não vai conseguir aceder via Wi-Fi.",
         "es": "Vincula el panel y la API solo a 127.0.0.1. Tu teléfono no podrá acceder por Wi-Fi.",
         "fr": "Lie le tableau de bord + API uniquement à 127.0.0.1. Votre téléphone ne pourra pas y accéder via le Wi-Fi.",
         "de": "Bindet Dashboard + API nur an 127.0.0.1. Ihr Telefon erreicht es nicht über WLAN.",
@@ -1056,7 +1056,7 @@ NEW_V16_STRINGS = {
         "it": "Rigenera token",
     },
     "Launch at login": {
-        "pt-PT": "Iniciar ao iniciar sessão",
+        "pt-PT": "Arrancar ao iniciar sessão",
         "es": "Iniciar al iniciar sesión",
         "fr": "Lancer à la connexion",
         "de": "Beim Anmelden starten",
@@ -1077,11 +1077,11 @@ NEW_V16_STRINGS = {
         "it": "Nasconde l'icona del Dock e/o avvia Splynek all'accesso.",
     },
     "Watch folder for drops": {
-        "pt-PT": "Vigiar pasta para depósitos",
-        "es": "Vigilar carpeta para depósitos",
-        "fr": "Surveiller le dossier pour les dépôts",
-        "de": "Ordner auf Ablagen überwachen",
-        "it": "Monitora cartella per depositi",
+        "pt-PT": "Vigiar pasta para ficheiros novos",
+        "es": "Vigilar carpeta para archivos nuevos",
+        "fr": "Surveiller le dossier pour les nouveaux fichiers",
+        "de": "Ordner auf neue Dateien überwachen",
+        "it": "Monitora cartella per nuovi file",
     },
     "Open the watched folder in Finder.": {
         "pt-PT": "Abrir a pasta vigiada no Finder.",
@@ -1107,11 +1107,11 @@ NEW_V16_STRINGS = {
 
     # ── TrustView extras ──
     "Adjust weights in Settings → Trust": {
-        "pt-PT": "Ajusta os pesos em Definições → Trust",
-        "es": "Ajusta los pesos en Ajustes → Trust",
-        "fr": "Ajustez les pondérations dans Réglages → Trust",
-        "de": "Gewichtungen in Einstellungen → Trust anpassen",
-        "it": "Regola i pesi in Impostazioni → Trust",
+        "pt-PT": "Ajusta os pesos em Definições → Confiança",
+        "es": "Ajusta los pesos en Ajustes → Confianza",
+        "fr": "Ajustez les pondérations dans Réglages → Confiance",
+        "de": "Gewichtungen in Einstellungen → Vertrauen anpassen",
+        "it": "Regola i pesi in Impostazioni → Affidabilità",
     },
     "Score breakdown": {
         "pt-PT": "Detalhe da pontuação",
@@ -1121,11 +1121,11 @@ NEW_V16_STRINGS = {
         "it": "Dettaglio punteggio",
     },
     "Trust audit": {
-        "pt-PT": "Auditoria Trust",
-        "es": "Auditoría Trust",
-        "fr": "Audit Trust",
-        "de": "Trust-Audit",
-        "it": "Verifica Trust",
+        "pt-PT": "Auditoria de confiança",
+        "es": "Auditoría de confianza",
+        "fr": "Audit de confiance",
+        "de": "Vertrauensprüfung",
+        "it": "Verifica di affidabilità",
     },
 
     # ── TorrentView ──
@@ -1186,6 +1186,214 @@ NEW_V16_STRINGS = {
         "fr": "$29 achat unique sur le Mac App Store.",
         "de": "$29 einmalig im Mac App Store.",
         "it": "$29 acquisto unico nel Mac App Store.",
+    },
+
+    # ── v1.6.2 round 2: next 40 strings (DownloadView labels +
+    # tooltips, common Pro upsell, BenchmarkView buttons,
+    # AgentsView accessibility labels). ──
+
+    # Downloads — labels + state
+    "Active downloads": {
+        "pt-PT": "Transferências ativas",
+        "es": "Descargas activas",
+        "fr": "Téléchargements actifs",
+        "de": "Aktive Downloads",
+        "it": "Download attivi",
+    },
+    "Advanced": {
+        "pt-PT": "Avançado",
+        "es": "Avanzado",
+        "fr": "Avancé",
+        "de": "Erweitert",
+        "it": "Avanzato",
+    },
+    "Custom HTTP headers": {
+        "pt-PT": "Cabeçalhos HTTP personalizados",
+        "es": "Cabeceras HTTP personalizadas",
+        "fr": "En-têtes HTTP personnalisés",
+        "de": "Benutzerdefinierte HTTP-Header",
+        "it": "Intestazioni HTTP personalizzate",
+    },
+    "No custom headers — the request will use the defaults.": {
+        "pt-PT": "Sem cabeçalhos personalizados — o pedido vai usar as predefinições.",
+        "es": "Sin cabeceras personalizadas — la petición usará los valores por defecto.",
+        "fr": "Aucun en-tête personnalisé — la requête utilisera les valeurs par défaut.",
+        "de": "Keine benutzerdefinierten Header — die Anfrage verwendet die Standardwerte.",
+        "it": "Nessuna intestazione personalizzata — la richiesta userà i valori predefiniti.",
+    },
+    "Daily cap": {
+        "pt-PT": "Limite diário",
+        "es": "Límite diario",
+        "fr": "Limite quotidienne",
+        "de": "Tageslimit",
+        "it": "Limite giornaliero",
+    },
+    "Cellular used today": {
+        "pt-PT": "Rede móvel usada hoje",
+        "es": "Datos móviles usados hoy",
+        "fr": "Données cellulaires utilisées aujourd'hui",
+        "de": "Heute verwendete Mobildaten",
+        "it": "Rete mobile usata oggi",
+    },
+    "Detached signature available": {
+        "pt-PT": "Assinatura separada disponível",
+        "es": "Firma separada disponible",
+        "fr": "Signature détachée disponible",
+        "de": "Separate Signatur verfügbar",
+        "it": "Firma separata disponibile",
+    },
+    "Splynek found:": {
+        "pt-PT": "O Splynek encontrou:",
+        "es": "Splynek encontró:",
+        "fr": "Splynek a trouvé :",
+        "de": "Splynek hat gefunden:",
+        "it": "Splynek ha trovato:",
+    },
+    "You already have this file": {
+        "pt-PT": "Já tens este ficheiro",
+        "es": "Ya tienes este archivo",
+        "fr": "Vous avez déjà ce fichier",
+        "de": "Sie haben diese Datei bereits",
+        "it": "Hai già questo file",
+    },
+    "Unlock Pro — $29": {
+        "pt-PT": "Desbloquear Pro — $29",
+        "es": "Desbloquear Pro — $29",
+        "fr": "Débloquer Pro — $29",
+        "de": "Pro freischalten — $29",
+        "it": "Sblocca Pro — $29",
+    },
+    "Load Metalink…": {
+        "pt-PT": "Carregar Metalink…",
+        "es": "Cargar Metalink…",
+        "fr": "Charger Metalink…",
+        "de": "Metalink laden…",
+        "it": "Carica Metalink…",
+    },
+    "Load Merkle…": {
+        "pt-PT": "Carregar Merkle…",
+        "es": "Cargar Merkle…",
+        "fr": "Charger Merkle…",
+        "de": "Merkle laden…",
+        "it": "Carica Merkle…",
+    },
+    "Reveal in Finder.": {
+        "pt-PT": "Mostrar no Finder.",
+        "es": "Mostrar en Finder.",
+        "fr": "Afficher dans le Finder.",
+        "de": "Im Finder anzeigen.",
+        "it": "Mostra nel Finder.",
+    },
+    "How many parallel connections to open on each network interface.": {
+        "pt-PT": "Quantas ligações paralelas abrir em cada interface de rede.",
+        "es": "Cuántas conexiones paralelas abrir en cada interfaz de red.",
+        "fr": "Combien de connexions parallèles ouvrir sur chaque interface réseau.",
+        "de": "Wie viele parallele Verbindungen pro Netzwerkschnittstelle geöffnet werden.",
+        "it": "Quante connessioni parallele aprire su ogni interfaccia di rete.",
+    },
+    "How many downloads Splynek will run in parallel.": {
+        "pt-PT": "Quantas transferências o Splynek vai correr em paralelo.",
+        "es": "Cuántas descargas ejecutará Splynek en paralelo.",
+        "fr": "Combien de téléchargements Splynek exécutera en parallèle.",
+        "de": "Wie viele Downloads Splynek parallel ausführt.",
+        "it": "Quanti download Splynek eseguirà in parallelo.",
+    },
+    "Cancel every running download (⌘.).": {
+        "pt-PT": "Cancelar todas as transferências em curso (⌘.).",
+        "es": "Cancelar todas las descargas en curso (⌘.).",
+        "fr": "Annuler tous les téléchargements en cours (⌘.).",
+        "de": "Alle laufenden Downloads abbrechen (⌘.).",
+        "it": "Annulla tutti i download in corso (⌘.).",
+    },
+    "Add to queue (⌘⇧Q). Runs when the current download finishes.": {
+        "pt-PT": "Adicionar à fila (⌘⇧Q). Começa quando a transferência atual terminar.",
+        "es": "Añadir a la cola (⌘⇧Q). Empieza cuando termine la descarga actual.",
+        "fr": "Ajouter à la file (⌘⇧Q). Démarre quand le téléchargement actuel se termine.",
+        "de": "Zur Warteschlange hinzufügen (⌘⇧Q). Startet, wenn der aktuelle Download fertig ist.",
+        "it": "Aggiungi alla coda (⌘⇧Q). Parte quando il download attuale finisce.",
+    },
+    "Start download now (⏎). Pulls the URL across every selected interface in parallel.": {
+        "pt-PT": "Iniciar transferência agora (⏎). Puxa o URL por todas as interfaces selecionadas em paralelo.",
+        "es": "Iniciar descarga ahora (⏎). Tira de la URL por todas las interfaces seleccionadas en paralelo.",
+        "fr": "Démarrer le téléchargement maintenant (⏎). Tire l'URL sur toutes les interfaces sélectionnées en parallèle.",
+        "de": "Download jetzt starten (⏎). Lädt die URL parallel über alle ausgewählten Schnittstellen.",
+        "it": "Avvia download ora (⏎). Preleva l'URL su tutte le interfacce selezionate in parallelo.",
+    },
+    "Copy a curl equivalent to the clipboard.": {
+        "pt-PT": "Copiar um equivalente curl para a área de transferência.",
+        "es": "Copiar un equivalente curl al portapapeles.",
+        "fr": "Copier un équivalent curl dans le presse-papiers.",
+        "de": "curl-Äquivalent in die Zwischenablage kopieren.",
+        "it": "Copia un equivalente curl negli appunti.",
+    },
+    "Don't have one? Skip this — Splynek will still download the file, just without the extra integrity check.": {
+        "pt-PT": "Não tens nenhuma? Salta isto — o Splynek transfere o ficheiro à mesma, só sem a verificação extra.",
+        "es": "¿No tienes? Omite esto — Splynek descargará el archivo igualmente, solo sin la comprobación extra.",
+        "fr": "Vous n'en avez pas ? Passez — Splynek téléchargera quand même le fichier, juste sans la vérification supplémentaire.",
+        "de": "Keine zur Hand? Überspringen Sie — Splynek lädt die Datei trotzdem herunter, nur ohne die zusätzliche Integritätsprüfung.",
+        "it": "Non ne hai? Salta — Splynek scaricherà comunque il file, solo senza il controllo extra.",
+    },
+    "Drop the mirror list and fall back to the single URL above.": {
+        "pt-PT": "Largar a lista de espelhos e voltar ao URL único acima.",
+        "es": "Soltar la lista de mirrors y volver a la URL única de arriba.",
+        "fr": "Abandonner la liste des miroirs et revenir à l'URL unique ci-dessus.",
+        "de": "Spiegel-Liste verwerfen und zur einzelnen URL oben zurückkehren.",
+        "it": "Lascia l'elenco dei mirror e torna all'URL singolo sopra.",
+    },
+    "Drop the chunk-fingerprint file and fall back to end-of-file integrity check.": {
+        "pt-PT": "Largar o ficheiro de impressão digital de fragmentos e voltar à verificação no fim do ficheiro.",
+        "es": "Soltar el archivo de huellas digitales por fragmentos y volver a la comprobación al final del archivo.",
+        "fr": "Abandonner le fichier d'empreintes par fragments et revenir à la vérification en fin de fichier.",
+        "de": "Chunk-Fingerprint-Datei verwerfen und zur Integritätsprüfung am Dateiende zurückkehren.",
+        "it": "Lascia il file di impronte per frammenti e torna al controllo a fine file.",
+    },
+
+    # AgentsView accessibility
+    "Copy endpoint URL to clipboard": {
+        "pt-PT": "Copiar URL do endpoint para a área de transferência",
+        "es": "Copiar URL del endpoint al portapapeles",
+        "fr": "Copier l'URL du point d'accès dans le presse-papiers",
+        "de": "Endpunkt-URL in die Zwischenablage kopieren",
+        "it": "Copia URL endpoint negli appunti",
+    },
+    "Copy setup snippet to clipboard": {
+        "pt-PT": "Copiar snippet de configuração para a área de transferência",
+        "es": "Copiar snippet de configuración al portapapeles",
+        "fr": "Copier l'extrait de configuration dans le presse-papiers",
+        "de": "Konfigurations-Snippet in die Zwischenablage kopieren",
+        "it": "Copia snippet di configurazione negli appunti",
+    },
+
+    # BenchmarkView extras
+    "Render a 1200×630 PNG for sharing on social media.": {
+        "pt-PT": "Renderizar um PNG 1200×630 para partilhar em redes sociais.",
+        "es": "Renderizar un PNG 1200×630 para compartir en redes sociales.",
+        "fr": "Générer un PNG 1200×630 pour partager sur les réseaux sociaux.",
+        "de": "Ein 1200×630 PNG zum Teilen in sozialen Netzwerken erstellen.",
+        "it": "Renderizza un PNG 1200×630 per condividere sui social.",
+    },
+    "Copy a plain-text summary of the results to the clipboard.": {
+        "pt-PT": "Copiar um resumo em texto simples dos resultados para a área de transferência.",
+        "es": "Copiar un resumen en texto plano de los resultados al portapapeles.",
+        "fr": "Copier un résumé en texte brut des résultats dans le presse-papiers.",
+        "de": "Eine Klartext-Zusammenfassung der Ergebnisse in die Zwischenablage kopieren.",
+        "it": "Copia un riepilogo in testo semplice dei risultati negli appunti.",
+    },
+    "Results below ↓": {
+        "pt-PT": "Resultados em baixo ↓",
+        "es": "Resultados abajo ↓",
+        "fr": "Résultats ci-dessous ↓",
+        "de": "Ergebnisse unten ↓",
+        "it": "Risultati sotto ↓",
+    },
+
+    # Sidebar/About
+    "About Splynek": {
+        "pt-PT": "Acerca do Splynek",
+        "es": "Acerca de Splynek",
+        "fr": "À propos de Splynek",
+        "de": "Über Splynek",
+        "it": "Info su Splynek",
     },
 }
 
