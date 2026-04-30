@@ -351,4 +351,11 @@ extension Notification.Name {
     static let splynekShowSettings = Notification.Name("splynek.showSettings")
     static let splynekShowLegal    = Notification.Name("splynek.showLegal")
     static let splynekShowAbout    = Notification.Name("splynek.showAbout")
+
+    /// v1.6: Spotlight deep-link routing.  `userInfo["bundleID"]`
+    /// carries the focused bundle, when present.  Posted from
+    /// `SplynekApp.handleSplynekURL` for `splynek://sovereignty/<id>`
+    /// and `splynek://trust/<id>`.
+    static let splynekShowSovereignty = Notification.Name("splynek.showSovereignty")
+    static let splynekShowTrust       = Notification.Name("splynek.showTrust")
 }

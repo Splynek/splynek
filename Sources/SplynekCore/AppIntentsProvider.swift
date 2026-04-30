@@ -215,9 +215,130 @@ struct ListRecentHistoryIntent: AppIntent {
     }
 }
 
+// MARK: - v1.6: Catalog-aware intents
+
+/// Look up an installed app's Sovereignty profile via Shortcuts / Siri.
+///
+/// Returns a single text summary the user can route to a notification,
+/// HomeKit card, or further-process step.  Hits the same catalog as
+/// the in-app Sovereignty tab; no network access.
+@available(macOS 13.0, *)
+struct LookupSovereigntyIntent: AppIntent {
+    static var title: LocalizedStringResource = "Look up Splynek Sovereignty"
+    static var description = IntentDescription(
+        "Look up an app in the Splynek Sovereignty catalog by bundle ID or display name. Returns target-origin and EU/OSS alternatives."
+    )
+    static var openAppWhenRun: Bool = false
+
+    @Parameter(title: "App", description: "Bundle ID (e.g. com.spotify.client) or display name (e.g. Spotify).")
+    var query: String
+
+    func perform() async throws -> some IntentResult & ReturnsValue<String> {
+        let q = query.trimmingCharacters(in: .whitespaces)
+        guard !q.isEmpty else { throw $query.needsValueError("Enter an app name or bundle ID.") }
+        guard let hit = MCPBridgeBuilder.lookupSovereignty(query: q) else {
+            return .result(value: "No Sovereignty entry for `\(q)`.")
+        }
+        var lines = [
+            "\(hit.displayName) (\(hit.bundleID))",
+            "Controlled from: \(hit.targetOrigin)",
+            "",
+            "Alternatives:",
+        ]
+        for alt in hit.alternatives {
+            lines.append("• \(alt.name) [\(alt.origin)] — \(alt.note)")
+        }
+        return .result(value: lines.joined(separator: "\n"))
+    }
+}
+
+/// Look up an app's Trust score (0–100) via Shortcuts / Siri.
+@available(macOS 13.0, *)
+struct LookupTrustIntent: AppIntent {
+    static var title: LocalizedStringResource = "Look up Splynek Trust score"
+    static var description = IntentDescription(
+        "Look up an app in the Splynek Trust catalog (public-record audit). Returns 0–100 score, level, and concerns with primary-source citations."
+    )
+    static var openAppWhenRun: Bool = false
+
+    @Parameter(title: "App", description: "Bundle ID or display name.")
+    var query: String
+
+    func perform() async throws -> some IntentResult & ReturnsValue<String> {
+        let q = query.trimmingCharacters(in: .whitespaces)
+        guard !q.isEmpty else { throw $query.needsValueError("Enter an app name or bundle ID.") }
+        // Pull current weights from the running VM so the score
+        // matches what the user sees in the in-app Trust tab.
+        let weights: TrustScorer.Weights = await MainActor.run {
+            guard let delegate = NSApp.delegate as? SplynekAppDelegate,
+                  let vm = delegate.state?.vm
+            else { return TrustScorer.Weights.default }
+            return vm.trustWeights
+        }
+        guard let hit = MCPBridgeBuilder.lookupTrust(query: q, weights: weights) else {
+            return .result(value: "No Trust catalog entry for `\(q)`.")
+        }
+        var lines = [
+            "\(hit.displayName) — \(hit.score)/100 \(hit.level)",
+            "Last reviewed: \(hit.lastReviewed)",
+            "Concerns (\(hit.concernCount)):",
+        ]
+        for c in hit.concerns {
+            lines.append("• [\(c.severity.uppercased()) \(c.axis)] \(c.summary)")
+        }
+        return .result(value: lines.joined(separator: "\n"))
+    }
+}
+
+/// Run a one-shot Sovereignty scan from Shortcuts.  Returns the
+/// summary counts only — for per-app detail the user chains
+/// `LookupSovereigntyIntent`.
+@available(macOS 13.0, *)
+struct RunSovereigntyScanIntent: AppIntent {
+    static var title: LocalizedStringResource = "Run Splynek Sovereignty scan"
+    static var description = IntentDescription(
+        "Enumerate installed apps and count how many have Sovereignty catalog entries. Local; no network access."
+    )
+    static var openAppWhenRun: Bool = false
+
+    func perform() async throws -> some IntentResult & ReturnsValue<String> {
+        let s = MCPBridgeBuilder.runSovereigntyScan()
+        return .result(value:
+            "Scanned \(s.appsScanned) installed apps; \(s.entriesMatched) match Sovereignty catalog entries."
+        )
+    }
+}
+
 @available(macOS 13.0, *)
 struct SplynekAppShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
+        AppShortcut(
+            intent: LookupSovereigntyIntent(),
+            phrases: [
+                "Look up \(.applicationName) sovereignty for \(\.$query)",
+                "Where is \(\.$query) controlled from",
+            ],
+            shortTitle: "Lookup Sovereignty",
+            systemImageName: "shield.lefthalf.filled"
+        )
+        AppShortcut(
+            intent: LookupTrustIntent(),
+            phrases: [
+                "What's \(.applicationName)'s trust score for \(\.$query)",
+                "Audit \(\.$query) with \(.applicationName)",
+            ],
+            shortTitle: "Lookup Trust Score",
+            systemImageName: "checkmark.seal"
+        )
+        AppShortcut(
+            intent: RunSovereigntyScanIntent(),
+            phrases: [
+                "Scan my apps with \(.applicationName)",
+                "Audit my Mac with \(.applicationName)",
+            ],
+            shortTitle: "Run Sovereignty Scan",
+            systemImageName: "magnifyingglass.circle"
+        )
         AppShortcut(
             intent: DownloadURLIntent(),
             phrases: [

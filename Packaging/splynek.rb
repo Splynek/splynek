@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 cask "splynek" do
-  version "1.5.6"
+  version "1.6.0"
   # ⚠️  sha256 placeholder — replace with the real hash once the
   # v1.5.6 DMG is built + uploaded to GitHub Releases.
   # Compute via: shasum -a 256 dist/Splynek-1.5.6.dmg

@@ -90,7 +90,11 @@ final class SovereigntyScanner: ObservableObject {
     // nonisolated — pure filesystem + Bundle() work; doesn't touch any
     // @Published state.  Runs on a detached Task's executor; result is
     // handed back via `MainActor.run` in `scan()`.
-    nonisolated private static func enumerateApplications() -> [InstalledApp] {
+    //
+    // v1.6: dropped `private` so the MCP bridge can run a one-shot
+    // sync enumeration without taking a dependency on the @MainActor
+    // scanner instance.  Pure function; no observable state.
+    nonisolated static func enumerateApplications() -> [InstalledApp] {
         let fm = FileManager.default
         // Standard install locations.  Order doesn't matter — we
         // dedupe on bundle ID afterwards.

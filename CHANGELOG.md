@@ -3,6 +3,59 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v1.6.0 — Splynek as a programmable platform (2026-04-29)
+
+Three innovation surfaces ship together to turn Splynek from a download
+manager into a programmable substrate any agent can drive:
+
+**MCP server** — JSON-RPC 2.0 endpoint at `/splynek/v1/mcp/rpc` exposes
+8 tools (download_url, queue_url, get_progress, cancel_all, list_history,
+lookup_sovereignty, lookup_trust, run_sovereignty_scan).  Off by default;
+opt in via Settings → MCP server.  Same fleet token gates it as the web
+dashboard — no new auth surface.  Conversations like *"download these
+five papers, run a sovereignty check, and summarise what I'm installing"*
+become one-shot prompts.  Setup docs in `MCP_SETUP.md`.  Compatible
+clients: claude.ai (HTTP transport), Claude Desktop (via stdio shim
+until they ship HTTP transport), any MCP-compliant agent.
+
+**Spotlight catalog indexing** — Sovereignty + Trust catalog entries
+are now system-wide searchable.  Cmd-Space "Notion" returns
+"Notion — Sovereignty: EU/OSS alternatives" + "Notion — Trust: 4 concerns"
+as Spotlight hits.  Activating one routes via `splynek://sovereignty/<id>`
+or `splynek://trust/<id>` deep links into the matching tab.  Index lives
+in two new domains: `app.splynek.sovereignty` and `app.splynek.trust`.
+
+**Catalog-aware App Intents** — three new Shortcuts / Siri intents:
+`LookupSovereigntyIntent`, `LookupTrustIntent`, `RunSovereigntyScanIntent`.
+All return text summaries the user can route to notifications, HomeKit
+cards, or further-process steps.  Hits the same catalog as the in-app
+tabs; no network access.
+
+**MCP server architecture:**
+
+- `Sources/SplynekCore/MCPServer.swift` — JSON-RPC 2.0 parser +
+  dispatcher.  Methods: initialize, tools/list, tools/call, ping, plus
+  the standard `notifications/initialized` no-op.  Bridge struct with
+  8 `@Sendable` closure slots so unit tests can stub without spinning
+  up the VM.
+- `Sources/SplynekCore/MCPTools.swift` — tool registry.  Every tool
+  returns human-readable text; structured payloads are formatted
+  inside the text so an LLM can re-parse if needed.
+- `Sources/SplynekCore/MCPBridge.swift` — wires the bridge to the
+  live ViewModel.  Mutating tools route through `fleet.onWebIngest`
+  — same ingest contract drag-drop / browser extension / menu-bar
+  use, so all scheme guards / size confirmations / host caps fire
+  automatically.
+- `Tests/SplynekTests/MCPProtocolTests.swift` — 12 protocol tests
+  (initialize, tools/list, tools/call, error mapping, notifications,
+  catalog bridge round-trips).  Async overload added to `TestHarness`
+  so async/await test bodies work in the self-hosted runner.
+
+**App Store v1.0 safety:**  no new entitlements (MCP reuses the
+existing `network.server` scope).  No archive submitted.  All work
+shipped local; user opts in deliberately for any of these surfaces
+to be active.
+
 ## v1.5.6 — weekly workflow hardening (2026-04-28)
 
 CI: real-rot vs transient classification in `Scripts/check-urls.swift`

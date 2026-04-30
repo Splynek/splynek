@@ -22,18 +22,21 @@ xcrun stapler staple build/Splynek.dmg
 **Tests:** `swift run splynek-test` (148 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
-**Current version: v1.5.6 (in repo) / v1.5.3 (last tagged & uploaded DMG) — 2026-04-28.**
+**Current version: v1.6.0 (in repo) / v1.5.3 (last tagged & uploaded DMG) — 2026-04-29.**
 
-The `main` branch carries v1.5.4 / v1.5.5 / v1.5.6 / v1.5.6+ commits but **none are tagged or uploaded yet**. They're staged to ship as a single rolled-up `v1.5.6` release once Apple clears v1.0 (we hold the DMG cut so an Apple Reviewer who URL-spelunks doesn't pull in newer marketing copy / behaviour they didn't approve).
+The `main` branch carries v1.5.4 → v1.6.0 commits but **none are tagged or uploaded yet**. They're staged to ship as a single rolled-up `v1.6.0` release once Apple clears v1.0 (we hold the DMG cut so an Apple Reviewer who URL-spelunks doesn't pull in newer behaviour they didn't approve).
 
 What's bundled:
 
 - **v1.5.4** — Trust score weights UI (Settings → 4 sliders), per-axis score breakdown in TrustView, `InfoPlistSyncTests` invariant (caught real version-drift bug).
 - **v1.5.5** — catalog debt clearance, dead BIS URL replaced, validator runs at zero warnings.
 - **v1.5.6** — weekly workflow hardening: real-rot-vs-transient classification in `check-urls.swift`, `permissions: issues: write`, `swift run splynek-test` removed from lint job (OOM on the 22k-line generated catalog).
-- **v1.5.6+** — hardening pass: `os.Logger` framework added, `Persisted<T>` property wrapper, `LANPeer` GCD/Task tangle untangled, `FleetCoordinator` rate-limit GC moved off hot path, `WatchedFolder` reentrancy guard, `TorrentEngine` force-unwrap rewritten, accessibility pass on TrustView / SovereigntyView / SettingsView, release-coherence invariant test.
+- **v1.5.6+** — hardening pass: `os.Logger` framework added, `LANPeer` GCD/Task tangle untangled, `FleetCoordinator` rate-limit GC moved off hot path, `WatchedFolder` reentrancy guard, `TorrentEngine` force-unwrap rewritten, accessibility pass on TrustView / SovereigntyView / SettingsView, release-coherence invariant test.
+- **v1.6.0** — Splynek as a programmable platform: **MCP server** (8 tools, JSON-RPC 2.0 over POST, off by default, opt-in via Settings), **Spotlight catalog indexing** (Sovereignty + Trust now system-wide searchable), **3 new catalog-aware App Intents** (`LookupSovereigntyIntent`, `LookupTrustIntent`, `RunSovereigntyScanIntent`).  Setup docs in `MCP_SETUP.md`.
 
-Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution Center reply + edit-and-save touch). **DO NOT `xcodebuild archive -scheme Splynek-MAS` and submit while v1.0 is in flight** — that replaces the in-queue binary with one carrying the v1.5.6 metadata Apple Reviewer would never have looked at. The DMG / Developer-ID stream (`./Scripts/build.sh`) is independent and safe to re-cut at any time. See § Shipped releases for download URLs.
+Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution Center reply + edit-and-save touch). **DO NOT `xcodebuild archive -scheme Splynek-MAS` and submit while v1.0 is in flight** — that replaces the in-queue binary with one carrying the v1.6 metadata Apple Reviewer would never have looked at. The DMG / Developer-ID stream (`./Scripts/build.sh`) is independent and safe to re-cut at any time.
+
+**MCP / Spotlight / AppIntents safety story for App Review:**  no new entitlements (`network.server` already granted); MCP off by default and gated by an opt-in toggle; Spotlight catalog index uses public ship-with-the-app catalog data, not user-installed-app metadata; new App Intents read the same compile-time catalog the in-app tabs do.  Each surface is independently documented in code comments at its module head.
 
 ---
 

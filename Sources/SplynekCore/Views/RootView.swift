@@ -54,6 +54,19 @@ struct RootView: View {
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowAbout)) { _ in
             section = .about
         }
+        // v1.6: Spotlight deep-link routing.  Activating a Sovereignty
+        // or Trust hit from the system search bar fires the matching
+        // `splynek://<tab>/<bundle-id>` URL, which posts these
+        // notifications.  We route the section + stash the focused
+        // bundle on the VM for the tab views to consume.
+        .onReceive(NotificationCenter.default.publisher(for: .splynekShowSovereignty)) { note in
+            section = .sovereignty
+            vm.sovereigntyFocusedBundleID = note.userInfo?["bundleID"] as? String
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .splynekShowTrust)) { note in
+            section = .trust
+            vm.trustFocusedBundleID = note.userInfo?["bundleID"] as? String
+        }
     }
 
     @ViewBuilder

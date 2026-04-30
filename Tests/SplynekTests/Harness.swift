@@ -42,6 +42,30 @@ enum TestHarness {
         }
     }
 
+    /// v1.6: async-test overload — runs the body on a fresh Task and
+    /// blocks the synchronous suite walker via DispatchSemaphore.  Used
+    /// by MCP / network protocol tests where the system under test is
+    /// async/await all the way down.  Same printing + counting logic
+    /// as the sync overload.
+    static func test(_ name: String, _ body: @escaping @Sendable () async throws -> Void) {
+        total += 1
+        let sema = DispatchSemaphore(value: 0)
+        var caught: Error?
+        Task {
+            do { try await body() } catch { caught = error }
+            sema.signal()
+        }
+        sema.wait()
+        if let error = caught {
+            failed += 1
+            let msg = "    ✗ \(name) — \(error)"
+            print(msg)
+            failures.append("\(currentSuite): \(name) — \(error)")
+        } else {
+            print("    ✓ \(name)")
+        }
+    }
+
     static func finish() -> Never {
         print("")
         if failed == 0 {

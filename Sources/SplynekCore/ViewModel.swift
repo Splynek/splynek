@@ -605,6 +605,32 @@ final class SplynekViewModel: ObservableObject {
     private var torrentEngine: TorrentEngine?
     private var torrentTask: Task<Void, Never>?
 
+    /// v1.6: Spotlight deep-link focus.  When the user activates a
+    /// `splynek://sovereignty/<bundle-id>` Spotlight hit, this gets
+    /// set so SovereigntyView can scroll to + auto-expand that row.
+    /// `nil` means no focus (e.g. user clicked the tab directly).
+    /// Cleared by the view once the focus has been honoured so a
+    /// subsequent tab visit isn't sticky.
+    @Published var sovereigntyFocusedBundleID: String?
+    @Published var trustFocusedBundleID: String?
+
+    /// v1.6: opt-in MCP (Model Context Protocol) server.  When ON,
+    /// `/splynek/v1/mcp/rpc` accepts JSON-RPC 2.0 calls from any
+    /// MCP-compatible client (Claude Desktop, ChatGPT-with-MCP, etc.).
+    /// When OFF the route returns 503.  Default OFF — the user opts
+    /// in deliberately because this exposes a programmable surface
+    /// to anything with the fleet token.
+    @Published var mcpEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(mcpEnabled, forKey: "mcpEnabled")
+            // Reflect into the fleet coordinator's mcpServer.enabled.
+            // The bridge itself is wired once at launch via
+            // `wireMCPServer()`.
+            fleet.mcpServer?.enabled = mcpEnabled
+            Log.system.notice("MCP server \(self.mcpEnabled ? "enabled" : "disabled", privacy: .public)")
+        }
+    }
+
     init() {
         let defaults = UserDefaults.standard
         // Output directory: load persisted, else Downloads, else tempDir.
@@ -621,6 +647,7 @@ final class SplynekViewModel: ObservableObject {
         self.useDoH = defaults.bool(forKey: "useDoH")
         self.seedAfterCompletion = defaults.bool(forKey: "seedAfterCompletion")
         self.seedWhileLeeching = defaults.bool(forKey: "seedWhileLeeching")
+        self.mcpEnabled = defaults.bool(forKey: "mcpEnabled")
         let savedMax = defaults.integer(forKey: "maxConcurrentDownloads")
         self.maxConcurrentDownloads = (1...10).contains(savedMax) ? savedMax : 3
 
@@ -703,6 +730,22 @@ final class SplynekViewModel: ObservableObject {
         // Push the loaded history into Spotlight so prior runs are
         // searchable system-wide. Reindexed again after every completion.
         SplynekSpotlight.reindex(history)
+        // v1.6: index the Sovereignty + Trust catalogs once per launch.
+        // Catalog data ships in the app — this surfaces it system-wide
+        // so a Cmd-Space "Notion" returns "Notion — Sovereignty: EU/OSS
+        // alternatives" alongside any other macOS hits.  Done off the
+        // main actor because the index work involves filesystem I/O.
+        Task.detached(priority: .background) {
+            SplynekSpotlight.reindexCatalog()
+        }
+
+        // v1.6: wire the MCP server bridge.  The server itself is
+        // started lazily — `enabled` defaults to whatever was loaded
+        // from prefs, and `mcpEnabled.didSet` flips the flag in real
+        // time when the user toggles the Settings card.  Off by
+        // default; users opt in.
+        let mcpBridge = MCPBridgeBuilder.build(vm: self)
+        fleet.mcpServer = MCPServer(bridge: mcpBridge, enabled: mcpEnabled)
         // Session restore is deferred until `restoreSession()` is called
         // from the app delegate, after interface discovery has populated.
         // Non-blocking update poll; silent if no feed is configured.

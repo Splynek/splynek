@@ -134,6 +134,28 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
                 vm.magnetText = magnet
                 vm.parseMagnet()
             }
+        case "sovereignty":
+            // v1.6: Spotlight deep link.  URL shape is
+            // `splynek://sovereignty/<bundle-id>` — bundle ID sits in
+            // the first path component (URL host == "sovereignty").
+            // Route to the Sovereignty tab via the same notification
+            // pattern menu items use, carrying the focused bundle ID
+            // in `userInfo`.  TrustView/SovereigntyView decide what
+            // "focused" means (auto-scroll-to + auto-expand on the
+            // current implementation; could become highlight in v1.7).
+            let bid = url.pathComponents.dropFirst().first ?? ""
+            NotificationCenter.default.post(
+                name: .splynekShowSovereignty,
+                object: nil,
+                userInfo: bid.isEmpty ? [:] : ["bundleID": bid]
+            )
+        case "trust":
+            let bid = url.pathComponents.dropFirst().first ?? ""
+            NotificationCenter.default.post(
+                name: .splynekShowTrust,
+                object: nil,
+                userInfo: bid.isEmpty ? [:] : ["bundleID": bid]
+            )
         default:
             break
         }

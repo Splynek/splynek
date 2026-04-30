@@ -175,6 +175,14 @@ public final class FleetCoordinator: ObservableObject {
     /// `loopbackOnly` — flipping mid-session doesn't rebind.
     public var proGateForcesLoopback: Bool = true
 
+    // MARK: MCP server (v1.6)
+
+    /// Optional MCP (Model Context Protocol) server.  Set by the VM
+    /// when the user opts in via Settings → MCP server.  When `nil`
+    /// the route returns 503; when present, requests are dispatched
+    /// here.  Same fleet token guards the route as the web dashboard.
+    public var mcpServer: MCPServer?
+
     /// What the listener should actually use when deciding to
     /// loopback-bind. Exposed internal for tests.
     var effectiveLoopbackOnly: Bool {
@@ -716,6 +724,8 @@ public final class FleetCoordinator: ObservableObject {
             await serveWebSubmit(conn, path: path, body: body, method: method)
         } else if path.hasPrefix("/splynek/v1/ui") {
             await serveWebDashboard(conn)
+        } else if path.hasPrefix("/splynek/v1/mcp/rpc") {
+            await serveMCP(conn, path: path, body: body, method: method)
         } else if path == "/" || path.isEmpty {
             // Courtesy redirect so http://mac:port/ on the phone just works.
             let redirect =
@@ -1073,6 +1083,45 @@ public final class FleetCoordinator: ObservableObject {
         let handler = self.onCancelAll
         await MainActor.run { handler?() }
         try? await respond(conn, status: "202 Accepted")
+    }
+
+    // MARK: MCP server (v1.6)
+
+    /// JSON-RPC 2.0 endpoint for the Splynek MCP server.
+    /// `POST /splynek/v1/mcp/rpc?t=<token>` body=JSON-RPC envelope.
+    /// Off (503) when the user hasn't toggled it on in Settings.
+    private func serveMCP(
+        _ conn: NWConnection, path: String, body: Data, method: String
+    ) async {
+        guard method == "POST" else {
+            try? await respond(conn, status: "405 Method Not Allowed"); return
+        }
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        guard let server = self.mcpServer, server.enabled else {
+            // Fail with a JSON-RPC body so MCP clients see a real
+            // protocol error, not a transport hiccup.  Status 503 +
+            // JSON body — clients log both.
+            let resp = RPCResponse.fail(id: nil, .serverDisabled)
+            let respData = (try? JSONEncoder().encode(resp)) ?? Data()
+            let head =
+                "HTTP/1.1 503 Service Unavailable\r\n" +
+                "Content-Type: application/json\r\n" +
+                "Content-Length: \(respData.count)\r\n" +
+                "Connection: close\r\n\r\n"
+            try? await fleetSend(conn, Data(head.utf8) + respData)
+            conn.cancel()
+            return
+        }
+        let respData = await server.handle(rawBody: body)
+        if respData.isEmpty {
+            // Notification — JSON-RPC says no body.  HTTP needs
+            // SOMETHING; respond 204 No Content.
+            try? await respond(conn, status: "204 No Content")
+            return
+        }
+        try? await respondJSON(conn, body: respData)
     }
 
     // MARK: Response helpers

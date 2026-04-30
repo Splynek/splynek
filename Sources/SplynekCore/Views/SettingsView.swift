@@ -35,6 +35,7 @@ struct SettingsView: View {
                 watchedFolderCard
                 backgroundModeCard
                 trustWeightsCard
+                mcpCard
                 securityCard
             }
             .padding(20)
@@ -608,6 +609,98 @@ struct SettingsView: View {
     /// the rationale.  Sliders go (0, 3]; the underlying clamp in
     /// `TrustScorer.Weights.sanitised` enforces this regardless of
     /// what the slider sends.
+    /// v1.6: MCP (Model Context Protocol) server card.  Off by default;
+    /// the user opts in.  When ON, `/splynek/v1/mcp/rpc` accepts JSON-
+    /// RPC 2.0 calls from any MCP-compatible client (Claude Desktop,
+    /// ChatGPT-with-MCP, custom agents).  Same fleet token gates it
+    /// as the web dashboard — no extra auth surface to manage.
+    ///
+    /// The endpoint URL + token are surfaced as a copyable string so
+    /// the user can paste into their MCP client config without
+    /// thinking about ports or paths.
+    private var mcpCard: some View {
+        TitledCard(
+            title: "MCP server (Model Context Protocol)",
+            systemImage: "antenna.radiowaves.left.and.right",
+            accessory: AnyView(StatusPill(
+                text: vm.mcpEnabled ? "ON" : "OFF",
+                style: vm.mcpEnabled ? .success : .neutral
+            ))
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Expose Splynek's downloads, queue, and Sovereignty / Trust catalog lookups as MCP tools that Claude Desktop, ChatGPT-with-MCP, and any other MCP-compatible client can call.  See **MCP_SETUP.md** for client config.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Toggle("Allow MCP clients to call Splynek tools",
+                       isOn: $vm.mcpEnabled)
+                    .toggleStyle(.switch)
+
+                if vm.mcpEnabled {
+                    Divider()
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Endpoint")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        // Show endpoint with port + token query.  Copy-
+                        // paste-able into the user's MCP client config.
+                        if let endpoint = mcpEndpointString() {
+                            HStack {
+                                Text(endpoint)
+                                    .font(.caption.monospaced())
+                                    .textSelection(.enabled)
+                                    .lineLimit(2)
+                                    .truncationMode(.middle)
+                                Spacer()
+                                Button {
+                                    let pasteboard = NSPasteboard.general
+                                    pasteboard.clearContents()
+                                    pasteboard.setString(endpoint, forType: .string)
+                                } label: {
+                                    Image(systemName: "doc.on.doc")
+                                }
+                                .buttonStyle(.borderless)
+                                .help("Copy endpoint URL to clipboard")
+                                .accessibilityLabel("Copy MCP endpoint URL to clipboard")
+                            }
+                            .padding(8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(Color.secondary.opacity(0.1))
+                            )
+                        } else {
+                            Text("Endpoint unavailable — fleet listener hasn't bound yet.  Restart Splynek if this persists.")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
+                        Text("8 tools available: download_url, queue_url, get_progress, cancel_all, list_history, lookup_sovereignty, lookup_trust, run_sovereignty_scan.")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+        }
+    }
+
+    /// Compose the user-pasteable endpoint string.  Returns nil while
+    /// the listener is still binding (port == 0).  Loopback-or-LAN
+    /// host depends on the user's `loopbackOnly` setting; the cask
+    /// dashboard URL helper picks the right one.
+    private func mcpEndpointString() -> String? {
+        guard let dashboard = vm.fleet.webDashboardURL() else { return nil }
+        // Reuse host + port from the dashboard URL helper, swap path
+        // and keep the token.  Token query stays consistent with the
+        // existing `t=<webToken>` convention.
+        guard let comps = URLComponents(url: dashboard, resolvingAgainstBaseURL: false),
+              let host = comps.host,
+              let port = comps.port
+        else { return nil }
+        let token = comps.queryItems?.first(where: { $0.name == "t" })?.value ?? ""
+        return "http://\(host):\(port)/splynek/v1/mcp/rpc?t=\(token)"
+    }
+
     private var trustWeightsCard: some View {
         TitledCard(title: "Trust score weights", systemImage: "checkmark.seal") {
             VStack(alignment: .leading, spacing: 12) {

@@ -48,6 +48,88 @@ enum SplynekSpotlight {
     /// history or resets preferences.
     static func wipe() {
         CSSearchableIndex.default()
-            .deleteSearchableItems(withDomainIdentifiers: [domain]) { _ in }
+            .deleteSearchableItems(withDomainIdentifiers: [
+                domain,
+                sovereigntyDomain,
+                trustDomain,
+            ]) { _ in }
+    }
+
+    // MARK: - v1.6: Sovereignty + Trust catalog indexing
+
+    /// Domain for Sovereignty catalog hits in Spotlight.  Activating a
+    /// hit opens Splynek to the Sovereignty tab focused on the entry
+    /// via the `splynek://sovereignty/<bundle-id>` URL scheme.
+    static let sovereigntyDomain = "app.splynek.sovereignty"
+    static let trustDomain = "app.splynek.trust"
+
+    /// Index every Sovereignty catalog entry into Spotlight so a
+    /// system-wide search for "Notion" surfaces "Notion — Sovereignty:
+    /// Privacy concerns + EU/OSS alternatives".  This is a one-shot
+    /// per-launch reindex; the catalog is generated at compile time so
+    /// it doesn't change during a session.
+    ///
+    /// **Privacy invariants preserved:**
+    ///   - Only catalog data (which ships with the app) lands in
+    ///     Spotlight.  No data about the user's installed apps is
+    ///     written.  The catalog is identical for every Splynek user.
+    ///   - `contentURL` is set to a `splynek://` deep link, NOT a file
+    ///     URL — Spotlight surfaces the entry but tapping it routes
+    ///     back into Splynek without exposing any local path.
+    static func reindexCatalog() {
+        let index = CSSearchableIndex.default()
+        var items: [CSSearchableItem] = []
+
+        // Sovereignty
+        for entry in SovereigntyCatalog.entries {
+            let attrs = CSSearchableItemAttributeSet(contentType: .item)
+            attrs.title = entry.targetDisplayName
+            let altCount = entry.alternatives.count
+            let altList = entry.alternatives
+                .prefix(3)
+                .map(\.name)
+                .joined(separator: ", ")
+            attrs.contentDescription = "\(entry.targetOrigin.label) origin · "
+                + "\(altCount) alternative\(altCount == 1 ? "" : "s")"
+                + (altList.isEmpty ? "" : " — \(altList)")
+            attrs.contentURL = URL(string: "splynek://sovereignty/\(entry.targetBundleID)")
+            attrs.keywords = [
+                "splynek", "sovereignty",
+                entry.targetBundleID,
+                entry.targetOrigin.label,
+            ] + entry.alternatives.prefix(5).map(\.name)
+            items.append(CSSearchableItem(
+                uniqueIdentifier: "sov:\(entry.targetBundleID)",
+                domainIdentifier: sovereigntyDomain,
+                attributeSet: attrs
+            ))
+        }
+
+        // Trust
+        for entry in TrustCatalog.entries {
+            let attrs = CSSearchableItemAttributeSet(contentType: .item)
+            attrs.title = entry.targetDisplayName
+            let n = entry.concerns.count
+            attrs.contentDescription = "Trust audit · \(n) concern\(n == 1 ? "" : "s") "
+                + "from public records (App Store privacy labels, EU DPAs, FTC, NVD, HIBP)"
+            attrs.contentURL = URL(string: "splynek://trust/\(entry.targetBundleID)")
+            attrs.keywords = [
+                "splynek", "trust", "privacy", "audit",
+                entry.targetBundleID,
+            ]
+            items.append(CSSearchableItem(
+                uniqueIdentifier: "trust:\(entry.targetBundleID)",
+                domainIdentifier: trustDomain,
+                attributeSet: attrs
+            ))
+        }
+
+        // Replace any prior catalog index in one transaction so a
+        // catalog rev doesn't leave stale entries in Spotlight.
+        index.deleteSearchableItems(withDomainIdentifiers: [
+            sovereigntyDomain, trustDomain,
+        ]) { _ in
+            index.indexSearchableItems(items) { _ in /* silent */ }
+        }
     }
 }
