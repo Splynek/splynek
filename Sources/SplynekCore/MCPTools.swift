@@ -1,5 +1,28 @@
 import Foundation
 
+// =====================================================================
+// ARCHITECTURAL INVARIANT — App Store Review Guideline 2.5.2
+// =====================================================================
+// The MCP server exposes a FIXED, COMPILE-TIME tool set. The `allTools`
+// array below enumerates every endpoint an external MCP client can
+// invoke. There is no path for a caller to register, install, or
+// execute a tool that isn't in this array. Adding or removing a tool
+// requires a code change, a recompile, and a new App Store submission.
+//
+// The eight tools are: 5 pure reads (lookup_sovereignty, lookup_trust,
+// run_sovereignty_scan, get_progress, list_history) and 3 explicit
+// writes (download_url, queue_url, cancel_all). Writes accept only a
+// URL string or no argument. None accepts code, scripts, expressions,
+// closures, or filenames containing shell metacharacters.
+//
+// Why this matters: 2.5.2 prohibits "downloading, installing, or
+// executing code which introduces or changes features or functionality
+// of the app." A fixed compile-time tool registry is the architectural
+// guarantee that an MCP client cannot extend Splynek's behaviour at
+// runtime. See MAS-2.5.2-COMPLIANCE.md (Invariant 4) for the full
+// reviewer-facing brief.
+// =====================================================================
+
 /// v1.6: MCP tool registry — the actual tools an MCP client can call.
 ///
 /// Each tool has:

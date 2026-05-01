@@ -1,5 +1,30 @@
 import Foundation
 
+// =====================================================================
+// ARCHITECTURAL INVARIANT — App Store Review Guideline 2.5.2
+// =====================================================================
+// Probe.run is the FINAL GATE between any URL Splynek considers
+// downloading (whether typed by the user, returned by the AI Concierge,
+// proposed by an Agentic Recipe, or submitted via the MCP server) and
+// the download engine.
+//
+// What Probe.run validates:
+//   * Scheme is https:// or http:// (rejects file://, javascript:, data:,
+//     splynek://, etc.)
+//   * Server responds 200 / 206
+//   * Content-Length is present and finite
+//   * Content-Type isn't text/html (catches "you've been redirected to a
+//     login page" cases)
+//
+// A URL that fails the probe is rejected; the user sees an error. The
+// AI cannot bypass this — there is no parallel code path that queues
+// downloads without going through Probe.run.
+//
+// Why this matters for 2.5.2: the AI returns URL STRINGS, not code.
+// Probe.run guarantees those strings resolve to ordinary HTTP
+// resources, not to code-execution paths.
+// =====================================================================
+
 enum ProbeError: Error, LocalizedError {
     case invalidURL
     case noContentLength

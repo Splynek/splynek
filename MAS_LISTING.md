@@ -301,6 +301,47 @@ convenience tools that send URLs to Splynek via the splynek://
 URL scheme. They're not automatically installed — Settings → Browser
 Helpers reveals the bundled files for user-initiated installation.
 
+GUIDELINE 2.5.2 — NO DOWNLOADED OR EXECUTED CODE
+
+Splynek does not download, install, or execute code. Every behaviour
+the user sees is compiled into the .app bundle and reviewable as part
+of this submission. The AI features (Concierge, Recipes) use a local
+language model as a URL CLASSIFIER — the model returns structured JSON
+(URLs + filenames + rationale strings), Splynek deserialises that JSON
+through a Codable Swift struct, probes each URL via HTTP HEAD, and
+shows the user a review-and-approve sheet before downloading anything.
+
+The MCP server (off by default; opt-in via Settings → Programmability)
+exposes 8 compile-time-defined tool endpoints — see MCPTools.swift:
+splynek_download_url, splynek_queue_url, splynek_get_progress,
+splynek_cancel_all, splynek_list_history, splynek_lookup_sovereignty,
+splynek_lookup_trust, splynek_run_sovereignty_scan. External callers
+cannot define new tools; adding a tool requires a code change and a
+new App Store submission.
+
+The five-minute audit:
+  grep -rn "JSContext\\|JavaScriptCore" Sources/      # 0 hits
+  grep -rn "NSExpression"               Sources/      # 0 hits
+  grep -rn "posix_spawn\\|dlopen\\|dlsym" Sources/    # 0 hits
+  grep -rn "evaluateJavaScript"         Sources/      # 0 hits
+  grep -rn "Process("                   Sources/      # only GatekeeperVerify
+                                                      #  (calls spctl/codesign/stapler
+                                                      #   to *read* signatures from
+                                                      #   downloaded files; doesn't
+                                                      #   execute them)
+
+The MAS sandbox grants no entitlements that would allow dynamic code
+execution: no com.apple.security.cs.allow-jit, no
+com.apple.security.cs.disable-library-validation, no
+com.apple.security.cs.allow-unsigned-executable-memory. A binary
+without those entitlements cannot run downloaded code even if the
+source-level guards above were removed.
+
+A standalone compliance brief with file-anchored architectural
+invariants is at MAS-2.5.2-COMPLIANCE.md in the public repository
+(github.com/Splynek/splynek). Happy to walk through the call graph
+or share screen recordings on request.
+
 BUILD NOTES
 
 The source code for the free tier is MIT-licensed and publicly

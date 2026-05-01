@@ -1,5 +1,29 @@
 import Foundation
 
+// =====================================================================
+// ARCHITECTURAL INVARIANT — App Store Review Guideline 2.5.2
+// =====================================================================
+// This server accepts JSON-RPC 2.0 requests over loopback / LAN HTTP
+// and dispatches each call to a HANDLER REGISTERED AT COMPILE TIME in
+// MCPTools.swift::MCPToolRegistry.allTools. There is no eval, no
+// dynamic linking, no script execution, and no JIT.
+//
+// What an MCP request can do:
+//   * Invoke one of the 8 fixed tools (see MCPTools.swift)
+//   * Read JSON Schema descriptors via tools/list
+//
+// What an MCP request CANNOT do:
+//   * Define a new tool / handler at runtime
+//   * Pass a code body, expression, or closure as an argument
+//   * Trigger any code path that wasn't in the .app bundle Apple reviewed
+//
+// The server is OFF BY DEFAULT (Settings → Programmability → "Enable
+// MCP server"). The shipping binary serves no MCP traffic until a
+// human flips that toggle.
+//
+// See MAS-2.5.2-COMPLIANCE.md for the full reviewer-facing brief.
+// =====================================================================
+
 /// v1.6: MCP (Model Context Protocol) server for Splynek.
 ///
 /// Wraps Splynek's existing capabilities — multi-interface downloads,

@@ -139,6 +139,72 @@ for that lane's hostname.
   happens at purchase time only; nothing contacts a server on
   every launch.
 
+## AI boundaries — what Splynek's AI does and does not do
+
+Splynek ships three AI-adjacent features: the **Concierge** (chat-to-URL),
+**Recipes** (multi-step download plans), and the **MCP server** (machine-
+callable tool API). All three respect a strict boundary that's worth
+spelling out, both for security-conscious users and for App Store
+review (Guideline 2.5.2 prohibits apps that download or execute
+arbitrary code).
+
+**Where the language model sits in the data flow.** The LLM is a
+classifier, not a runtime. It receives English from the user (or a
+machine prompt over MCP) and returns **structured JSON** — URLs,
+filenames, rationale strings. Splynek deserialises that JSON through
+a `Codable` Swift struct; anything that doesn't fit the struct is
+dropped. The struct contains only `String` and `Bool` fields. No code
+body, no closure, no script.
+
+**What the AI cannot do.** Even if a remote LLM were compromised, or
+a local model hallucinated wildly, it cannot:
+
+- inject Swift, JavaScript, AppleScript, shell, or any other
+  executable artifact into the app;
+- bypass `Probe.run`, the URL gate that validates every download
+  candidate against scheme + status + content-length + content-type
+  rules before the download engine starts;
+- expand the tool surface beyond the 8 compile-time MCP endpoints
+  (see `Sources/SplynekCore/MCPTools.swift`); adding a tool requires
+  a code change, a recompile, and a new App Store submission;
+- write outside the user's selected output directory or the app's
+  sandbox container — the MAS sandbox is the final wall.
+
+**Sandbox entitlements that we explicitly DO NOT request.** The MAS
+build's entitlements file omits every entitlement an attacker would
+need to escalate AI output into code execution:
+
+- `com.apple.security.cs.allow-jit` — no
+- `com.apple.security.cs.disable-library-validation` — no
+- `com.apple.security.cs.allow-unsigned-executable-memory` — no
+- `com.apple.security.cs.allow-dyld-environment-variables` — no
+
+A binary without these cannot dynamically link or run downloaded code
+even if the source-level guards were removed.
+
+**The MCP server is off by default.** Settings → Programmability ships
+disabled. The shipping binary serves no MCP traffic until a human
+explicitly enables it. When enabled, the server binds to loopback by
+default; the LAN-exposed mode is a separate explicit toggle gated by
+an additional QR-code pairing flow.
+
+**Self-audit greps** (run from the repo root):
+
+```
+grep -rn "JSContext\|JavaScriptCore" Sources/    # 0 hits
+grep -rn "NSExpression"              Sources/    # 0 hits
+grep -rn "posix_spawn\|dlopen\|dlsym" Sources/   # 0 hits
+grep -rn "evaluateJavaScript"        Sources/    # 0 hits
+```
+
+The only `Process(…)` invocation in the codebase is in
+`GatekeeperVerify.swift`, which calls `/usr/sbin/spctl`,
+`/usr/bin/codesign`, and `/usr/bin/stapler` to **read** signature
+metadata from a downloaded file. It does not execute the file.
+
+Full architectural-invariant brief, written for an Apple reviewer:
+[MAS-2.5.2-COMPLIANCE.md](MAS-2.5.2-COMPLIANCE.md).
+
 ## Reporting issues
 
 Open an issue or email the maintainer directly. Security-sensitive
