@@ -51,6 +51,9 @@ DiskUsageScannerTests.run()
 ConciergeToolsTests.run()
 InstalledAppRegistryTests.run()
 FleetChunkSwarmTests.run()
+ConciergeBridgeTests.run()
+InstallVerificationTests.run()
+AppMoverTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private
