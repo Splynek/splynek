@@ -573,11 +573,24 @@ final class SplynekViewModel: ObservableObject {
         set { concierge.thinking = newValue }
     }
 
-    struct ConciergeMessage: Identifiable, Equatable {
+    struct ConciergeMessage: Identifiable {
         let id = UUID()
         let role: Role
         let text: String
         let action: String?   // short human-readable chip under assistant msgs
+        /// v1.7: optional structured payload from the new Mac-Assistant
+        /// dispatcher.  When non-nil, ConciergeView renders this via
+        /// ConciergeCardView instead of the text bubble; the `text`
+        /// field becomes a one-line caption.  Nil for legacy
+        /// chat-action messages.  Equatable was dropped from this
+        /// struct because ConciergeCard's payload types (Reports,
+        /// Hits, [Match]) don't all conform to Equatable and the
+        /// only consumer (SwiftUI ForEach) uses Identifiable for
+        /// diffing.
+        var card: ConciergeCard? = nil
+        /// v1.7: which tool produced this card.  Used by the view as
+        /// a small "via search_history" footer.
+        var toolID: String? = nil
         enum Role: String { case user, assistant, system }
     }
 
