@@ -309,6 +309,110 @@ struct RunSovereigntyScanIntent: AppIntent {
     }
 }
 
+// =====================================================================
+// v1.7 — Concierge-as-Mac-Assistant intents
+// =====================================================================
+// These wrap the new public-repo types (HistorySearch, DiskUsageScanner,
+// PDFSummarizer) so Shortcuts can drive them too — the same surface
+// the Pro Concierge dispatches to internally.  All three are
+// **read-only**: they answer questions about the user's own data,
+// never write or download anything.
+
+@available(macOS 13.0, *)
+struct SearchDownloadHistoryIntent: AppIntent {
+    static var title: LocalizedStringResource = "Search download history"
+    static var description = IntentDescription(
+        "Search Splynek's download history with a ranked free-text query. Returns top matches."
+    )
+
+    @Parameter(title: "Query",
+               description: "Free-text query — filename, host, or any keyword.")
+    var query: String
+
+    @Parameter(title: "Limit",
+               description: "Maximum number of results to return.",
+               default: 5)
+    var limit: Int
+
+    static var openAppWhenRun: Bool = false
+
+    func perform() async throws -> some IntentResult & ReturnsValue<String> {
+        let matches = HistorySearch.search(query, limit: max(1, min(50, limit)))
+        if matches.isEmpty {
+            return .result(value: "No matches in download history for \"\(query)\".")
+        }
+        let lines: [String] = matches.map { m in
+            let host = URL(string: m.entry.url)?.host ?? "—"
+            let f = ByteCountFormatter.string(
+                fromByteCount: m.entry.totalBytes, countStyle: .file
+            )
+            let when = ISO8601DateFormatter().string(from: m.entry.finishedAt)
+            return "\(m.entry.filename) · \(host) · \(f) · \(when)"
+        }
+        return .result(value: lines.joined(separator: "\n"))
+    }
+}
+
+@available(macOS 13.0, *)
+struct DiskUsageReportIntent: AppIntent {
+    static var title: LocalizedStringResource = "Disk usage report"
+    static var description = IntentDescription(
+        "Scan a folder you pick and report the top 25 space-takers underneath it. Sandbox-safe — Splynek only sees what you grant."
+    )
+
+    @Parameter(title: "Folder",
+               description: "Folder to scan. Splynek can only enumerate folders the user has selected.")
+    var folder: IntentFile
+
+    static var openAppWhenRun: Bool = false
+
+    func perform() async throws -> some IntentResult & ReturnsValue<String> {
+        guard let url = folder.fileURL else {
+            return .result(value: "Couldn't resolve the picked folder.")
+        }
+        let report = DiskUsageScanner.scan(url)
+        if report.entries.isEmpty {
+            return .result(value: "Empty folder, or no readable contents.")
+        }
+        let header = "Top \(report.entries.count) under \(url.lastPathComponent) "
+            + "(\(ByteCountFormatter.string(fromByteCount: report.totalBytes, countStyle: .file)) total)"
+        let lines = report.entries.prefix(25).map { e -> String in
+            let f = ByteCountFormatter.string(fromByteCount: e.bytes, countStyle: .file)
+            let kind: String = (e.kind == DiskUsageScanner.Entry.Kind.directory) ? "[dir]" : "[file]"
+            return "\(kind) \(e.path.lastPathComponent) — \(f)"
+        }
+        return .result(value: ([header, ""] + lines).joined(separator: "\n"))
+    }
+}
+
+@available(macOS 13.0, *)
+struct SummarizeFileIntent: AppIntent {
+    static var title: LocalizedStringResource = "Summarize file (text only)"
+    static var description = IntentDescription(
+        "Extract text from a PDF you pick. The Pro Concierge feeds this to the local LLM; without Pro, this returns the raw extracted text capped at 8000 characters."
+    )
+
+    @Parameter(title: "PDF",
+               description: "A PDF file you've picked.")
+    var file: IntentFile
+
+    static var openAppWhenRun: Bool = false
+
+    func perform() async throws -> some IntentResult & ReturnsValue<String> {
+        guard let url = file.fileURL else {
+            return .result(value: "Couldn't resolve the picked file.")
+        }
+        do {
+            let extract = try PDFSummarizer.extract(url)
+            let header = "PDF: \(url.lastPathComponent) · \(extract.pageCount) page(s)"
+                + (extract.truncated ? " (truncated to 8000 chars)" : "")
+            return .result(value: "\(header)\n\n\(extract.text)")
+        } catch {
+            return .result(value: "Failed to read PDF: \(error.localizedDescription)")
+        }
+    }
+}
+
 @available(macOS 13.0, *)
 struct SplynekAppShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
@@ -394,6 +498,25 @@ struct SplynekAppShortcuts: AppShortcutsProvider {
                       "Recent \(.applicationName) downloads"],
             shortTitle: "List History",
             systemImageName: "clock.arrow.circlepath"
+        )
+        // v1.7: Concierge-as-Mac-Assistant intents
+        AppShortcut(
+            intent: SearchDownloadHistoryIntent(),
+            phrases: ["Search \(.applicationName) history"],
+            shortTitle: "Search History",
+            systemImageName: "magnifyingglass"
+        )
+        AppShortcut(
+            intent: DiskUsageReportIntent(),
+            phrases: ["\(.applicationName) disk usage report"],
+            shortTitle: "Disk Usage",
+            systemImageName: "internaldrive"
+        )
+        AppShortcut(
+            intent: SummarizeFileIntent(),
+            phrases: ["Summarize file with \(.applicationName)"],
+            shortTitle: "Summarize File",
+            systemImageName: "doc.text.magnifyingglass"
         )
     }
 }
