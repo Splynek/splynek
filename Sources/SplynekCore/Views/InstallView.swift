@@ -198,7 +198,10 @@ struct InstallView: View {
         }
     }
 
-    private func stageRow(label: String, done: Bool, current: Bool) -> some View {
+    /// Stage labels are routed through LocalizedStringKey so the
+    /// catalog can localise them.  Calling `Text(_ verbatim:)` with
+    /// a String parameter would render verbatim and break i18n.
+    private func stageRow(label: LocalizedStringKey, done: Bool, current: Bool) -> some View {
         HStack(spacing: 8) {
             Image(systemName: done ? "checkmark.circle.fill" :
                               current ? "circle.dotted" : "circle")

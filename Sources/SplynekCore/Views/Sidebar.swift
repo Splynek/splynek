@@ -4,7 +4,7 @@ import SwiftUI
 enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
     case downloads, live, torrents, concierge, recipes, sovereignty, trust,
          agents,
-         queue, fleet, benchmark, history, settings, legal, about
+         queue, fleet, install, benchmark, history, settings, legal, about
 
     var id: String { rawValue }
 
@@ -20,6 +20,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .agents:      return "Agents"
         case .queue:       return "Queue"
         case .fleet:       return "Fleet"
+        case .install:     return "Install"
         case .benchmark:   return "Benchmark"
         case .history:     return "History"
         case .settings:    return "Settings"
@@ -40,6 +41,7 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .agents:      return "antenna.radiowaves.left.and.right"
         case .queue:       return "line.3.horizontal.decrease.circle"
         case .fleet:       return "laptopcomputer.and.arrow.down"
+        case .install:     return "shippingbox.fill"
         case .benchmark:   return "bolt.fill"
         case .history:     return "clock.arrow.circlepath"
         case .settings:    return "gearshape"
@@ -207,6 +209,21 @@ struct Sidebar: View {
                             systemImage: "laptopcomputer.and.arrow.down",
                             accessory: {
                                 let n = vm.fleet.peers.count
+                                return n == 0
+                                    ? nil
+                                    : AnyView(Text("\(n)")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                        .monospacedDigit())
+                            }()
+                        )
+                    }
+                    NavigationLink(value: SidebarSection.install) {
+                        sidebarRow(
+                            title: "Install",
+                            systemImage: "shippingbox.fill",
+                            accessory: {
+                                let n = InstalledAppRegistry.load().count
                                 return n == 0
                                     ? nil
                                     : AnyView(Text("\(n)")

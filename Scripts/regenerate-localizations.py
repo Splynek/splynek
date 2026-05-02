@@ -2866,6 +2866,85 @@ NEW_V16_STRINGS = {
         "de": "Doppelklicken zum Starten — Splynek führt eine installierte Binärdatei niemals automatisch aus.",
         "it": "Doppio clic per avviare — Splynek non esegue mai automaticamente un binario installato.",
     },
+
+    # ── v1.8 Install pipeline stage labels + card titles ────────────
+    "Pipeline": {
+        "pt-PT": "Pipeline",
+        "es": "Pipeline",
+        "fr": "Pipeline",
+        "de": "Pipeline",
+        "it": "Pipeline",
+    },
+    "Resolving": {
+        "pt-PT": "A resolver",
+        "es": "Resolviendo",
+        "fr": "Résolution",
+        "de": "Auflösen",
+        "it": "Risoluzione",
+    },
+    "Trust check": {
+        "pt-PT": "Verificação de Confiança",
+        "es": "Verificación de Confianza",
+        "fr": "Contrôle Confiance",
+        "de": "Vertrauensprüfung",
+        "it": "Controllo Affidabilità",
+    },
+    "Sovereignty check": {
+        "pt-PT": "Verificação de Soberania",
+        "es": "Verificación de Soberanía",
+        "fr": "Contrôle Souveraineté",
+        "de": "Souveränitätsprüfung",
+        "it": "Controllo Sovranità",
+    },
+    "Verifying": {
+        "pt-PT": "A verificar",
+        "es": "Verificando",
+        "fr": "Vérification",
+        "de": "Überprüfung",
+        "it": "Verifica",
+    },
+    "Installing": {
+        "pt-PT": "A instalar",
+        "es": "Instalando",
+        "fr": "Installation",
+        "de": "Installation",
+        "it": "Installazione",
+    },
+    "Registering": {
+        "pt-PT": "A registar",
+        "es": "Registrando",
+        "fr": "Enregistrement",
+        "de": "Registrierung",
+        "it": "Registrazione",
+    },
+    "Ready to install": {
+        "pt-PT": "Pronto para instalar",
+        "es": "Listo para instalar",
+        "fr": "Prêt à installer",
+        "de": "Bereit zur Installation",
+        "it": "Pronto per l'installazione",
+    },
+    "Installed": {
+        "pt-PT": "Instalado",
+        "es": "Instalado",
+        "fr": "Installé",
+        "de": "Installiert",
+        "it": "Installato",
+    },
+    "Install failed": {
+        "pt-PT": "Instalação falhou",
+        "es": "Falló la instalación",
+        "fr": "Échec de l'installation",
+        "de": "Installation fehlgeschlagen",
+        "it": "Installazione non riuscita",
+    },
+    "Installed via Splynek (%lld)": {
+        "pt-PT": "Instalado via Splynek (%lld)",
+        "es": "Instalado con Splynek (%lld)",
+        "fr": "Installé via Splynek (%lld)",
+        "de": "Über Splynek installiert (%lld)",
+        "it": "Installato tramite Splynek (%lld)",
+    },
 }
 
 

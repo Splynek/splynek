@@ -95,6 +95,7 @@ struct RootView: View {
         case .agents:      AgentsView(vm: vm)
         case .queue:       QueueView(vm: vm)
         case .fleet:       FleetView(vm: vm)
+        case .install:     InstallView(vm: vm)
         case .benchmark:   BenchmarkView(vm: vm)
         case .history:     HistoryView(vm: vm)
         case .settings:    SettingsView(vm: vm)
