@@ -106,6 +106,18 @@ public final class FleetCoordinator: ObservableObject {
     /// How long a peer can be silent before we drop it from the roster.
     private static let peerTTL: TimeInterval = 60
 
+    /// v1.9: LAN peer-cache swarm coordinator.  Lazily initialised
+    /// the first time a swarm endpoint is hit; until then, swarm
+    /// routes return 404 (a peer announce against a Mac that hasn't
+    /// registered any in-flight job sees that response).  Payload
+    /// resolution returns nil in v1.9.0 — actual chunk-byte serving
+    /// lands in v1.9.1 once the in-progress file lookup is wired
+    /// to the VM's SidecarState.
+    private(set) lazy var swarm: SwarmCoordinator = SwarmCoordinator(
+        token: self.webToken,
+        payloadResolver: { _ in nil }
+    )
+
     init() {
         let defaults = UserDefaults.standard
         if let saved = defaults.string(forKey: "fleetDeviceUUID") {
@@ -726,6 +738,8 @@ public final class FleetCoordinator: ObservableObject {
             await serveWebDashboard(conn)
         } else if path.hasPrefix("/splynek/v1/mcp/rpc") {
             await serveMCP(conn, path: path, body: body, method: method)
+        } else if path.hasPrefix("/splynek/v1/swarm") {
+            await serveSwarm(conn, path: path, body: body, method: method)
         } else if path == "/" || path.isEmpty {
             // Courtesy redirect so http://mac:port/ on the phone just works.
             let redirect =
@@ -1122,6 +1136,34 @@ public final class FleetCoordinator: ObservableObject {
             return
         }
         try? await respondJSON(conn, body: respData)
+    }
+
+    // MARK: Swarm v1.9
+
+    /// `/splynek/v1/swarm/...` — LAN peer-cache RPCs.  Token-gated
+    /// via the existing `?t=<webToken>` query string.  All routing
+    /// (announce / manifest / chunks / contribute / leave) lives in
+    /// `SwarmCoordinator.handle`; this wrapper just bridges the
+    /// pure handler's typed Response back onto the wire.
+    private func serveSwarm(
+        _ conn: NWConnection, path: String, body: Data, method: String
+    ) async {
+        let presented = tokenFromQuery(path) ?? ""
+        let response = swarm.handle(
+            path: path,
+            method: method,
+            body: body,
+            token: presented
+        )
+        let bodyBytes = response.body
+        let head =
+            "\(response.statusLine)\r\n" +
+            "Content-Type: \(response.contentType)\r\n" +
+            "Content-Length: \(bodyBytes.count)\r\n" +
+            "Cache-Control: no-store\r\n" +
+            "Connection: close\r\n\r\n"
+        try? await fleetSend(conn, Data(head.utf8) + bodyBytes)
+        conn.cancel()
     }
 
     // MARK: Response helpers
