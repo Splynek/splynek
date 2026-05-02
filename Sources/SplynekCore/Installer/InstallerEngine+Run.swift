@@ -117,12 +117,23 @@ extension InstallerEngine {
                     replaceExisting: replaceExisting
                 )
             case .pkg:
-                // .pkg requires Authorization-framework admin auth and
-                // /usr/sbin/installer.  v1.8 ships only .app and .dmg
-                // handlers; .pkg lands in v1.8.1.
-                let f = Failure.unsupportedKind(".pkg installs land in v1.8.1.")
-                onStage(.failed(f))
-                return .failure(f)
+                // v1.8.0: user-domain only via PkgInstaller.  System-
+                // domain (.kext, /Library/LaunchDaemons) lands in
+                // v1.8.1 with Authorization-framework admin auth.
+                // PkgInstaller throws .requiresAdmin when the pkg
+                // demands elevation; we surface the message verbatim.
+                try await PkgInstaller.install(pkg: downloadedPayload)
+                // .pkg installs don't carry a single "the .app landed
+                // here" path — installer(8) deploys per the .pkg's
+                // PackageInfo manifest.  Use the staging .pkg as a
+                // breadcrumb for the registry record (the v1.8.1
+                // receipt-parsing work refines this).
+                let metadata = AppMover.readBundleMetadata(at: downloadedPayload)
+                outcome = AppMover.Outcome(
+                    installedAt: downloadedPayload,
+                    bundleID: metadata.bundleID ?? spec.bundleID,
+                    displayVersion: metadata.version
+                )
             case .appArchive:
                 outcome = try await ZipInstaller.install(
                     archive: downloadedPayload,
@@ -140,6 +151,10 @@ extension InstallerEngine {
             return .failure(f)
         } catch let zipErr as ZipInstaller.Failure {
             let f = Failure.installationFailed(zipErr.errorDescription ?? "Unknown.")
+            onStage(.failed(f))
+            return .failure(f)
+        } catch let pkgErr as PkgInstaller.Failure {
+            let f = Failure.installationFailed(pkgErr.errorDescription ?? "Unknown.")
             onStage(.failed(f))
             return .failure(f)
         } catch {
