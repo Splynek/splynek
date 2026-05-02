@@ -771,6 +771,31 @@ final class SplynekViewModel: ObservableObject {
         // default; users opt in.
         let mcpBridge = MCPBridgeBuilder.build(vm: self)
         fleet.mcpServer = MCPServer(bridge: mcpBridge, enabled: mcpEnabled)
+
+        // v1.9.1: wire the swarm coordinator's payload resolver to
+        // the VM's active-job table so chunk fetches against an
+        // in-flight download serve real bytes.  The closure captures
+        // a weak ref to self; if the VM has been deallocated we
+        // return nil and the swarm endpoint surfaces 500 (peer
+        // retries against another seeder).
+        fleet.swarm.setPayloadResolver { [weak self] jobID in
+            // Hop to MainActor for the activeJobs read.  This is a
+            // sync read off a Published array; the bridge ensures
+            // the chunk-fetch handler sees a consistent snapshot.
+            DispatchQueue.main.sync {
+                self?.activeJobs.first(where: { $0.id == jobID })?.outputURL
+            }
+        }
+
+        // v1.9.2: hydrate the swarm content cache from history.json
+        // so completed downloads stay swarm-able past the job's
+        // lifetime.  refresh() walks the on-disk history, drops
+        // entries whose outputPath is gone (user moved/deleted),
+        // and indexes the rest by SHA-256.  Done on a background
+        // task so the actor's init() returns promptly.
+        Task.detached { [cache = fleet.swarmContentCache] in
+            cache.refresh()
+        }
         // Session restore is deferred until `restoreSession()` is called
         // from the app delegate, after interface discovery has populated.
         // Non-blocking update poll; silent if no feed is configured.

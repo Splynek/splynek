@@ -51,10 +51,29 @@ final class SwarmCoordinator: @unchecked Sendable {
     private let lock = NSLock()
 
     /// Filesystem URL the coordinator reads chunk bytes from.  The
-    /// caller (typically `FleetCoordinator` setup) supplies this so
-    /// the coordinator doesn't need to know about output-directory
-    /// resolution — that lives in the download engine.
-    private let payloadResolver: @Sendable (UUID) -> URL?
+    /// caller (typically the VM via `FleetCoordinator.setSwarm
+    /// PayloadResolver`) supplies this so the coordinator doesn't
+    /// need to know about output-directory resolution — that lives
+    /// in the download engine.  Mutable so the VM can inject a
+    /// closure that captures `[weak self]` post-init (the closure
+    /// can't form a reference to `self` from inside `init()`).
+    private var payloadResolver: @Sendable (UUID) -> URL?
+    private let payloadResolverLock = NSLock()
+
+    /// v1.9.2: completed-download cache.  When the active-job
+    /// resolver returns nil (because the download already finished
+    /// and the job rolled out of activeJobs), the chunk-fetch
+    /// handler falls back to the content cache, looking up the
+    /// chunk's parent file by the swarm state's `contentDigest`.
+    /// Off by default — the VM enables it by handing in a non-
+    /// empty cache.  See `SwarmContentCache.swift`.
+    private(set) var contentCache: SwarmContentCache?
+
+    /// Map of registered `jobID` → publisher's content digest.  Set
+    /// by `register(...)` and used by the chunk-fetch fallback to
+    /// look the file up in the cache after the active-job resolver
+    /// misses.  Kept under `lock` for the same reasons as `states`.
+    private var contentDigestByJob: [UUID: String] = [:]
 
     init(
         token: String,
@@ -62,6 +81,36 @@ final class SwarmCoordinator: @unchecked Sendable {
     ) {
         self.token = token
         self.payloadResolver = payloadResolver
+    }
+
+    /// Replace the payload resolver.  v1.9.1: the VM calls this once
+    /// at startup with a closure that maps jobID → in-progress
+    /// outputURL via `activeJobs.first(where:).outputURL`.  Until
+    /// then the resolver returns nil and chunk fetches surface 500
+    /// "Could not open job payload."
+    func setPayloadResolver(_ resolver: @escaping @Sendable (UUID) -> URL?) {
+        payloadResolverLock.lock()
+        payloadResolver = resolver
+        payloadResolverLock.unlock()
+    }
+
+    /// v1.9.2: enable post-completion chunk serving via the content
+    /// cache.  Called once at startup with the VM's shared cache
+    /// instance — chunk fetches against jobs that finished mid-
+    /// flight will fall back to the cache instead of 500ing.
+    func setContentCache(_ cache: SwarmContentCache) {
+        lock.lock()
+        contentCache = cache
+        lock.unlock()
+    }
+
+    /// Snapshot the resolver under lock — the chunk-fetch handler
+    /// captures the closure once per request to avoid holding the
+    /// lock across the I/O.
+    private func currentResolver() -> @Sendable (UUID) -> URL? {
+        payloadResolverLock.lock()
+        defer { payloadResolverLock.unlock() }
+        return payloadResolver
     }
 
     // MARK: - State management
@@ -74,7 +123,8 @@ final class SwarmCoordinator: @unchecked Sendable {
         jobID: UUID,
         chunks: [FleetChunkSwarm.ChunkRef],
         chunkSize: Int64,
-        seederCompleted: Set<Int>
+        seederCompleted: Set<Int>,
+        contentDigest: String? = nil
     ) {
         let manifest = FleetChunkSwarm.Manifest(
             protocolVersion: FleetChunkSwarm.protocolVersion,
@@ -91,6 +141,9 @@ final class SwarmCoordinator: @unchecked Sendable {
         )
         lock.lock()
         states[jobID] = state
+        if let digest = contentDigest, !digest.isEmpty {
+            contentDigestByJob[jobID] = digest.lowercased()
+        }
         lock.unlock()
     }
 
@@ -228,7 +281,23 @@ final class SwarmCoordinator: @unchecked Sendable {
             return .notFound
         }
         let chunk = state.manifest.chunks[chunkIndex]
-        guard let payloadURL = payloadResolver(jobID),
+
+        // v1.9.2: try the active-job resolver first, then fall back
+        // to the content cache for jobs that already completed but
+        // whose file is still on disk.
+        let resolver = currentResolver()
+        var payloadURL: URL? = resolver(jobID)
+        if payloadURL == nil {
+            lock.lock()
+            let digest = contentDigestByJob[jobID]
+            let cache = contentCache
+            lock.unlock()
+            if let digest = digest, let cache = cache {
+                payloadURL = cache.url(forDigest: digest)
+            }
+        }
+
+        guard let payloadURL,
               let handle = try? FileHandle(forReadingFrom: payloadURL) else {
             return .internalError("Could not open job payload for chunk-serving.")
         }

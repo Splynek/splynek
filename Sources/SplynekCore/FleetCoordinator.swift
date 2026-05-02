@@ -106,17 +106,25 @@ public final class FleetCoordinator: ObservableObject {
     /// How long a peer can be silent before we drop it from the roster.
     private static let peerTTL: TimeInterval = 60
 
+    /// v1.9.2: completed-download cache shared with the swarm
+    /// coordinator.  Hydrated from `DownloadHistory.load()` at
+    /// startup; updated incrementally as new downloads land.
+    /// Kept on FleetCoordinator (rather than the VM) so it lives
+    /// alongside the SwarmCoordinator that consumes it.
+    let swarmContentCache: SwarmContentCache = SwarmContentCache()
+
     /// v1.9: LAN peer-cache swarm coordinator.  Lazily initialised
-    /// the first time a swarm endpoint is hit; until then, swarm
-    /// routes return 404 (a peer announce against a Mac that hasn't
-    /// registered any in-flight job sees that response).  Payload
-    /// resolution returns nil in v1.9.0 — actual chunk-byte serving
-    /// lands in v1.9.1 once the in-progress file lookup is wired
-    /// to the VM's SidecarState.
-    private(set) lazy var swarm: SwarmCoordinator = SwarmCoordinator(
-        token: self.webToken,
-        payloadResolver: { _ in nil }
-    )
+    /// the first time a swarm endpoint is hit.  Payload resolution
+    /// + content-cache fallback are wired by the VM in
+    /// `wireFleetIntegration()` once activeJobs is observable.
+    private(set) lazy var swarm: SwarmCoordinator = {
+        let coord = SwarmCoordinator(
+            token: self.webToken,
+            payloadResolver: { _ in nil }
+        )
+        coord.setContentCache(self.swarmContentCache)
+        return coord
+    }()
 
     init() {
         let defaults = UserDefaults.standard
