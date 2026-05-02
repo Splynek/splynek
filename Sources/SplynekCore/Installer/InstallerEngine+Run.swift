@@ -124,12 +124,11 @@ extension InstallerEngine {
                 onStage(.failed(f))
                 return .failure(f)
             case .appArchive:
-                // .zip extraction wraps Apple's signed /usr/bin/ditto
-                // (preserves resource forks, code-signed quarantine
-                // bits, etc.).  v1.8.1.
-                let f = Failure.unsupportedKind(".zip / .tar archive installs land in v1.8.1.")
-                onStage(.failed(f))
-                return .failure(f)
+                outcome = try await ZipInstaller.install(
+                    archive: downloadedPayload,
+                    destinationDirectory: destinationDirectory,
+                    replaceExisting: replaceExisting
+                )
             }
         } catch let appMoverErr as AppMover.Failure {
             let f = Failure.installationFailed(appMoverErr.errorDescription ?? "Unknown.")
@@ -137,6 +136,10 @@ extension InstallerEngine {
             return .failure(f)
         } catch let dmgErr as DmgInstaller.Failure {
             let f = Failure.installationFailed(dmgErr.errorDescription ?? "Unknown.")
+            onStage(.failed(f))
+            return .failure(f)
+        } catch let zipErr as ZipInstaller.Failure {
+            let f = Failure.installationFailed(zipErr.errorDescription ?? "Unknown.")
             onStage(.failed(f))
             return .failure(f)
         } catch {

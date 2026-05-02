@@ -2655,6 +2655,40 @@
         }
       }
     },
+    "Choose file…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datei auswählen…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elegir archivo…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisir un fichier…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli file…"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escolher ficheiro…"
+          }
+        }
+      }
+    },
     "Claude Desktop's MCP transport is currently stdio-only. Use a small HTTP-bridge shim like mcp-proxy to bridge to Splynek's HTTP endpoint. When Claude Desktop ships HTTP transport, drop the snippet into ~/Library/Application Support/Claude/claude_desktop_config.json directly.": {
       "localizations": {
         "de": {
@@ -4016,6 +4050,40 @@
         }
       }
     },
+    "Double-click to launch — Splynek never auto-runs an installed binary.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doppelklicken zum Starten — Splynek führt eine installierte Binärdatei niemals automatisch aus."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haz doble clic para abrir — Splynek nunca ejecuta automáticamente un binario instalado."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Double-cliquez pour lancer — Splynek n'exécute jamais automatiquement un binaire installé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doppio clic per avviare — Splynek non esegue mai automaticamente un binario installato."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duplo clique para abrir — o Splynek nunca executa automaticamente um binário instalado."
+          }
+        }
+      }
+    },
     "Download %@ via Splynek": {
       "localizations": {
         "de": {
@@ -4386,6 +4454,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Larga aqui ficheiros `.txt` (um URL por linha), `.torrent` ou `.metalink`. O Splynek enfileira cada ficheiro novo em 5 segundos e depois move-o para a subpasta `processed/`."
+          }
+        }
+      }
+    },
+    "Drop a .dmg, .zip, or .app here": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legen Sie hier ein .dmg, .zip oder .app ab"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suelta aquí un .dmg, .zip o .app"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déposez ici un .dmg, .zip ou .app"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina qui un .dmg, .zip o .app"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Larga aqui um .dmg, .zip ou .app"
           }
         }
       }
@@ -8466,6 +8568,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Opções"
+          }
+        }
+      }
+    },
+    "Or click to pick a file.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oder klicken, um eine Datei auszuwählen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O haz clic para elegir un archivo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ou cliquez pour choisir un fichier."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oppure clicca per scegliere un file."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ou clica para escolher um ficheiro."
           }
         }
       }

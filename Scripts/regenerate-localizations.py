@@ -2836,6 +2836,36 @@ NEW_V16_STRINGS = {
         "de": "dauerte %@",
         "it": "impiegato %@",
     },
+
+    # ── v1.8 InstallView ────────────────────────────────────────────
+    "Drop a .dmg, .zip, or .app here": {
+        "pt-PT": "Larga aqui um .dmg, .zip ou .app",
+        "es": "Suelta aquí un .dmg, .zip o .app",
+        "fr": "Déposez ici un .dmg, .zip ou .app",
+        "de": "Legen Sie hier ein .dmg, .zip oder .app ab",
+        "it": "Trascina qui un .dmg, .zip o .app",
+    },
+    "Or click to pick a file.": {
+        "pt-PT": "Ou clica para escolher um ficheiro.",
+        "es": "O haz clic para elegir un archivo.",
+        "fr": "Ou cliquez pour choisir un fichier.",
+        "de": "Oder klicken, um eine Datei auszuwählen.",
+        "it": "Oppure clicca per scegliere un file.",
+    },
+    "Choose file…": {
+        "pt-PT": "Escolher ficheiro…",
+        "es": "Elegir archivo…",
+        "fr": "Choisir un fichier…",
+        "de": "Datei auswählen…",
+        "it": "Scegli file…",
+    },
+    "Double-click to launch — Splynek never auto-runs an installed binary.": {
+        "pt-PT": "Duplo clique para abrir — o Splynek nunca executa automaticamente um binário instalado.",
+        "es": "Haz doble clic para abrir — Splynek nunca ejecuta automáticamente un binario instalado.",
+        "fr": "Double-cliquez pour lancer — Splynek n'exécute jamais automatiquement un binaire installé.",
+        "de": "Doppelklicken zum Starten — Splynek führt eine installierte Binärdatei niemals automatisch aus.",
+        "it": "Doppio clic per avviare — Splynek non esegue mai automaticamente un binario installato.",
+    },
 }
 
 
