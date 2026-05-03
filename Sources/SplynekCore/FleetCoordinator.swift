@@ -487,9 +487,15 @@ public final class FleetCoordinator: ObservableObject {
 
     private func advertiseBonjour(port: UInt16) {
         let txt: [String: String] = [
-            "uuid": deviceUUID,
-            "name": deviceName,
-            "ver":  "0.19"
+            "uuid":  deviceUUID,
+            "name":  deviceName,
+            "ver":   "0.19",
+            // v1.9.5: swarm-protocol capability flag.  Peers see
+            // `swarm=1` in our TXT and know they can poll
+            // `/splynek/v1/swarm/list` for our active swarms.
+            // Static — the dynamic job list lives over HTTP so the
+            // 1300-byte TXT envelope doesn't bound the swarm size.
+            "swarm": "1",
         ]
         let record = NWTXTRecord(txt)
         listener?.service = NWListener.Service(

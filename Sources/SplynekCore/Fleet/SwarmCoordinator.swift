@@ -200,9 +200,6 @@ final class SwarmCoordinator: @unchecked Sendable {
         body: Data,
         token presentedToken: String
     ) -> Response {
-        guard presentedToken == token else {
-            return .unauthorized
-        }
         // Strip query string, then walk the path components.
         let cleanPath = path.split(separator: "?").first.map(String.init) ?? path
         let prefix = "/splynek/v1/swarm/"
@@ -210,6 +207,21 @@ final class SwarmCoordinator: @unchecked Sendable {
         let suffix = String(cleanPath.dropFirst(prefix.count))
         let parts = suffix.split(separator: "/", omittingEmptySubsequences: true)
             .map(String.init)
+
+        // v1.9.5: `list` is read-only metadata (jobIDs + chunk counts
+        // + optional contentDigest), gated only by LAN reachability —
+        // matches the existing `/status` endpoint's no-auth posture
+        // so peer-side observers can discover swarm capability without
+        // pre-pairing via QR.  Every other route is mutating or
+        // serves bytes; those keep token-gated auth.
+        if parts.first == "list" {
+            return handleList(method: method)
+        }
+
+        // Token check for everything below.
+        guard presentedToken == token else {
+            return .unauthorized
+        }
 
         // Routes:
         //   announce                    — POST  (broadcast, no jobID)
@@ -241,6 +253,41 @@ final class SwarmCoordinator: @unchecked Sendable {
     }
 
     // MARK: - Per-verb handlers (file-private; exposed for tests)
+
+    /// v1.9.5: `GET /splynek/v1/swarm/list` — surface every
+    /// swarm-mode job the seeder is currently running, with enough
+    /// metadata for a peer to decide whether to join.  Returns a
+    /// JSON object `{jobs: [Listing, …]}`.  Empty array (with 200
+    /// status) when the seeder has no active swarms.
+    ///
+    /// Peers poll this every ~10 s while they have a download in
+    /// flight whose contentDigest might match a peer's.  Cheap call
+    /// (in-memory state, no I/O).
+    func handleList(method: String) -> Response {
+        guard method == "GET" else { return .methodNotAllowed }
+        let snapshot = self.snapshot()
+        let listings: [FleetChunkSwarm.Listing] = snapshot.map { state in
+            // Look up the recorded contentDigest for this jobID.
+            lock.lock()
+            let digest = contentDigestByJob[state.jobID]
+            lock.unlock()
+            return FleetChunkSwarm.Listing(
+                jobID: state.jobID,
+                contentDigest: digest,
+                chunkSize: state.manifest.chunkSize,
+                totalChunks: state.manifest.chunks.count,
+                completedChunks: state.manifest.seederCompleted.count,
+                totalBytes: state.manifest.chunks.reduce(0) { $0 + $1.length }
+            )
+        }
+        struct Envelope: Encodable {
+            let jobs: [FleetChunkSwarm.Listing]
+        }
+        guard let body = try? JSONEncoder().encode(Envelope(jobs: listings)) else {
+            return .internalError("Could not encode swarm list.")
+        }
+        return .ok(body, contentType: "application/json")
+    }
 
     func handleAnnounce(method: String, body: Data) -> Response {
         guard method == "POST" else { return .methodNotAllowed }

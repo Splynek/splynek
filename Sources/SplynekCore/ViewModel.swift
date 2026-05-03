@@ -574,6 +574,19 @@ final class SplynekViewModel: ObservableObject {
     /// nil before the first manual or periodic sweep.
     @Published var lastAutoUpdateSweep: AutoUpdateScheduler.Sweep?
 
+    /// v1.9.5: SwarmAnnouncementObserver instance.  Lives on the VM
+    /// so its lifecycle matches the rest of the fleet integration.
+    /// Started in `wireFleetIntegration`; stopped automatically on
+    /// VM deinit.
+    var swarmObserver: SwarmAnnouncementObserver?
+
+    /// v1.9.5: latest map of `peerUUID → [Listing]` from the
+    /// observer.  The Fleet view can render this as a "swarms
+    /// available on the LAN" badge per peer; the engine integration
+    /// layer (v1.9.6) cross-references against active downloads to
+    /// auto-join matching swarms.
+    @Published var peerSwarms: [String: [FleetChunkSwarm.Listing]] = [:]
+
     /// Back-compat shim — callers that still reach for `vm.aiChat` /
     /// `vm.aiConciergeThinking` (Sidebar's AI badge; the old
     /// `conciergeSend` path; the rename-surface in handleConciergeAction)
@@ -831,6 +844,43 @@ final class SplynekViewModel: ObservableObject {
             }
         )
         autoUpdate?.start()
+
+        // v1.9.5: launch the swarm-announcement observer so peers'
+        // active swarms surface in `peerSwarms` for the UI + the
+        // future auto-join layer.  Polls every 10 s — cheap, since
+        // most LANs have ≤ 5 Splynek-running Macs.  The peers
+        // closure pulls the resolved-host snapshot on every tick;
+        // peers without a resolved endpoint are skipped silently.
+        swarmObserver = SwarmAnnouncementObserver(
+            interval: 10,
+            peersProvider: { [weak self] in
+                guard let self else { return [] }
+                return DispatchQueue.main.sync {
+                    self.fleet.peers.compactMap { peer in
+                        guard let host = peer.host,
+                              let port = peer.resolvedPort,
+                              let baseURL = URL(string: "http://\(host):\(port)")
+                        else { return nil }
+                        return SwarmAnnouncementObserver.PeerInfo(
+                            uuid: peer.uuid,
+                            name: peer.name,
+                            baseURL: baseURL,
+                            // /swarm/list is no-auth; an empty token
+                            // keeps the URL sane while skipping the
+                            // gate.  Real auth would be needed for
+                            // any mutating endpoint we add later.
+                            token: ""
+                        )
+                    }
+                }
+            },
+            onUpdate: { [weak self] update in
+                Task { @MainActor [weak self] in
+                    self?.peerSwarms = update
+                }
+            }
+        )
+        swarmObserver?.start()
         // Session restore is deferred until `restoreSession()` is called
         // from the app delegate, after interface discovery has populated.
         // Non-blocking update poll; silent if no feed is configured.

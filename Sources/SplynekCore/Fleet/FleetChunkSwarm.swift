@@ -109,6 +109,30 @@ enum FleetChunkSwarm {
     /// fetch a list of chunks on its own ISP path so the seeder
     /// doesn't have to.  Seeder records the contribution and skips
     /// those indices in its own download schedule.
+    /// v1.9.5: per-job summary returned by `GET /splynek/v1/swarm/list`.
+    /// Lighter than `Manifest` — just enough metadata for a peer to
+    /// decide whether to join.  Peers match `contentDigest` against
+    /// their own in-flight download's expected SHA-256; on a hit they
+    /// spawn a `SwarmParticipant` against the seeder's manifest URL.
+    struct Listing: Codable, Hashable, Sendable {
+        let jobID: UUID
+        /// SHA-256 of the completed payload, when known.  Nil while
+        /// the seeder is still mid-pull (the digest is computed at
+        /// completion).  Peers that need a digest match should poll
+        /// the listing periodically.
+        let contentDigest: String?
+        let chunkSize: Int64
+        let totalChunks: Int
+        let completedChunks: Int
+        let totalBytes: Int64
+
+        /// Convenience: 0.0 → 1.0 fraction of chunks the seeder
+        /// already has.  Renders as a progress badge in the UI.
+        var fractionComplete: Double {
+            totalChunks == 0 ? 0 : Double(completedChunks) / Double(totalChunks)
+        }
+    }
+
     struct ContributionOffer: Codable, Hashable, Sendable {
         let protocolVersion: UInt32
         let jobID: UUID
