@@ -240,6 +240,40 @@
         }
       }
     },
+    "%lld app(s) opted in. No sweep yet — periodic runs every 6 hours.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld App(s) angemeldet. Noch kein Durchlauf — periodische Läufe alle 6 Stunden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld app(s) optaron. Aún sin pasada — ejecuciones periódicas cada 6 horas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld app(s) en mise à jour automatique. Aucun passage encore — exécutions périodiques toutes les 6 heures."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld app abilitate. Ancora nessuna scansione — esecuzioni periodiche ogni 6 ore."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld aplicação(ões) optou(aram) pela atualização. Sem verificação ainda — execuções periódicas a cada 6 horas."
+          }
+        }
+      }
+    },
     "%lld chunks": {
       "localizations": {
         "de": {
@@ -1226,6 +1260,40 @@
         }
       }
     },
+    "All %lld auto-updating apps are current.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle %lld Auto-Update-Apps sind aktuell."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las %lld apps con auto-actualización están al día."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toutes les %lld apps en mise à jour automatique sont à jour."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutte le %lld app in aggiornamento automatico sono aggiornate."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas as %lld aplicações com atualização automática estão atualizadas."
+          }
+        }
+      }
+    },
     "All alternatives": {
       "localizations": {
         "de": {
@@ -1733,6 +1801,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Atualização automática"
+          }
+        }
+      }
+    },
+    "Auto-update activity": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-Update-Aktivität"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actividad de auto-actualización"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activité de mise à jour automatique"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attività di aggiornamento automatico"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atividade de atualização automática"
           }
         }
       }
@@ -4594,6 +4696,40 @@
         }
       }
     },
+    "Drop a .dmg, .zip, or .app onto Splynek and we'll verify, Trust-check, and install it. The user double-clicks to launch — Splynek never auto-runs an installed binary.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legen Sie eine .dmg, .zip oder .app auf Splynek ab — wir überprüfen, Vertrauens-prüfen und installieren sie. Der Benutzer doppelklickt zum Starten — Splynek führt eine installierte Binärdatei niemals automatisch aus."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suelta un .dmg, .zip o .app sobre Splynek y nosotros lo verificamos, comprobamos su Confianza e instalamos. Tú haces doble clic para abrirlo — Splynek nunca ejecuta automáticamente un binario instalado."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déposez un .dmg, .zip ou .app sur Splynek et nous le vérifierons, contrôlerons sa Confiance et l'installerons. L'utilisateur double-clique pour le lancer — Splynek n'exécute jamais automatiquement un binaire installé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina un .dmg, .zip o .app su Splynek e noi la verificheremo, controlleremo l'Affidabilità e la installeremo. L'utente fa doppio clic per avviarla — Splynek non esegue mai automaticamente un binario installato."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Larga um .dmg, .zip ou .app sobre o Splynek e ele verifica-o, faz a verificação de Confiança e instala-o. O utilizador faz duplo clique para abrir — o Splynek nunca executa automaticamente um binário instalado."
+          }
+        }
+      }
+    },
     "Drop the .splynek-manifest with a precomputed Merkle tree of the file's contents. Splynek verifies each chunk against its expected leaf hash on arrival — any corrupted byte triggers a re-fetch inline, without waiting for a full-file SHA-256 at the end.": {
       "localizations": {
         "de": {
@@ -6770,6 +6906,40 @@
         }
       }
     },
+    "Last sweep: %1$lld update(s), %2$lld error(s) across %3$lld candidate(s).": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzter Durchlauf: %1$lld Update(s), %2$lld Fehler bei %3$lld Kandidat(en)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Última pasada: %1$lld actualización(es), %2$lld error(es) en %3$lld candidato(s)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dernier passage : %1$lld mise(s) à jour, %2$lld erreur(s) sur %3$lld candidat(s)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultima scansione: %1$lld aggiornamento/i, %2$lld errore/i su %3$lld candidato/i."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Última verificação: %1$lld atualização(ões), %2$lld erro(s) em %3$lld candidato(s)."
+          }
+        }
+      }
+    },
     "Launch at login": {
       "localizations": {
         "de": {
@@ -7990,6 +8160,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sem transferências ativas"
+          }
+        }
+      }
+    },
+    "No apps opted in to auto-update. Toggle one above to enable.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Apps haben sich für Auto-Updates angemeldet. Schalten Sie oben eine ein, um sie zu aktivieren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ninguna app optó por la auto-actualización. Activa una arriba para habilitarla."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune app n'a opté pour la mise à jour automatique. Activez-en une ci-dessus pour l'activer."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna app ha optato per l'aggiornamento automatico. Attivane una sopra per abilitarla."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhuma aplicação optou por atualização automática. Ativa uma acima para ligar."
           }
         }
       }

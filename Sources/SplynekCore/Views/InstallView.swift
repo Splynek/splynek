@@ -327,7 +327,14 @@ struct InstallView: View {
         TitledCard(title: "Auto-update activity", systemImage: "arrow.triangle.2.circlepath") {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text(autoUpdateSummary)
+                    // v1.9.x: route the dynamic summary string
+                    // through LocalizedStringKey so each variant
+                    // localises against the catalog.  See the four
+                    // returnNoApps / returnAllCurrent / returnSweep
+                    // / returnOptedIn cases in
+                    // `autoUpdateSummaryKey` for the format-spec
+                    // catalog entries.
+                    Text(autoUpdateSummaryKey)
                         .font(.callout)
                         .foregroundStyle(.primary)
                     Spacer()
@@ -381,12 +388,15 @@ struct InstallView: View {
         }
     }
 
-    /// Auto-update summary text.  Shown in the activity-card header
-    /// regardless of whether a sweep has run yet.
-    private var autoUpdateSummary: String {
+    /// Auto-update summary, returned as a LocalizedStringKey so the
+    /// catalog can localise each of the four variants.  v1.9.x:
+    /// rewritten from a plain-String builder (Text(swiftString) is
+    /// verbatim and won't localise) to a typed LocalizedStringKey
+    /// per variant + catalog entries with %lld format specifiers.
+    private var autoUpdateSummaryKey: LocalizedStringKey {
         let candidates = installedRecords.filter { $0.autoUpdate }.count
         if candidates == 0 {
-            return "No apps opted in to auto-update.  Toggle one above to enable."
+            return "No apps opted in to auto-update. Toggle one above to enable."
         }
         if let sweep = vm.lastAutoUpdateSweep {
             let n = sweep.updates.count
@@ -396,7 +406,7 @@ struct InstallView: View {
             }
             return "Last sweep: \(n) update(s), \(e) error(s) across \(candidates) candidate(s)."
         }
-        return "\(candidates) app(s) opted in.  No sweep yet — periodic runs every 6 hours."
+        return "\(candidates) app(s) opted in. No sweep yet — periodic runs every 6 hours."
     }
 
     private func updateIcon(for u: AutoUpdateScheduler.Sweep.Update) -> String {

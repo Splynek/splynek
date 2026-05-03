@@ -3019,6 +3019,50 @@ NEW_V16_STRINGS = {
         "de": "AKTIV",
         "it": "ATTIVO",
     },
+
+    # ── v1.9.x InstallView gaps caught by the de+fr visual sweep ─────
+    "Drop a .dmg, .zip, or .app onto Splynek and we'll verify, Trust-check, and install it. The user double-clicks to launch — Splynek never auto-runs an installed binary.": {
+        "pt-PT": "Larga um .dmg, .zip ou .app sobre o Splynek e ele verifica-o, faz a verificação de Confiança e instala-o. O utilizador faz duplo clique para abrir — o Splynek nunca executa automaticamente um binário instalado.",
+        "es": "Suelta un .dmg, .zip o .app sobre Splynek y nosotros lo verificamos, comprobamos su Confianza e instalamos. Tú haces doble clic para abrirlo — Splynek nunca ejecuta automáticamente un binario instalado.",
+        "fr": "Déposez un .dmg, .zip ou .app sur Splynek et nous le vérifierons, contrôlerons sa Confiance et l'installerons. L'utilisateur double-clique pour le lancer — Splynek n'exécute jamais automatiquement un binaire installé.",
+        "de": "Legen Sie eine .dmg, .zip oder .app auf Splynek ab — wir überprüfen, Vertrauens-prüfen und installieren sie. Der Benutzer doppelklickt zum Starten — Splynek führt eine installierte Binärdatei niemals automatisch aus.",
+        "it": "Trascina un .dmg, .zip o .app su Splynek e noi la verificheremo, controlleremo l'Affidabilità e la installeremo. L'utente fa doppio clic per avviarla — Splynek non esegue mai automaticamente un binario installato.",
+    },
+    "Auto-update activity": {
+        "pt-PT": "Atividade de atualização automática",
+        "es": "Actividad de auto-actualización",
+        "fr": "Activité de mise à jour automatique",
+        "de": "Auto-Update-Aktivität",
+        "it": "Attività di aggiornamento automatico",
+    },
+    "No apps opted in to auto-update. Toggle one above to enable.": {
+        "pt-PT": "Nenhuma aplicação optou por atualização automática. Ativa uma acima para ligar.",
+        "es": "Ninguna app optó por la auto-actualización. Activa una arriba para habilitarla.",
+        "fr": "Aucune app n'a opté pour la mise à jour automatique. Activez-en une ci-dessus pour l'activer.",
+        "de": "Keine Apps haben sich für Auto-Updates angemeldet. Schalten Sie oben eine ein, um sie zu aktivieren.",
+        "it": "Nessuna app ha optato per l'aggiornamento automatico. Attivane una sopra per abilitarla.",
+    },
+    "All %lld auto-updating apps are current.": {
+        "pt-PT": "Todas as %lld aplicações com atualização automática estão atualizadas.",
+        "es": "Las %lld apps con auto-actualización están al día.",
+        "fr": "Toutes les %lld apps en mise à jour automatique sont à jour.",
+        "de": "Alle %lld Auto-Update-Apps sind aktuell.",
+        "it": "Tutte le %lld app in aggiornamento automatico sono aggiornate.",
+    },
+    "Last sweep: %1$lld update(s), %2$lld error(s) across %3$lld candidate(s).": {
+        "pt-PT": "Última verificação: %1$lld atualização(ões), %2$lld erro(s) em %3$lld candidato(s).",
+        "es": "Última pasada: %1$lld actualización(es), %2$lld error(es) en %3$lld candidato(s).",
+        "fr": "Dernier passage : %1$lld mise(s) à jour, %2$lld erreur(s) sur %3$lld candidat(s).",
+        "de": "Letzter Durchlauf: %1$lld Update(s), %2$lld Fehler bei %3$lld Kandidat(en).",
+        "it": "Ultima scansione: %1$lld aggiornamento/i, %2$lld errore/i su %3$lld candidato/i.",
+    },
+    "%lld app(s) opted in. No sweep yet — periodic runs every 6 hours.": {
+        "pt-PT": "%lld aplicação(ões) optou(aram) pela atualização. Sem verificação ainda — execuções periódicas a cada 6 horas.",
+        "es": "%lld app(s) optaron. Aún sin pasada — ejecuciones periódicas cada 6 horas.",
+        "fr": "%lld app(s) en mise à jour automatique. Aucun passage encore — exécutions périodiques toutes les 6 heures.",
+        "de": "%lld App(s) angemeldet. Noch kein Durchlauf — periodische Läufe alle 6 Stunden.",
+        "it": "%lld app abilitate. Ancora nessuna scansione — esecuzioni periodiche ogni 6 ore.",
+    },
 }
 
 
