@@ -36,6 +36,14 @@ enum ConciergeCard: Sendable {
     /// download engine takes over from there.
     case downloadOffer(url: URL, filename: String?, rationale: String)
 
+    /// v1.7.x: bridge can't resolve URLs for `download_by_goal`
+    /// itself — that lives in the Pro `AIConcierge`.  Instead the
+    /// bridge emits this case carrying the user's plain-English
+    /// goal; the Pro-side caller forwards it to the legacy
+    /// URL-resolution path (which produces a `.downloadOffer` once
+    /// the LLM resolves a real URL).
+    case downloadByGoal(goal: String)
+
     /// Top history matches for `search_history`.  The view renders
     /// each as a row with filename + host + size + age.
     case historyMatches([HistorySearch.Match])
@@ -189,9 +197,15 @@ struct LiveConciergeBridge: ConciergeBridge {
             return handleRecentActivity()
         case ConciergeToolRegistry.downloadByGoal.id:
             // The download-by-goal flow lives in the Pro repo — the
-            // bridge can't resolve it on its own.  Return a hint so
-            // the Pro dispatcher knows to take over.
-            return .text("Download-by-goal must be dispatched by the Pro Concierge.")
+            // bridge can't resolve it on its own.  Surface the goal
+            // string in a typed card so the Pro caller knows to
+            // forward it to the legacy URL-resolution path.
+            guard let goal = invocation.args.string("goal"),
+                  !goal.trimmingCharacters(in: .whitespaces).isEmpty
+            else {
+                return .error("download_by_goal requires a non-empty 'goal' argument.")
+            }
+            return .downloadByGoal(goal: goal)
         default:
             return .error("Tool \(invocation.tool) has no handler in the bridge yet.")
         }

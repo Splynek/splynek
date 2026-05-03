@@ -121,20 +121,33 @@ enum ConciergeBridgeTests {
                 }
             }
 
-            TestHarness.test("download_by_goal returns Pro-defer hint") {
+            TestHarness.test("download_by_goal returns typed downloadByGoal card") {
                 // The bridge cannot resolve LLM-driven URL search on its
-                // own — the Pro Concierge takes over.
+                // own — the Pro Concierge takes over.  v1.7.x: surface the
+                // user's goal string in a typed card so the Pro forwarder
+                // can hand it to the legacy URL-resolution path.
                 let bridge = LiveConciergeBridge()
                 let inv = ConciergeInvocation(
                     tool: "download_by_goal",
                     args: .object(["goal": .string("the latest Ubuntu ISO")])
                 )
                 let result = await bridge.dispatch(inv)
-                if case .text(let msg) = result.card {
-                    try expect(msg.contains("Pro Concierge"), "Got: \(msg)")
+                if case .downloadByGoal(let g) = result.card {
+                    try expect(g == "the latest Ubuntu ISO", "Got: \(g)")
                 } else {
-                    try expect(false, "Expected .text, got \(result.card)")
+                    try expect(false, "Expected .downloadByGoal, got \(result.card)")
                 }
+            }
+
+            TestHarness.test("download_by_goal with empty goal returns error") {
+                let bridge = LiveConciergeBridge()
+                let inv = ConciergeInvocation(
+                    tool: "download_by_goal",
+                    args: .object(["goal": .string("")])
+                )
+                let result = await bridge.dispatch(inv)
+                if case .error = result.card { /* expected */ }
+                else { try expect(false, "Expected .error, got \(result.card)") }
             }
 
             TestHarness.test("recent_activity with empty history returns text") {
