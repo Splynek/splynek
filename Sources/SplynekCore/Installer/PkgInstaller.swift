@@ -95,10 +95,29 @@ enum PkgInstaller {
             throw Failure.ioError("Package not found: \(pkg.path)")
         }
 
-        // Admin-domain path — osascript-elevated installer(8).
+        // Admin-domain path — try the SMAppService privileged helper
+        // first (v1.8.2 architecture, lower attack surface, survives
+        // sandbox-policy churn).  If the helper isn't installed or
+        // the user declined the SMAppService prompt, fall back to
+        // the v1.8.1 osascript-elevated installer(8) path.
         if requireAdmin {
-            try await installWithAdminPrompt(pkg: pkg, target: target)
-            return
+            let helperResult = await PrivilegedHelperClient.shared.installPkg(
+                path: pkg.path,
+                target: target
+            )
+            switch helperResult {
+            case .ok:
+                return
+            case .installerFailed(let code, let msg):
+                throw Failure.installerFailed(exitCode: code, stderr: msg)
+            case .authorizationDeclined:
+                throw Failure.adminDeclined
+            case .helperUnavailable, .xpcConnectionFailed:
+                // Fallback path — osascript surfaces the same auth
+                // dialog without requiring SMAppService registration.
+                try await installWithAdminPrompt(pkg: pkg, target: target)
+                return
+            }
         }
 
         guard target == "CurrentUserHomeDirectory" else {

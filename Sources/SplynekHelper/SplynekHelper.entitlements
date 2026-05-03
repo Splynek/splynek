@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- v1.8.2: the helper bundle has NO sandbox.  It runs as
+         launchd-spawned root so it can spawn /usr/sbin/installer.
+         The helper's narrow attack surface comes from:
+           - SMAuthorizedClients (Info.plist) gating connections
+             to the signed app only
+           - Authorization-rights re-validation in HelperService
+             (defence-in-depth)
+           - The SplynekHelperProtocol's typed argument set
+             (no shell-string passthrough)
+
+         App Sandbox would prevent the helper from spawning
+         system tooling, defeating its purpose.  Same posture
+         every other Apple-recommended SMJobBless helper takes. -->
+</dict>
+</plist>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- launchd Label MUST match SplynekHelperMachServiceName in
+         Sources/SplynekCore/SplynekHelperProtocol.swift. -->
+    <key>Label</key>
+    <string>app.splynek.Splynek.helper</string>
+
+    <!-- launchd spawns the helper executable inside the app
+         bundle; SMAppService.daemon resolves this path at
+         register time.  Embedded in
+         Splynek.app/Contents/Library/LaunchDaemons/. -->
+    <key>BundleProgram</key>
+    <string>Contents/MacOS/SplynekHelper</string>
+
+    <!-- v1.8.2: Mach service the app connects to via
+         NSXPCConnection(machServiceName:options:[.privileged]).
+         Same string as `Label` — convention; not strictly
+         required by launchd. -->
+    <key>MachServices</key>
+    <dict>
+        <key>app.splynek.Splynek.helper</key>
+        <true/>
+    </dict>
+
+    <!-- The helper exits when no client is connected; launchd
+         re-spawns on demand for the next call.  ProcessType
+         "Background" tells the OS this is a low-priority,
+         on-demand service. -->
+    <key>ProcessType</key>
+    <string>Background</string>
+
+    <!-- Don't keep the helper alive past the connection.  Reduces
+         attack surface (no long-running root daemon when idle). -->
+    <key>KeepAlive</key>
+    <false/>
+    <key>RunAtLoad</key>
+    <false/>
+
+    <!-- v1.8.2: associated app + helper bundle IDs for SMAppService
+         lifecycle management.  Required by Apple's Service
+         Management framework. -->
+    <key>AssociatedBundleIdentifiers</key>
+    <array>
+        <string>app.splynek.Splynek</string>
+    </array>
+</dict>
+</plist>

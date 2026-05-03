@@ -197,6 +197,15 @@ targets:
         # BIS 740.17(b)(3)(i). Declare once to skip the per-release
         # export-compliance question in App Store Connect.
         ITSAppUsesNonExemptEncryption: false
+        # v1.8.2: SMJobBless privileged-helper bundle declaration.
+        # Lists every helper this app may install via
+        # SMAppService.daemon.register() / SMJobBless().  The
+        # requirement string must match the helper's code-signing
+        # identity.  At MAS submission time the maintainer fills in
+        # the real Apple Distribution leaf SubjectKeyIdentifier; for
+        # development we anchor to the Apple Developer Team ID.
+        SMPrivilegedExecutables:
+          app.splynek.Splynek.helper: anchor apple generic and identifier "app.splynek.Splynek.helper" and certificate leaf[subject.OU] = "58C6YC5GB5"
     settings:
       base:
         PRODUCT_NAME: Splynek
@@ -211,6 +220,44 @@ targets:
         # real App-Store sandbox instead — set the product ID in ASC
         # → In-App Purchases first.
         STOREKIT_CONFIGURATION_FILE_PATH: Resources/Splynek.storekit
+    # v1.8.2: ensure the privileged helper bundle ships inside this
+    # app's Contents/Library/LaunchServices/ + Library/LaunchDaemons/
+    # so SMAppService.daemon.register() resolves it.
+    dependencies:
+      - target: SplynekHelper
+        copy: true
+        codeSign: true
+        embed: true
+
+  # v1.8.2: privileged installer helper.  Runs as a launchd daemon
+  # at root after first SMAppService.daemon.register() prompt.  See
+  # docs/SMJOB-BLESS-DESIGN.md for the architecture overview;
+  # Sources/SplynekHelper/ for the implementation.
+  SplynekHelper:
+    type: tool
+    platform: macOS
+    sources:
+      - path: Sources/SplynekHelper
+      # The protocol declaration is shared with the app target so
+      # both compile against the same @objc shape.  We pull it in
+      # via direct path rather than a package dependency because
+      # SwiftPM doesn't expose helper-bundle targets.
+      - path: Sources/SplynekCore/SplynekHelperProtocol.swift
+    info:
+      path: Sources/SplynekHelper/Info.plist
+    settings:
+      base:
+        PRODUCT_NAME: SplynekHelper
+        PRODUCT_BUNDLE_IDENTIFIER: app.splynek.Splynek.helper
+        CODE_SIGN_ENTITLEMENTS: Sources/SplynekHelper/SplynekHelper.entitlements
+        INSTALL_PATH: $(LOCAL_LIBRARY_DIR)/PrivilegedHelperTools
+        SKIP_INSTALL: NO
+        # The launchd plist must be embedded inside the helper
+        # binary's __TEXT segment so SMAppService can find it.
+        OTHER_LDFLAGS: >-
+          -sectcreate __TEXT __info_plist Sources/SplynekHelper/Info.plist
+          -sectcreate __TEXT __launchd_plist
+          Sources/SplynekHelper/app.splynek.Splynek.helper.plist
 
 schemes:
   Splynek:
