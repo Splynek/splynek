@@ -19,7 +19,7 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (294 tests, all green)
+**Tests:** `swift run splynek-test` (308 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-03.**
@@ -97,6 +97,55 @@ What's bundled:
   surfaces all of this with progress card + activity card +
   per-record auto-update toggles.
 
+- **v1.7.x — Concierge input-bar routing polish** (2026-05-04).  Typed
+  input now flows through the Mac-Assistant dispatcher (same path the
+  v1.7 suggestion chips use).  Bridge surfaces a typed
+  `ConciergeCard.downloadByGoal(goal:)` for download intents; Pro
+  `conciergeAsk` intercepts that case and forwards to the legacy
+  `ai.concierge(goal)` URL-resolution path so the user sees a real
+  download offer, not a placeholder.  The legacy `conciergeSend` path
+  stays for Spotlight + AppIntents + menu-bar callers (and for chips
+  that explicitly want the chat-action behaviour).
+
+- **v1.8.1 — `.pkg` admin-domain installs** (2026-05-04).  PkgInstaller
+  gains `requireAdmin: Bool = false`.  When opted in, spawns
+  `/usr/bin/osascript` with `do shell script "..." with administrator
+  privileges`, surfacing macOS's standard authorization dialog (Touch
+  ID / password).  Refuses non-user-domain targets with a clear
+  `.requiresAdmin` error when `requireAdmin: false`.  Detects user-
+  cancelled-the-dialog via osascript exit code -128 → typed
+  `.adminDeclined`.  AppleScript fragment is hard-coded (no attacker-
+  controlled string concat); .pkg path is shell-quoted defensively;
+  .pkg has already been SHA-256 + Gatekeeper verified by the time
+  this method runs.  SMJobBless privileged-helper bundle is the
+  v1.8.2 path if osascript becomes flagged; design doc lives in
+  `docs/SMJOB-BLESS-DESIGN.md` (see below).
+
+- **v1.9.x — Warm-cache + household-swarm-token + LAN auto-join**
+  (2026-05-03 → 2026-05-04).  Catches three more pieces of the v1.9
+  story across follow-ups:
+  - **Engine warm-cache (digest-based dup detection).**
+    `Duplicate.findMatch(forDigest:)` + `Duplicate.warmCacheLookup(
+    url:digest:)` — when the user pastes a URL + publisher SHA-256,
+    or a v1.8 install spec / v1.9 swarm announce hands us a digest
+    with no URL, the duplicate banner short-circuits the WAN
+    download.  Digest match wins over URL match (more trusted; bytes
+    are identical by definition).  Reveal-in-Finder + Re-download
+    Anyway buttons preserved from the existing duplicate-banner UI.
+  - **Household swarm token.**  Settings → "Household swarm token"
+    SecureField.  Set the same string on every Mac in the household;
+    SwarmCoordinator accepts it as a SECOND valid bearer on token-
+    gated swarm routes.  Empty disables Mac-to-Mac auto-join (loop-
+    back + phone-QR flows still work).  Trust model: token grants
+    "ride along" power, not "tamper" power — every chunk is SHA-256-
+    verified before disk write.
+  - **Auto-join from `peerSwarms` updates.**  VM observer hands fresh
+    listings to `autoJoinSwarms`; for each Listing whose
+    contentDigest matches an active local job's `sha256Expected`,
+    spawns a SwarmParticipant that pulls chunks via the household
+    token + feeds them through DownloadEngine's new
+    `ingestExternalChunk(index:bytes:)` port.
+
 - **v1.9 — Fleet 2.0 LAN peer cache.**  Two Macs configured with the
   same household swarm token (Settings → "Household swarm token") now
   auto-share download bytes over the LAN:
@@ -129,16 +178,18 @@ Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution
 
 ---
 
-## ⚡ Session handoff — current state (2026-05-03)
+## ⚡ Session handoff — current state (2026-05-04)
 
 **For a fresh session picking this up.** TL;DR: localization closed at
 **480 strings × 5 locales = 2,400 translations** (audit reports 0 missing).
-**v1.7 + v1.8 + v1.9 architecture all landed** — Concierge-as-Mac-Assistant
-dispatcher, Verified Installer with .dmg/.app/.zip/.pkg handlers + auto-
-update scheduler, Fleet 2.0 LAN peer cache with full discovery + auto-
-join.  **294 tests passing.**  Apple v1.0 still pending re-review (day 7);
-ASC monitor running daily.  Marketing still staged.  Nothing pushed,
-nothing tagged — `main` is hot but uncommitted-to-release.
+**v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.9 + v1.9.x extensions all
+landed** — Concierge-as-Mac-Assistant with unified typed-input routing,
+Verified Installer with all 4 kind handlers including admin-domain .pkg
+via osascript-elevated installer(8), Fleet 2.0 LAN peer cache with full
+discovery + auto-join + warm-cache digest dup-detection.  **308 tests
+passing.**  Apple v1.0 still pending re-review (day 8); ASC monitor
+running daily.  Marketing still staged.  Nothing pushed, nothing tagged
+— `main` is hot but uncommitted-to-release.
 
 The natural release cut here is `v1.7` (or rolled-up v2.0 — maintainer's
 call), gated on Apple's v1.0 clearing.
@@ -382,7 +433,7 @@ Other v1.6.x → v1.9 docs the maintainer writes against
 ```
 1. Read HANDOFF.md (this file) top 300 lines
 2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
-3. swift run splynek-test (must show 294/294 — anything less is a regression)
+3. swift run splynek-test (must show 308/308 — anything less is a regression)
 4. python3 Scripts/find-missing-translations.py | head -5  → confirms catalog state
 5. Open https://claude.ai/code/scheduled and check the four triggers fired clean
 6. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
