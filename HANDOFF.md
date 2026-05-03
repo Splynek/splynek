@@ -19,7 +19,7 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (308 tests, all green)
+**Tests:** `swift run splynek-test` (328 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-03.**
@@ -33,8 +33,8 @@ release; tagging happens after the maintainer picks a cut point.  Holding
 all release gestures (push tag, cut DMG, deploy landing, push cask) until
 Apple v1.0 clears Mac App Store re-review.
 
-Catalog state on `main` (after v1.6.2 rounds 1–8 + v1.7→v1.9 i18n adds):
-- Localizable.xcstrings: **480 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **2,400 translations**.
+Catalog state on `main` (after v1.6.2 rounds 1–8 + v1.7→v1.9.7 i18n adds + audit-extension catch-up):
+- Localizable.xcstrings: **535 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **2,675 translations**.
 - Trust catalog: **151 entries** (was 30 at v1.6.0 start; +121 across the v1.6.x sprint).
 - Sovereignty catalog: 1,155 entries (unchanged since v1.4).
 
@@ -146,6 +146,55 @@ What's bundled:
     token + feeds them through DownloadEngine's new
     `ingestExternalChunk(index:bytes:)` port.
 
+- **v1.7.x cont. — visual sweeps + audit-script extension** (2026-05-05).
+  All 4 non-PT-PT locales (de / es / fr / it) walked end-to-end through
+  Install + sidebar + content tabs.  3 InstallView strings caught
+  + fixed in DE+FR pass.  `Scripts/find-missing-translations.py`
+  extended with 6 component-builder regex patterns
+  (ContextCard.subtitle, TitledCard.title, EmptyStateView.title +
+  message, MetricView.caption, StatusPill.text) — surfaced 49 strings
+  the audit was hiding across the full app.  Catalog 480 → 535
+  strings × 5 locales = 2,675 translations.
+
+- **v1.9.x cont. — PublisherPattern enrichment, 5 publishers**
+  (2026-05-05).  Started with Mozilla as proof-of-concept; extended
+  to Apache (per-file `.sha256` siblings on apache.org), Debian
+  (per-release SHA256SUMS at cdimage.debian.org), Ubuntu (same
+  shape on releases.ubuntu.com), Arch (`sha256sums.txt` lowercase
+  on archlinux.org).  Shared `fetchAndParseSUMS` + `fetchSimpleSHA`
+  helpers.  15 tests: host-matching, parser-edge-cases, registry-
+  walk.  Triggers warm-cache short-circuits against publisher URLs
+  alone (no manual SHA paste required).
+
+- **v1.8.2 — SMJobBless privileged-helper bundle** (2026-05-05).
+  Full implementation of the design in `docs/SMJOB-BLESS-DESIGN.md`:
+    - `Sources/SplynekHelper/` — main.swift + HelperListenerDelegate
+      + HelperService + Info.plist + launchd plist + entitlements.
+      HelperService validates target ∈ {/, LocalSystem,
+      CurrentUserHomeDirectory}, re-imports + verifies the
+      Authorization right, spawns /usr/sbin/installer with hard-
+      coded args.
+    - `Sources/SplynekCore/Installer/PrivilegedHelperClient.swift`
+      — activated.  SMAppService.daemon.register +
+      AuthorizationCopyRights + NSXPCConnection + serialised
+      AuthorizationExternalForm hop.  Gated `#if canImport(Service
+      Management)` + `@available(macOS 13, *)` so SwiftPM tests
+      + non-Apple builds keep returning .helperUnavailable.
+    - `PkgInstaller.install(requireAdmin: true)` now tries the
+      helper first; .helperUnavailable / .xpcConnectionFailed →
+      falls back to v1.8.1's osascript-elevated installer(8) path.
+    - `project.yml` declares the SplynekHelper target +
+      Splynek-MAS's SMPrivilegedExecutables key + reciprocal
+      code-signing requirement.
+
+  **Activation gate (maintainer steps):** xcodegen generate +
+  xcodebuild -scheme SplynekHelper + replace dev OU=58C6YC5GB5
+  anchor strings with the Apple Distribution leaf-cert
+  SubjectKeyIdentifier + smoke-test against a sample admin .pkg.
+  Until those steps complete, the helper is unreachable + every
+  .pkg admin install falls through to the v1.8.1 osascript path
+  — zero behavioural change for users today.
+
 - **v1.9 — Fleet 2.0 LAN peer cache.**  Two Macs configured with the
   same household swarm token (Settings → "Household swarm token") now
   auto-share download bytes over the LAN:
@@ -178,27 +227,59 @@ Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution
 
 ---
 
-## ⚡ Session handoff — current state (2026-05-04)
+## ⚡ Session handoff — current state (2026-05-05)
 
 **For a fresh session picking this up.** TL;DR: localization closed at
-**480 strings × 5 locales = 2,400 translations** (audit reports 0 missing).
-**v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.9 + v1.9.x extensions all
-landed** — Concierge-as-Mac-Assistant with unified typed-input routing,
-Verified Installer with all 4 kind handlers including admin-domain .pkg
-via osascript-elevated installer(8), Fleet 2.0 LAN peer cache with full
-discovery + auto-join + warm-cache digest dup-detection.  **308 tests
-passing.**  Apple v1.0 still pending re-review (day 8); ASC monitor
-running daily.  Marketing still staged.  Nothing pushed, nothing tagged
-— `main` is hot but uncommitted-to-release.
+**535 strings × 5 locales = 2,675 translations** (audit-script
+extension surfaced 49 hidden strings; all fixed; 0 missing).  **All 4
+non-PT-PT locales (de/es/fr/it) walked end-to-end + verified clean.**
+**v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.8.2 SMJobBless full
+plumbing + v1.9 + v1.9.x extensions all landed** — Concierge-as-
+Mac-Assistant with unified typed-input routing, Verified Installer
+with all 4 kind handlers including admin-domain .pkg via osascript
+(v1.8.1) + SMJobBless privileged-helper (v1.8.2 wired, awaiting
+maintainer's xcodegen + code-sign), Fleet 2.0 LAN peer cache with
+full discovery + auto-join + warm-cache digest dup-detection +
+PublisherPattern enrichment for 5 publishers (Mozilla / Apache /
+Debian / Ubuntu / Arch).  **328 tests passing.**  Apple v1.0 still
+pending re-review (day 9 → maintainer should consider Resolution
+Center escalation by day 10); ASC monitor running daily.  Marketing
+still staged.  Nothing pushed, nothing tagged — `main` is hot but
+uncommitted-to-release.
 
 The natural release cut here is `v1.7` (or rolled-up v2.0 — maintainer's
 call), gated on Apple's v1.0 clearing.
+
+### Fresh-session quick-start
+
+```bash
+# 1. Cold-launch verify (confirms main still builds + tests + audit clean)
+cd "/Users/pcgm/Claude Code"
+git status                            # both repos must be clean
+swift build                           # < 10s, must succeed
+./.build/debug/splynek-test           # must show 328/328
+python3 Scripts/find-missing-translations.py  # must show 0 missing
+
+# 2. Read the latest 5 commits to see what just landed
+git log --oneline -5
+
+# 3. Check Apple v1.0 review status
+open https://appstoreconnect.apple.com
+# (ASC monitor cron also fires daily 09:00 UTC + sends notification)
+
+# 4. Pick from the next-bites queue (later in this doc) or
+#    ask the user what to work on.
+```
+
+If the user asks "what's left?", read SESSION-LOG.md (companion
+doc that captures the full v1.6.2 → v1.9.7 + v1.8.2 arc with every
+commit, every architectural decision, and every open position).
 
 ### What's running
 
 | Track | State | Where |
 |---|---|---|
-| **Apple App Store v1.0 review** | ⏳ Resubmitted 2026-04-26 (VPN-clarification Resolution Center reply + App Review Notes update + clicked "Atualizar revisão"). Status as of 2026-05-03: still in re-review, day 7 — at the upper edge of the typical 1-7 day window.  Maintainer should check ASC and consider escalating via Resolution Center if no movement by day 10.  ASC monitor cron `trig_01FdTsuA5J9d85sknvtFZTHj` fires daily 09:00 UTC against iTunes Lookup API; will send HIGH-priority notification when the binary lands.  **The 2.5.2 defence packet is staged** — if Apple cites 2.5.2, paste `MAS-2.5.2-COMPLIANCE.md` into Resolution Center. | App Store Connect |
+| **Apple App Store v1.0 review** | ⏳ Resubmitted 2026-04-26 (VPN-clarification Resolution Center reply + App Review Notes update + clicked "Atualizar revisão"). Status as of 2026-05-05: still in re-review, **day 9** — past the upper edge of the typical 1-7 day window.  **Maintainer should escalate via Resolution Center within 24–48 h** if no movement.  Sample message ready: ask reviewer for an ETA, mention the v1.0 binary has been in queue since 2026-04-26 (9 days), reaffirm no VPN/NetworkExtension entitlement.  ASC monitor cron `trig_01FdTsuA5J9d85sknvtFZTHj` fires daily 09:00 UTC against iTunes Lookup API; will send HIGH-priority notification when the binary lands.  **The 2.5.2 defence packet is staged** — if Apple cites 2.5.2, paste `MAS-2.5.2-COMPLIANCE.md` into Resolution Center. | App Store Connect |
 | **Sovereignty cron trigger** | ⏳ First fire **2026-05-01 09:00 UTC**. Public repo only; drafts up to 20 catalog entries from `Scripts/sources/*.json`, opens PR. | https://claude.ai/code/scheduled/trig_01JEuDpurUC21nHkumwdEfaB |
 | **Trust cron trigger** | ⏳ First fire **2026-05-15 09:00 UTC**. Refreshes catalog entries with `lastReviewed > 90 days`, checks NVD + HIBP for new findings, opens PR. | https://claude.ai/code/scheduled/trig_01VZNTUM4ikbYH5XBtpnn1ER |
 | **Quarterly audit cron** | ⏳ First fire **2026-06-01 09:00 UTC**. Audits a rotating area (Q1=networking, Q2=views, Q3=scripts, Q4=build), opens GitHub issue with `audit` label. | https://claude.ai/code/scheduled/trig_0161CxCRWwnG5F48ynpTaspi |
@@ -433,7 +514,7 @@ Other v1.6.x → v1.9 docs the maintainer writes against
 ```
 1. Read HANDOFF.md (this file) top 300 lines
 2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
-3. swift run splynek-test (must show 308/308 — anything less is a regression)
+3. swift run splynek-test (must show 328/328 — anything less is a regression)
 4. python3 Scripts/find-missing-translations.py | head -5  → confirms catalog state
 5. Open https://claude.ai/code/scheduled and check the four triggers fired clean
 6. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
