@@ -136,4 +136,54 @@ enum Duplicate {
         if !exists { return nil }
         return DuplicateMatch(entry: prior, fileExists: exists)
     }
+
+    /// v1.9.x: digest-based dup detection.  Useful when the caller
+    /// has an expected SHA-256 (publisher checksum, v1.8 install
+    /// spec, v1.9 swarm announce) but no URL — or when the URL
+    /// differs but the bytes are identical.  Reads the same
+    /// `HistoryEntry.sha256` field URL-based matching writes via
+    /// DownloadEngine's completion path.
+    ///
+    /// Match policy: most-recent entry whose `sha256` equals the
+    /// requested digest (case-insensitive).  Returns nil if no
+    /// history entry has that digest, or the matching entry's
+    /// `outputPath` no longer exists.
+    static func findMatch(
+        forDigest digest: String,
+        in history: [HistoryEntry]
+    ) -> DuplicateMatch? {
+        let want = digest.lowercased()
+        guard !want.isEmpty,
+              let prior = history.last(where: {
+                  ($0.sha256 ?? "").lowercased() == want
+              })
+        else { return nil }
+        let fm = FileManager.default
+        let exists = fm.fileExists(atPath: prior.outputPath)
+        if !exists { return nil }
+        return DuplicateMatch(entry: prior, fileExists: exists)
+    }
+
+    /// v1.9.x: combined check used by `vm.start(...)` BEFORE the
+    /// network probe runs.  Tries digest-based match first (more
+    /// trusted — bytes are identical), then URL match (cheap
+    /// fallback when no digest is available).  Returns the first
+    /// hit; nil if neither matches.
+    ///
+    /// This is the warm-cache layer: when the user pastes a URL
+    /// + publisher hash, or a v1.8 spec resolves through Splynek,
+    /// or a v1.9 swarm announce hands us a digest, we can short-
+    /// circuit the entire WAN download and reveal-in-Finder the
+    /// existing on-disk copy.  The user keeps the option to
+    /// re-download anyway via the existing duplicate banner.
+    static func warmCacheLookup(
+        url: URL,
+        digest: String?,
+        in history: [HistoryEntry]
+    ) -> DuplicateMatch? {
+        if let digest, let m = findMatch(forDigest: digest, in: history) {
+            return m
+        }
+        return findMatch(for: url, in: history)
+    }
 }

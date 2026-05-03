@@ -98,5 +98,150 @@ enum DuplicateTests {
                 try expectEqual(match.entry.id, newer.id)
             }
         }
+
+        TestHarness.suite("Duplicate — digest-based + warmCacheLookup (v1.9.x)") {
+
+            TestHarness.test("findMatch(forDigest:) returns nil for empty digest") {
+                let m = Duplicate.findMatch(forDigest: "", in: [])
+                try expect(m == nil)
+            }
+
+            TestHarness.test("findMatch(forDigest:) returns nil for unknown digest") {
+                let m = Duplicate.findMatch(forDigest: "deadbeef", in: [])
+                try expect(m == nil)
+            }
+
+            TestHarness.test("findMatch(forDigest:) returns hit when digest matches existing file") {
+                let env = makeEnv()
+                defer { env.cleanup() }
+                let url = env.makeFile(name: "match.bin")
+                let entry = makeEntry(
+                    url: "https://example.com/different/url",
+                    outputPath: url.path,
+                    sha256: "ABCDEF"
+                )
+                guard let m = Duplicate.findMatch(forDigest: "abcdef", in: [entry]) else {
+                    throw Expectation(message: "expected digest match", file: #file, line: #line)
+                }
+                try expectEqual(m.entry.id, entry.id)
+            }
+
+            TestHarness.test("findMatch(forDigest:) is case-insensitive on the digest") {
+                let env = makeEnv()
+                defer { env.cleanup() }
+                let url = env.makeFile(name: "match.bin")
+                let entry = makeEntry(
+                    url: "https://example.com/x",
+                    outputPath: url.path,
+                    sha256: "AbCdEf"
+                )
+                let lower = Duplicate.findMatch(forDigest: "abcdef", in: [entry])
+                let upper = Duplicate.findMatch(forDigest: "ABCDEF", in: [entry])
+                let mixed = Duplicate.findMatch(forDigest: "AbCdEf", in: [entry])
+                try expect(lower != nil)
+                try expect(upper != nil)
+                try expect(mixed != nil)
+            }
+
+            TestHarness.test("findMatch(forDigest:) returns nil when file is gone") {
+                let env = makeEnv()
+                defer { env.cleanup() }
+                let url = env.makeFile(name: "missing.bin")
+                let entry = makeEntry(
+                    url: "https://example.com/x",
+                    outputPath: url.path,
+                    sha256: "feed"
+                )
+                try? FileManager.default.removeItem(at: url)
+                let m = Duplicate.findMatch(forDigest: "feed", in: [entry])
+                try expect(m == nil)
+            }
+
+            TestHarness.test("warmCacheLookup prefers digest match over URL match") {
+                let env = makeEnv()
+                defer { env.cleanup() }
+                let urlEntryFile = env.makeFile(name: "url-entry.bin")
+                let digestEntryFile = env.makeFile(name: "digest-entry.bin")
+
+                let urlEntry = makeEntry(
+                    url: "https://example.com/x",
+                    outputPath: urlEntryFile.path,
+                    sha256: "uuuu"
+                )
+                let digestEntry = makeEntry(
+                    url: "https://example.com/different",
+                    outputPath: digestEntryFile.path,
+                    sha256: "DDDD"
+                )
+                let request = URL(string: "https://example.com/x")!
+                guard let m = Duplicate.warmCacheLookup(
+                    url: request, digest: "dddd",
+                    in: [urlEntry, digestEntry]
+                ) else {
+                    throw Expectation(message: "expected match", file: #file, line: #line)
+                }
+                // Digest match wins — even though URL also matches a
+                // different entry.
+                try expectEqual(m.entry.id, digestEntry.id)
+            }
+
+            TestHarness.test("warmCacheLookup falls back to URL when digest is nil") {
+                let env = makeEnv()
+                defer { env.cleanup() }
+                let url = env.makeFile(name: "match.bin")
+                let entry = makeEntry(
+                    url: "https://example.com/x",
+                    outputPath: url.path,
+                    sha256: nil
+                )
+                guard let m = Duplicate.warmCacheLookup(
+                    url: URL(string: "https://example.com/x")!,
+                    digest: nil,
+                    in: [entry]
+                ) else {
+                    throw Expectation(message: "expected match", file: #file, line: #line)
+                }
+                try expectEqual(m.entry.id, entry.id)
+            }
+        }
+    }
+
+    // MARK: - Fixtures (shared with v1.9.x tests above)
+
+    struct Env {
+        let workdir: URL
+        let cleanup: () -> Void
+        func makeFile(name: String) -> URL {
+            let url = workdir.appendingPathComponent(name)
+            try? Data(repeating: 0xAB, count: 100).write(to: url)
+            return url
+        }
+    }
+
+    static func makeEnv() -> Env {
+        let fm = FileManager.default
+        let root = fm.temporaryDirectory
+            .appendingPathComponent("splynek-dup-test-\(UUID())")
+        try? fm.createDirectory(at: root, withIntermediateDirectories: true)
+        return Env(workdir: root, cleanup: { try? fm.removeItem(at: root) })
+    }
+
+    static func makeEntry(
+        url: String,
+        outputPath: String,
+        sha256: String?
+    ) -> HistoryEntry {
+        HistoryEntry(
+            id: UUID(),
+            url: url,
+            filename: (outputPath as NSString).lastPathComponent,
+            outputPath: outputPath,
+            totalBytes: 100,
+            bytesPerInterface: ["en0": 100],
+            startedAt: Date().addingTimeInterval(-60),
+            finishedAt: Date(),
+            sha256: sha256,
+            secondsSaved: nil
+        )
     }
 }

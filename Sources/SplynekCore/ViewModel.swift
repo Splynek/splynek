@@ -2059,9 +2059,19 @@ final class SplynekViewModel: ObservableObject {
     /// the user can see "you already have this" before clicking Start.
     func autoDetectSha256(for url: URL) async {
         // Reset state for the new URL so stale badges don't linger.
+        // v1.9.x: warmCacheLookup checks digest first (trusted —
+        // bytes are identical) then URL.  When the user pastes a
+        // URL + publisher hash via the SHA-256 field, this catches
+        // the "I already have this exact file under a different
+        // name" case the URL-only check misses.
         await MainActor.run {
             self.enrichment = EnrichmentReport()
-            self.duplicate = Duplicate.findMatch(for: url, in: self.history)
+            let digest = self.sha256Expected.trimmingCharacters(in: .whitespacesAndNewlines)
+            self.duplicate = Duplicate.warmCacheLookup(
+                url: url,
+                digest: digest.isEmpty ? nil : digest,
+                in: self.history
+            )
         }
         async let shaTask: Void = detectSha256Sibling(for: url)
         async let sigTask: Void = detectSignatureSibling(for: url)
