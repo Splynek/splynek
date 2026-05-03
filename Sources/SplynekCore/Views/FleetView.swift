@@ -118,6 +118,16 @@ struct FleetView: View {
                             style: .neutral
                         )
                     }
+                    // v1.9.5: badge for active swarms the peer is
+                    // serving — sourced from vm.peerSwarms which is
+                    // refreshed every 10s by SwarmAnnouncementObserver.
+                    // Tooltip lists the swarm jobIDs so power users
+                    // can confirm what's available without opening a
+                    // browser to /swarm/list.
+                    if let swarms = vm.peerSwarms[peer.uuid], !swarms.isEmpty {
+                        StatusPill(text: "\(swarms.count) SWARM", style: .success)
+                            .help(swarmTooltip(for: swarms))
+                    }
                 }
                 Text(peer.uuid)
                     .font(.caption.monospaced())
@@ -240,5 +250,24 @@ struct FleetView: View {
                 }
             }
         }
+    }
+
+    /// v1.9.5: tooltip body for the SWARM badge.  Lists each
+    /// listing's short jobID + completion fraction so a power user
+    /// hovering can see which swarms are available without opening
+    /// a separate inspector.
+    private func swarmTooltip(for listings: [FleetChunkSwarm.Listing]) -> String {
+        let lines = listings.map { l -> String in
+            let pct = Int(l.fractionComplete * 100)
+            let head = String(l.jobID.uuidString.prefix(8))
+            let bytes = ByteCountFormatter.string(
+                fromByteCount: l.totalBytes, countStyle: .file
+            )
+            return "• \(head)…  \(pct)%  (\(bytes))"
+        }
+        return ([listings.count == 1
+                ? "1 active swarm:"
+                : "\(listings.count) active swarms:"] + lines)
+            .joined(separator: "\n")
     }
 }
