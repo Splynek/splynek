@@ -63,6 +63,8 @@ SwarmHooksTests.run()
 SwarmAnnouncementObserverTests.run()
 EngineExternalIngestTests.run()
 PkgInstallerTests.run()
+PublisherPatternTests.run()
+PrivilegedHelperClientTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

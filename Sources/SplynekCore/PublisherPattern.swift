@@ -51,6 +51,10 @@ enum PublisherPattern {
     /// pattern surface is fixed at build time.
     static let allPatterns: [Pattern] = [
         mozillaReleases,
+        apacheReleases,
+        debianReleases,
+        ubuntuReleases,
+        archReleases,
     ]
 
     /// Walks `allPatterns` in order; returns the first publisher's
@@ -121,6 +125,144 @@ enum PublisherPattern {
             return parseSHA256SUMS(body, filename: filename)
         }
     )
+
+    // MARK: - Apache (downloads.apache.org / dist.apache.org)
+    //
+    // Apache projects publish per-file SHA-256 + per-directory
+    // SHA256SUMS (rare).  The MORE common pattern is the per-file
+    // sibling .sha256 (which the existing detectSha256Sibling
+    // already catches).  Apache also publishes top-level KEYS files
+    // for GPG signatures (out of scope for this pattern).
+    //
+    // Where the per-file sibling missed, we try
+    // <project>.apache.org/dist/<project>/<ver>/<filename>.sha256
+    // explicitly — same suffix as the cheap probe but a different
+    // base path.  If the project has a CDN URL but the user pasted
+    // the dist mirror, this catches the digest.
+    static let apacheReleases = Pattern(
+        name: "Apache",
+        matches: { url in
+            guard let host = url.host?.lowercased() else { return false }
+            return host.contains("apache.org")
+                || host.contains("apache.dist")
+        },
+        extract: { url, session in
+            let siblingURL = url.deletingLastPathComponent()
+                .appendingPathComponent(url.lastPathComponent + ".sha256")
+            return await fetchSimpleSHA(at: siblingURL, session: session)
+        }
+    )
+
+    // MARK: - Debian (cdimage.debian.org + ftp.debian.org)
+    //
+    // Debian publishes per-release SHA256SUMS at the release
+    // directory level.  Example URLs:
+    //   https://cdimage.debian.org/debian-cd/12.5.0/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso
+    //   https://cdimage.debian.org/debian-cd/12.5.0/amd64/iso-cd/SHA256SUMS
+    // We strip the filename, append SHA256SUMS, fetch + parse.
+    static let debianReleases = Pattern(
+        name: "Debian",
+        matches: { url in
+            guard let host = url.host?.lowercased() else { return false }
+            return host.contains("debian.org")
+        },
+        extract: { url, session in
+            guard let filename = url.pathComponents.last else { return nil }
+            let sumsURL = url.deletingLastPathComponent()
+                .appendingPathComponent("SHA256SUMS")
+            return await fetchAndParseSUMS(
+                at: sumsURL, filename: filename, session: session
+            )
+        }
+    )
+
+    // MARK: - Ubuntu (releases.ubuntu.com + cdimage.ubuntu.com)
+    //
+    // Same pattern as Debian: per-release SHA256SUMS at the
+    // directory level.
+    //   https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso
+    //   https://releases.ubuntu.com/24.04/SHA256SUMS
+    static let ubuntuReleases = Pattern(
+        name: "Ubuntu",
+        matches: { url in
+            guard let host = url.host?.lowercased() else { return false }
+            return host.contains("ubuntu.com")
+        },
+        extract: { url, session in
+            guard let filename = url.pathComponents.last else { return nil }
+            let sumsURL = url.deletingLastPathComponent()
+                .appendingPathComponent("SHA256SUMS")
+            return await fetchAndParseSUMS(
+                at: sumsURL, filename: filename, session: session
+            )
+        }
+    )
+
+    // MARK: - Arch Linux (archlinux.org/iso/...)
+    //
+    // Arch publishes a per-release `sha256sums.txt` (lowercase
+    // filename, different from Mozilla's `SHA256SUMS`).  Example:
+    //   https://archlinux.org/iso/2024.04.01/archlinux-2024.04.01-x86_64.iso
+    //   https://archlinux.org/iso/2024.04.01/sha256sums.txt
+    static let archReleases = Pattern(
+        name: "Arch",
+        matches: { url in
+            guard let host = url.host?.lowercased() else { return false }
+            return host.contains("archlinux.org")
+        },
+        extract: { url, session in
+            guard let filename = url.pathComponents.last else { return nil }
+            let sumsURL = url.deletingLastPathComponent()
+                .appendingPathComponent("sha256sums.txt")
+            return await fetchAndParseSUMS(
+                at: sumsURL, filename: filename, session: session
+            )
+        }
+    )
+
+    // MARK: - Helpers shared across the new patterns
+
+    /// Fetch + parse a SUMS file for one filename.  Common to
+    /// Debian + Ubuntu + Arch + future patterns that follow the
+    /// same per-directory-SUMS convention.  Returns nil on
+    /// transport failure or parse miss.
+    static func fetchAndParseSUMS(
+        at sumsURL: URL,
+        filename: String,
+        session: URLSession
+    ) async -> String? {
+        var req = URLRequest(url: sumsURL)
+        req.timeoutInterval = 5
+        guard let (data, resp) = try? await session.data(for: req),
+              let http = resp as? HTTPURLResponse,
+              http.statusCode < 400,
+              let body = String(data: data, encoding: .utf8)
+        else { return nil }
+        return parseSHA256SUMS(body, filename: filename)
+    }
+
+    /// Fetch a raw `<digest>` or `<digest>  <filename>` text file
+    /// (the per-file `.sha256` sibling shape).  The first 64 hex
+    /// chars on the first non-empty line are the digest.  Common
+    /// to Apache + future patterns whose per-file siblings live
+    /// at non-standard URL bases.
+    static func fetchSimpleSHA(
+        at url: URL,
+        session: URLSession
+    ) async -> String? {
+        var req = URLRequest(url: url)
+        req.timeoutInterval = 5
+        guard let (data, resp) = try? await session.data(for: req),
+              let http = resp as? HTTPURLResponse,
+              http.statusCode < 400,
+              let body = String(data: data, encoding: .utf8)
+        else { return nil }
+        for line in body.split(separator: "\n", omittingEmptySubsequences: true) {
+            let first = String(line.split(separator: " ").first ?? "")
+            if isHex64(first) { return first.lowercased() }
+        }
+        return nil
+    }
 
     // MARK: - Parsing
 
