@@ -1703,6 +1703,40 @@
         }
       }
     },
+    "Auto-update": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-Update"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-actualizar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mise à jour automatique"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamento automatico"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atualização automática"
+          }
+        }
+      }
+    },
     "Available tools": {
       "localizations": {
         "de": {
@@ -2617,6 +2651,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Transferências, fila, cancelamentos e pausas via chat"
+          }
+        }
+      }
+    },
+    "Check now": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt prüfen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprobar ahora"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifier maintenant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla ora"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verificar agora"
           }
         }
       }
@@ -15506,6 +15574,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "O que isto mede"
+          }
+        }
+      }
+    },
+    "When on, Splynek re-runs the installer pipeline every 6 hours and replaces this app if the publisher's URL serves new bytes.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn aktiv, führt Splynek alle 6 Stunden die Installer-Pipeline erneut aus und ersetzt diese App, sobald die URL des Herausgebers neue Bytes liefert."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando está activo, Splynek vuelve a ejecutar el pipeline del instalador cada 6 horas y reemplaza esta app si la URL del autor sirve nuevos bytes."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quand actif, Splynek relance le pipeline d'installation toutes les 6 heures et remplace cette app si l'URL de l'éditeur sert de nouveaux octets."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se attivo, Splynek riesegue la pipeline di installazione ogni 6 ore e sostituisce questa app se l'URL dell'editore serve nuovi byte."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando ativo, o Splynek volta a executar a pipeline do instalador a cada 6 horas e substitui esta aplicação se o URL do editor publicar novos bytes."
           }
         }
       }

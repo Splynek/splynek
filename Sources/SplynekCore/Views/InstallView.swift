@@ -69,6 +69,9 @@ struct InstallView: View {
                 }
 
                 installedAppsList
+                if !installedRecords.isEmpty {
+                    autoUpdateActivityCard
+                }
             }
             .padding(20)
         }
@@ -277,12 +280,12 @@ struct InstallView: View {
 
     @ViewBuilder
     private var installedAppsList: some View {
-        let records = InstalledAppRegistry.load()
+        let records = installedRecords
         if !records.isEmpty {
             TitledCard(title: "Installed via Splynek (\(records.count))", systemImage: "checkmark.shield") {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 10) {
                     ForEach(records) { r in
-                        HStack {
+                        HStack(alignment: .center, spacing: 10) {
                             Image(systemName: "app").foregroundStyle(.tint)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(r.spec.name).font(.callout.weight(.medium))
@@ -293,14 +296,149 @@ struct InstallView: View {
                                 }
                             }
                             Spacer()
+                            // v1.8.3: per-record auto-update toggle.
+                            // Flipping persists immediately to the
+                            // registry; the next periodic sweep picks
+                            // up the change.  Tooltip clarifies what
+                            // gets checked when on.
+                            Toggle("Auto-update", isOn: Binding(
+                                get: { r.autoUpdate },
+                                set: { newVal in
+                                    InstalledAppRegistry.setAutoUpdate(r.id, enabled: newVal)
+                                    bumpRegistryRefresh()
+                                }
+                            ))
+                            .toggleStyle(.switch)
+                            .controlSize(.mini)
+                            .help("When on, Splynek re-runs the installer pipeline every 6 hours and replaces this app if the publisher's URL serves new bytes.")
                             Text(relativeDate(r.installedDate))
                                 .font(.caption2.monospacedDigit())
                                 .foregroundStyle(.secondary)
+                                .frame(width: 70, alignment: .trailing)
                         }
                     }
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private var autoUpdateActivityCard: some View {
+        TitledCard(title: "Auto-update activity", systemImage: "arrow.triangle.2.circlepath") {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(autoUpdateSummary)
+                        .font(.callout)
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    Button {
+                        Task { await vm.runAutoUpdateSweep() }
+                    } label: {
+                        Label("Check now", systemImage: "arrow.clockwise")
+                    }
+                    .controlSize(.small)
+                }
+                if let sweep = vm.lastAutoUpdateSweep {
+                    if !sweep.updates.isEmpty {
+                        Divider()
+                        ForEach(sweep.updates.indices, id: \.self) { i in
+                            let upd = sweep.updates[i]
+                            HStack(alignment: .top, spacing: 8) {
+                                Image(systemName: updateIcon(for: upd))
+                                    .foregroundStyle(updateColour(for: upd))
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(upd.record.spec.name)
+                                        .font(.callout.weight(.semibold))
+                                    Text(updateDescription(for: upd))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                            }
+                        }
+                    }
+                    if !sweep.errors.isEmpty {
+                        Divider()
+                        ForEach(sweep.errors.indices, id: \.self) { i in
+                            let entry = sweep.errors[i]
+                            HStack(alignment: .top, spacing: 8) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.orange)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(entry.record.spec.name)
+                                        .font(.callout.weight(.semibold))
+                                    Text(entry.message)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(2)
+                                }
+                                Spacer()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Auto-update summary text.  Shown in the activity-card header
+    /// regardless of whether a sweep has run yet.
+    private var autoUpdateSummary: String {
+        let candidates = installedRecords.filter { $0.autoUpdate }.count
+        if candidates == 0 {
+            return "No apps opted in to auto-update.  Toggle one above to enable."
+        }
+        if let sweep = vm.lastAutoUpdateSweep {
+            let n = sweep.updates.count
+            let e = sweep.errors.count
+            if n == 0 && e == 0 {
+                return "All \(candidates) auto-updating apps are current."
+            }
+            return "Last sweep: \(n) update(s), \(e) error(s) across \(candidates) candidate(s)."
+        }
+        return "\(candidates) app(s) opted in.  No sweep yet — periodic runs every 6 hours."
+    }
+
+    private func updateIcon(for u: AutoUpdateScheduler.Sweep.Update) -> String {
+        switch u.result {
+        case .success: return "checkmark.circle.fill"
+        case .failure: return "xmark.octagon.fill"
+        }
+    }
+
+    private func updateColour(for u: AutoUpdateScheduler.Sweep.Update) -> Color {
+        switch u.result {
+        case .success: return .green
+        case .failure: return .red
+        }
+    }
+
+    private func updateDescription(for u: AutoUpdateScheduler.Sweep.Update) -> String {
+        switch u.result {
+        case .success(let rec):
+            return "Updated to digest \(u.newDigest.prefix(12))…"
+                + (rec.installedVersion.map { " (v\($0))" } ?? "")
+        case .failure(let err):
+            return err.errorDescription ?? "Update failed."
+        }
+    }
+
+    // MARK: - Registry refresh
+    //
+    // The InstalledAppRegistry persists to disk and isn't @Published.
+    // To trigger a re-render after a toggle flip, we bump a local
+    // counter that drives `installedRecords` re-computation.  Cheap
+    // (registry load reads a small JSON file).
+
+    @State private var registryRefreshCounter: Int = 0
+
+    private var installedRecords: [InstalledAppRecord] {
+        _ = registryRefreshCounter   // dependency, force re-eval on bump
+        return InstalledAppRegistry.load()
+    }
+
+    private func bumpRegistryRefresh() {
+        registryRefreshCounter &+= 1
     }
 
     // MARK: - Pipeline driver

@@ -2945,6 +2945,29 @@ NEW_V16_STRINGS = {
         "de": "Über Splynek installiert (%lld)",
         "it": "Installato tramite Splynek (%lld)",
     },
+
+    # ── v1.8.3 InstallView auto-update controls ─────────────────────
+    "Auto-update": {
+        "pt-PT": "Atualização automática",
+        "es": "Auto-actualizar",
+        "fr": "Mise à jour automatique",
+        "de": "Auto-Update",
+        "it": "Aggiornamento automatico",
+    },
+    "Check now": {
+        "pt-PT": "Verificar agora",
+        "es": "Comprobar ahora",
+        "fr": "Vérifier maintenant",
+        "de": "Jetzt prüfen",
+        "it": "Controlla ora",
+    },
+    "When on, Splynek re-runs the installer pipeline every 6 hours and replaces this app if the publisher's URL serves new bytes.": {
+        "pt-PT": "Quando ativo, o Splynek volta a executar a pipeline do instalador a cada 6 horas e substitui esta aplicação se o URL do editor publicar novos bytes.",
+        "es": "Cuando está activo, Splynek vuelve a ejecutar el pipeline del instalador cada 6 horas y reemplaza esta app si la URL del autor sirve nuevos bytes.",
+        "fr": "Quand actif, Splynek relance le pipeline d'installation toutes les 6 heures et remplace cette app si l'URL de l'éditeur sert de nouveaux octets.",
+        "de": "Wenn aktiv, führt Splynek alle 6 Stunden die Installer-Pipeline erneut aus und ersetzt diese App, sobald die URL des Herausgebers neue Bytes liefert.",
+        "it": "Se attivo, Splynek riesegue la pipeline di installazione ogni 6 ore e sostituisce questa app se l'URL dell'editore serve nuovi byte.",
+    },
 }
 
 

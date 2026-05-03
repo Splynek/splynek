@@ -559,6 +559,21 @@ final class SplynekViewModel: ObservableObject {
     /// on first chip click.
     let concierge = ConciergeState()
 
+    /// v1.8.2: periodic re-installer that walks
+    /// `InstalledAppRegistry.autoUpdateCandidates()` every 6 h and
+    /// re-runs the verified-installer pipeline against any record
+    /// whose download URL serves new bytes.  Lazily instantiated in
+    /// `wireFleetIntegration` (so the closure can capture
+    /// dependencies that don't exist at `init` time) and started
+    /// immediately.  Optional so the constructor remains nil-safe
+    /// for tests + free-tier paths that don't enable the installer.
+    var autoUpdate: AutoUpdateScheduler?
+
+    /// v1.8.3: most recent sweep result, surfaced in the InstallView's
+    /// "Auto-update activity" card.  Set by `runAutoUpdateSweep()`,
+    /// nil before the first manual or periodic sweep.
+    @Published var lastAutoUpdateSweep: AutoUpdateScheduler.Sweep?
+
     /// Back-compat shim — callers that still reach for `vm.aiChat` /
     /// `vm.aiConciergeThinking` (Sidebar's AI badge; the old
     /// `conciergeSend` path; the rename-surface in handleConciergeAction)
@@ -796,6 +811,26 @@ final class SplynekViewModel: ObservableObject {
         Task.detached { [cache = fleet.swarmContentCache] in
             cache.refresh()
         }
+
+        // v1.8.2: instantiate + start the auto-update scheduler.
+        // Production download closure uses URLSession.download —
+        // simpler than the multi-interface engine, since auto-
+        // updates aren't latency- or bandwidth-critical.  The
+        // scheduler ticks every 6 hours; runs each candidate
+        // sequentially, throws errors are caught + collected per-
+        // record so one failing app doesn't block the others.
+        autoUpdate = AutoUpdateScheduler(
+            interval: 6 * 3600,
+            download: { url, stagingDirectory in
+                let (tempURL, _) = try await URLSession.shared.download(from: url)
+                let dest = stagingDirectory.appendingPathComponent(
+                    url.lastPathComponent.isEmpty ? "payload" : url.lastPathComponent
+                )
+                try FileManager.default.moveItem(at: tempURL, to: dest)
+                return dest
+            }
+        )
+        autoUpdate?.start()
         // Session restore is deferred until `restoreSession()` is called
         // from the app delegate, after interface discovery has populated.
         // Non-blocking update poll; silent if no feed is configured.
@@ -927,6 +962,17 @@ final class SplynekViewModel: ObservableObject {
     /// Clear the concierge transcript — restart the conversation.
     func conciergeReset() {
         concierge.chat = []
+    }
+
+    /// v1.8.3: run a manual auto-update sweep on demand from the
+    /// InstallView "Check now" button.  Returns the same Sweep
+    /// envelope the periodic timer produces; we publish it via
+    /// `lastAutoUpdateSweep` so the UI can show the result without
+    /// callers wrangling the Task themselves.
+    func runAutoUpdateSweep() async {
+        guard let scheduler = autoUpdate else { return }
+        let sweep = await scheduler.runOnce().value
+        await MainActor.run { self.lastAutoUpdateSweep = sweep }
     }
 
     /// Route the classified action through the existing VM operations.
