@@ -2142,18 +2142,33 @@ final class SplynekViewModel: ObservableObject {
 
     private func detectSha256Sibling(for url: URL) async {
         if !sha256Expected.isEmpty { return }
+        // Per-file `.sha256` sibling — most common case (Apache + most
+        // open-source publishers publish them).
         let siblingURL = url.deletingLastPathComponent()
             .appendingPathComponent(url.lastPathComponent + ".sha256")
         var req = URLRequest(url: siblingURL)
         req.timeoutInterval = 5
-        guard let (data, resp) = try? await URLSession.shared.data(for: req),
-              let http = resp as? HTTPURLResponse, http.statusCode == 200,
-              let text = String(data: data, encoding: .utf8) else { return }
-        for line in text.split(separator: "\n") {
-            let first = String(line.split(separator: " ").first ?? "")
-            if first.count == 64, first.allSatisfy({ $0.isHexDigit }) {
-                await MainActor.run { self.sha256Expected = first.lowercased() }
-                return
+        if let (data, resp) = try? await URLSession.shared.data(for: req),
+           let http = resp as? HTTPURLResponse, http.statusCode == 200,
+           let text = String(data: data, encoding: .utf8) {
+            for line in text.split(separator: "\n") {
+                let first = String(line.split(separator: " ").first ?? "")
+                if first.count == 64, first.allSatisfy({ $0.isHexDigit }) {
+                    await MainActor.run { self.sha256Expected = first.lowercased() }
+                    return
+                }
+            }
+        }
+        // v1.9.x: fall back to publisher-pattern extraction
+        // (per-directory SHA256SUMS).  Mozilla is the proof-of-
+        // concept; Apache / Debian / Ubuntu / Arch are follow-ups.
+        // Only runs when the per-file .sha256 sibling didn't fire,
+        // so we don't double-network on the common case.
+        if let (publisher, digest) = await PublisherPattern.extractDigest(for: url) {
+            await MainActor.run {
+                self.sha256Expected = digest
+                NSLog("[publisher-pattern] %@: extracted SHA-256 for %@",
+                      publisher, url.lastPathComponent)
             }
         }
     }
