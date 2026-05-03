@@ -211,6 +211,33 @@ actor ChunkQueue {
 
 // MARK: - Engine
 
+/// v1.9.4: optional fleet-swarm integration handed to a DownloadEngine
+/// at construction.  Each closure is fired at a defined lifecycle
+/// point; the engine itself doesn't know about FleetCoordinator,
+/// so the engine stays independently testable + the swarm wiring
+/// stays optional (free-tier builds + unit tests pass `.none`).
+///
+/// Architectural invariant — see MAS-2.5.2-COMPLIANCE.md:
+///   - register: called ONCE after planChunks, before any chunk fetch.
+///     Carries the chunk manifest the engine just built.
+///   - chunkCompleted: called per chunk after it lands on disk + the
+///     sidecar is persisted.  Idempotent on the receiving end.
+///   - finished: called ONCE on either successful completion (with
+///     the file's contentDigest) OR on cancellation/failure (digest
+///     nil).  Cleanup signal — receiver drops the swarm registration.
+struct SwarmHooks: Sendable {
+    var register: (@Sendable (
+        _ jobID: UUID,
+        _ chunks: [FleetChunkSwarm.ChunkRef],
+        _ chunkSize: Int64,
+        _ seederCompletedAtStart: Set<Int>
+    ) -> Void)?
+    var chunkCompleted: (@Sendable (_ jobID: UUID, _ chunkIndex: Int) -> Void)?
+    var finished: (@Sendable (_ jobID: UUID, _ contentDigest: String?) -> Void)?
+
+    static let none = SwarmHooks()
+}
+
 /// Orchestrates discovery, chunk planning, lane workers (with intra-lane
 /// parallelism), resume via sidecar, history persistence, and post-download
 /// Gatekeeper evaluation.
@@ -232,6 +259,15 @@ final class DownloadEngine {
     let sharedBuckets: [String: TokenBucket]
     let progress: DownloadProgress
 
+    /// v1.9.4: optional fleet-swarm hookup.  `.none` when the user
+    /// hasn't enabled fleet sharing; the lifecycle calls become
+    /// no-ops.  See `SwarmHooks` definition above.
+    let swarmHooks: SwarmHooks
+    /// v1.9.4: stable jobID matching the DownloadJob's id.  Passed
+    /// in so the engine can identify itself to the swarm coordinator
+    /// without knowing about DownloadJob.
+    let swarmJobID: UUID
+
     private let cancelFlag = CancelFlag()
     private var historyTimerTask: Task<Void, Never>?
     private var sidecarURL: URL { outputURL.appendingPathExtension("splynek") }
@@ -246,7 +282,9 @@ final class DownloadEngine {
         merkleManifest: MerkleManifest? = nil,
         extraHeaders: [String: String] = [:],
         sharedBuckets: [String: TokenBucket] = [:],
-        progress: DownloadProgress
+        progress: DownloadProgress,
+        swarmHooks: SwarmHooks = .none,
+        swarmJobID: UUID = UUID()
     ) {
         precondition(!urls.isEmpty, "DownloadEngine needs at least one URL")
         self.urls = urls
@@ -259,6 +297,8 @@ final class DownloadEngine {
         self.extraHeaders = extraHeaders
         self.sharedBuckets = sharedBuckets
         self.progress = progress
+        self.swarmHooks = swarmHooks
+        self.swarmJobID = swarmJobID
     }
 
     /// Primary URL, used for probing and filename derivation.
@@ -297,6 +337,29 @@ final class DownloadEngine {
                 await queue.prefillDone(Set(ri.completed))
                 let already = chunks.filter { ri.completed.contains($0.id) }.reduce(0) { $0 + $1.length }
                 await MainActor.run { progress.downloaded = already }
+            }
+
+            // v1.9.4: announce this job to the LAN swarm coordinator if
+            // the host wired hooks in.  Chunk digests are unknown until
+            // the chunk lands (we don't pre-compute a Merkle leaf set
+            // for non-Merkle downloads), so we publish empty per-chunk
+            // digests in the manifest — peers verify against the file's
+            // overall content digest at the end of the pull instead of
+            // per-chunk.  Resume sets seederCompleted to the chunks
+            // already on disk so peers can immediately pull from the
+            // resumed slice.
+            if let register = swarmHooks.register {
+                let refs = chunks.map { c in
+                    FleetChunkSwarm.ChunkRef(
+                        index: c.id,
+                        offset: c.start,
+                        length: c.length,
+                        digest: ""  // per-chunk digests deferred to v1.9.5
+                    )
+                }
+                let initialComplete: Set<Int> = resumeInfo
+                    .map { Set($0.completed) } ?? []
+                register(swarmJobID, refs, Self.chunkBytes, initialComplete)
             }
 
             let laneStats = await MainActor.run { progress.lanes }
@@ -377,6 +440,11 @@ final class DownloadEngine {
                 progress.finished = true
                 progress.phase = .done
             }
+            // v1.9.4: success — fire swarm.finished with the file's
+            // content digest so the SwarmContentCache picks the URL
+            // up + post-completion peers can keep pulling chunks
+            // out of the on-disk file.
+            fireFinished(contentDigest: contentHash.isEmpty ? nil : contentHash)
             Notifier.post(
                 title: "Download complete",
                 body: outputURL.lastPathComponent,
@@ -564,6 +632,13 @@ final class DownloadEngine {
                     lastModified: probe.lastModified,
                     completed: completedIds
                 )
+                // v1.9.4: announce this chunk to the swarm so any
+                // peer participants pulling our manifest see it
+                // become serveable.  Capture before the await hop
+                // so the closure is sync-safe.
+                if let chunkCompleted = swarmHooks.chunkCompleted {
+                    chunkCompleted(swarmJobID, chunk.id)
+                }
                 errorStreak = 0
             } catch RangeError.rangeNotAvailable {
                 // This mirror (typically a fleet peer with a partial
@@ -688,6 +763,24 @@ final class DownloadEngine {
 
     private func report(_ message: String) async {
         await MainActor.run { progress.errorMessage = message }
+        // v1.9.4: failure paths funnel through report() before
+        // returning — fire the swarm finished hook with a nil
+        // digest so the coordinator drops the registration.
+        // Idempotent on the receiver but we still gate it locally
+        // to avoid duplicate notifications on multi-message
+        // failures (e.g. range-not-supported then cancelled).
+        fireFinished(contentDigest: nil)
+    }
+
+    /// v1.9.4: fire-once swarm.finished hook.  Safe to call from
+    /// both the success and failure paths; subsequent calls are
+    /// no-ops.  Backed by a plain boolean (engine isn't an actor;
+    /// run() is single-threaded by construction so no lock needed).
+    private var didFireFinished = false
+    private func fireFinished(contentDigest: String?) {
+        guard !didFireFinished else { return }
+        didFireFinished = true
+        swarmHooks.finished?(swarmJobID, contentDigest)
     }
 }
 

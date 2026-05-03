@@ -1318,6 +1318,50 @@ final class SplynekViewModel: ObservableObject {
             sharedBuckets: bucketsFor(interfaces),
             fleetMirrors: fleetMirrors
         )
+        // v1.9.4: wire the swarm hooks so peers on the LAN can pull
+        // chunks from this download as it lands.  Each closure
+        // captures fleet.swarm + the content cache by reference;
+        // both are long-lived FleetCoordinator-owned objects so no
+        // weak-capture dance is needed.  All three hooks are no-ops
+        // if the download finishes before any peer joins the swarm
+        // (the SwarmCoordinator's register/markSeederCompleted/
+        // unregister are idempotent against an empty peer set).
+        job.swarmHooks = SwarmHooks(
+            register: { [swarm = fleet.swarm] jid, refs, chunkSize, seederCompletedAtStart in
+                swarm.register(
+                    jobID: jid,
+                    chunks: refs,
+                    chunkSize: chunkSize,
+                    seederCompleted: seederCompletedAtStart,
+                    contentDigest: nil  // populated on finish
+                )
+            },
+            chunkCompleted: { [swarm = fleet.swarm] jid, chunkIdx in
+                swarm.markSeederCompleted(jobID: jid, chunkIndex: chunkIdx)
+            },
+            finished: { [swarm = fleet.swarm, cache = fleet.swarmContentCache, outputURL = outPath] jid, contentDigest in
+                if let digest = contentDigest, !digest.isEmpty {
+                    // Synthesize a HistoryEntry-like record for the cache
+                    // so post-completion peers can keep pulling chunks
+                    // out of this on-disk file via the content-cache
+                    // fallback in SwarmCoordinator.handleChunkFetch.
+                    let entry = HistoryEntry(
+                        id: UUID(),
+                        url: "",
+                        filename: outputURL.lastPathComponent,
+                        outputPath: outputURL.path,
+                        totalBytes: 0,
+                        bytesPerInterface: [:],
+                        startedAt: Date(),
+                        finishedAt: Date(),
+                        sha256: digest,
+                        secondsSaved: nil
+                    )
+                    cache.record(entry)
+                }
+                swarm.unregister(jobID: jid)
+            }
+        )
         job.progress.totalBytes = totalBytes
         activeJobs.append(job)
         publishFleetState()

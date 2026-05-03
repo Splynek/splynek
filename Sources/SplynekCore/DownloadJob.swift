@@ -49,6 +49,13 @@ final class DownloadJob: ObservableObject, Identifiable {
     private var engine: DownloadEngine?
     private var task: Task<Void, Never>?
 
+    /// v1.9.4: optional fleet-swarm hooks plumbed to the engine on
+    /// each `start()`.  Set by the VM at job creation time so the
+    /// hooks see the fleet.swarm reference fresh on every restart —
+    /// pause/resume reuses the same closures because
+    /// SwarmCoordinator's register/unregister are idempotent.
+    var swarmHooks: SwarmHooks = .none
+
     /// When true, the next natural completion should settle as `.paused`
     /// rather than `.cancelled`. Set by `pause()` before the engine cancel
     /// propagates.
@@ -98,7 +105,9 @@ final class DownloadJob: ObservableObject, Identifiable {
             merkleManifest: merkleManifest,
             extraHeaders: extraHeaders,
             sharedBuckets: sharedBuckets,
-            progress: progress
+            progress: progress,
+            swarmHooks: swarmHooks,
+            swarmJobID: id
         )
         self.engine = engine
         task = Task { [weak self] in
