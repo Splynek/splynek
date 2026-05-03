@@ -625,7 +625,7 @@ final class SplynekViewModel: ObservableObject {
     }
 
     struct ConciergeMessage: Identifiable {
-        let id = UUID()
+        let id: UUID
         let role: Role
         let text: String
         let action: String?   // short human-readable chip under assistant msgs
@@ -643,14 +643,78 @@ final class SplynekViewModel: ObservableObject {
         /// a small "via search_history" footer.
         var toolID: String? = nil
         enum Role: String { case user, assistant, system }
+
+        /// v1.7.x: explicit init.  `id` defaults to a fresh UUID so
+        /// existing call sites (`.init(role:, text:, action:)`) keep
+        /// working unchanged; restoration paths (ConciergeState +
+        /// ConciergeTranscriptStore) supply the persisted UUID so
+        /// message identity survives session restart.
+        init(
+            id: UUID = UUID(),
+            role: Role,
+            text: String,
+            action: String?,
+            card: ConciergeCard? = nil,
+            toolID: String? = nil
+        ) {
+            self.id = id
+            self.role = role
+            self.text = text
+            self.action = action
+            self.card = card
+            self.toolID = toolID
+        }
     }
 
     /// The dedicated ObservableObject for the concierge transcript —
     /// see the top comment above `concierge` for why this exists.
+    ///
+    /// v1.7.x: persists the transcript to
+    /// `~/Library/Application Support/Splynek/concierge-transcript.json`
+    /// via `ConciergeTranscriptStore`.  Loads on init, saves on every
+    /// `chat` mutation through the `didSet` observer.  The `card`
+    /// payload is intentionally NOT persisted — see the comment on
+    /// `ConciergeTranscriptStore` for why (live state vs stale state).
     @MainActor
     final class ConciergeState: ObservableObject {
-        @Published var chat: [ConciergeMessage] = []
+        @Published var chat: [ConciergeMessage] {
+            didSet { persist() }
+        }
         @Published var thinking: Bool = false
+
+        private let store: ConciergeTranscriptStore
+
+        init(store: ConciergeTranscriptStore = ConciergeTranscriptStore()) {
+            self.store = store
+            // Reconstruct ConciergeMessage from the persisted
+            // text-only surface.  `card` is always nil on restore so
+            // the bubble renders the caption text alone — no live
+            // action surfaces over stale state.  Unknown roles fall
+            // through to `.system` (forward-compat with future role
+            // additions).
+            self.chat = store.load().map { p in
+                ConciergeMessage(
+                    id: p.id,
+                    role: ConciergeMessage.Role(rawValue: p.role) ?? .system,
+                    text: p.text,
+                    action: p.action,
+                    card: nil,
+                    toolID: p.toolID
+                )
+            }
+        }
+
+        private func persist() {
+            store.save(chat.map { msg in
+                ConciergeTranscriptStore.PersistedMessage(
+                    id: msg.id,
+                    role: msg.role.rawValue,
+                    text: msg.text,
+                    action: msg.action,
+                    toolID: msg.toolID
+                )
+            })
+        }
     }
 
     // Torrent
