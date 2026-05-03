@@ -272,6 +272,16 @@ final class DownloadEngine {
     private var historyTimerTask: Task<Void, Never>?
     private var sidecarURL: URL { outputURL.appendingPathExtension("splynek") }
 
+    /// v1.9.6: reference to the live ChunkQueue (only valid while
+    /// `run()` is in flight) so external entry points
+    /// (`ingestExternalChunk`) can mark chunks done without racing
+    /// the lane workers.  Set inside `run()`, cleared on exit.
+    private var liveQueue: ChunkQueue?
+    /// v1.9.6: planned chunk layout, used by `ingestExternalChunk`
+    /// to validate the (offset, length) of an incoming external
+    /// chunk before writing.  Populated alongside `liveQueue`.
+    private var chunkPlan: [Chunk] = []
+
     init(
         urls: [URL],
         outputURL: URL,
@@ -306,10 +316,88 @@ final class DownloadEngine {
 
     func cancel() { cancelFlag.cancel(); historyTimerTask?.cancel() }
 
+    /// v1.9.6: external-chunk ingestion port.  A swarm participant
+    /// (or any other out-of-band byte source) hands us (chunkIndex,
+    /// bytes); we write the bytes at the chunk's planned offset,
+    /// mark the chunk done in the live queue so lane workers don't
+    /// re-fetch it, bump `progress.downloaded`, and fire the
+    /// `chunkCompleted` swarm hook so peers see the chunk become
+    /// serveable from this Mac too.
+    ///
+    /// Returns:
+    ///   - `.accepted` — bytes written, queue + progress updated
+    ///   - `.alreadyHave` — chunk was already done (race against a
+    ///     lane worker or another participant); bytes discarded
+    ///   - `.notLive` — engine isn't currently running (run() hasn't
+    ///     entered yet, or has exited)
+    ///   - `.indexOutOfRange` — chunkIndex doesn't exist in the plan
+    ///   - `.lengthMismatch` — bytes.count != planned chunk length
+    ///     (refuse to write a partial / oversize chunk; defends
+    ///     against a misbehaving peer)
+    ///   - `.writeFailed(String)` — FileHandle threw
+    ///
+    /// Threading: safe to call from any context; the `liveQueue` is
+    /// an `actor`, the FileHandle is opened + closed locally.
+    func ingestExternalChunk(
+        index: Int,
+        bytes: Data
+    ) async -> ExternalIngestResult {
+        guard let queue = liveQueue else { return .notLive }
+        guard chunkPlan.indices.contains(index) else { return .indexOutOfRange }
+        let chunk = chunkPlan[index]
+        guard Int64(bytes.count) == chunk.length else { return .lengthMismatch }
+
+        // Race against lane workers: check if the chunk is already
+        // done.  This is best-effort — a lane worker might land
+        // between our check and our markDone, but the worst case is
+        // we double-write the same bytes (idempotent on disk;
+        // markDone is set-insert-equivalent).
+        let alreadyDone = await queue.snapshot()
+            .first(where: { $0.id == index })?.done ?? false
+        if alreadyDone { return .alreadyHave }
+
+        // Write at the chunk's offset.
+        do {
+            let handle = try FileHandle(forWritingTo: outputURL)
+            defer { try? handle.close() }
+            try handle.seek(toOffset: UInt64(chunk.start))
+            try handle.write(contentsOf: bytes)
+        } catch {
+            return .writeFailed(error.localizedDescription)
+        }
+
+        // Update queue + progress + announce.
+        _ = await queue.markDone(index)
+        await MainActor.run {
+            self.progress.downloaded += chunk.length
+        }
+        if let chunkCompleted = swarmHooks.chunkCompleted {
+            chunkCompleted(swarmJobID, index)
+        }
+        return .accepted
+    }
+
+    /// v1.9.6: typed result of `ingestExternalChunk`.  Pure value;
+    /// callers branch on the case to surface diagnostics or retry.
+    enum ExternalIngestResult: Sendable, Equatable {
+        case accepted
+        case alreadyHave
+        case notLive
+        case indexOutOfRange
+        case lengthMismatch
+        case writeFailed(String)
+    }
+
     // MARK: Main run loop
 
     func run() async {
         let startTime = Date()
+        // v1.9.6: clear external-chunk references on every exit path
+        // so a stale ChunkQueue reference doesn't outlive run().
+        defer {
+            self.liveQueue = nil
+            self.chunkPlan = []
+        }
         do {
             await MainActor.run { progress.phase = .probing }
             let probed = try await Probe.run(url, extraHeaders: extraHeaders)
@@ -333,6 +421,12 @@ final class DownloadEngine {
 
             let chunks = planChunks(total: probed.totalBytes)
             let queue = ChunkQueue(chunks)
+            // v1.9.6: publish queue + plan to the engine so the
+            // external-chunk ingestion path can find them.  Cleared
+            // in defer below so a stale reference doesn't survive
+            // run() exit.
+            self.liveQueue = queue
+            self.chunkPlan = chunks
             if let ri = resumeInfo {
                 await queue.prefillDone(Set(ri.completed))
                 let already = chunks.filter { ri.completed.contains($0.id) }.reduce(0) { $0 + $1.length }

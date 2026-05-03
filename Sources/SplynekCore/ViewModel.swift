@@ -581,11 +581,17 @@ final class SplynekViewModel: ObservableObject {
     var swarmObserver: SwarmAnnouncementObserver?
 
     /// v1.9.5: latest map of `peerUUID → [Listing]` from the
-    /// observer.  The Fleet view can render this as a "swarms
-    /// available on the LAN" badge per peer; the engine integration
-    /// layer (v1.9.6) cross-references against active downloads to
-    /// auto-join matching swarms.
+    /// observer.  The Fleet view renders this as a "swarms
+    /// available on the LAN" badge per peer; the v1.9.6 auto-join
+    /// layer (`autoJoinSwarms`) cross-references against active
+    /// downloads to spawn participants.
     @Published var peerSwarms: [String: [FleetChunkSwarm.Listing]] = [:]
+
+    /// v1.9.6: set of peer-job IDs we've already joined as a
+    /// participant.  Prevents `autoJoinSwarms` from spawning
+    /// duplicate `SwarmParticipant.pull` tasks every observer
+    /// tick.  Cleared per-session; ephemeral.
+    private var joinedSwarms: Set<UUID> = []
 
     /// Back-compat shim — callers that still reach for `vm.aiChat` /
     /// `vm.aiConciergeThinking` (Sidebar's AI badge; the old
@@ -876,7 +882,13 @@ final class SplynekViewModel: ObservableObject {
             },
             onUpdate: { [weak self] update in
                 Task { @MainActor [weak self] in
-                    self?.peerSwarms = update
+                    guard let self else { return }
+                    self.peerSwarms = update
+                    // v1.9.6: every tick, look for new swarms that
+                    // match a local in-flight download's expected
+                    // digest.  Idempotent — already-joined swarms
+                    // are tracked via `joinedSwarms` set.
+                    self.autoJoinSwarms(update)
                 }
             }
         )
@@ -1023,6 +1035,113 @@ final class SplynekViewModel: ObservableObject {
         guard let scheduler = autoUpdate else { return }
         let sweep = await scheduler.runOnce().value
         await MainActor.run { self.lastAutoUpdateSweep = sweep }
+    }
+
+    // =============================================================
+    // v1.9.6: Auto-join swarm matching
+    // =============================================================
+    //
+    // Called every observer tick (via `onUpdate`).  For each peer
+    // listing whose contentDigest matches an active local job's
+    // sha256Expected, spawn a `SwarmParticipant.pull(...)` Task that
+    // feeds bytes back into the engine via `ingestExternalChunk`.
+    // Already-joined swarms (tracked by Listing.jobID) are skipped.
+
+    private func autoJoinSwarms(_ update: SwarmAnnouncementObserver.Update) {
+        // Snapshot active jobs we still want bytes for — only
+        // running jobs with an expected SHA-256 are eligible (we
+        // need the digest for the match check).
+        let eligible: [(job: DownloadJob, digest: String)] = activeJobs.compactMap {
+            guard $0.lifecycle == .running,
+                  let digest = $0.sha256Expected?.lowercased(),
+                  !digest.isEmpty
+            else { return nil }
+            return ($0, digest)
+        }
+        guard !eligible.isEmpty else { return }
+
+        for (peerUUID, listings) in update {
+            guard let peer = fleet.peers.first(where: { $0.uuid == peerUUID }),
+                  let host = peer.host,
+                  let port = peer.resolvedPort,
+                  let baseURL = URL(string: "http://\(host):\(port)")
+            else { continue }
+
+            for listing in listings {
+                guard let listingDigest = listing.contentDigest?.lowercased(),
+                      !listingDigest.isEmpty,
+                      !joinedSwarms.contains(listing.jobID),
+                      let match = eligible.first(where: { $0.digest == listingDigest })
+                else { continue }
+
+                // Mark joined immediately so a duplicate tick
+                // doesn't double-spawn before the participant
+                // starts pulling.
+                joinedSwarms.insert(listing.jobID)
+                Task.detached { [weak self] in
+                    await self?.runSwarmParticipant(
+                        peerBaseURL: baseURL,
+                        listing: listing,
+                        localJob: match.job
+                    )
+                }
+            }
+        }
+    }
+
+    /// One participant session.  Runs to completion or peer error,
+    /// then drops the join entry so a re-announce can re-trigger.
+    private nonisolated func runSwarmParticipant(
+        peerBaseURL: URL,
+        listing: FleetChunkSwarm.Listing,
+        localJob: DownloadJob
+    ) async {
+        // Manifest URL is /splynek/v1/swarm/{jobID}/manifest on the
+        // peer; the participant's init normalises this to a base URL
+        // for subsequent requests.
+        let manifestURL = peerBaseURL
+            .appendingPathComponent("splynek/v1/swarm/\(listing.jobID.uuidString)/manifest")
+        // /list is no-auth; manifest + chunks endpoints are token-
+        // gated.  v1.9.6 ships with no peer-token sharing, so the
+        // participant uses an empty token — the seeder will 401.
+        // The auto-join path is therefore inert until v1.9.7 wires
+        // QR-pairing of the swarm token.  This commit lays the
+        // plumbing; the credential exchange is a separate concern.
+        let participant = SwarmParticipant(
+            manifestURL: manifestURL,
+            token: ""
+        )
+
+        let summary = await participant.pull(
+            jobID: listing.jobID,
+            alreadyHave: [],
+            sink: { [weak localJob] _, ref, bytes in
+                guard let localJob else { return false }
+                let result = await localJob.ingestExternalChunk(
+                    index: ref.index, bytes: bytes
+                )
+                // Continue unless the engine reported a hard fault
+                // (writeFailed) or the job stopped running.
+                switch result {
+                case .accepted, .alreadyHave:    return true
+                case .notLive, .indexOutOfRange,
+                     .lengthMismatch:            return false
+                case .writeFailed:               return false
+                case .none:                      return false
+                }
+            }
+        )
+
+        // Drop the join entry so a re-announce can re-trigger if
+        // we need more bytes (rare; happens when the engine pulls
+        // ahead and the local job's digest target shifts).
+        await MainActor.run { [weak self] in
+            self?.joinedSwarms.remove(listing.jobID)
+            // Surface the summary briefly for diagnostics.
+            if !summary.delivered.isEmpty {
+                NSLog("[swarm] joined \(listing.jobID), got \(summary.delivered.count) chunks from peer")
+            }
+        }
     }
 
     /// Route the classified action through the existing VM operations.

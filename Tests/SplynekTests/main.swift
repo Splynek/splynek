@@ -61,6 +61,7 @@ SwarmParticipantTests.run()
 AutoUpdateSchedulerTests.run()
 SwarmHooksTests.run()
 SwarmAnnouncementObserverTests.run()
+EngineExternalIngestTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

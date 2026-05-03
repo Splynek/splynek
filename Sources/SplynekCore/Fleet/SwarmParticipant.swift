@@ -54,11 +54,13 @@ final class SwarmParticipant: @unchecked Sendable {
     /// caller writes the bytes to the in-progress download file (or
     /// wherever its application logic dictates).  Returns true to
     /// continue, false to stop (orchestrator sends a leave).
+    /// **Async** so the consumer can hop actors / await the engine's
+    /// `ingestExternalChunk` without a sync-bridge dance.
     typealias ChunkSink = @Sendable (
         _ chunkIndex: Int,
         _ chunk: FleetChunkSwarm.ChunkRef,
         _ bytes: Data
-    ) -> Bool
+    ) async -> Bool
 
     /// Closure that picks which chunks to claim from the seeder.
     /// Receives the manifest + the seeder's already-completed set.
@@ -170,7 +172,7 @@ final class SwarmParticipant: @unchecked Sendable {
                     continue
                 }
                 // Deliver.
-                let keepGoing = sink(index, ref, bytes)
+                let keepGoing = await sink(index, ref, bytes)
                 summary.delivered.append(index)
                 if !keepGoing {
                     break

@@ -49,6 +49,18 @@ final class DownloadJob: ObservableObject, Identifiable {
     private var engine: DownloadEngine?
     private var task: Task<Void, Never>?
 
+    /// v1.9.6: forwarder for the engine's external-chunk ingestion
+    /// port.  Used by the VM's auto-join layer to feed bytes pulled
+    /// from a swarm peer into this job's output file.  Returns nil
+    /// when the engine isn't currently running (job pending /
+    /// completed / cancelled / failed).
+    func ingestExternalChunk(
+        index: Int,
+        bytes: Data
+    ) async -> DownloadEngine.ExternalIngestResult? {
+        await engine?.ingestExternalChunk(index: index, bytes: bytes)
+    }
+
     /// v1.9.4: optional fleet-swarm hooks plumbed to the engine on
     /// each `start()`.  Set by the VM at job creation time so the
     /// hooks see the fleet.swarm reference fresh on every restart —
