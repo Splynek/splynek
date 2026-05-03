@@ -44,6 +44,7 @@ enum PkgInstaller {
     enum Failure: Error, LocalizedError, Sendable {
         case installerFailed(exitCode: Int32, stderr: String)
         case requiresAdmin(stderr: String)
+        case adminDeclined
         case ioError(String)
 
         var errorDescription: String? {
@@ -51,7 +52,9 @@ enum PkgInstaller {
             case .installerFailed(let code, let stderr):
                 return "installer(8) exited with status \(code): \(stderr)"
             case .requiresAdmin(let stderr):
-                return "This package needs administrator access (\(stderr.prefix(120))). Splynek's v1.8.0 ships user-domain installs only — admin-domain support lands in v1.8.1. For now, run /usr/sbin/installer manually with sudo."
+                return "This package needs administrator access (\(stderr.prefix(120))). Pass `requireAdmin: true` to install via osascript-elevated installer(8) — Splynek will prompt for your admin password."
+            case .adminDeclined:
+                return "Administrator authorization was declined or the prompt was cancelled."
             case .ioError(let s):
                 return "I/O error: \(s)"
             }
@@ -62,22 +65,45 @@ enum PkgInstaller {
     /// — pkg installs don't have a single "where did the .app land"
     /// answer (a pkg can deploy multiple files, scripts, plist
     /// settings).  The post-install registry record uses the .pkg's
-    /// metadata as a coarse breadcrumb; v1.8.1 will parse the .pkg's
-    /// receipt for a more precise mapping.
+    /// metadata as a coarse breadcrumb; a future revision can parse
+    /// the .pkg's receipt for a more precise mapping.
     ///
     /// `target` defaults to "CurrentUserHomeDirectory" — the user
-    /// domain.  Passing "LocalSystem" or "/" forces system-domain
-    /// install which today is rejected (v1.8.1 admin-auth work).
+    /// domain (no admin prompt).  Pass "LocalSystem" or "/" for
+    /// admin-domain installs (kexts, /Library/LaunchDaemons,
+    /// /Library/PrivilegedHelperTools); admin-domain currently
+    /// requires `requireAdmin: true` so the caller opts in.
+    ///
+    /// **v1.8.1 admin-domain (`requireAdmin: true`).**  Spawns
+    /// /usr/bin/osascript with `do shell script ... with administrator
+    /// privileges`, which surfaces macOS's standard authorization
+    /// dialog (Touch ID / password).  No SMJobBless helper-tool;
+    /// install is a one-shot privileged spawn.  When the user
+    /// declines or cancels, throws `.adminDeclined`.
+    ///
+    /// MAS-review note: AppleScript-driven elevation is the path
+    /// most third-party installers use.  The alternative
+    /// (SMJobBless + privileged helper bundle) is the long-term
+    /// "right" answer but requires app re-architecture; deferring
+    /// to v1.8.2.  Documented in MAS-2.5.2-COMPLIANCE.md.
     static func install(
         pkg: URL,
-        target: String = "CurrentUserHomeDirectory"
+        target: String = "CurrentUserHomeDirectory",
+        requireAdmin: Bool = false
     ) async throws {
         guard FileManager.default.fileExists(atPath: pkg.path) else {
             throw Failure.ioError("Package not found: \(pkg.path)")
         }
+
+        // Admin-domain path — osascript-elevated installer(8).
+        if requireAdmin {
+            try await installWithAdminPrompt(pkg: pkg, target: target)
+            return
+        }
+
         guard target == "CurrentUserHomeDirectory" else {
             throw Failure.requiresAdmin(
-                stderr: "Splynek refused a non-user-domain target ('\(target)') in v1.8.0."
+                stderr: "Non-user-domain target '\(target)' rejected; pass requireAdmin: true to elevate."
             )
         }
 
@@ -104,6 +130,100 @@ enum PkgInstaller {
         throw Failure.installerFailed(
             exitCode: result.exitCode,
             stderr: result.stderr.isEmpty ? result.stdout : result.stderr
+        )
+    }
+
+    /// v1.8.1: admin-domain install via osascript-elevated installer(8).
+    ///
+    /// Spawns `/usr/bin/osascript` with the AppleScript fragment:
+    ///
+    ///   do shell script "/usr/sbin/installer -pkg <quoted-path> -target /"
+    ///   with administrator privileges
+    ///
+    /// macOS surfaces its standard authorization dialog.  When the
+    /// user authorises, installer(8) runs as root and the install
+    /// completes.  When the user cancels, osascript exits with code
+    /// -128 (errAEEventNotHandled) — we surface that as
+    /// `.adminDeclined`.
+    ///
+    /// Path quoting: AppleScript's `quoted form of` would normally
+    /// handle this, but we precompute the quoted form in Swift so
+    /// the AppleScript command is a fixed shape (no AppleScript
+    /// string concatenation that could be confused by an attacker-
+    /// controlled path).  The file path is from `pkg.path`, which
+    /// the user has already picked via NSOpenPanel + the verifier
+    /// pipeline has SHA-256-checked + Gatekeeper-cleared by the
+    /// time we reach this method.
+    private static func installWithAdminPrompt(pkg: URL, target: String) async throws {
+        let quotedPath = pkg.path
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+        let cmdline = "/usr/sbin/installer -pkg \"\(quotedPath)\" -target \(shellQuote(target))"
+        let appleScript = "do shell script \"\(cmdline)\" with administrator privileges"
+
+        let result = await runOsascript([
+            "-e", appleScript,
+        ])
+        if result.exitCode == 0 { return }
+
+        // osascript returns -128 when the user clicks Cancel on the
+        // authorization dialog.
+        if result.exitCode == -128
+            || result.stderr.contains("(-128)")
+            || result.stderr.lowercased().contains("user canceled") {
+            throw Failure.adminDeclined
+        }
+        throw Failure.installerFailed(
+            exitCode: result.exitCode,
+            stderr: result.stderr.isEmpty ? result.stdout : result.stderr
+        )
+    }
+
+    /// Shell-quote a string for embedding inside an AppleScript-
+    /// driven `do shell script` command.  Conservative: wraps in
+    /// single quotes after escaping any embedded single quotes.
+    /// `target` is normally a fixed string ("/", "LocalSystem"),
+    /// but quoting here keeps the call site uniform for future
+    /// callers that might pass a custom value.
+    private static func shellQuote(_ s: String) -> String {
+        let escaped = s.replacingOccurrences(of: "'", with: "'\\''")
+        return "'\(escaped)'"
+    }
+
+    /// Async wrapper around osascript.  Same shape as runInstaller
+    /// — the admin path can take 5–60s if the user takes time on
+    /// the auth dialog, so we yield to the runtime.
+    static func runOsascript(_ args: [String]) async -> ProcessResult {
+        await Task.detached { runOsascriptSync(args) }.value
+    }
+
+    /// Synchronous spawn of /usr/bin/osascript.  Hard-coded path —
+    /// osascript is at the same well-known location on every
+    /// macOS shipped since 10.0.
+    static func runOsascriptSync(_ args: [String]) -> ProcessResult {
+        let proc = Process()
+        proc.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+        proc.arguments = args
+        let outPipe = Pipe()
+        let errPipe = Pipe()
+        proc.standardOutput = outPipe
+        proc.standardError = errPipe
+        do {
+            try proc.run()
+            proc.waitUntilExit()
+        } catch {
+            return ProcessResult(
+                exitCode: -1,
+                stdout: "",
+                stderr: "Failed to launch osascript: \(error.localizedDescription)"
+            )
+        }
+        let outData = outPipe.fileHandleForReading.readDataToEndOfFile()
+        let errData = errPipe.fileHandleForReading.readDataToEndOfFile()
+        return ProcessResult(
+            exitCode: proc.terminationStatus,
+            stdout: String(data: outData, encoding: .utf8) ?? "",
+            stderr: String(data: errData, encoding: .utf8) ?? ""
         )
     }
 
