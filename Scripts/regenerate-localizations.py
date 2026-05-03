@@ -3063,6 +3063,86 @@ NEW_V16_STRINGS = {
         "de": "%lld App(s) angemeldet. Noch kein Durchlauf — periodische Läufe alle 6 Stunden.",
         "it": "%lld app abilitate. Ancora nessuna scansione — esecuzioni periodiche ogni 6 ore.",
     },
+
+    # ── v1.9.x — audit catch-up after extending the regex set to ────
+    # recognise ContextCard / TitledCard / StatusPill / EmptyStateView
+    # / MetricView named-parameter literals.  49 strings across all
+    # tabs were rendering English on non-English locales because the
+    # audit didn't see them.
+
+    # Status pills — short uppercase labels rendered in StatusPill text:
+    "DONE":       {"pt-PT": "PRONTO",   "es": "HECHO",     "fr": "TERMINÉ",    "de": "FERTIG",   "it": "FATTO"},
+    "RUNNING":    {"pt-PT": "EM CURSO", "es": "EN CURSO",  "fr": "EN COURS",   "de": "AKTIV",    "it": "IN CORSO"},
+    "FAILED":     {"pt-PT": "FALHOU",   "es": "FALLÓ",     "fr": "ÉCHEC",      "de": "FEHLER",   "it": "FALLITO"},
+    "PAUSED":     {"pt-PT": "EM PAUSA", "es": "PAUSADO",   "fr": "EN PAUSE",   "de": "PAUSIERT", "it": "IN PAUSA"},
+    "QUEUED":     {"pt-PT": "EM FILA",  "es": "EN COLA",   "fr": "EN FILE",    "de": "WARTEND",  "it": "IN CODA"},
+    "CANCELLED":  {"pt-PT": "CANCELADO","es": "CANCELADO", "fr": "ANNULÉ",     "de": "ABGEBROCHEN","it": "ANNULLATO"},
+    "DOWNLOADING":{"pt-PT": "A TRANSFERIR","es": "DESCARGANDO","fr": "TÉLÉCH.","de": "LÄDT",   "it": "SCARICANDO"},
+    "WAITING":    {"pt-PT": "EM ESPERA","es": "ESPERANDO", "fr": "ATTENTE",    "de": "WARTET",   "it": "IN ATTESA"},
+    "RESOLVING":  {"pt-PT": "A RESOLVER","es": "RESOLVIENDO","fr": "RÉSOLUTION","de": "AUFLÖSEN","it": "RISOLUZIONE"},
+    "ERROR":      {"pt-PT": "ERRO",     "es": "ERROR",     "fr": "ERREUR",     "de": "FEHLER",   "it": "ERRORE"},
+    "COMPLETE":   {"pt-PT": "COMPLETO", "es": "COMPLETO",  "fr": "TERMINÉ",    "de": "FERTIG",   "it": "COMPLETO"},
+    "SEEDING":    {"pt-PT": "A SEMEAR", "es": "SEMBRANDO", "fr": "PARTAGE",    "de": "SAATGUT",  "it": "SEEDING"},
+    "DRAFT":      {"pt-PT": "RASCUNHO", "es": "BORRADOR",  "fr": "BROUILLON",  "de": "ENTWURF",  "it": "BOZZA"},
+    "ENDGAME":    {"pt-PT": "FINAL",    "es": "FINAL",     "fr": "FINAL",      "de": "ENDSPIEL", "it": "FINALE"},
+    "FAILED OVER":{"pt-PT": "TROCADO",  "es": "TRASPASADO","fr": "BASCULÉ",    "de": "UMGESCHALTET","it": "COMMUTATO"},
+    "FAILOVER":   {"pt-PT": "FAILOVER", "es": "FAILOVER",  "fr": "FAILOVER",   "de": "FAILOVER", "it": "FAILOVER"},
+    "OVER":       {"pt-PT": "ACABOU",   "es": "FIN",       "fr": "FIN",        "de": "ENDE",     "it": "FINE"},
+    "AUTO-DETECTED":{"pt-PT": "AUTO-DETECTADO","es": "AUTO-DETECTADO","fr": "AUTO-DÉTECTÉ","de": "AUTO-ERKANNT","it": "AUTO-RILEVATO"},
+    "WRAPS MIDNIGHT":{"pt-PT": "PASSA À MEIA-NOITE","es": "PASA MEDIANOCHE","fr": "PASSE MINUIT","de": "ÜBER MITTERNACHT","it": "OLTRE MEZZANOTTE"},
+    "WRITES":     {"pt-PT": "ESCREVE",  "es": "ESCRIBE",   "fr": "ÉCRIT",      "de": "SCHREIBT", "it": "SCRIVE"},
+    "NO NW":      {"pt-PT": "SEM REDE", "es": "SIN RED",   "fr": "PAS DE RÉSEAU","de": "KEIN NETZ","it": "SENZA RETE"},
+    "NOW":        {"pt-PT": "AGORA",    "es": "AHORA",     "fr": "MAINTENANT", "de": "JETZT",    "it": "ORA"},
+    "LIVE":       {"pt-PT": "AO VIVO",  "es": "EN VIVO",   "fr": "EN DIRECT",  "de": "LIVE",     "it": "LIVE"},
+
+    # Brand acronyms — kept verbatim across all locales (these are
+    # technical abbreviations users recognise universally).
+    "AI":         {"pt-PT": "IA",       "es": "IA",        "fr": "IA",         "de": "KI",       "it": "IA"},
+    "MAS":        {"pt-PT": "MAS",      "es": "MAS",       "fr": "MAS",        "de": "MAS",      "it": "MAS"},
+    "GPG":        {"pt-PT": "GPG",      "es": "GPG",       "fr": "GPG",        "de": "GPG",      "it": "GPG"},
+    "ETA":        {"pt-PT": "ETA",      "es": "ETA",       "fr": "ETA",        "de": "ETA",      "it": "ETA"},
+    "PRO":        {"pt-PT": "PRO",      "es": "PRO",       "fr": "PRO",        "de": "PRO",      "it": "PRO"},
+    "NEW":        {"pt-PT": "NOVO",     "es": "NUEVO",     "fr": "NOUVEAU",    "de": "NEU",      "it": "NUOVO"},
+    "ON":         {"pt-PT": "LIGADO",   "es": "ON",        "fr": "ACTIF",      "de": "AN",       "it": "ON"},
+
+    # Section titles + card headers
+    "Details":                       {"pt-PT": "Detalhes",          "es": "Detalles",         "fr": "Détails",         "de": "Details",          "it": "Dettagli"},
+    "Performance":                   {"pt-PT": "Desempenho",        "es": "Rendimiento",      "fr": "Performance",     "de": "Leistung",         "it": "Prestazioni"},
+    "Progress":                      {"pt-PT": "Progresso",         "es": "Progreso",         "fr": "Progression",     "de": "Fortschritt",      "it": "Avanzamento"},
+    "Summary":                       {"pt-PT": "Resumo",            "es": "Resumen",          "fr": "Résumé",          "de": "Zusammenfassung",  "it": "Riepilogo"},
+    "Entries":                       {"pt-PT": "Entradas",          "es": "Entradas",         "fr": "Entrées",         "de": "Einträge",         "it": "Voci"},
+    "Torrent":                       {"pt-PT": "Torrent",           "es": "Torrent",          "fr": "Torrent",         "de": "Torrent",          "it": "Torrent"},
+    "Interface contribution":        {"pt-PT": "Contribuição da interface","es": "Contribución por interfaz","fr": "Contribution par interface","de": "Schnittstellen-Beitrag","it": "Contributo per interfaccia"},
+    "Web dashboard":                 {"pt-PT": "Painel web",        "es": "Panel web",        "fr": "Tableau de bord web","de": "Web-Dashboard",  "it": "Dashboard web"},
+    "Your rights + responsibilities":{"pt-PT": "Os teus direitos e responsabilidades","es": "Tus derechos y responsabilidades","fr": "Vos droits et responsabilités","de": "Ihre Rechte + Pflichten","it": "I tuoi diritti e responsabilità"},
+    "Questions?":                    {"pt-PT": "Dúvidas?",          "es": "¿Preguntas?",      "fr": "Des questions ?", "de": "Fragen?",          "it": "Domande?"},
+    "Size (metadata pending)":       {"pt-PT": "Tamanho (metadados pendentes)","es": "Tamaño (metadatos pendientes)","fr": "Taille (métadonnées en attente)","de": "Größe (Metadaten ausstehend)","it": "Dimensione (metadati in attesa)"},
+
+    # Format-spec status pills (interpolated)
+    "%lld HTTP": {
+        "pt-PT": "%lld HTTP", "es": "%lld HTTP", "fr": "%lld HTTP", "de": "%lld HTTP", "it": "%lld HTTP",
+    },
+    "%lld UDP": {
+        "pt-PT": "%lld UDP", "es": "%lld UDP", "fr": "%lld UDP", "de": "%lld UDP", "it": "%lld UDP",
+    },
+    "%lld live": {
+        "pt-PT": "%lld em curso", "es": "%lld activos", "fr": "%lld actifs", "de": "%lld aktiv", "it": "%lld attivi",
+    },
+    "%lld err": {
+        "pt-PT": "%lld erros", "es": "%lld err", "fr": "%lld err", "de": "%lld Fehler", "it": "%lld err",
+    },
+    "%lld CHUNKS": {
+        "pt-PT": "%lld PEDAÇOS", "es": "%lld FRAGMENTOS", "fr": "%lld MORCEAUX", "de": "%lld BLÖCKE", "it": "%lld PEZZI",
+    },
+    "%lld SWARM": {
+        "pt-PT": "%lld FROTA", "es": "%lld ENJAMBRE", "fr": "%lld ESSAIM", "de": "%lld SWARM", "it": "%lld SCIAME",
+    },
+    "%lld MIRRORS": {
+        "pt-PT": "%lld ESPELHOS", "es": "%lld MIRRORS", "fr": "%lld MIROIRS", "de": "%lld SPIEGEL", "it": "%lld MIRROR",
+    },
+    "FLEET ×%lld": {
+        "pt-PT": "FROTA ×%lld", "es": "FLOTA ×%lld", "fr": "FLOTTE ×%lld", "de": "FLOTTE ×%lld", "it": "FLOTTA ×%lld",
+    },
 }
 
 

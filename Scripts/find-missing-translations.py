@@ -53,6 +53,27 @@ PATTERNS = [
     re.compile(r'\.accessibilityLabel\(\s*"((?:[^"\\]|\\.)*)"\s*\)'),
     # LocalizedStringKey("...")
     re.compile(r'LocalizedStringKey\(\s*"((?:[^"\\]|\\.)*)"\s*\)'),
+    # v1.9.x: Splynek-specific component-builder patterns whose
+    # `subtitle:` / `title:` / `message:` parameters are typed as
+    # LocalizedStringKey but were invisible to the previous regex
+    # set.  Visual sweeps in DE+FR caught three real catalog gaps
+    # because of this — the audit was clean while the running app
+    # showed English strings on a German locale.  These regexes
+    # close the gap.
+    #
+    # ContextCard(systemImage: "x", subtitle: "...", tint: ...)
+    re.compile(r'ContextCard\([^)]*?subtitle:\s*"((?:[^"\\]|\\.)*)"'),
+    # TitledCard(title: "...", systemImage: ...) or
+    # TitledCard(title: "...") { … }
+    re.compile(r'TitledCard\(\s*title:\s*"((?:[^"\\]|\\.)*)"'),
+    # EmptyStateView(title: "...", message: "...", ...) — both
+    # title + message are LocalizedStringKey.
+    re.compile(r'EmptyStateView\([^)]*?title:\s*"((?:[^"\\]|\\.)*)"'),
+    re.compile(r'EmptyStateView\([^)]*?message:\s*"((?:[^"\\]|\\.)*)"'),
+    # MetricView(caption: "...", ...) — same shape.
+    re.compile(r'MetricView\([^)]*?caption:\s*"((?:[^"\\]|\\.)*)"'),
+    # StatusPill(text: "...", style: ...)
+    re.compile(r'StatusPill\(\s*text:\s*"((?:[^"\\]|\\.)*)"'),
 ]
 
 
