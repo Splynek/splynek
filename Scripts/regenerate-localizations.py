@@ -2968,6 +2968,57 @@ NEW_V16_STRINGS = {
         "de": "Wenn aktiv, führt Splynek alle 6 Stunden die Installer-Pipeline erneut aus und ersetzt diese App, sobald die URL des Herausgebers neue Bytes liefert.",
         "it": "Se attivo, Splynek riesegue la pipeline di installazione ogni 6 ore e sostituisce questa app se l'URL dell'editore serve nuovi byte.",
     },
+
+    # ── v1.9.7 Household swarm token (Settings card) ────────────────
+    "Set the same string on every Mac in your household to let them share download bytes over the LAN. Empty disables peer-to-peer transfers; phone QR + same-Mac flows still work.": {
+        "pt-PT": "Define a mesma palavra em todos os Macs da tua casa para partilharem bytes de transferência pela rede local. Vazio desactiva as transferências entre pares; QR no telemóvel e fluxos no mesmo Mac continuam a funcionar.",
+        "es": "Define la misma cadena en todos los Mac de tu hogar para que compartan bytes de descarga por la red local. Vacío desactiva las transferencias entre pares; los flujos con QR en el móvil y dentro del mismo Mac siguen funcionando.",
+        "fr": "Définissez la même chaîne sur chaque Mac de votre foyer pour qu'ils partagent les octets de téléchargement sur le réseau local. Vide désactive les transferts entre pairs ; les flux QR depuis un téléphone et au sein d'un même Mac continuent de fonctionner.",
+        "de": "Setzen Sie auf jedem Mac Ihres Haushalts dieselbe Zeichenfolge, damit sie Download-Bytes im LAN teilen. Leer deaktiviert Peer-to-Peer-Übertragungen; Telefon-QR + Selbst-Mac-Abläufe funktionieren weiterhin.",
+        "it": "Imposta la stessa stringa su ogni Mac della tua famiglia per condividere byte di download sulla rete locale. Vuoto disattiva i trasferimenti tra peer; i flussi con QR da telefono e sullo stesso Mac continuano a funzionare.",
+    },
+    "Best practice: pick a short memorable phrase, type it on each Mac. Every chunk is still SHA-256 verified before it lands on disk — a malicious peer cannot inject corrupt bytes.": {
+        "pt-PT": "Boa prática: escolhe uma frase curta e fácil de memorizar, e digita-a em cada Mac. Cada pedaço é verificado por SHA-256 antes de chegar ao disco — um par malicioso não pode injectar bytes corrompidos.",
+        "es": "Buena práctica: elige una frase corta y memorable, y escríbela en cada Mac. Cada fragmento se verifica con SHA-256 antes de aterrizar en el disco — un par malicioso no puede inyectar bytes corruptos.",
+        "fr": "Bonne pratique : choisissez une phrase courte et mémorable, tapez-la sur chaque Mac. Chaque morceau est vérifié par SHA-256 avant d'atterrir sur le disque — un pair malveillant ne peut pas injecter d'octets corrompus.",
+        "de": "Best Practice: Wählen Sie eine kurze, einprägsame Phrase und tippen Sie sie auf jedem Mac ein. Jeder Block wird per SHA-256 verifiziert, bevor er auf der Festplatte landet — ein bösartiger Peer kann keine beschädigten Bytes einschleusen.",
+        "it": "Buona pratica: scegli una frase corta e memorabile, e digitala su ogni Mac. Ogni blocco è verificato con SHA-256 prima di atterrare sul disco — un peer malevolo non può iniettare byte corrotti.",
+    },
+    "Household swarm token": {
+        "pt-PT": "Token partilhado da Frota",
+        "es": "Token compartido del hogar",
+        "fr": "Jeton partagé du foyer",
+        "de": "Haushalts-Swarm-Token",
+        "it": "Token condiviso della casa",
+    },
+    "Shared token (any string)": {
+        "pt-PT": "Token partilhado (qualquer texto)",
+        "es": "Token compartido (cualquier texto)",
+        "fr": "Jeton partagé (n'importe quel texte)",
+        "de": "Geteilter Token (beliebige Zeichenfolge)",
+        "it": "Token condiviso (qualsiasi stringa)",
+    },
+    "Clear": {
+        "pt-PT": "Limpar",
+        "es": "Borrar",
+        "fr": "Effacer",
+        "de": "Löschen",
+        "it": "Cancella",
+    },
+    "OFF": {
+        "pt-PT": "DESL.",
+        "es": "DESACT.",
+        "fr": "DÉSACT.",
+        "de": "AUS",
+        "it": "DISATT.",
+    },
+    "ACTIVE": {
+        "pt-PT": "ATIVO",
+        "es": "ACTIVO",
+        "fr": "ACTIF",
+        "de": "AKTIV",
+        "it": "ATTIVO",
+    },
 }
 
 

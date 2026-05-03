@@ -30,6 +30,7 @@ struct SettingsView: View {
                 proCard
                 browserHelpersCard
                 webDashboardCard
+                swarmHouseholdCard
                 aiCard
                 scheduleCard
                 watchedFolderCard
@@ -235,6 +236,43 @@ struct SettingsView: View {
                             .font(.callout).foregroundStyle(.secondary)
                     }
                 }
+            }
+        }
+    }
+
+    // MARK: Household swarm token (v1.9.7)
+
+    /// v1.9.7: shared swarm-token field.  When multiple Macs in the
+    /// same household configure the same string here, peer
+    /// participants can authenticate against each other's seeders
+    /// and pull chunks at LAN speed.  Empty disables Mac-to-Mac
+    /// auto-join (the loopback + phone-QR flows still work).
+    private var swarmHouseholdCard: some View {
+        TitledCard(title: "Household swarm token", systemImage: "person.3.fill") {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Set the same string on every Mac in your household to let them share download bytes over the LAN. Empty disables peer-to-peer transfers; phone QR + same-Mac flows still work.")
+                    .font(.callout).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: 8) {
+                    SecureField("Shared token (any string)", text: $vm.swarmHouseholdToken)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 360)
+                    Button {
+                        vm.swarmHouseholdToken = ""
+                    } label: {
+                        Label("Clear", systemImage: "xmark.circle")
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(vm.swarmHouseholdToken.isEmpty)
+                }
+                if vm.swarmHouseholdToken.isEmpty {
+                    StatusPill(text: "OFF", style: .neutral)
+                } else {
+                    StatusPill(text: "ACTIVE", style: .success)
+                }
+                Text("Best practice: pick a short memorable phrase, type it on each Mac. Every chunk is still SHA-256 verified before it lands on disk — a malicious peer cannot inject corrupt bytes.")
+                    .font(.caption).foregroundStyle(.tertiary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

@@ -593,6 +593,23 @@ final class SplynekViewModel: ObservableObject {
     /// tick.  Cleared per-session; ephemeral.
     private var joinedSwarms: Set<UUID> = []
 
+    /// v1.9.7: household-shared swarm token.  Multiple Macs in the
+    /// same household configure the same string here; the swarm
+    /// coordinator accepts it as a second valid bearer on token-
+    /// gated routes (manifest, chunk, contribute, leave) so peer
+    /// participants authenticate against each other.  Empty / nil
+    /// disables Mac-to-Mac auto-join (only loopback + phone-QR
+    /// flows still work).  Persisted to UserDefaults so the
+    /// setting survives launches.
+    @Published var swarmHouseholdToken: String {
+        didSet {
+            UserDefaults.standard.set(swarmHouseholdToken, forKey: "swarmHouseholdToken")
+            fleet.swarm.setSecondaryToken(
+                swarmHouseholdToken.isEmpty ? nil : swarmHouseholdToken
+            )
+        }
+    }
+
     /// Back-compat shim — callers that still reach for `vm.aiChat` /
     /// `vm.aiConciergeThinking` (Sidebar's AI badge; the old
     /// `conciergeSend` path; the rename-surface in handleConciergeAction)
@@ -707,6 +724,7 @@ final class SplynekViewModel: ObservableObject {
         self.seedWhileLeeching = defaults.bool(forKey: "seedWhileLeeching")
         self.mcpEnabled = defaults.bool(forKey: "mcpEnabled")
         self.hasCompletedOnboarding = defaults.bool(forKey: "hasCompletedOnboarding")
+        self.swarmHouseholdToken = defaults.string(forKey: "swarmHouseholdToken") ?? ""
         let savedMax = defaults.integer(forKey: "maxConcurrentDownloads")
         self.maxConcurrentDownloads = (1...10).contains(savedMax) ? savedMax : 3
 
@@ -850,6 +868,14 @@ final class SplynekViewModel: ObservableObject {
             }
         )
         autoUpdate?.start()
+
+        // v1.9.7: apply persisted household-swarm token (if any) to
+        // the SwarmCoordinator.  The didSet on `swarmHouseholdToken`
+        // handles future updates; this initial install covers the
+        // launch-from-cold-prefs case before any UI touch.
+        if !swarmHouseholdToken.isEmpty {
+            fleet.swarm.setSecondaryToken(swarmHouseholdToken)
+        }
 
         // v1.9.5: launch the swarm-announcement observer so peers'
         // active swarms surface in `peerSwarms` for the UI + the
@@ -1101,15 +1127,18 @@ final class SplynekViewModel: ObservableObject {
         // for subsequent requests.
         let manifestURL = peerBaseURL
             .appendingPathComponent("splynek/v1/swarm/\(listing.jobID.uuidString)/manifest")
-        // /list is no-auth; manifest + chunks endpoints are token-
-        // gated.  v1.9.6 ships with no peer-token sharing, so the
-        // participant uses an empty token — the seeder will 401.
-        // The auto-join path is therefore inert until v1.9.7 wires
-        // QR-pairing of the swarm token.  This commit lays the
-        // plumbing; the credential exchange is a separate concern.
+        // v1.9.7: pull the household-shared swarm token if the user
+        // configured one in Settings.  Empty string still works as
+        // a "try anyway" — the seeder will 401 + we'll log the
+        // summary's fatalError.  This is intentionally tolerant
+        // because users can run a same-Mac loopback test without
+        // touching the Settings card.
+        let bearer = await MainActor.run { [weak self] in
+            self?.swarmHouseholdToken ?? ""
+        }
         let participant = SwarmParticipant(
             manifestURL: manifestURL,
-            token: ""
+            token: bearer
         )
 
         let summary = await participant.pull(

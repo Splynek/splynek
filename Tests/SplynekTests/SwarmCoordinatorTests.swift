@@ -47,6 +47,121 @@ enum SwarmCoordinatorTests {
             }
         }
 
+        TestHarness.suite("SwarmCoordinator — household token (v1.9.7)") {
+
+            TestHarness.test("Secondary token initially nil → only primary accepted") {
+                let coord = makeCoordinator()
+                let jid = UUID()
+                coord.register(
+                    jobID: jid,
+                    chunks: makeChunks(count: 1),
+                    chunkSize: 100,
+                    seederCompleted: [0]
+                )
+                // primary OK
+                let r1 = coord.handle(
+                    path: "/splynek/v1/swarm/\(jid)/manifest",
+                    method: "GET", body: Data(), token: testToken
+                )
+                if case .ok = r1 { /* expected */ }
+                else { try expect(false, "Primary token should pass, got \(r1)") }
+                // anything else fails
+                let r2 = coord.handle(
+                    path: "/splynek/v1/swarm/\(jid)/manifest",
+                    method: "GET", body: Data(), token: "household-x"
+                )
+                if case .unauthorized = r2 { /* expected */ }
+                else { try expect(false, "Other token should 401, got \(r2)") }
+            }
+
+            TestHarness.test("After setSecondaryToken, both pass") {
+                let coord = makeCoordinator()
+                coord.setSecondaryToken("household-x")
+                let jid = UUID()
+                coord.register(
+                    jobID: jid,
+                    chunks: makeChunks(count: 1),
+                    chunkSize: 100,
+                    seederCompleted: [0]
+                )
+                let r1 = coord.handle(
+                    path: "/splynek/v1/swarm/\(jid)/manifest",
+                    method: "GET", body: Data(), token: testToken
+                )
+                let r2 = coord.handle(
+                    path: "/splynek/v1/swarm/\(jid)/manifest",
+                    method: "GET", body: Data(), token: "household-x"
+                )
+                if case .ok = r1 { /* expected */ }
+                else { try expect(false, "Primary should pass, got \(r1)") }
+                if case .ok = r2 { /* expected */ }
+                else { try expect(false, "Secondary should pass, got \(r2)") }
+            }
+
+            TestHarness.test("Wrong household token still 401s") {
+                let coord = makeCoordinator()
+                coord.setSecondaryToken("household-x")
+                let jid = UUID()
+                coord.register(
+                    jobID: jid, chunks: makeChunks(count: 1),
+                    chunkSize: 100, seederCompleted: [0]
+                )
+                let r = coord.handle(
+                    path: "/splynek/v1/swarm/\(jid)/manifest",
+                    method: "GET", body: Data(), token: "wrong-household"
+                )
+                if case .unauthorized = r { /* expected */ }
+                else { try expect(false, "Wrong household token should 401, got \(r)") }
+            }
+
+            TestHarness.test("Setting empty / nil clears the secondary") {
+                let coord = makeCoordinator()
+                coord.setSecondaryToken("household-x")
+                coord.setSecondaryToken(nil)
+                let jid = UUID()
+                coord.register(
+                    jobID: jid, chunks: makeChunks(count: 1),
+                    chunkSize: 100, seederCompleted: [0]
+                )
+                let r = coord.handle(
+                    path: "/splynek/v1/swarm/\(jid)/manifest",
+                    method: "GET", body: Data(), token: "household-x"
+                )
+                if case .unauthorized = r { /* expected */ }
+                else { try expect(false, "Cleared secondary token must 401, got \(r)") }
+            }
+
+            TestHarness.test("Empty string is treated as cleared") {
+                let coord = makeCoordinator()
+                coord.setSecondaryToken("")
+                let jid = UUID()
+                coord.register(
+                    jobID: jid, chunks: makeChunks(count: 1),
+                    chunkSize: 100, seederCompleted: [0]
+                )
+                // An empty presented token must NOT match an empty
+                // stored secondary — defensive against accidental
+                // "no auth at all" passing through.
+                let r = coord.handle(
+                    path: "/splynek/v1/swarm/\(jid)/manifest",
+                    method: "GET", body: Data(), token: ""
+                )
+                if case .unauthorized = r { /* expected */ }
+                else { try expect(false, "Empty token + cleared secondary must 401, got \(r)") }
+            }
+
+            TestHarness.test("/list still no-auth even with secondary configured") {
+                let coord = makeCoordinator()
+                coord.setSecondaryToken("household-x")
+                let r = coord.handle(
+                    path: "/splynek/v1/swarm/list",
+                    method: "GET", body: Data(), token: "anything"
+                )
+                if case .ok = r { /* expected */ }
+                else { try expect(false, "/list must remain no-auth, got \(r)") }
+            }
+        }
+
         TestHarness.suite("SwarmCoordinator — announce") {
 
             TestHarness.test("Valid announce body is acknowledged") {

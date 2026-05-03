@@ -46,6 +46,17 @@ final class SwarmCoordinator: @unchecked Sendable {
     /// Same string the rest of the fleet REST API uses.
     private let token: String
 
+    /// v1.9.7: optional household-shared swarm token.  When set,
+    /// auth on token-gated routes accepts EITHER `token` (the
+    /// loopback / phone-QR path) OR `secondaryToken` (the
+    /// Mac-to-Mac path).  Multiple Macs in the same household
+    /// configure the same secondary token so peer participants can
+    /// authenticate against each other without per-peer pairing.
+    /// Settable via `setSecondaryToken(_:)` from the VM as the user
+    /// updates the Settings card.
+    private var secondaryToken: String?
+    private let secondaryTokenLock = NSLock()
+
     /// Active swarms, keyed by jobID.  Mutations go through `lock`.
     private var states: [UUID: FleetChunkSwarm.State] = [:]
     private let lock = NSLock()
@@ -92,6 +103,25 @@ final class SwarmCoordinator: @unchecked Sendable {
         payloadResolverLock.lock()
         payloadResolver = resolver
         payloadResolverLock.unlock()
+    }
+
+    /// v1.9.7: install or rotate the household-shared swarm token.
+    /// Pass nil to clear (peers can no longer auto-join).  The
+    /// existing per-Mac `token` field is unchanged — this only
+    /// affects what's accepted as a SECOND valid bearer on the
+    /// token-gated swarm routes.
+    func setSecondaryToken(_ value: String?) {
+        secondaryTokenLock.lock()
+        secondaryToken = (value?.isEmpty == true) ? nil : value
+        secondaryTokenLock.unlock()
+    }
+
+    /// Snapshot the secondary token for an auth check.  Lock-
+    /// protected so concurrent setSecondaryToken doesn't race.
+    private func currentSecondaryToken() -> String? {
+        secondaryTokenLock.lock()
+        defer { secondaryTokenLock.unlock() }
+        return secondaryToken
     }
 
     /// v1.9.2: enable post-completion chunk serving via the content
@@ -218,8 +248,13 @@ final class SwarmCoordinator: @unchecked Sendable {
             return handleList(method: method)
         }
 
-        // Token check for everything below.
-        guard presentedToken == token else {
+        // Token check for everything below.  v1.9.7: accept EITHER
+        // the per-Mac webToken (loopback / phone QR) OR the optional
+        // household-shared swarm token (Mac-to-Mac auto-join).
+        let secondary = currentSecondaryToken()
+        let authOK = (presentedToken == token)
+            || (secondary != nil && presentedToken == secondary)
+        guard authOK else {
             return .unauthorized
         }
 

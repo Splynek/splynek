@@ -557,25 +557,25 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "ACTIVOS"
+            "value": "ACTIVO"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "ACTIFS"
+            "value": "ACTIF"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "ATTIVI"
+            "value": "ATTIVO"
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "ATIVOS"
+            "value": "ATIVO"
           }
         }
       }
@@ -2005,6 +2005,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Melhor débito histórico para este servidor."
+          }
+        }
+      }
+    },
+    "Best practice: pick a short memorable phrase, type it on each Mac. Every chunk is still SHA-256 verified before it lands on disk — a malicious peer cannot inject corrupt bytes.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Best Practice: Wählen Sie eine kurze, einprägsame Phrase und tippen Sie sie auf jedem Mac ein. Jeder Block wird per SHA-256 verifiziert, bevor er auf der Festplatte landet — ein bösartiger Peer kann keine beschädigten Bytes einschleusen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buena práctica: elige una frase corta y memorable, y escríbela en cada Mac. Cada fragmento se verifica con SHA-256 antes de aterrizar en el disco — un par malicioso no puede inyectar bytes corruptos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonne pratique : choisissez une phrase courte et mémorable, tapez-la sur chaque Mac. Chaque morceau est vérifié par SHA-256 avant d'atterrir sur le disque — un pair malveillant ne peut pas injecter d'octets corrompus."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buona pratica: scegli una frase corta e memorabile, e digitala su ogni Mac. Ogni blocco è verificato con SHA-256 prima di atterrare sul disco — un peer malevolo non può iniettare byte corrotti."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boa prática: escolhe uma frase curta e fácil de memorizar, e digita-a em cada Mac. Cada pedaço é verificado por SHA-256 antes de chegar ao disco — um par malicioso não pode injectar bytes corrompidos."
           }
         }
       }
@@ -6124,6 +6158,40 @@
         }
       }
     },
+    "Household swarm token": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haushalts-Swarm-Token"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token compartido del hogar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeton partagé du foyer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token condiviso della casa"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token partilhado da Frota"
+          }
+        }
+      }
+    },
     "How many downloads Splynek will run in parallel.": {
       "localizations": {
         "de": {
@@ -8296,6 +8364,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ainda nada. Inicia uma transferência — outros Splyneks nesta rede local vão vê-la e podem puxar fragmentos concluídos deste Mac assim que chegarem ao disco."
+          }
+        }
+      }
+    },
+    "OFF": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AUS"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DESACT."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DÉSACT."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DISATT."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DESL."
           }
         }
       }
@@ -12346,6 +12448,40 @@
         }
       }
     },
+    "Set the same string on every Mac in your household to let them share download bytes over the LAN. Empty disables peer-to-peer transfers; phone QR + same-Mac flows still work.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setzen Sie auf jedem Mac Ihres Haushalts dieselbe Zeichenfolge, damit sie Download-Bytes im LAN teilen. Leer deaktiviert Peer-to-Peer-Übertragungen; Telefon-QR + Selbst-Mac-Abläufe funktionieren weiterhin."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Define la misma cadena en todos los Mac de tu hogar para que compartan bytes de descarga por la red local. Vacío desactiva las transferencias entre pares; los flujos con QR en el móvil y dentro del mismo Mac siguen funcionando."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Définissez la même chaîne sur chaque Mac de votre foyer pour qu'ils partagent les octets de téléchargement sur le réseau local. Vide désactive les transferts entre pairs ; les flux QR depuis un téléphone et au sein d'un même Mac continuent de fonctionner."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imposta la stessa stringa su ogni Mac della tua famiglia per condividere byte di download sulla rete locale. Vuoto disattiva i trasferimenti tra peer; i flussi con QR da telefono e sullo stesso Mac continuano a funzionare."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Define a mesma palavra em todos os Macs da tua casa para partilharem bytes de transferência pela rede local. Vazio desactiva as transferências entre pares; QR no telemóvel e fluxos no mesmo Mac continuam a funcionar."
+          }
+        }
+      }
+    },
     "Settings": {
       "localizations": {
         "de": {
@@ -12478,6 +12614,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Partilháveis (%lld):"
+          }
+        }
+      }
+    },
+    "Shared token (any string)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geteilter Token (beliebige Zeichenfolge)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token compartido (cualquier texto)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeton partagé (n'importe quel texte)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token condiviso (qualsiasi stringa)"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token partilhado (qualquer texto)"
           }
         }
       }
