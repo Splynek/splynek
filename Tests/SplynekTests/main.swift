@@ -57,6 +57,7 @@ AppMoverTests.run()
 ZipInstallerTests.run()
 SwarmCoordinatorTests.run()
 SwarmContentCacheTests.run()
+SwarmParticipantTests.run()
 AutoUpdateSchedulerTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
