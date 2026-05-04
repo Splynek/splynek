@@ -159,6 +159,18 @@ The `copy: true` on the dependency embeds the helper bundle inside `Splynek.app/
 4. **Day 4 — installer(8) integration.**  Helper's `installPkg` impl: spawn `/usr/sbin/installer` with `-pkg path -target target`.  Helper runs as root via launchd; no further privilege escalation needed.  Wire to `PkgInstaller.installWithSMJobBlessIfAvailable` as the new admin-domain primary path.
 5. **Day 5 — fallback + tests.**  PkgInstaller's `requireAdmin: true` path: try SMJobBless first; on `helperUnavailable` or `adminDeclined`, fall back to the v1.8.1 osascript path (existing code).  Tests: helper-version smoke test, error-path mocking, fallback decision.
 
+## Activation runbook
+
+The implementation plan above describes how the helper was BUILT.
+[`SMJOB-BLESS-ACTIVATION.md`](SMJOB-BLESS-ACTIVATION.md) is the
+companion runbook for the maintainer turning it ON for users —
+xcodegen, xcodebuild, code-signing verification, first-launch
+approval flow, smoke-testing against a sample admin .pkg, and
+troubleshooting common failures.  Until the activation gate
+completes, every `PkgInstaller.install(requireAdmin: true)` call
+returns `.helperUnavailable` and falls through to the v1.8.1
+osascript path — zero behavioural change for users today.
+
 ## Why this is "deferred not skipped"
 
 The v1.8.1 osascript path works for users today.  The v1.8.2 SMJobBless path is the long-term-correct architecture for an MAS app that increasingly needs privileged operations (admin pkg installs, future kext-loaders, future system-extension activations).
