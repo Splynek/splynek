@@ -515,6 +515,17 @@ final class DownloadEngine {
                     lastEvent = event
                 }
             }
+            // v1.7.x (audit fix): cancel the path observer on EVERY
+            // exit path — including the catch handler below, where
+            // the original code only cleaned up `historyTimerTask`.
+            // Without this, a thrown error inside `runWorkers` (e.g.,
+            // FileHandle creation failure inside a sub-lane) would
+            // leak the task + its underlying NWPathMonitor for the
+            // engine's lifetime.
+            defer {
+                pathObserverTask?.cancel()
+                pathObserverTask = nil
+            }
 
             // v1.7.x (Bet S2 — engine-side restart loop): wraps the
             // single `runWorkers` call into a re-entry loop that
@@ -561,8 +572,9 @@ final class DownloadEngine {
                 }
                 await report("Network changed — restarting lanes (attempt \(pathFlipRestartCount + 1)).")
             }
-            pathObserverTask?.cancel()
-            pathObserverTask = nil
+            // pathObserverTask cancelled by the `defer` above — applies
+            // on both the success path through this block AND the
+            // exception path that lands in the `catch` below.
 
             historyTimerTask?.cancel()
 

@@ -1204,16 +1204,31 @@ final class SplynekViewModel: ObservableObject {
             // disk are not refetched.  pumpQueueRunner picks up any
             // pending queue entries that became eligible while
             // we were offline.
-            let toResume = activeJobs.filter {
-                pathPausedJobIDs.contains($0.id) && $0.lifecycle == .paused
-            }
+            //
+            // Audit fix (v1.7.x): job.pause() is asynchronous — it
+            // sets engine.cancelFlag + flips lifecycle to .paused
+            // only AFTER the engine's run() exits (via
+            // settleAfterRun).  On rapid offline→online flaps
+            // (~milliseconds), the engine may still be mid-cleanup
+            // when this callback fires; the lifecycle is still
+            // .running and DownloadJob.resume() no-ops on active
+            // jobs.  Brief delay (~250ms) lets the cancel chain
+            // settle so the resume catches the now-paused state.
+            // Empirically: cancel → settle takes <100ms for typical
+            // sub-lane counts; 250ms is a comfortable margin without
+            // being user-perceptible.
+            let toResumeIDs = pathPausedJobIDs
             pathPausedJobIDs.removeAll()
-            for job in toResume {
-                job.resume { [weak self] _ in
-                    guard let self else { return }
-                    self.history = DownloadHistory.load()
-                    SplynekSpotlight.reindex(self.history)
-                    self.pumpQueueRunner()
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(nanoseconds: 250_000_000)
+                guard let self else { return }
+                for job in self.activeJobs where toResumeIDs.contains(job.id) && job.lifecycle == .paused {
+                    job.resume { [weak self] _ in
+                        guard let self else { return }
+                        self.history = DownloadHistory.load()
+                        SplynekSpotlight.reindex(self.history)
+                        self.pumpQueueRunner()
+                    }
                 }
             }
         }

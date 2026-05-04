@@ -166,7 +166,7 @@ public enum MirrorManifest {
             }
             // Wayback long-shot — last resort, always pushed to the end.
             if let wayback = URL(
-                string: "https://web.archive.org/web/2024/" + primary.absoluteString
+                string: "https://web.archive.org/web/" + primary.absoluteString
             ) {
                 alts.append(wayback)
             }
@@ -224,7 +224,7 @@ public enum MirrorManifest {
             }
             // Wayback long-shot — always pushed to the end, like Ubuntu.
             if let wayback = URL(
-                string: "https://web.archive.org/web/2024/" + primary.absoluteString
+                string: "https://web.archive.org/web/" + primary.absoluteString
             ) {
                 alts.append(wayback)
             }
@@ -292,7 +292,7 @@ public enum MirrorManifest {
                 .filter { $0.absoluteString != primary.absoluteString }
             // Wayback long-shot, like every other set.
             if let wayback = URL(
-                string: "https://web.archive.org/web/2024/" + primary.absoluteString
+                string: "https://web.archive.org/web/" + primary.absoluteString
             ) {
                 alts.append(wayback)
             }
