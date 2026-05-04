@@ -113,5 +113,45 @@ enum MirrorManifestTests {
                     "Got \(MirrorManifest.allSets.count) mirror sets; if a new publisher landed, update this assertion.")
             }
         }
+
+        TestHarness.suite("MirrorManifest — parallel vs last-resort split") {
+
+            // Engine integration (DownloadJob.start) injects only
+            // parallelAlternatives as round-robin lanes — Wayback
+            // archive entries route 20% of bytes through a cold
+            // archive otherwise, which would slow legitimate downloads.
+
+            TestHarness.test("parallelAlternatives excludes web.archive.org") {
+                let primary = URL(string: "https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso")!
+                let alts = MirrorManifest.parallelAlternatives(for: primary)
+                try expect(!alts.isEmpty, "Should have curated Tier-1 mirrors")
+                for url in alts {
+                    try expect(url.host?.lowercased() != "web.archive.org",
+                        "Wayback entry leaked into parallel lanes: \(url.absoluteString)")
+                }
+            }
+
+            TestHarness.test("parallelAlternatives count is alternatives count minus Wayback") {
+                let primary = URL(string: "https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso")!
+                let all = MirrorManifest.alternatives(for: primary)
+                let parallel = MirrorManifest.parallelAlternatives(for: primary)
+                let lastResort = MirrorManifest.lastResortAlternatives(for: primary)
+                try expectEqual(all.count, parallel.count + lastResort.count,
+                    "parallel + last-resort = full alternatives set (no overlap, no drops)")
+            }
+
+            TestHarness.test("lastResortAlternatives is just web.archive.org URLs") {
+                let primary = URL(string: "https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso")!
+                let lastResort = MirrorManifest.lastResortAlternatives(for: primary)
+                try expectEqual(lastResort.count, 1)
+                try expectEqual(lastResort.first?.host, "web.archive.org")
+            }
+
+            TestHarness.test("Both helpers return [] for non-claimed URLs") {
+                let primary = URL(string: "https://example.com/x")!
+                try expect(MirrorManifest.parallelAlternatives(for: primary).isEmpty)
+                try expect(MirrorManifest.lastResortAlternatives(for: primary).isEmpty)
+            }
+        }
     }
 }

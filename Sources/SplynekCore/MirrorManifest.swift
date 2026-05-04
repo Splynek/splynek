@@ -83,6 +83,33 @@ public enum MirrorManifest {
         return []
     }
 
+    /// "Co-equal mirrors only" — `alternatives(for:)` minus the
+    /// archive.org Wayback entries that are fine as last-resort
+    /// fallbacks but bad as parallel lanes (slow archive, may
+    /// 404 on the specific resource even though the API endpoint
+    /// is up).  Use this when injecting mirrors as parallel
+    /// lanes from the engine creation site (`DownloadJob.start`)
+    /// — the engine's own lane round-robin will then load-balance
+    /// across primary + Tier-1 mirrors without ever sending bytes
+    /// to a cold archive.  Last-resort archives live in
+    /// `lastResortAlternatives(for:)` for callers that want them.
+    public static func parallelAlternatives(for primary: URL) -> [URL] {
+        return alternatives(for: primary).filter { url in
+            url.host?.lowercased() != "web.archive.org"
+        }
+    }
+
+    /// Inverse of `parallelAlternatives` — only the archive entries
+    /// (web.archive.org).  Empty for URLs no set claims.  Engine
+    /// integration of these is deferred — they're surfaced today
+    /// via the `alternatives(for:)` full-list entry point for
+    /// callers that want to render a "view archived copy" link.
+    public static func lastResortAlternatives(for primary: URL) -> [URL] {
+        return alternatives(for: primary).filter { url in
+            url.host?.lowercased() == "web.archive.org"
+        }
+    }
+
     /// Look up the publisher name for a primary URL — used by the UI
     /// to render "switched to <publisher> mirror X" without leaking
     /// the URL transformation details.  Nil for URLs no set claims.

@@ -1666,6 +1666,18 @@ final class SplynekViewModel: ObservableObject {
         if let sha = sha256, !sha.isEmpty {
             fleetMirrors.append(contentsOf: fleet.contentMirrors(for: sha))
         }
+        // v1.7.x (Bet S2 — Unbreakable Resume): inject curated
+        // public mirrors alongside the fleet peers.  The engine's
+        // existing per-lane URL round-robin distributes load across
+        // primary + peers + curated mirrors, so a slow primary
+        // doesn't bottleneck the download.  `parallelAlternatives`
+        // excludes archive.org Wayback (last-resort, slow) from the
+        // round-robin set — those surface only via UI affordances.
+        // Per-chunk SHA-256 (when supplied) gates correctness across
+        // every source, so a misbehaving mirror can't inject corrupt
+        // bytes.
+        let curatedMirrors = MirrorManifest.parallelAlternatives(for: url)
+        fleetMirrors.append(contentsOf: curatedMirrors)
         // Dedupe by absolute string so a peer matching on both URL and
         // content hash only contributes one lane.
         var seenURLs: Set<String> = []
