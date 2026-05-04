@@ -6226,6 +6226,40 @@
         }
       }
     },
+    "Export your installed-apps × Sovereignty matches as a CSV file": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ihre installierten Apps × Souveränität als CSV-Datei exportieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar tus aplicaciones instaladas × Soberanía como archivo CSV"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter vos applications installées × Souveraineté en fichier CSV"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta le app installate × Sovranità come file CSV"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar a tabela de aplicações instaladas × Soberania como ficheiro CSV"
+          }
+        }
+      }
+    },
     "Export…": {
       "localizations": {
         "de": {
@@ -7246,6 +7280,40 @@
         }
       }
     },
+    "If primary and mirrors are all unavailable, the file may exist as a Wayback Machine snapshot. Coverage is unreliable for binaries — verify the file is what you expect before downloading.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn der Primärserver und alle Spiegel nicht verfügbar sind, existiert die Datei möglicherweise als Snapshot in der Wayback Machine. Die Abdeckung für Binärdateien ist unzuverlässig — überprüfen Sie vor dem Herunterladen, ob die Datei das ist, was Sie erwarten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si el servidor principal y los mirrors están todos no disponibles, el archivo puede existir como instantánea en la Wayback Machine. La cobertura no es fiable para binarios — verifica que el archivo es el que esperas antes de descargar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si le serveur principal et les miroirs sont tous indisponibles, le fichier peut exister sous forme d'instantané dans la Wayback Machine. La couverture est peu fiable pour les binaires — vérifiez que le fichier est bien celui que vous attendez avant de télécharger."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se il server principale e i mirror non sono tutti disponibili, il file potrebbe esistere come snapshot sulla Wayback Machine. La copertura non è affidabile per i binari — verifica che il file sia quello che ti aspetti prima di scaricarlo."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se o servidor principal e os espelhos estiverem todos indisponíveis, o ficheiro pode existir como instantâneo na Wayback Machine. A cobertura é pouco fiável para ficheiros binários — verifica que o ficheiro é o que esperas antes de transferir."
+          }
+        }
+      }
+    },
     "Import…": {
       "localizations": {
         "de": {
@@ -7752,6 +7820,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "AO VIVO"
+          }
+        }
+      }
+    },
+    "Last resort: archived copy": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzte Option: archivierte Kopie"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Último recurso: copia archivada"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dernier recours : copie archivée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultima risorsa: copia archiviata"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Último recurso: cópia arquivada"
           }
         }
       }
@@ -9622,6 +9724,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "DESL."
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         }
       }
@@ -17104,6 +17240,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Está disponível a versão %@"
+          }
+        }
+      }
+    },
+    "View archived copy in browser": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivierte Kopie im Browser ansehen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver copia archivada en el navegador"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voir la copie archivée dans le navigateur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visualizza copia archiviata nel browser"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver cópia arquivada no navegador"
           }
         }
       }

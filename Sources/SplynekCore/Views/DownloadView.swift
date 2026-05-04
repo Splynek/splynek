@@ -1125,10 +1125,67 @@ private struct JobCard: View {
                         Text(msg).font(.callout).foregroundStyle(.primary)
                     }
                 }
+                if job.lifecycle == .failed {
+                    waybackAffordance
+                }
                 if progress.finished, let report = progress.report {
                     reportBanner(report)
                 }
             }
+        }
+    }
+
+    /// v1.7.x (Bet S2 — last-resort fallback): show a "view archived
+    /// copy" affordance below the error banner when the primary URL
+    /// is one `MirrorManifest` claims AND we have a Wayback entry for
+    /// it.  Renders as a muted info card (not an action card — the
+    /// framing is "if all else has failed, here's a long shot") with
+    /// honest copy about Wayback's hit-or-miss behaviour for binaries.
+    /// Clicking opens the Wayback URL in the user's default browser
+    /// so they can verify the file is what they expect before
+    /// downloading themselves; we deliberately do NOT auto-attempt
+    /// the download (Wayback responses for binaries are unreliable —
+    /// often returns HTML wrappers, 404s, partial content — so an
+    /// "automatic" path would break in non-obvious ways).
+    @ViewBuilder
+    private var waybackAffordance: some View {
+        let archived = MirrorManifest.lastResortAlternatives(for: job.url)
+        if let waybackURL = archived.first {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 6) {
+                    Image(systemName: "archivebox")
+                        .foregroundStyle(.secondary)
+                    Text("Last resort: archived copy")
+                        .font(.callout.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                Text("If primary and mirrors are all unavailable, the file may exist as a Wayback Machine snapshot. Coverage is unreliable for binaries — verify the file is what you expect before downloading.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    NSWorkspace.shared.open(waybackURL)
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("View archived copy in browser")
+                        Image(systemName: "arrow.up.forward.app")
+                    }
+                    .font(.caption.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.tint)
+                .help("Opens \(waybackURL.host ?? "the archive") in your default browser. Splynek does not auto-download from archives — Wayback's binary coverage is too unreliable.")
+            }
+            .padding(10)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.primary.opacity(0.04))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .strokeBorder(Color.primary.opacity(0.10), lineWidth: 0.5)
+            )
         }
     }
 

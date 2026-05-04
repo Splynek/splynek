@@ -3143,6 +3143,41 @@ NEW_V16_STRINGS = {
     "FLEET ×%lld": {
         "pt-PT": "FROTA ×%lld", "es": "FLOTA ×%lld", "fr": "FLOTTE ×%lld", "de": "FLOTTE ×%lld", "it": "FLOTTA ×%lld",
     },
+
+    # v1.7.x — Sovereignty CSV export toolbar tooltip + alert button
+    "Export your installed-apps × Sovereignty matches as a CSV file": {
+        "pt-PT": "Exportar a tabela de aplicações instaladas × Soberania como ficheiro CSV",
+        "es": "Exportar tus aplicaciones instaladas × Soberanía como archivo CSV",
+        "fr": "Exporter vos applications installées × Souveraineté en fichier CSV",
+        "de": "Ihre installierten Apps × Souveränität als CSV-Datei exportieren",
+        "it": "Esporta le app installate × Sovranità come file CSV",
+    },
+    "OK": {
+        "pt-PT": "OK", "es": "OK", "fr": "OK", "de": "OK", "it": "OK",
+    },
+
+    # v1.7.x — Wayback last-resort affordance on failed-job error card
+    "Last resort: archived copy": {
+        "pt-PT": "Último recurso: cópia arquivada",
+        "es": "Último recurso: copia archivada",
+        "fr": "Dernier recours : copie archivée",
+        "de": "Letzte Option: archivierte Kopie",
+        "it": "Ultima risorsa: copia archiviata",
+    },
+    "If primary and mirrors are all unavailable, the file may exist as a Wayback Machine snapshot. Coverage is unreliable for binaries — verify the file is what you expect before downloading.": {
+        "pt-PT": "Se o servidor principal e os espelhos estiverem todos indisponíveis, o ficheiro pode existir como instantâneo na Wayback Machine. A cobertura é pouco fiável para ficheiros binários — verifica que o ficheiro é o que esperas antes de transferir.",
+        "es": "Si el servidor principal y los mirrors están todos no disponibles, el archivo puede existir como instantánea en la Wayback Machine. La cobertura no es fiable para binarios — verifica que el archivo es el que esperas antes de descargar.",
+        "fr": "Si le serveur principal et les miroirs sont tous indisponibles, le fichier peut exister sous forme d'instantané dans la Wayback Machine. La couverture est peu fiable pour les binaires — vérifiez que le fichier est bien celui que vous attendez avant de télécharger.",
+        "de": "Wenn der Primärserver und alle Spiegel nicht verfügbar sind, existiert die Datei möglicherweise als Snapshot in der Wayback Machine. Die Abdeckung für Binärdateien ist unzuverlässig — überprüfen Sie vor dem Herunterladen, ob die Datei das ist, was Sie erwarten.",
+        "it": "Se il server principale e i mirror non sono tutti disponibili, il file potrebbe esistere come snapshot sulla Wayback Machine. La copertura non è affidabile per i binari — verifica che il file sia quello che ti aspetti prima di scaricarlo.",
+    },
+    "View archived copy in browser": {
+        "pt-PT": "Ver cópia arquivada no navegador",
+        "es": "Ver copia archivada en el navegador",
+        "fr": "Voir la copie archivée dans le navigateur",
+        "de": "Archivierte Kopie im Browser ansehen",
+        "it": "Visualizza copia archiviata nel browser",
+    },
 }
 
 
