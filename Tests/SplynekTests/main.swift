@@ -66,6 +66,7 @@ PkgInstallerTests.run()
 PublisherPatternTests.run()
 PrivilegedHelperClientTests.run()
 ConciergeTranscriptStoreTests.run()
+PathMonitorObserverTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private
