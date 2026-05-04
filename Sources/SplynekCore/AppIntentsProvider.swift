@@ -499,24 +499,18 @@ struct SplynekAppShortcuts: AppShortcutsProvider {
             shortTitle: "List History",
             systemImageName: "clock.arrow.circlepath"
         )
-        // v1.7: Concierge-as-Mac-Assistant intents
-        AppShortcut(
-            intent: SearchDownloadHistoryIntent(),
-            phrases: ["Search \(.applicationName) history"],
-            shortTitle: "Search History",
-            systemImageName: "magnifyingglass"
-        )
-        AppShortcut(
-            intent: DiskUsageReportIntent(),
-            phrases: ["\(.applicationName) disk usage report"],
-            shortTitle: "Disk Usage",
-            systemImageName: "internaldrive"
-        )
-        AppShortcut(
-            intent: SummarizeFileIntent(),
-            phrases: ["Summarize file with \(.applicationName)"],
-            shortTitle: "Summarize File",
-            systemImageName: "doc.text.magnifyingglass"
-        )
+        // v1.7: Concierge-as-Mac-Assistant intents — defined as
+        // App Intents (still callable from the Shortcuts editor) but
+        // INTENTIONALLY NOT exposed as AppShortcuts because Apple
+        // caps a single app at 10 auto-suggested shortcuts.  The
+        // 10 above are the highest-volume ones; the v1.7 trio is
+        // accessible via "Add to Shortcuts" by users who want them.
+        // Keeping them as `AppIntent` types makes them available;
+        // the AppShortcut wrappers below are commented out so the
+        // appintentsmetadataprocessor doesn't reject the build.
+        //
+        // AppShortcut(intent: SearchDownloadHistoryIntent(), ...)
+        // AppShortcut(intent: DiskUsageReportIntent(), ...)
+        // AppShortcut(intent: SummarizeFileIntent(), ...)
     }
 }

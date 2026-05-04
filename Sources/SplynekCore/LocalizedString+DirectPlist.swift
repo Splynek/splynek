@@ -31,6 +31,25 @@ import Foundation
 
 extension Bundle {
 
+    /// v1.7.x: cross-build-system bundle reference.  In SwiftPM builds
+    /// (`./Scripts/build.sh`), `Bundle.module` is auto-synthesized
+    /// for the SplynekCore module + points to the build cache.  In
+    /// Xcode-managed MAS builds (`./Scripts/build-mas.sh`),
+    /// `Bundle.module` doesn't exist — Xcode targets bundle their
+    /// resources at the .app's main bundle.  This wrapper picks the
+    /// right one at compile time so call sites can be build-agnostic.
+    /// `localizedStringForAppKit` searches both Bundle.main + the
+    /// embedded SplynekCore.bundle internally, so even when this
+    /// returns Bundle.main (Xcode build), the lookup still finds
+    /// the .strings files.
+    static var splynekCore: Bundle {
+        #if SWIFT_PACKAGE
+        return Bundle.module
+        #else
+        return Bundle.main
+        #endif
+    }
+
     /// Read the `<locale>.lproj/Localizable.strings` file inside
     /// this bundle as a plist + look up `key` by exact match.
     /// Bypasses Foundation's broken default-locale resolution by

@@ -1354,8 +1354,15 @@ final class SplynekViewModel: ObservableObject {
     /// Route the classified action through the existing VM operations.
     /// Every action produces one assistant bubble so the user sees
     /// what we did; that bubble's `action` chip labels the dispatch.
+    /// v1.7.x: dropped from `private` to internal so the Pro
+    /// `conciergeAsk` extension (in splynek-pro/Sources/SplynekPro/
+    /// ConciergeMacAssistant.swift) can forward `.downloadByGoal`
+    /// cards through this dispatch path.  Same module-internal
+    /// access constraint protects against external callers; the
+    /// MAS Xcode build links Pro into SplynekCore so this reaches
+    /// across the source-exclusion swap.
     @MainActor
-    private func handleConciergeAction(
+    func handleConciergeAction(
         _ action: AIAssistant.ConciergeAction, userText: String
     ) {
         switch action {
@@ -1545,6 +1552,26 @@ final class SplynekViewModel: ObservableObject {
     ///
     /// Before spawning, *cancelled* and *failed* job cards are swept out
     /// of the list so a fresh download doesn't sit next to a stale red
+    /// v1.7.x: programmatic-start overload used by the Pro Concierge
+    /// `onDownload` callback (which knows the URL + filename + optional
+    /// SHA-256 from the LLM-resolved download offer + needs to start
+    /// without requiring the user to re-paste into the Fonte field).
+    /// Routes through the standard `start()` flow so the duplicate
+    /// guard, interface selection, and queue plumbing all apply
+    /// identically.
+    func start(url: String, sha256: String?, filename: String?) {
+        urlText = url
+        if let sha256 { sha256Expected = sha256 }
+        // `filename` is currently informational — the download
+        // engine derives the saved filename from the URL's last
+        // path component.  Plumbing a filename override is a
+        // future enhancement; for now we accept the parameter
+        // for API compatibility with the Pro Concierge caller +
+        // ignore it.
+        _ = filename
+        start()
+    }
+
     /// "Cancelled" tombstone. Completed jobs are kept — they're success
     /// and the user may still want to Reveal the file.
     func start() {

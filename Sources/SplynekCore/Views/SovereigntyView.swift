@@ -156,7 +156,7 @@ struct SovereigntyView: View {
         // The fix that actually works: read the `.strings` file as a
         // plist directly + look up by exact key match.  Bypasses
         // Foundation's broken default-locale resolution entirely.
-        panel.message = Bundle.module.localizedStringForAppKit(
+        panel.message = Bundle.splynekCore.localizedStringForAppKit(
             "Export your installed-apps × Sovereignty matches as a CSV file"
         )
         guard panel.runModal() == .OK, let url = panel.url else { return }
