@@ -3178,6 +3178,36 @@ NEW_V16_STRINGS = {
         "de": "Archivierte Kopie im Browser ansehen",
         "it": "Visualizza copia archiviata nel browser",
     },
+
+    # v1.7.x — Trust scan export toolbar (PDF + PNG buttons + tooltips)
+    "Export PDF": {
+        "pt-PT": "Exportar PDF",
+        "es": "Exportar PDF",
+        "fr": "Exporter en PDF",
+        "de": "Als PDF exportieren",
+        "it": "Esporta PDF",
+    },
+    "Export PNG": {
+        "pt-PT": "Exportar PNG",
+        "es": "Exportar PNG",
+        "fr": "Exporter en PNG",
+        "de": "Als PNG exportieren",
+        "it": "Esporta PNG",
+    },
+    "Export the full Trust scan as a research-grade PDF (all apps, every concern, every primary-source citation)": {
+        "pt-PT": "Exportar a análise Trust completa como PDF de qualidade investigativa (todas as aplicações, todas as preocupações, todas as citações de fonte primária)",
+        "es": "Exportar el análisis Trust completo como PDF de calidad investigativa (todas las aplicaciones, todas las preocupaciones, todas las citas de fuente primaria)",
+        "fr": "Exporter l'analyse Trust complète sous forme de PDF de qualité recherche (toutes les applications, toutes les préoccupations, toutes les citations de source primaire)",
+        "de": "Den vollständigen Trust-Scan als wissenschaftliches PDF exportieren (alle Apps, alle Bedenken, alle Primärquellen-Zitate)",
+        "it": "Esporta la scansione Trust completa come PDF di qualità ricerca (tutte le app, tutti i problemi, tutte le citazioni di fonte primaria)",
+    },
+    "Export the top 10 most-concerning apps as a 1200×1200 PNG suitable for social sharing": {
+        "pt-PT": "Exportar as 10 aplicações mais preocupantes como PNG de 1200×1200 adequado para partilha em redes sociais",
+        "es": "Exportar las 10 aplicaciones más preocupantes como PNG de 1200×1200 adecuado para compartir en redes sociales",
+        "fr": "Exporter les 10 applications les plus préoccupantes en PNG 1200×1200 adapté au partage sur les réseaux sociaux",
+        "de": "Die 10 bedenklichsten Apps als 1200×1200 PNG für soziale Netzwerke exportieren",
+        "it": "Esporta le 10 app più preoccupanti come PNG 1200×1200 adatto alla condivisione sui social",
+    },
 }
 
 

@@ -69,6 +69,7 @@ ConciergeTranscriptStoreTests.run()
 PathMonitorObserverTests.run()
 MirrorManifestTests.run()
 SovereigntyCSVExportTests.run()
+TrustExportTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

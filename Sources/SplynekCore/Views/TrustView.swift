@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers  // v1.7.x: UTType.pdf / UTType.png for the export save panels
 
 /// v1.5: **Trust** tab.  Surfaces public-record concerns (App Store
 /// privacy labels, regulatory enforcement actions, CVEs, confirmed
@@ -34,6 +35,10 @@ struct TrustView: View {
     @StateObject private var scanner = SovereigntyScanner()
     @State private var filter: Filter = .all
     @State private var search: String = ""
+
+    /// v1.7.x: last export error (PDF or PNG).  Surfaced as an alert
+    /// to keep the failure inline rather than swallowing it.
+    @State private var exportError: String? = nil
 
     enum Filter: String, CaseIterable, Identifiable {
         case all, severeOnly, privacy, security, trust, businessModel
@@ -82,6 +87,24 @@ struct TrustView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
+                    exportPDF()
+                } label: {
+                    Label("Export PDF", systemImage: "doc.richtext")
+                }
+                .help("Export the full Trust scan as a research-grade PDF (all apps, every concern, every primary-source citation)")
+                .disabled(scanner.apps.isEmpty || scanner.isScanning)
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    exportPNG()
+                } label: {
+                    Label("Export PNG", systemImage: "photo")
+                }
+                .help("Export the top 10 most-concerning apps as a 1200×1200 PNG suitable for social sharing")
+                .disabled(scanner.apps.isEmpty || scanner.isScanning)
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button {
                     scanner.scan()
                 } label: {
                     Label("Rescan", systemImage: "arrow.clockwise")
@@ -90,6 +113,67 @@ struct TrustView: View {
                 .disabled(scanner.isScanning)
             }
         }
+        .alert("Export failed",
+               isPresented: Binding(
+                   get: { exportError != nil },
+                   set: { if !$0 { exportError = nil } }
+               )) {
+            Button("OK") { exportError = nil }
+        } message: {
+            Text(exportError ?? "")
+        }
+    }
+
+    // MARK: - Trust export (PDF + PNG)
+
+    /// v1.7.x: surface a save panel + render the full Trust scan
+    /// as a multi-page PDF.  Designed as a research-grade artifact
+    /// (cover, methodology, summary stats, per-app cited concerns)
+    /// — see `TrustExport.renderPDF` + `TrustReportPDFView`.
+    @MainActor
+    private func exportPDF() {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.pdf]
+        panel.nameFieldStringValue = "splynek-trust-\(Self.todayStamp).pdf"
+        panel.message = "Export the full Trust scan as a PDF — every cited concern, every primary source."
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        let scored = TrustExport.rankedScored(
+            installedApps: scanner.apps,
+            weights: vm.trustWeights
+        )
+        do {
+            try TrustExport.renderPDF(scored, to: url)
+        } catch {
+            exportError = "Couldn't write PDF: \(error.localizedDescription)"
+        }
+    }
+
+    /// v1.7.x: surface a save panel + render the top-10 most-concerning
+    /// apps as a 1200×1200 PNG suitable for Twitter / Mastodon / Bluesky.
+    @MainActor
+    private func exportPNG() {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.png]
+        panel.nameFieldStringValue = "splynek-trust-top10-\(Self.todayStamp).png"
+        panel.message = "Export the top 10 most-concerning apps as a 1200×1200 PNG for social sharing."
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        let scored = TrustExport.rankedScored(
+            installedApps: scanner.apps,
+            weights: vm.trustWeights
+        )
+        do {
+            try TrustExport.renderPNG(scored, topN: 10, to: url)
+        } catch {
+            exportError = "Couldn't write PNG: \(error.localizedDescription)"
+        }
+    }
+
+    /// Today as YYYY-MM-DD for filename stamping.
+    private static var todayStamp: String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: Date())
     }
 
     // MARK: - Subviews

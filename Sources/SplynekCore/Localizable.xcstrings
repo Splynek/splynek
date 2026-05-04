@@ -6124,6 +6124,108 @@
         }
       }
     },
+    "Export PDF": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als PDF exportieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar PDF"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter en PDF"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta PDF"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar PDF"
+          }
+        }
+      }
+    },
+    "Export PNG": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als PNG exportieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar PNG"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter en PNG"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta PNG"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar PNG"
+          }
+        }
+      }
+    },
+    "Export the full Trust scan as a research-grade PDF (all apps, every concern, every primary-source citation)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den vollständigen Trust-Scan als wissenschaftliches PDF exportieren (alle Apps, alle Bedenken, alle Primärquellen-Zitate)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar el análisis Trust completo como PDF de calidad investigativa (todas las aplicaciones, todas las preocupaciones, todas las citas de fuente primaria)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter l'analyse Trust complète sous forme de PDF de qualité recherche (toutes les applications, toutes les préoccupations, toutes les citations de source primaire)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta la scansione Trust completa come PDF di qualità ricerca (tutte le app, tutti i problemi, tutte le citazioni di fonte primaria)"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar a análise Trust completa como PDF de qualidade investigativa (todas as aplicações, todas as preocupações, todas as citações de fonte primária)"
+          }
+        }
+      }
+    },
     "Export the full timeline as CSV.": {
       "localizations": {
         "de": {
@@ -6154,6 +6256,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Exportar a cronologia completa como CSV."
+          }
+        }
+      }
+    },
+    "Export the top 10 most-concerning apps as a 1200×1200 PNG suitable for social sharing": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die 10 bedenklichsten Apps als 1200×1200 PNG für soziale Netzwerke exportieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar las 10 aplicaciones más preocupantes como PNG de 1200×1200 adecuado para compartir en redes sociales"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter les 10 applications les plus préoccupantes en PNG 1200×1200 adapté au partage sur les réseaux sociaux"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta le 10 app più preoccupanti come PNG 1200×1200 adatto alla condivisione sui social"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar as 10 aplicações mais preocupantes como PNG de 1200×1200 adequado para partilha em redes sociais"
           }
         }
       }
