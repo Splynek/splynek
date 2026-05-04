@@ -19,7 +19,7 @@ auto-extraction + complete localization in 5 non-English locales
 with audit-script + CI guardrails enforcing non-regression."
 
 Catalog grew **56 → 535 strings** (×9.6) → **2,675 translations**.
-Tests grew **148 → 340** (×2.3).  Public-repo Swift files **49 → 67**.
+Tests grew **148 → 382** (×2.6).  Public-repo Swift files **49 → 69**.
 Apple App Review status: still pending day 8 of v1.0 re-review.
 Nothing pushed, nothing tagged — `main` is hot.
 
@@ -251,6 +251,88 @@ flow which required typing "summarize a PDF", LLM picking
 `summarize_pdf`, bridge returning "Pick a PDF first" error, then
 re-prompting via NSOpenPanel — now zero-step.
 
+### Latest landing (2026-05-04 part 2): S2 Unbreakable Resume + 6th publisher + SMJobBless runbook
+
+**S2 thesis active end-to-end.**  Three commits:
+
+1. `2899196` — `PathMonitorObserver` + `PathEvent`.  Long-lived
+   `NWPathMonitor` wrapper that emits typed events through an
+   `AsyncStream`.  Pure translation factored out for testability
+   (no public initialiser on `NWPath`); duplicate suppression filters
+   the boot-time noise the framework occasionally emits.  18 tests.
+
+2. `dd8cb1e` — `MirrorManifest` (later refined in `b46adb3`).
+   Curated Tier-1 mirror sets keyed off URL host.  Initial
+   population: Ubuntu only (`releases.ubuntu.com` →
+   `mirror.kernel.org` / `fr.releases.ubuntu.com` /
+   `mirror.us.leaseweb.net` / `mirrors.cat.net` + archive.org
+   Wayback long-shot).  Mirrors picked from launchpad.net's
+   Tier-1 list ranked by 2024–2026 uptime + geographic spread.
+   Splynek's per-chunk SHA-256 + final-file digest still gates
+   acceptance — list is curated for liveness, not trust.
+
+3. `281c336` + `b46adb3` — wire-up.  VM subscribes to
+   `PathMonitorObserver.liveStream()` and gates the existing
+   `DownloadJob.pause()`/`resume()` primitives on `.online↔.offline`
+   transitions specifically (interface-set flips stay routed
+   through engine's per-lane failover).  Auto-pause flushes the
+   sidecar in <1s instead of waiting ~60s for OS-level socket
+   timeout.  `MirrorManifest.parallelAlternatives` (alternatives
+   minus archive.org Wayback) gets injected into the engine's
+   `urls: [URL]` constructor at `DownloadJob.start` time — engine
+   internals untouched, the v1.x multi-URL round-robin is the
+   existing seam.
+
+**Why VM-level not engine-level:** `DownloadEngine.run()` is 750+
+lines of complex async orchestration (chunk-queue, lane workers,
+sidecar, swarm hooks, Merkle verify); touching it for path-restart
+would risk regressions in the project's most load-bearing code.
+The VM already owns DownloadJob lifecycle + battle-tested
+pause/resume primitives.  Engine integration of mirror failover
+similarly turned out trivial: the engine's `urls: [URL]` parameter
++ lane round-robin (`DownloadEngine.swift:619`) was already there;
+the VM just needed to inject more URLs at engine creation time.
+
+**Parallel/last-resort split:** `MirrorManifest.alternatives(for:)`
+returns 5 URLs including the archive.org Wayback entry — fine as a
+"view archived copy" affordance but bad as a parallel lane (cold
+archive, slow on hot resources).  Split into
+`parallelAlternatives` (the 4 Tier-1 mirrors, used by engine
+creation) and `lastResortAlternatives` (the Wayback entry, surface
+deferred for manual UI affordance).
+
+**6th publisher pattern (`5f434be`)**: GitHub Releases.  Claims
+`github.com` URLs whose path contains `/releases/download/`.  Tries
+`sha256sums.txt` (lowercase, used by ripgrep / fd / bat / eza /
+helix / most modern OSS Rust + Go projects) → falls back to
+`SHA256SUMS` (uppercase, the Mozilla / Linux-distro convention).
+Per-asset `.sha256` siblings remain handled by the existing
+`Enrichment.probe` path.  Match scope intentionally narrow:
+github.com only (not objects.githubusercontent.com — the
+post-redirect host's parent directory doesn't expose the manifest).
+
+**SMJobBless activation runbook (`bf76909`)**: precise step-by-step
+for the maintainer turning the helper on for users.  Audited the
+plumbing first — bundle ID `app.splynek.Splynek.helper` is
+consistent across 9 files; reciprocal `SMPrivilegedExecutables` +
+`SMAuthorizedClients` requirements both anchor to OU=58C6YC5GB5
+(team ID, fine for MAS — Apple Distribution leaf certs share OU
+with Developer ID).  Runbook covers: pre-flight (xcodegen +
+signing identity); `xcodegen generate`; build SplynekHelper
+standalone (verify `__launchd_plist` segment is non-empty);
+archive Splynek-MAS (verify embed + cross-direction
+`codesign --test-requirement` checks); install + first-launch
+approval flow; automated smoke test using `pkgbuild` +
+`productsign`'d 1KB no-op .pkg; optional cert-hash pinning;
+6-row troubleshooting table; "when to flip the activation switch"
+section (concrete triggers: Apple flags osascript, deprecation
+announcement, feature needs persistent admin daemon).
+
+**L10N count refresh (`2ad95ba`)**: bookkeeping — the doc had
+round-8-era counts (480 strings, 2,400 translations); current is
+535 × 5 = 2,675.  Added bullets for the audit-extension catch-up +
+visual sweeps.
+
 ## Open positions (what a fresh session should know about)
 
 ### Apple v1.0 review — escalate by day 10 if no movement
@@ -318,6 +400,14 @@ is genuinely human work.
 ## Commit timeline (latest first, top of `main`)
 
 ```
+b46adb3 S2 mirror failover wired: VM injects MirrorManifest mirrors as parallel lanes
+281c336 S2 wire-up: VM auto-pauses on path offline, auto-resumes on online
+dd8cb1e S2 component 3: MirrorManifest — curated fallback mirrors
+2ad95ba L10N-REVIEW.md: refresh stale catalog counts (480 → 535, 2,285 → 2,675)
+bf76909 SMJobBless v1.8.2: activation runbook for the maintainer
+5f434be PublisherPattern: GitHub Releases (6th publisher)
+2899196 S2 component 2: PathMonitorObserver — typed PathEvent stream over NWPathMonitor
+56c5ed8 HANDOFF + SESSION-LOG: refresh for Concierge persistence + PDF drag landings
 a1fc19c Concierge transcript persistence: ConciergeTranscriptStore + load-on-init + 12 tests
 75c25b6 Session transition: HANDOFF refresh + new SESSION-LOG.md
 e8ebb2a SMJobBless v1.8.2: privileged helper bundle + activated client + PkgInstaller fallback
@@ -374,8 +464,8 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **535** | ×9.6 |
 | Translations (×5 locales) | 56 | **2,675** | ×47 |
-| Tests | 148 | **340** | ×2.3 |
-| Public-repo Swift files | 49 | **67** | +18 |
+| Tests | 148 | **382** | ×2.6 |
+| Public-repo Swift files | 49 | **69** | +20 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
 | Top-level docs | 1 (HANDOFF) | **6** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG) | +5 |

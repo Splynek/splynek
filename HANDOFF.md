@@ -19,11 +19,11 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (340 tests, all green)
+**Tests:** `swift run splynek-test` (382 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-04.**
-**Architectural state on `main`: v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.8.2 + v1.9 + v1.9.x all landed locally, untagged.**
+**Architectural state on `main`: v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.8.2 + v1.9 + v1.9.x + S2 (Unbreakable Resume) all landed locally, untagged.**
 
 The `main` branch carries the v1.6.x localization rounds AND the v1.7→v1.9
 architecture (Concierge-as-Mac-Assistant + Verified Installer + Fleet 2.0
@@ -242,8 +242,12 @@ with all 4 kind handlers including admin-domain .pkg via osascript
 (v1.8.1) + SMJobBless privileged-helper (v1.8.2 wired, awaiting
 maintainer's xcodegen + code-sign), Fleet 2.0 LAN peer cache with
 full discovery + auto-join + warm-cache digest dup-detection +
-PublisherPattern enrichment for 5 publishers (Mozilla / Apache /
-Debian / Ubuntu / Arch).  **340 tests passing.**  Apple v1.0 still
+PublisherPattern enrichment for 6 publishers (Mozilla / Apache /
+Debian / Ubuntu / Arch / GitHub Releases) **+ Bet S2 "Unbreakable
+Resume" active end-to-end** (`PathMonitorObserver` auto-pauses on
+Wi-Fi drop + auto-resumes on Wi-Fi return; `MirrorManifest` injects
+curated Tier-1 mirrors as parallel lanes alongside the primary URL,
+sidecar preserves resume state across all of it).  **382 tests passing.**  Apple v1.0 still
 pending re-review (day 8 → maintainer should consider Resolution
 Center escalation by day 10); ASC monitor running daily.  Marketing
 still staged.  Nothing pushed, nothing tagged — `main` is hot but
@@ -259,7 +263,7 @@ call), gated on Apple's v1.0 clearing.
 cd "/Users/pcgm/Claude Code"
 git status                            # both repos must be clean
 swift build                           # < 10s, must succeed
-./.build/debug/splynek-test           # must show 340/340
+./.build/debug/splynek-test           # must show 382/382
 python3 Scripts/find-missing-translations.py  # must show 0 missing
 
 # 2. Read the latest 5 commits to see what just landed
@@ -295,7 +299,7 @@ commit, every architectural decision, and every open position).
 
 | Repo | Branch | Latest commit | Status |
 |---|---|---|---|
-| `Splynek/splynek` (public) | `main` | `a1fc19c` (Concierge transcript persistence + 12 tests) — 53 commits ahead of origin | clean working tree |
+| `Splynek/splynek` (public) | `main` | `b46adb3` (S2 mirror failover wired) — 61 commits ahead of origin | clean working tree |
 | `Splynek/splynek-pro` (private) | `main` | `c64deb1` (ConciergeView: drag PDF onto tab to summarize) — 4 commits ahead of origin | clean |
 | `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
 
@@ -437,7 +441,7 @@ paragraph from `MAS_LISTING.md`).
 - **B.** Stripe + Postmark direct channel (see `MONETIZATION.md`) — alternative to MAS for users who can't pay via App Store
 - **C.** Native-speaker review for FR + DE before the press wave (see `L10N-REVIEW.md`)
 - **D.** v1.6 features deferred but still relevant: shareable Trust-scan report (PDF / shareable PNG), Sovereignty CSV export
-- **E.** S2 — Unbreakable Resume (HTTP Range + NWPathMonitor + curated mirror failover) — see `STRATEGY-2026.md`
+- ~~**E.** S2 — Unbreakable Resume~~ — **shipped 2026-05-04.** All three components live: HTTP Range resume already in `DownloadEngine.swift`; `PathMonitorObserver` (`281c336`) auto-pauses on offline + auto-resumes on online via `DownloadJob.pause()`/`resume()` + sidecar preserve; `MirrorManifest` (`dd8cb1e` + `b46adb3`) injects curated Tier-1 mirrors as parallel lanes at engine creation time so primary + mirrors run simultaneously, with per-chunk SHA-256 (when supplied) gating correctness across every source.  Engine internals untouched throughout — the v1.x multi-URL surface (engine `urls: [URL]` + lane round-robin) was the existing seam.  Last-resort archive entries (web.archive.org) live in `lastResortAlternatives(for:)` for manual UI affordances; not yet wired.
 - **F.** S5 — Splynek Accelerator (browser extension + HLS pre-buffer)
 - **G.** iOS Companion (Share Extension + Live Activity) — only after Mac Splynek has clear pull
 
@@ -464,6 +468,12 @@ v1.7 — Concierge as Mac Assistant
   splynek-pro/Sources/SplynekPro/ConciergeMacAssistant.swift   ← LLM dispatcher (Pro)
   splynek-pro/Sources/SplynekPro/Views/ConciergeCardView.swift ← multi-card UI (Pro)
   splynek-pro/Sources/SplynekPro/Views/ConciergeView.swift     ← v1.7.x: PDF drag-to-summarize .onDrop wiring
+
+S2 — Unbreakable Resume (active end-to-end)
+  Sources/SplynekCore/PathMonitorObserver.swift           ← typed PathEvent stream over NWPathMonitor
+  Sources/SplynekCore/MirrorManifest.swift                ← curated Tier-1 mirror sets (Ubuntu shipped; framework + comments for adding more)
+  Sources/SplynekCore/ViewModel.swift                     ← startJob injects MirrorManifest.parallelAlternatives + path observer auto-pauses/resumes on online↔offline
+  (HTTP Range resume + Merkle-verified segments already in DownloadEngine.swift)
 
 v1.8 — Verified Installer
   Sources/SplynekCore/Installer/InstallSpec.swift                ← parsed spec types
@@ -525,7 +535,7 @@ Other v1.6.x → v1.9 docs the maintainer writes against
 ```
 1. Read HANDOFF.md (this file) top 300 lines
 2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
-3. swift run splynek-test (must show 340/340 — anything less is a regression)
+3. swift run splynek-test (must show 382/382 — anything less is a regression)
 4. python3 Scripts/find-missing-translations.py | head -5  → confirms catalog state
 5. Open https://claude.ai/code/scheduled and check the four triggers fired clean
 6. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
