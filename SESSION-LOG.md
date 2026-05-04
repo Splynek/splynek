@@ -333,6 +333,75 @@ round-8-era counts (480 strings, 2,400 translations); current is
 535 × 5 = 2,675.  Added bullets for the audit-extension catch-up +
 visual sweeps.
 
+### Latest landing (2026-05-04 part 3): audit + live-test pass
+
+After shipping the S2 trifecta, GitHub publisher, Concierge persistence
++ PDF drag, SMJobBless runbook, UX trio (Trust PDF/PNG, Sovereignty
+CSV, Wayback affordance), engine-internal restart on interface flip,
+and Fedora MirrorSet, ran a full audit-then-live-test pass to surface
+issues that wouldn't show up in unit tests alone.
+
+**Audit phase (`b9e4e97`):** 5 issues found across this session's 17
+commits, 3 fixed:
+
+- `DownloadEngine` exception-path leak: pathObserverTask wasn't
+  cancelled in the catch handler.  `defer` cleanup applied.
+- VM offline→online race: rapid-flap could resume a job before its
+  pause settled (lifecycle still .running, resume() no-ops).  250ms
+  Task.sleep delays the resume past settleAfterRun.
+- Hardcoded `/web/2024/` in MirrorManifest's Wayback URLs (Ubuntu,
+  Debian, Fedora).  Dropped year for archive.org auto-resolve.
+
+Two issues deferred (Trust PDF single-page clip — known limitation;
+CSV `#`-comment non-RFC-4180 — minor).
+
+**Live-test phase (`b07d788`):** built debug .app via `./Scripts/
+build.sh debug`, drove via computer-use MCP under the maintainer's
+pt-PT locale.  Three new surfaces validated end-to-end:
+
+- Trust PDF export (`splynek-trust-2026-05-04.pdf`, 38KB,
+  US Letter @ 72dpi) — renders title, date, methodology blurb,
+  summary stats, per-app section with cited concerns, slogan
+  footer.  Research-grade artifact looks correct.
+- Trust PNG export (`splynek-trust-top10-2026-05-04.png`,
+  1200×1200) — renders top-N most-concerning, slogan footer.
+  Sparse with 1-app input but acceptable.
+- Sovereignty CSV export (`splynek-sovereignty-2026-05-04.csv`,
+  9 rows) — 10 columns, RFC 4180 quoting working, schema-version
+  comment, ISO-8601 timestamps.
+
+Two live-test bugs surfaced + fixed in `b07d788`:
+
+1. **SovereigntyView filterBar overflow on pt-PT.**  Segmented
+   Picker with `frame(maxWidth: 320)` was left-anchored against
+   the sidebar; "Todas as alternativas" (~25% longer than EN
+   "All alternatives") clipped its leading "Todas " behind the
+   sidebar boundary, rendering as "…as as alternativas".
+   ZStack-with-overlay restructure centers the Picker dead-center
+   of the pane width regardless of locale label length, with
+   the count overlaid on the trailing edge.  Works for all 5
+   locales.
+2. **NSSavePanel.message English-only on 3 export panels.**
+   Tried String(localized:bundle:) → NSLocalizedString(_:bundle:)
+   → Bundle.module.localizedString(forKey:value:table:) — all
+   three returned English even though SwiftUI's
+   Text(LocalizedStringKey) resolves correctly against the same
+   Bundle.module.  Cause appears to be in SwiftPM's xcstrings→
+   .strings pipeline for AppKit-side lookup.  Pragmatic fix:
+   drop panel.message entirely.  Save panels work cleanly without
+   it; a stale-English caption in a pt-PT UI is worse UX than
+   no caption.
+
+One reported issue verified as NOT a bug: Firefox "Instalar" button
+apparent-white-text — confirmed live as the standard macOS modal-dim
+state during NSSavePanel foregrounding, not a readability issue.
+
+**Deferred from the live test:** Concierge chat surface (needs Pro
+license unlock), Install tab drop targets (needs real .dmg / .pkg
+samples), end-to-end download (would need a real URL + network
+state changes to exercise the new S2 wire-up), Concierge PDF drag
+(in Pro repo, not in the public-only debug build).
+
 ## Open positions (what a fresh session should know about)
 
 ### Apple v1.0 review — escalate by day 10 if no movement
@@ -400,6 +469,15 @@ is genuinely human work.
 ## Commit timeline (latest first, top of `main`)
 
 ```
+b07d788 Live-test fixes: SovereigntyView filterBar overflow + drop save-panel localized message
+b9e4e97 Audit fixes: 3 real issues across S2 + Wayback wiring
+58a970e HANDOFF + SESSION-LOG: refresh for S2 trifecta + GitHub publisher + SMJobBless runbook + L10N counts
+8d38827 TrustExport: shareable PDF + PNG of Trust scan results
+3298797 Wayback "view archived copy" affordance on failed-job card
+243424b SovereigntyExport: CSV export of installed-apps × catalog matches
+888afdf MirrorManifest.fedora — Tier-1 safety net under MirrorManager
+fa4d2f3 DownloadEngine: restart lanes on interface-set flips (Bet S2 cont'd)
+b50a7bb MirrorManifest.debian — broadens S2 mirror failover to Debian ISOs
 b46adb3 S2 mirror failover wired: VM injects MirrorManifest mirrors as parallel lanes
 281c336 S2 wire-up: VM auto-pauses on path offline, auto-resumes on online
 dd8cb1e S2 component 3: MirrorManifest — curated fallback mirrors

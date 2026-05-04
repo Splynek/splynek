@@ -227,6 +227,83 @@ Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution
 
 ---
 
+## ⚡ Audit + live-test pass (2026-05-04 evening)
+
+A focused audit + live-driven UI test landed late in the day after the
+S2 + UX-trio + engine-internal-restart + Fedora work.  Captured here
+because the next session should know what was probed + what came back.
+
+**Audit findings (5 issues, 3 fixed in `b9e4e97`):**
+
+1. ✅ Fixed: `DownloadEngine.pathObserverTask` leaked on the
+   exception path — the catch handler at the do/catch boundary only
+   cleaned up `historyTimerTask`.  Replaced post-loop cancel with
+   `defer { pathObserverTask?.cancel(); pathObserverTask = nil }`
+   at the start of the active-phase block.
+2. ✅ Fixed: VM `handlePathEvent` race — `job.pause()` is async +
+   flips lifecycle to `.paused` only after engine.run() exits via
+   settleAfterRun.  Rapid offline→online (~ms) could fire resume
+   before lifecycle flipped → DownloadJob.resume() no-ops on active
+   jobs → job stuck paused.  Fix: 250ms `Task.sleep` before resume.
+3. ✅ Fixed: `MirrorManifest` Wayback URLs hardcoded `/web/2024/`
+   across all 3 sets (Ubuntu, Debian, Fedora).  Drops with year
+   to use Wayback's auto-resolve-latest-snapshot behaviour.
+4. ⏸ Deferred: Trust PDF single-page render clips if catalog matches
+   overflow US Letter — known limitation flagged at ship time.
+5. ⏸ Deferred: Sovereignty CSV `#`-prefixed schema-version comment is
+   non-RFC-4180.  Some strict parsers might choke; every tool we
+   care about (Numbers, csv.reader, awk) tolerates.
+
+**Live-test pass (built `./Scripts/build.sh debug`, drove via
+computer-use under user's pt-PT locale):**
+
+- ✅ Trust **Export PDF** — verified end-to-end.  Renders cleanly: title,
+  date, methodology blurb naming source allowlist (Apple privacy
+  labels / NVD / HIBP / FTC / SEC / EU DPA / vendor advisories),
+  summary stats (1 reviewed / 0 severe / 1 high / 0 moderate / 0
+  low), Chrome 75/100 with 3 cited concerns, footer slogan.
+- ✅ Trust **Export PNG** — verified.  1200×1200, top-N=1 with
+  Chrome card + footer slogan.  Note: PNG looks sparse with 1
+  cataloged app + 9 empty rows of canvas — acceptable for a Mac
+  with sparse Trust catalog hits, would be tighter with 5–10 apps.
+- ✅ Sovereignty **Export CSV** — verified.  9 rows under sample
+  `~/Documents/splynek-sovereignty-2026-05-04.csv`: 1Password →
+  Bitwarden + KeePassXC, Claude Desktop → LM Studio + Mistral Le
+  Chat, Chrome → Firefox + Vivaldi, Perplexity → Mistral Le Chat
+  + LM Studio.  10 columns, RFC 4180 quoting working ("AGPL.
+  Free tier generous, self-hostable via Vaultwarden." quoted),
+  schema-version comment, ISO-8601 timestamps.
+- 🔧 Live-test fix #1 (`b07d788`): SovereigntyView filterBar
+  segmented-picker clipped pt-PT label — "Todas as alternativas"
+  rendered as "…as as alternativas" because EN-sized
+  `.frame(maxWidth: 320)` couldn't fit the +25% pt-PT length.
+  ZStack-with-overlay restructure: Picker dead-center of pane,
+  count overlaid trailing.  Works for every locale label length.
+- 🔧 Live-test fix #2 (`b07d788`): NSSavePanel.message dropped from
+  the 3 export panels.  Three lookup APIs (String(localized:bundle:),
+  NSLocalizedString(_:bundle:), Bundle.module.localizedString
+  (forKey:value:table:)) all returned English even though
+  SwiftUI's Text(LocalizedStringKey) resolves correctly against
+  the same Bundle.module + the .strings file has the pt-PT key
+  byte-identical.  Likely a SwiftPM xcstrings→.strings pipeline
+  quirk for AppKit-side lookup; not worth tracking down for a
+  nice-to-have caption.  Save panels still work cleanly.
+- ✅ Verified non-bug: Firefox "Instalar" button apparent-white-text
+  reported as readability issue — confirmed live to be the standard
+  macOS modal-dim state when NSSavePanel is foregrounded.
+
+What's NOT yet live-tested (deferred):
+- Concierge (Pro tab — locked-upsell branch was the only thing
+  reachable on free-tier; the actual chat surface needs a Pro
+  license to exercise)
+- Install tab (drop targets need real .dmg / .pkg / .app to
+  exercise; manual maintainer work)
+- Downloads tab end-to-end (paste a URL + click Start; partial
+  test would only show planning + not exercise the new S2 wire-up
+  which needs network state changes mid-download)
+- Concierge PDF drag-to-summarize (ConciergeView in Pro repo;
+  not in the public-only debug build)
+
 ## ⚡ Session handoff — current state (2026-05-04)
 
 **For a fresh session picking this up.** TL;DR: localization closed at
@@ -299,7 +376,7 @@ commit, every architectural decision, and every open position).
 
 | Repo | Branch | Latest commit | Status |
 |---|---|---|---|
-| `Splynek/splynek` (public) | `main` | `b46adb3` (S2 mirror failover wired) — 61 commits ahead of origin | clean working tree |
+| `Splynek/splynek` (public) | `main` | `b07d788` (live-test fixes: filterBar overflow + drop save-panel message) — 71 commits ahead of origin | clean working tree |
 | `Splynek/splynek-pro` (private) | `main` | `c64deb1` (ConciergeView: drag PDF onto tab to summarize) — 4 commits ahead of origin | clean |
 | `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
 
