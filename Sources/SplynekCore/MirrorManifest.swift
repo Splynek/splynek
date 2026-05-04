@@ -70,6 +70,7 @@ public enum MirrorManifest {
 
     public static let allSets: [MirrorSet] = [
         ubuntu,
+        debian,
     ]
 
     /// Public entry point.  Returns ranked fallback URLs the engine
@@ -163,6 +164,64 @@ public enum MirrorManifest {
                 URL(string: base + trimmed)
             }
             // Wayback long-shot — last resort, always pushed to the end.
+            if let wayback = URL(
+                string: "https://web.archive.org/web/2024/" + primary.absoluteString
+            ) {
+                alts.append(wayback)
+            }
+            return alts
+        }
+    )
+
+    // MARK: - Debian (cdimage.debian.org → curated worldwide mirrors)
+    //
+    // Debian publishes the canonical ISO at `cdimage.debian.org/
+    // debian-cd/<ver>/<arch>/iso-cd/<filename>`.  When that host is
+    // degraded, Tier-1 mirrors at the same `debian-cd/` path serve
+    // identical bytes.  Mirror list curated from Debian's official
+    // CD-mirror page (https://www.debian.org/CD/http-ftp/) restricted
+    // to HTTPS hosts (URLSession's ATS rejects HTTP), sorted by
+    // 2024-2026 uptime + geographic spread:
+    //   1. mirror.kernel.org/debian-cd/    — kernel.org-operated, very high uptime
+    //   2. gemmei.acc.umu.se/debian-cd/    — Umeå University Sweden, EU Tier-1
+    //   3. ftp.heanet.ie/debian-cd/        — HEAnet Ireland, EU Tier-1
+    //   4. mirror.us.leaseweb.net/debian-cd/ — US Tier-1
+    //   5. archive.org/Wayback              — universal long-shot fallback
+    //
+    // Same trust posture as Ubuntu: the engine's per-chunk SHA-256
+    // (when supplied) gates correctness across every source — the
+    // mirror list is curated for liveness, not trust.
+    public static let debian = MirrorSet(
+        publisher: "Debian",
+        matches: { url in
+            guard let host = url.host?.lowercased() else { return false }
+            return host == "cdimage.debian.org"
+        },
+        alternatives: { primary in
+            // Path is `/debian-cd/<ver>/<arch>/iso-cd/<filename>` —
+            // preserved verbatim across mirrors but the leading
+            // `/debian-cd/` is the "directory base" the mirror serves
+            // under.  Different mirrors may NOT carry `/debian-cd/`
+            // in their published URL prefix, so we substitute the
+            // directory tail.
+            let path = primary.path
+            // Drop leading `/debian-cd/` if present so we can
+            // re-prefix with each mirror's preferred path base.
+            let dropPrefix = "/debian-cd/"
+            guard path.hasPrefix(dropPrefix), path.count > dropPrefix.count
+            else { return [] }
+            let tail = String(path.dropFirst(dropPrefix.count))
+            // Tail looks like `12.5.0/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso`.
+            let mirrorBases = [
+                "https://mirror.kernel.org/debian-cd/",
+                "https://gemmei.acc.umu.se/debian-cd/",
+                "https://ftp.heanet.ie/debian-cd/",
+                "https://mirror.us.leaseweb.net/debian-cd/",
+            ]
+            var alts: [URL] = mirrorBases.compactMap { base in
+                URL(string: base + tail)
+            }
+            // Wayback long-shot — always pushed to the end, like Ubuntu.
             if let wayback = URL(
                 string: "https://web.archive.org/web/2024/" + primary.absoluteString
             ) {

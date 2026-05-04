@@ -106,11 +106,75 @@ enum MirrorManifestTests {
                 try expect(MirrorManifest.publisher(for: primary) == nil)
             }
 
-            TestHarness.test("allSets has the curated initial set (Ubuntu only this commit)") {
+            TestHarness.test("allSets has the curated initial sets") {
                 let publishers = Set(MirrorManifest.allSets.map(\.publisher))
                 try expect(publishers.contains("Ubuntu"))
-                try expectEqual(MirrorManifest.allSets.count, 1,
+                try expect(publishers.contains("Debian"))
+                try expectEqual(MirrorManifest.allSets.count, 2,
                     "Got \(MirrorManifest.allSets.count) mirror sets; if a new publisher landed, update this assertion.")
+            }
+        }
+
+        TestHarness.suite("MirrorManifest — Debian") {
+
+            TestHarness.test("Claims cdimage.debian.org") {
+                let url = URL(string: "https://cdimage.debian.org/debian-cd/12.5.0/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso")!
+                try expect(MirrorManifest.debian.matches(url))
+            }
+
+            TestHarness.test("Rejects non-Debian hosts + non-cdimage subdomains") {
+                let no = [
+                    "https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso",
+                    // www.debian.org is the project site, not the ISO host —
+                    // its path shape is unrelated to debian-cd/.
+                    "https://www.debian.org/News/2024",
+                    // ftp.debian.org serves repo packages, not ISOs.
+                    "https://ftp.debian.org/debian/pool/main/d/debian-archive-keyring/",
+                ].compactMap { URL(string: $0) }
+                for u in no {
+                    try expect(!MirrorManifest.debian.matches(u),
+                        "Should NOT match: \(u.absoluteString)")
+                }
+            }
+
+            TestHarness.test("Produces 5 ranked alternatives (4 Tier-1 + Wayback)") {
+                let primary = URL(string: "https://cdimage.debian.org/debian-cd/12.5.0/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso")!
+                let alts = MirrorManifest.debian.alternatives(primary)
+                try expectEqual(alts.count, 5)
+
+                let expectedHosts = [
+                    "mirror.kernel.org",
+                    "gemmei.acc.umu.se",
+                    "ftp.heanet.ie",
+                    "mirror.us.leaseweb.net",
+                ]
+                for (i, host) in expectedHosts.enumerated() {
+                    try expectEqual(alts[i].host, host,
+                        "Tier-1 #\(i + 1) host should be \(host)")
+                }
+                try expect(alts[4].absoluteString.hasPrefix("https://web.archive.org/web/"),
+                    "Wayback fallback should be last")
+            }
+
+            TestHarness.test("Path tail (everything after /debian-cd/) is preserved") {
+                let primary = URL(string: "https://cdimage.debian.org/debian-cd/12.5.0/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso")!
+                let alts = MirrorManifest.debian.alternatives(primary)
+                let suffix = "12.5.0/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso"
+                for alt in alts.prefix(4) {
+                    try expect(alt.absoluteString.hasSuffix(suffix),
+                        "Tier-1 mirror URL should end with the version+arch+filename: got \(alt.absoluteString)")
+                }
+            }
+
+            TestHarness.test("URL without /debian-cd/ prefix produces no alternatives") {
+                // Defensive: cdimage.debian.org also serves /jigdo/ and
+                // /weekly-builds/ paths.  Our matcher claims any
+                // cdimage.debian.org URL but extract should bail
+                // gracefully if the path shape isn't /debian-cd/<...>.
+                let primary = URL(string: "https://cdimage.debian.org/jigdo/12.5.0/amd64/")!
+                let alts = MirrorManifest.debian.alternatives(primary)
+                try expect(alts.isEmpty,
+                    "Non-debian-cd path can't be transformed to mirror URLs — return [] not malformed alts")
             }
         }
 
