@@ -117,6 +117,22 @@ final class CancelFlag: @unchecked Sendable {
     }
 }
 
+/// v1.7.x perfection pass: synchronous lock-scoped helper for `NSLock`.
+/// Foundation ships an `NSLocking.withLock(_:)` overload but Swift 6's
+/// strict concurrency emits `lock`/`unlock-unavailable-from-async-context`
+/// warnings against direct `.lock()` calls in `async` functions even when
+/// the critical section is purely synchronous.  Wrapping in this helper
+/// silences the warning cleanly because the closure body is sync — no
+/// suspension while holding the lock = no soundness issue.
+extension NSLock {
+    @discardableResult
+    func withLockSync<T>(_ body: () throws -> T) rethrows -> T {
+        self.lock()
+        defer { self.unlock() }
+        return try body()
+    }
+}
+
 /// v1.7.x (Bet S2 — engine-side path-flip restart): resettable
 /// boolean flag with the same lock-free observation pattern as
 /// `CancelFlag` but without the one-shot semantic + handler

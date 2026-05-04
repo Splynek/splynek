@@ -184,7 +184,7 @@ struct BenchmarkView: View {
         return TitledCard(
             title: "Results",
             systemImage: "chart.bar.fill",
-            accessory: summaryPill
+            accessory: summaryPillComputed
         ) {
             VStack(spacing: 10) {
                 ForEach(runner.results) { (probe: BenchmarkRunner.Probe) in
@@ -195,17 +195,31 @@ struct BenchmarkView: View {
     }
 
     @ViewBuilder
-    private var summaryPill: AnyView? {
-        let single = runner.results.filter { !$0.label.hasPrefix("Multi") }
-        let multi = runner.results.first { $0.label.hasPrefix("Multi") }
-        if let multi, let bestSingle = single.map(\.throughputBps).max(),
-           bestSingle > 0 {
-            let factor = multi.throughputBps / bestSingle
-            return AnyView(
-                StatusPill(text: String(format: "%.1f×", factor), style: .success)
-            )
+    /// Speedup pill computed via a single-expression chain.  The
+    /// previous shapes (var with conditional return, func with
+    /// guard return) both tripped Swift's implicit @ViewBuilder
+    /// treatment of properties on View-conforming structs.
+    /// Single-expression body via `flatMap` produces no return
+    /// statement at all → no builder conflict.
+    private var summaryPillComputed: AnyView? {
+        speedupFactor.map { factor in
+            AnyView(StatusPill(
+                text: String(format: "%.1f×", factor),
+                style: .success
+            ))
         }
-        return nil
+    }
+
+    /// Pure data accessor for the speedup factor — extracted from
+    /// `summaryPillComputed` so the View-bearing property has a
+    /// single-expression body.
+    private var speedupFactor: Double? {
+        let single = runner.results.filter { !$0.label.hasPrefix("Multi") }
+        guard let multi = runner.results.first(where: { $0.label.hasPrefix("Multi") }),
+              let bestSingle = single.map(\.throughputBps).max(),
+              bestSingle > 0
+        else { return nil }
+        return multi.throughputBps / bestSingle
     }
 
     private var explainerCard: some View {

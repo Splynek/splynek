@@ -150,22 +150,15 @@ struct SovereigntyView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.commaSeparatedText]
         panel.nameFieldStringValue = "splynek-sovereignty-\(Self.todayStamp).csv"
-        // v1.7.x: panel.message intentionally NOT set.  SIX
-        // localized-string lookup APIs were tested in the live
-        // SwiftPM .app under pt-PT and ALL returned English:
-        //   1. String(localized: "key", bundle: .module)
-        //   2. NSLocalizedString("key", bundle: .module, comment: "")
-        //   3. Bundle.module.localizedString(forKey:value:table:)
-        //   4. Bundle(path: lprojPath).localizedString(...) directly
-        //   5. LocalizedStringResource(key, bundle: .atURL(moduleURL))
-        //      + String(localized:)
-        //   6. LocalizedStringResource with explicit Locale.current
-        // SwiftUI's Text(LocalizedStringKey) DOES resolve correctly
-        // against the same module bundle, so the localizations are
-        // present + reachable — just not via any AppKit-side String
-        // API.  See splynek_localization_gotcha.md for the
-        // long-form investigation.  Dropping panel.message is the
-        // pragmatic fix; save panels work cleanly without it.
+        // v1.7.x localization fix #7: the SIX previous Foundation/
+        // SwiftUI APIs all returned English in the live .app under
+        // pt-PT (see splynek_localization_gotcha.md for the chain).
+        // The fix that actually works: read the `.strings` file as a
+        // plist directly + look up by exact key match.  Bypasses
+        // Foundation's broken default-locale resolution entirely.
+        panel.message = Bundle.module.localizedStringForAppKit(
+            "Export your installed-apps × Sovereignty matches as a CSV file"
+        )
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let body = SovereigntyExport.csv(installedApps: scanner.apps)
         do {

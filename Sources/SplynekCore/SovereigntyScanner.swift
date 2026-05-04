@@ -76,7 +76,7 @@ final class SovereigntyScanner: ObservableObject {
 
         Task.detached(priority: .userInitiated) { [weak self] in
             let apps = Self.enumerateApplications()
-            await MainActor.run {
+            await MainActor.run { [weak self] in
                 guard let self else { return }
                 self.apps = apps
                 self.isScanning = false

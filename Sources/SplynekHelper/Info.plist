@@ -2,35 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- Bundle identifier MUST match the helper's launchd plist
-         `Label` + the app's `SMPrivilegedExecutables` key. -->
-    <key>CFBundleIdentifier</key>
-    <string>app.splynek.Splynek.helper</string>
-    <key>CFBundleName</key>
-    <string>SplynekHelper</string>
-    <key>CFBundleVersion</key>
-    <string>$(CURRENT_PROJECT_VERSION)</string>
-    <key>CFBundleShortVersionString</key>
-    <string>$(MARKETING_VERSION)</string>
-    <key>CFBundleExecutable</key>
-    <string>SplynekHelper</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleSignature</key>
-    <string>????</string>
-    <key>NSHumanReadableCopyright</key>
-    <string>© 2026 Splynek</string>
-
-    <!-- v1.8.2: SMAuthorizedClients tells launchd which app
-         signing identities are allowed to talk to this helper.
-         The string is a Code Signing Requirement Language
-         expression.  At MAS submission time the maintainer fills
-         in the actual Apple Distribution leaf certificate's
-         SubjectKeyIdentifier; for development this anchors to
-         the Apple Developer Team ID 58C6YC5GB5. -->
-    <key>SMAuthorizedClients</key>
-    <array>
-        <string>anchor apple generic and identifier "app.splynek.Splynek" and certificate leaf[subject.OU] = "58C6YC5GB5"</string>
-    </array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleExecutable</key>
+	<string>SplynekHelper</string>
+	<key>CFBundleIdentifier</key>
+	<string>app.splynek.Splynek.helper</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>SplynekHelper</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2026 Splynek</string>
+	<key>SMAuthorizedClients</key>
+	<array>
+		<string>anchor apple generic and identifier "app.splynek.Splynek" and certificate leaf[subject.OU] = "58C6YC5GB5"</string>
+	</array>
 </dict>
 </plist>

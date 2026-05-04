@@ -112,7 +112,7 @@ struct InstallView: View {
                 .fill(dragHover ? Color.accentColor.opacity(0.05) : Color.clear)
         )
         .onDrop(of: [.fileURL], isTargeted: $dragHover) { providers in
-            providers.first?.loadObject(ofClass: URL.self) { url, _ in
+            _ = providers.first?.loadObject(ofClass: URL.self) { url, _ in
                 if let url = url {
                     DispatchQueue.main.async { pickedPayload = url }
                 }

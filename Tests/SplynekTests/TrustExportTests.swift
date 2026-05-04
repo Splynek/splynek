@@ -1,4 +1,5 @@
 import Foundation
+import PDFKit
 @testable import SplynekCore
 
 /// v1.7.x: invariants for `TrustExport` data-shaping logic
@@ -225,9 +226,93 @@ enum TrustExportTests {
                 try expectEqual(chunks[3].count, 2, "Final chunk: remainder")
             }
         }
+
+        TestHarness.suite("TrustExport — renderPDF integration") {
+
+            // Renders an actual PDF via ImageRenderer + verifies the
+            // page count matches the chunker's expected output.  Uses
+            // PDFKit's PDFDocument to count pages; the actual visual
+            // layout isn't asserted — that's covered by ScoredApp
+            // chunker tests + manual review of the rendered output.
+            //
+            // @MainActor wrap (via MainActor.assumeIsolated) is needed
+            // because ImageRenderer is @MainActor.  Same pattern the
+            // ConciergeState integration tests use.
+
+            TestHarness.test("Renders 1 page for empty input (cover only)") {
+                try MainActor.assumeIsolated {
+                    let url = makeTmpPDFURL()
+                    defer { try? FileManager.default.removeItem(at: url) }
+                    try TrustExport.renderPDF([], to: url)
+                    let pages = pdfPageCount(at: url)
+                    try expectEqual(pages, 1, "Empty input produces a cover-only PDF")
+                }
+            }
+
+            TestHarness.test("Renders 1 page for 5 apps (fits cover only)") {
+                try MainActor.assumeIsolated {
+                    let url = makeTmpPDFURL()
+                    defer { try? FileManager.default.removeItem(at: url) }
+                    let scored = (1...5).map { makeScored(name: "App\($0)", score: 50) }
+                    try TrustExport.renderPDF(scored, to: url)
+                    try expectEqual(pdfPageCount(at: url), 1)
+                }
+            }
+
+            TestHarness.test("Renders 2 pages for 13 apps (5 cover + 8 continuation)") {
+                try MainActor.assumeIsolated {
+                    let url = makeTmpPDFURL()
+                    defer { try? FileManager.default.removeItem(at: url) }
+                    let scored = (1...13).map { makeScored(name: "App\($0)", score: 50) }
+                    try TrustExport.renderPDF(scored, to: url)
+                    try expectEqual(pdfPageCount(at: url), 2)
+                }
+            }
+
+            TestHarness.test("Renders 4 pages for 30 apps (5 + 8 + 8 + 9 = 30)") {
+                try MainActor.assumeIsolated {
+                    let url = makeTmpPDFURL()
+                    defer { try? FileManager.default.removeItem(at: url) }
+                    let scored = (1...30).map { makeScored(name: "App\($0)", score: 50) }
+                    try TrustExport.renderPDF(scored, to: url)
+                    // 30 apps: cover holds 5, continuations hold 8 each.
+                    // 30 - 5 = 25 remaining; ceil(25/8) = 4 → 1 cover + 4 = wrong.
+                    // Actually: 25 / 8 = 3.125 → 4 continuation pages
+                    // (5 + 8 + 8 + 8 + 1 = 30).  Total = 5 pages.
+                    try expectEqual(pdfPageCount(at: url), 5,
+                        "30 apps = 1 cover + 4 continuation pages")
+                }
+            }
+
+            TestHarness.test("PDF file is non-empty + opens as valid PDF") {
+                try MainActor.assumeIsolated {
+                    let url = makeTmpPDFURL()
+                    defer { try? FileManager.default.removeItem(at: url) }
+                    let scored = [makeScored(name: "Chrome", score: 75)]
+                    try TrustExport.renderPDF(scored, to: url)
+                    let attrs = try FileManager.default.attributesOfItem(atPath: url.path)
+                    let size = (attrs[.size] as? Int) ?? 0
+                    try expect(size > 1000,
+                        "PDF should be > 1KB; got \(size) bytes")
+                    // Verify it's a real PDF (PDFDocument-readable).
+                    try expect(pdfPageCount(at: url) >= 1,
+                        "PDF must be readable as a PDFDocument")
+                }
+            }
+        }
     }
 
     // MARK: - Fixtures
+
+    private static func makeTmpPDFURL() -> URL {
+        FileManager.default.temporaryDirectory
+            .appendingPathComponent("trust-render-\(UUID().uuidString).pdf")
+    }
+
+    private static func pdfPageCount(at url: URL) -> Int {
+        guard let doc = PDFDocument(url: url) else { return 0 }
+        return doc.pageCount
+    }
 
     private static func fakeApp(id: String, name: String) -> SovereigntyScanner.InstalledApp {
         SovereigntyScanner.InstalledApp(

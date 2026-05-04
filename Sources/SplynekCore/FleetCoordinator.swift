@@ -228,12 +228,15 @@ public final class FleetCoordinator: ObservableObject {
     /// doing an O(n) walk on the hot path 60× per second per peer.
     /// Now we do at most one walk per `rateGCEvery` admitted requests.
     nonisolated(unsafe) private var rateInsertSinceGC: Int = 0
-    private static let rateWindow: TimeInterval = 10
-    private static let rateMaxPerWindow = 60
+    // Strict-concurrency: these are read from the `nonisolated`
+    // `allowRequest(from:)`, so they need to be `nonisolated` too —
+    // they're immutable `let` constants so the access is safe.
+    nonisolated private static let rateWindow: TimeInterval = 10
+    nonisolated private static let rateMaxPerWindow = 60
     /// Number of admitted-request inserts between dict GCs.  Tuned so
     /// a benign LAN with ~5 peers GCs roughly every minute, while a
     /// hostile flood doesn't get more than ~1 GC walk per second.
-    private static let rateGCEvery = 1024
+    nonisolated private static let rateGCEvery = 1024
 
     /// Returns true iff the request should be served; false iff we
     /// should respond with 429. Thread-safe.
@@ -785,9 +788,7 @@ public final class FleetCoordinator: ObservableObject {
     }
 
     private func serveWebState(_ conn: NWConnection) async {
-        stateLock.lock()
-        let snapshot = publishedState
-        stateLock.unlock()
+        let snapshot = stateLock.withLockSync { publishedState }
         let dashboard = WebDashboard.State(
             device: deviceName,
             uuid: deviceUUID,
@@ -865,9 +866,7 @@ public final class FleetCoordinator: ObservableObject {
     }
 
     private func serveContent(_ conn: NWConnection, sha256: String, rangeHeader: String?) async {
-        stateLock.lock()
-        let snapshot = publishedState
-        stateLock.unlock()
+        let snapshot = stateLock.withLockSync { publishedState }
         let want = sha256.lowercased()
         guard let match = snapshot.completed.first(where: {
             ($0.sha256 ?? "").lowercased() == want
@@ -917,9 +916,7 @@ public final class FleetCoordinator: ObservableObject {
     }
 
     private func serveStatus(_ conn: NWConnection) async {
-        stateLock.lock()
-        var snapshot = publishedState
-        stateLock.unlock()
+        var snapshot = stateLock.withLockSync { publishedState }
         // Privacy mode: hide active + completed from LAN peers. The
         // fleet protocol itself is still reachable (peers still know
         // this Mac exists) but they can't enumerate what we've got.
@@ -954,9 +951,7 @@ public final class FleetCoordinator: ObservableObject {
             }
         }
         // Locate matching job (prefer completed, fall back to active).
-        stateLock.lock()
-        let snapshot = publishedState
-        stateLock.unlock()
+        let snapshot = stateLock.withLockSync { publishedState }
 
         let outputPath: String
         let totalBytes: Int64
@@ -1045,9 +1040,7 @@ public final class FleetCoordinator: ObservableObject {
     }
 
     private func serveAPIJobs(_ conn: NWConnection) async {
-        stateLock.lock()
-        let snapshot = publishedState
-        stateLock.unlock()
+        let snapshot = stateLock.withLockSync { publishedState }
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         guard let body = try? encoder.encode(snapshot.active) else {
@@ -1057,9 +1050,7 @@ public final class FleetCoordinator: ObservableObject {
     }
 
     private func serveAPIHistory(_ conn: NWConnection, path: String) async {
-        stateLock.lock()
-        let snapshot = publishedState
-        stateLock.unlock()
+        let snapshot = stateLock.withLockSync { publishedState }
         let limit: Int = {
             guard let q = path.split(separator: "?").dropFirst().first else { return 25 }
             for pair in q.split(separator: "&") {

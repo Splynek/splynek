@@ -45,7 +45,7 @@ struct DownloadURLIntent: AppIntent {
         guard let url = comps.url else {
             throw $urlString.needsValueError("Provide a valid URL.")
         }
-        await MainActor.run {
+        _ = await MainActor.run {
             NSWorkspace.shared.open(url)
         }
         return .result()
@@ -77,7 +77,7 @@ struct QueueURLIntent: AppIntent {
         guard let url = comps.url else {
             throw $urlString.needsValueError("Provide a valid URL.")
         }
-        await MainActor.run { NSWorkspace.shared.open(url) }
+        _ = await MainActor.run { NSWorkspace.shared.open(url) }
         return .result()
     }
 }
@@ -100,7 +100,7 @@ struct ParseMagnetIntent: AppIntent {
         guard let url = comps.url else {
             throw $magnet.needsValueError("Provide a valid magnet URI.")
         }
-        await MainActor.run { NSWorkspace.shared.open(url) }
+        _ = await MainActor.run { NSWorkspace.shared.open(url) }
         return .result()
     }
 }

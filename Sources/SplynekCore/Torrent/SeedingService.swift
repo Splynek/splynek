@@ -191,10 +191,12 @@ final class SeedingService {
     }
 
     private func reassessChoking() async {
-        liveLock.lock()
-        let interested = liveSeeders.filter { $0.interested }
-        let others     = liveSeeders.filter { !$0.interested }
-        liveLock.unlock()
+        let (interested, others) = liveLock.withLockSync {
+            (
+                liveSeeders.filter { $0.interested },
+                liveSeeders.filter { !$0.interested }
+            )
+        }
 
         // Rank interested peers. Tit-for-tat: peers that have sent us data
         // (non-zero `bytesReceivedFromPeer`) come first, ordered by how
@@ -251,9 +253,7 @@ final class SeedingService {
                     nanoseconds: UInt64(Self.keepaliveInterval * 1_000_000_000)
                 )
                 guard let self, !self.cancelFlag.isCancelled else { return }
-                self.liveLock.lock()
-                let peers = self.liveSeeders
-                self.liveLock.unlock()
+                let peers = self.liveLock.withLockSync { self.liveSeeders }
                 for peer in peers {
                     Task { try? await peer.send(Self.keepaliveMessage) }
                 }
@@ -286,14 +286,14 @@ final class SeedingService {
             // Snapshot the current bitfield so the peer sees exactly what we
             // have right now; subsequent newly-completed pieces are delivered
             // via live `have` broadcasts from markPieceComplete.
-            liveLock.lock()
-            let snapshot = haveBits
-            liveSeeders.append(peer)
-            liveLock.unlock()
+            let snapshot = liveLock.withLockSync { () -> BitSet in
+                liveSeeders.append(peer)
+                return haveBits
+            }
             defer {
-                liveLock.lock()
-                liveSeeders.removeAll { $0 === peer }
-                liveLock.unlock()
+                liveLock.withLockSync {
+                    liveSeeders.removeAll { $0 === peer }
+                }
             }
             try await peer.sendBitfield(haveBits: snapshot, numPieces: info.numPieces)
             try await peer.sendExtendedHandshake()

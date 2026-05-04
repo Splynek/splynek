@@ -245,6 +245,30 @@ targets:
       - path: Sources/SplynekCore/SplynekHelperProtocol.swift
     info:
       path: Sources/SplynekHelper/Info.plist
+      # v1.7.x perfection pass: declare the FULL Info.plist content
+      # in project.yml so `xcodegen generate` writes a complete
+      # plist instead of its default placeholder template.
+      # Without this, every `./Scripts/build.sh debug` run drifts
+      # the source-controlled Info.plist back to xcodegen's defaults
+      # (stripping the SMAuthorizedClients requirement + comments).
+      properties:
+        CFBundleIdentifier: app.splynek.Splynek.helper
+        CFBundleName: SplynekHelper
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleExecutable: SplynekHelper
+        CFBundlePackageType: APPL
+        CFBundleSignature: "????"
+        NSHumanReadableCopyright: "© 2026 Splynek"
+        # v1.8.2: SMAuthorizedClients tells launchd which app
+        # signing identities are allowed to talk to this helper.
+        # The string is a Code Signing Requirement Language
+        # expression.  At MAS submission time the maintainer fills
+        # in the actual Apple Distribution leaf certificate's
+        # SubjectKeyIdentifier; for development this anchors to
+        # the Apple Developer Team ID 58C6YC5GB5.
+        SMAuthorizedClients:
+          - 'anchor apple generic and identifier "app.splynek.Splynek" and certificate leaf[subject.OU] = "58C6YC5GB5"'
     settings:
       base:
         PRODUCT_NAME: SplynekHelper
