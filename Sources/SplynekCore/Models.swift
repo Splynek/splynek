@@ -117,6 +117,34 @@ final class CancelFlag: @unchecked Sendable {
     }
 }
 
+/// v1.7.x (Bet S2 — engine-side path-flip restart): resettable
+/// boolean flag with the same lock-free observation pattern as
+/// `CancelFlag` but without the one-shot semantic + handler
+/// registry.  Used by `DownloadEngine` to signal "interface set
+/// changed mid-download — exit `runWorkers` so `run()` can
+/// re-spawn fresh `LaneConnection`s against the new path."
+/// Distinct from `CancelFlag` because path-flip restart is
+/// repeatable: a flap → restart → second flap → restart again,
+/// whereas user-cancel is terminal.
+///
+/// Memory model: the lock makes `set` / `clear` / `isSet` mutually
+/// atomic.  The `Sendable` conformance is `@unchecked` because Swift
+/// can't see across the lock; the audit pattern matches `CancelFlag`.
+final class AtomicFlag: @unchecked Sendable {
+    private let lock = NSLock()
+    private var flag = false
+
+    var isSet: Bool { lock.lock(); defer { lock.unlock() }; return flag }
+
+    func set() {
+        lock.lock(); flag = true; lock.unlock()
+    }
+
+    func clear() {
+        lock.lock(); flag = false; lock.unlock()
+    }
+}
+
 /// Simple token-bucket rate limiter. Used for per-lane bandwidth caps.
 /// `ratePerSec == 0` disables the cap.
 actor TokenBucket {

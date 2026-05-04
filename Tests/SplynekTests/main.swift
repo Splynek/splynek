@@ -70,6 +70,7 @@ PathMonitorObserverTests.run()
 MirrorManifestTests.run()
 SovereigntyCSVExportTests.run()
 TrustExportTests.run()
+AtomicFlagTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

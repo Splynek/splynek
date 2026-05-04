@@ -202,6 +202,50 @@ enum PathMonitorObserverTests {
                 ))
             }
 
+            TestHarness.test("Interface-flip detection: warrantsRestart && !didGoOffline && !didComeOnline") {
+                // The triple-predicate composition the engine uses to
+                // gate `pathRestartFlag.set()`: fire ONLY for pure
+                // interface-set flips, leaving online↔offline to the
+                // VM-level pause/resume layer so the engine + VM
+                // don't double-act on the same event.
+                func isInterfaceFlip(from prev: PathEvent?, to next: PathEvent) -> Bool {
+                    PathEvent.warrantsRestart(from: prev, to: next)
+                        && !PathEvent.didGoOffline(from: prev, to: next)
+                        && !PathEvent.didComeOnline(from: prev, to: next)
+                }
+                // Cases that SHOULD trigger engine restart:
+                try expect(isInterfaceFlip(
+                    from: .online(interfaceNames: ["en0"]),
+                    to: .online(interfaceNames: ["en1"])
+                ), "Wi-Fi → Ethernet swap is the canonical interface-flip")
+                try expect(isInterfaceFlip(
+                    from: .online(interfaceNames: ["en0"]),
+                    to: .online(interfaceNames: ["en0", "en1"])
+                ), "Cable plugged in mid-download = interface added")
+                try expect(isInterfaceFlip(
+                    from: .online(interfaceNames: ["en0", "en1"]),
+                    to: .online(interfaceNames: ["en0"])
+                ), "Cable unplugged = interface removed")
+
+                // Cases that should NOT trigger (VM handles these):
+                try expect(!isInterfaceFlip(
+                    from: .online(interfaceNames: ["en0"]),
+                    to: .offline
+                ), "online → offline is VM's pause case, not engine's")
+                try expect(!isInterfaceFlip(
+                    from: .offline,
+                    to: .online(interfaceNames: ["en0"])
+                ), "offline → online is VM's resume case, not engine's")
+                try expect(!isInterfaceFlip(
+                    from: nil,
+                    to: .online(interfaceNames: ["en0"])
+                ), "First observation isn't a transition")
+                try expect(!isInterfaceFlip(
+                    from: .online(interfaceNames: ["en0"]),
+                    to: .online(interfaceNames: ["en0"])
+                ), "Identical state isn't a flip")
+            }
+
             TestHarness.test("Predicates are mutually exclusive on every transition") {
                 let cases: [(PathEvent?, PathEvent)] = [
                     (nil, .offline),

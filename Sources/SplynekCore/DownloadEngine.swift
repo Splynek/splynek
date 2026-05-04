@@ -269,6 +269,34 @@ final class DownloadEngine {
     let swarmJobID: UUID
 
     private let cancelFlag = CancelFlag()
+
+    /// v1.7.x (Bet S2 — engine-side restart on interface flip):
+    /// resettable flag the path observer raises when the network's
+    /// interface set changes mid-download (en1 plugged in, en0
+    /// dropped, Wi-Fi → Ethernet).  Sub-lane workers exit cleanly
+    /// when this is set; `run()`'s outer restart loop then re-spawns
+    /// fresh `LaneConnection`s against the new path.  Distinct from
+    /// `cancelFlag` because path-flip restart is repeatable, whereas
+    /// user-cancel is terminal.  Only fires on interface-set
+    /// changes — `online↔offline` transitions are handled by the VM
+    /// (pause/resume on the existing `DownloadJob` primitives) so
+    /// the engine doesn't double-act.
+    private let pathRestartFlag = AtomicFlag()
+
+    /// v1.7.x: long-lived path-observer task; cancelled in `defer`
+    /// at the end of `run()` so the underlying `NWPathMonitor` is
+    /// released as soon as the download finishes.  Optional because
+    /// it isn't started until the active phase begins.
+    private var pathObserverTask: Task<Void, Never>?
+
+    /// v1.7.x: how many path-flip restarts this engine has performed.
+    /// Surfaced via `progress.pathFlipRestartCount` for diagnostics
+    /// + a future "switched lanes N times" UI affordance.  Capped at
+    /// `maxPathFlipRestarts` to defend against pathological flap
+    /// loops.
+    private var pathFlipRestartCount: Int = 0
+    private static let maxPathFlipRestarts = 6
+
     private var historyTimerTask: Task<Void, Never>?
     private var sidecarURL: URL { outputURL.appendingPathExtension("splynek") }
 
@@ -464,13 +492,77 @@ final class DownloadEngine {
             // source; the probed finalURL becomes one of many.
             let laneURLs: [URL] = urls.count == 1 ? [probed.finalURL] : urls
             await MainActor.run { progress.phase = .downloading }
-            try await runWorkers(
-                laneURLs: laneURLs,
-                queue: queue,
-                laneStats: laneStats,
-                totalChunks: chunks.count,
-                probe: probed
-            )
+
+            // v1.7.x (Bet S2 — engine-side restart): spawn a
+            // long-lived observer task that raises `pathRestartFlag`
+            // when the OS reports an interface-set change mid-
+            // download (en1 plugged in / en0 dropped / Wi-Fi →
+            // Ethernet).  The flag tells sub-lane workers to exit;
+            // the outer restart loop below re-spawns fresh
+            // connections.  We deliberately ignore `online↔offline`
+            // transitions here — the VM's path observer pauses the
+            // job through `DownloadJob.pause()` for those, which
+            // hits `cancelFlag` and exits the engine entirely.  Only
+            // pure interface-set flips need engine-side handling.
+            pathObserverTask = Task { [weak self] in
+                var lastEvent: PathEvent?
+                for await event in PathMonitorObserver.liveStream() {
+                    if PathEvent.warrantsRestart(from: lastEvent, to: event),
+                       !PathEvent.didGoOffline(from: lastEvent, to: event),
+                       !PathEvent.didComeOnline(from: lastEvent, to: event) {
+                        self?.pathRestartFlag.set()
+                    }
+                    lastEvent = event
+                }
+            }
+
+            // v1.7.x (Bet S2 — engine-side restart loop): wraps the
+            // single `runWorkers` call into a re-entry loop that
+            // re-spawns fresh lanes when the path flips.  Workers
+            // exit cleanly via `pathRestartFlag.isSet`; we then
+            // clear failedOver/errors on the LaneStats so the next
+            // attempt isn't gated by stale unhealthy thresholds, and
+            // call runWorkers again.  Cancel + complete + max-attempts
+            // are the three exit conditions; cap defends against a
+            // pathological flap loop where the OS reports interface
+            // churn faster than chunks complete.
+            workerLoop: while true {
+                pathRestartFlag.clear()
+                try await runWorkers(
+                    laneURLs: laneURLs,
+                    queue: queue,
+                    laneStats: laneStats,
+                    totalChunks: chunks.count,
+                    probe: probed
+                )
+                if cancelFlag.isCancelled { break workerLoop }
+                if await queue.allDone() { break workerLoop }
+                guard pathRestartFlag.isSet else {
+                    // Lanes exited but neither cancelled nor complete
+                    // and no path flip — every lane failed over.
+                    // Existing behaviour (file ends incomplete, SHA
+                    // verify fails downstream) — break out so the
+                    // verify phase can surface the failure.
+                    break workerLoop
+                }
+                pathFlipRestartCount += 1
+                if pathFlipRestartCount >= Self.maxPathFlipRestarts {
+                    // Defensive — flap loop.  Bail.
+                    break workerLoop
+                }
+                // Reset lane stats so the next attempt isn't gated
+                // by stale errors/failedOver from the previous
+                // network's lifetime.
+                await MainActor.run {
+                    for lane in progress.lanes {
+                        lane.errors = 0
+                        lane.failedOver = false
+                    }
+                }
+                await report("Network changed — restarting lanes (attempt \(pathFlipRestartCount + 1)).")
+            }
+            pathObserverTask?.cancel()
+            pathObserverTask = nil
 
             historyTimerTask?.cancel()
 
@@ -659,7 +751,12 @@ final class DownloadEngine {
         defer { lane.close() }
 
         var errorStreak = 0
-        while !cancelFlag.isCancelled {
+        // v1.7.x: also exit on `pathRestartFlag.isSet`.  When the
+        // path observer sees an interface-set flip, every sub-lane
+        // exits its loop cleanly + the TaskGroup resolves; the
+        // outer restart loop in `run()` re-spawns fresh lanes
+        // against the new path.
+        while !cancelFlag.isCancelled && !pathRestartFlag.isSet {
             if await queue.allDone() { return }
             // Auto-failover: stop dispatching if this lane has decayed
             // past the unhealthy threshold AND has sustained errors.
