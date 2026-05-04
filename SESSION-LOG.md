@@ -517,6 +517,64 @@ infrastructure (Concierge needs MAS Xcode build; Install needs a
 real .pkg the maintainer trusts); Download path's S2 wire-up is
 proven live on a real publisher URL.
 
+### Latest landing (2026-05-04 part 6): perfection pass
+
+After "I want all to be perfect" pushback, ran a systematic cleanup
+of every half-baked piece + bug.  One commit (`74cd74a`), five
+distinct outcomes:
+
+1. **Localization mystery DEFINITIVELY SOLVED.**  Root cause finally
+   pinned via os_log diagnostic in the live .app: `Bundle.module
+   .bundleURL` resolves to the SwiftPM build cache (`.build/<arch>/
+   <config>/Splynek_SplynekCore.bundle/`), which has only Info.plist
+   + Localizable.xcstrings — NO .lproj subdirs (those exist only
+   in the .app-internal copy, written by `Scripts/compile-xcstrings
+   .py` as part of build.sh).  Foundation's lookup machinery looks
+   at the build-cache path, finds no .lproj, falls through to
+   English.  SwiftUI's Text(LocalizedStringKey) works because it
+   threads through LocalizedStringResource which uses a different
+   lookup path.  Fix: `LocalizedString+DirectPlist.swift` extension
+   that walks Bundle.main's in-app paths + reads .strings files
+   directly as plists.  Verified live: pt-PT save panels now show
+   "Exportar a tabela de aplicações instaladas × Soberania como
+   ficheiro CSV" + the Trust equivalents.
+
+2. **906 build warnings on clean rebuild → 0.**  Strict-concurrency
+   cleanup across 6 pre-existing infrastructure files (none touched
+   by feature work this session): `Models.swift` gains
+   `NSLock.withLockSync(_:)`; `SeedingService` × 6 NSLock pairs +
+   `FleetCoordinator` × 6 pairs converted to withLockSync;
+   `FleetCoordinator` × 3 main-actor static lets marked nonisolated;
+   `AppIntentsProvider` × 3 `_ = await MainActor.run`; `Sovereignty
+   Scanner` explicit `[weak self]`; `InstallView` `_ = loadObject`;
+   `BenchmarkView` summaryPill var refactored to single-expression
+   flatMap to avoid Swift's implicit @ViewBuilder confusion.
+
+3. **SplynekHelper/Info.plist recurring drift — fixed.**  Root cause:
+   `xcodegen generate` (invoked by build.sh for App Intents metadata)
+   was writing its default placeholder Info.plist template to the
+   path declared in project.yml because no `properties:` block was
+   declared.  Fix: full `properties:` block in project.yml +
+   committed xcodegen's canonical output as the new source of
+   truth.  Trade-off: lost the rationale comments inside the plist,
+   but those lived elsewhere in HANDOFF + project.yml anyway.
+   Verified: subsequent build runs produce zero drift.
+
+4. **Trust PDF render integration test (5 new tests).**  Synthesizes
+   ScoredApp inputs + verifies actual rendered PDF page count via
+   PDFKit.  Confirms the chunker logic + view rendering integrate
+   correctly: empty → 1 page, 5 → 1, 13 → 2, 30 → 5, plus a
+   file-validity check.
+
+5. **Pre-existing Swift 6 lint in WatchedFolderTests** (smaller
+   sub-fix, in the same arc): `MainActor.assumeIsolated` wrap.
+
+Final hot state: `swift build` produces 0 warnings + 0 errors on
+clean rebuild; 447/447 tests pass; audit clean (544 strings × 5
+locales); helper Info.plist no longer drifts after build.  Working
+tree clean after build.  Localization gotcha memory entry
+rewritten as SOLVED with the full investigation + the working fix.
+
 ## Open positions (what a fresh session should know about)
 
 ### Apple v1.0 review — escalate by day 10 if no movement

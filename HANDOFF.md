@@ -19,7 +19,7 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (442 tests, all green)
+**Tests:** `swift run splynek-test` (447 tests, all green) — `swift build` produces **0 warnings on clean rebuild**
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-04.**
@@ -340,7 +340,7 @@ call), gated on Apple's v1.0 clearing.
 cd "/Users/pcgm/Claude Code"
 git status                            # both repos must be clean
 swift build                           # < 10s, must succeed
-./.build/debug/splynek-test           # must show 442/442
+./.build/debug/splynek-test           # must show 447/447
 python3 Scripts/find-missing-translations.py  # must show 0 missing
 
 # 2. Read the latest 5 commits to see what just landed
@@ -376,7 +376,7 @@ commit, every architectural decision, and every open position).
 
 | Repo | Branch | Latest commit | Status |
 |---|---|---|---|
-| `Splynek/splynek` (public) | `main` | `56f0dea` (localization fully mapped + Concierge BLOCKED + Download ✅ verified live) — 75 commits ahead of origin | clean working tree |
+| `Splynek/splynek` (public) | `main` | `74cd74a` (perfection pass — localization SOLVED + 906→0 warnings + helper plist drift fixed) — 78 commits ahead of origin | clean working tree |
 | `Splynek/splynek-pro` (private) | `main` | `c64deb1` (ConciergeView: drag PDF onto tab to summarize) — 4 commits ahead of origin | clean |
 | `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
 
@@ -612,7 +612,7 @@ Other v1.6.x → v1.9 docs the maintainer writes against
 ```
 1. Read HANDOFF.md (this file) top 300 lines
 2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
-3. swift run splynek-test (must show 442/442 — anything less is a regression)
+3. swift run splynek-test (must show 447/447 — anything less is a regression)
 4. python3 Scripts/find-missing-translations.py | head -5  → confirms catalog state
 5. Open https://claude.ai/code/scheduled and check the four triggers fired clean
 6. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
