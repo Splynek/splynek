@@ -593,6 +593,26 @@ final class SplynekViewModel: ObservableObject {
     /// tick.  Cleared per-session; ephemeral.
     private var joinedSwarms: Set<UUID> = []
 
+    /// v1.7.x (Bet S2 — Unbreakable Resume): how many path-change
+    /// events the observer has emitted this session.  Bumped on
+    /// every `warrantsRestart` event from `PathMonitorObserver`.
+    /// SwiftUI surfaces in the diagnostics card so the user sees
+    /// "Network changed N times" without having to read logs.
+    @Published var pathChangeCount: Int = 0
+
+    /// v1.7.x: long-lived path-monitor subscription task.  Spun up at
+    /// the end of `init()`, torn down in `deinit`.  Drives auto-
+    /// pause on offline + auto-resume on online via the existing
+    /// `DownloadJob.pause()` / `resume()` primitives — sidecar
+    /// preservation gives correct resume-from-where-we-stopped.
+    private var pathObserverTask: Task<Void, Never>?
+
+    /// v1.7.x: jobs the path observer auto-paused.  Key off `Job.id`
+    /// so we know which paused jobs to resume when the path comes
+    /// back online (versus user-paused jobs the user wants to keep
+    /// paused).  Cleared on each resume cycle.
+    private var pathPausedJobIDs: Set<UUID> = []
+
     /// v1.9.7: household-shared swarm token.  Multiple Macs in the
     /// same household configure the same string here; the swarm
     /// coordinator accepts it as a second valid bearer on token-
@@ -913,6 +933,26 @@ final class SplynekViewModel: ObservableObject {
             cache.refresh()
         }
 
+        // v1.7.x (Bet S2 — Unbreakable Resume): subscribe to the
+        // path monitor.  On `.online → .offline` we pause every
+        // running job so the engine's sidecar is preserved without
+        // waiting ~60s for sockets to time out.  On
+        // `.offline → .online` we resume every job we paused (not
+        // user-paused ones).  Online↔online interface flips are
+        // handled by the engine's existing per-lane failover, so we
+        // only act on actual connectivity transitions.  `[weak self]`
+        // because the task outlives a single function scope; the
+        // AsyncStream's onTermination cancels the underlying
+        // NWPathMonitor when the task exits.
+        pathObserverTask = Task { @MainActor [weak self] in
+            var lastEvent: PathEvent?
+            for await event in PathMonitorObserver.liveStream() {
+                guard let self else { return }
+                self.handlePathEvent(previous: lastEvent, current: event)
+                lastEvent = event
+            }
+        }
+
         // v1.8.2: instantiate + start the auto-update scheduler.
         // Production download closure uses URLSession.download —
         // simpler than the multi-interface engine, since auto-
@@ -1125,6 +1165,65 @@ final class SplynekViewModel: ObservableObject {
         guard let scheduler = autoUpdate else { return }
         let sweep = await scheduler.runOnce().value
         await MainActor.run { self.lastAutoUpdateSweep = sweep }
+    }
+
+    // =============================================================
+    // v1.7.x — Bet S2: path-change → pause/resume
+    // =============================================================
+    //
+    // Wired in `init()` via `pathObserverTask`.  Decision predicates
+    // (`PathEvent.didGoOffline` / `didComeOnline`) are pure + tested
+    // in isolation; this method is the side-effect surface that
+    // calls into the existing `DownloadJob.pause()` / `resume()`
+    // primitives.  Only fires on `.online ↔ .offline` transitions
+    // — interface-set changes (en0 → en0+en1, Wi-Fi → Ethernet)
+    // are left to the engine's per-lane failover so we don't disturb
+    // mid-flight downloads that don't actually need to pause.
+
+    func handlePathEvent(previous: PathEvent?, current: PathEvent) {
+        // Bump the visible counter on any restart-worthy transition,
+        // not just the online↔offline ones we act on — gives users +
+        // diagnostics the full picture of how stable their path is.
+        if PathEvent.warrantsRestart(from: previous, to: current) {
+            pathChangeCount += 1
+        }
+
+        if PathEvent.didGoOffline(from: previous, to: current) {
+            // Path went offline.  Pause every running job so the
+            // engine flushes its sidecar + tears down sockets that
+            // would otherwise hang for ~60s on the OS-level timeout.
+            // Track the IDs we paused so we don't auto-resume jobs
+            // the user paused for their own reasons.
+            for job in activeJobs where job.lifecycle == .running {
+                pathPausedJobIDs.insert(job.id)
+                job.pause()
+            }
+        } else if PathEvent.didComeOnline(from: previous, to: current) {
+            // Path came back.  Resume only jobs we paused.  Fresh
+            // engines reload from the sidecar so chunks already on
+            // disk are not refetched.  pumpQueueRunner picks up any
+            // pending queue entries that became eligible while
+            // we were offline.
+            let toResume = activeJobs.filter {
+                pathPausedJobIDs.contains($0.id) && $0.lifecycle == .paused
+            }
+            pathPausedJobIDs.removeAll()
+            for job in toResume {
+                job.resume { [weak self] _ in
+                    guard let self else { return }
+                    self.history = DownloadHistory.load()
+                    SplynekSpotlight.reindex(self.history)
+                    self.pumpQueueRunner()
+                }
+            }
+        }
+    }
+
+    /// Cancel the long-lived path-observer task on VM teardown.  The
+    /// `AsyncStream`'s `onTermination` then cancels the underlying
+    /// `NWPathMonitor` so no system resources outlive the VM.
+    deinit {
+        pathObserverTask?.cancel()
     }
 
     // =============================================================

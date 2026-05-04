@@ -150,5 +150,75 @@ enum PathMonitorObserverTests {
                 try expect(r, "Cable unplugged — engine drops the en1 lane")
             }
         }
+
+        TestHarness.suite("PathEvent — didGoOffline / didComeOnline") {
+
+            // The narrower predicates the VM uses to gate auto-pause +
+            // auto-resume.  warrantsRestart fires on ANY meaningful
+            // transition (incl. interface-set flips); these two fire
+            // ONLY on connectivity transitions that warrant a full
+            // pause+resume cycle.
+
+            TestHarness.test("didGoOffline: online → offline is true") {
+                try expect(PathEvent.didGoOffline(
+                    from: .online(interfaceNames: ["en0"]),
+                    to: .offline
+                ))
+            }
+
+            TestHarness.test("didGoOffline: nil → offline is false (first-observation)") {
+                try expect(!PathEvent.didGoOffline(from: nil, to: .offline))
+            }
+
+            TestHarness.test("didGoOffline: offline → offline is false (no transition)") {
+                try expect(!PathEvent.didGoOffline(from: .offline, to: .offline))
+            }
+
+            TestHarness.test("didGoOffline: online → online (interface flip) is false") {
+                try expect(!PathEvent.didGoOffline(
+                    from: .online(interfaceNames: ["en0"]),
+                    to: .online(interfaceNames: ["en1"])
+                ), "Interface-set change isn't a connectivity loss — engine handles via per-lane failover")
+            }
+
+            TestHarness.test("didComeOnline: offline → online is true") {
+                try expect(PathEvent.didComeOnline(
+                    from: .offline,
+                    to: .online(interfaceNames: ["en0"])
+                ))
+            }
+
+            TestHarness.test("didComeOnline: nil → online is false") {
+                try expect(!PathEvent.didComeOnline(
+                    from: nil,
+                    to: .online(interfaceNames: ["en0"])
+                ), "First observation isn't a 'came back online' transition")
+            }
+
+            TestHarness.test("didComeOnline: online → online is false") {
+                try expect(!PathEvent.didComeOnline(
+                    from: .online(interfaceNames: ["en0"]),
+                    to: .online(interfaceNames: ["en0", "en1"])
+                ))
+            }
+
+            TestHarness.test("Predicates are mutually exclusive on every transition") {
+                let cases: [(PathEvent?, PathEvent)] = [
+                    (nil, .offline),
+                    (nil, .online(interfaceNames: ["en0"])),
+                    (.offline, .offline),
+                    (.offline, .online(interfaceNames: ["en0"])),
+                    (.online(interfaceNames: ["en0"]), .offline),
+                    (.online(interfaceNames: ["en0"]), .online(interfaceNames: ["en0"])),
+                    (.online(interfaceNames: ["en0"]), .online(interfaceNames: ["en1"])),
+                ]
+                for (prev, next) in cases {
+                    let off = PathEvent.didGoOffline(from: prev, to: next)
+                    let on  = PathEvent.didComeOnline(from: prev, to: next)
+                    try expect(!(off && on),
+                        "Both predicates fired for \(String(describing: prev)) → \(next) — they should be mutually exclusive")
+                }
+            }
+        }
     }
 }

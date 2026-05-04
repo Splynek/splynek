@@ -56,6 +56,29 @@ public enum PathEvent: Equatable, Sendable {
         if previous == next { return false }
         return true
     }
+
+    /// Was this an `.online → .offline` transition?  Used by the VM
+    /// to decide when to auto-pause running downloads — sockets get
+    /// stuck on dead sockets for ~60s otherwise, so an explicit
+    /// `pause()` + sidecar preserve is faster than waiting for the
+    /// socket timeout.  False for first-observation (nil previous)
+    /// + for offline→offline noise.
+    public static func didGoOffline(from previous: PathEvent?, to next: PathEvent) -> Bool {
+        guard let previous else { return false }
+        if case .online = previous, case .offline = next { return true }
+        return false
+    }
+
+    /// Was this an `.offline → .online` transition?  Used by the VM
+    /// to decide when to auto-resume jobs that were `pause()`-d when
+    /// the path went offline.  False for first-observation + for
+    /// online→online interface flips (those are handled by the
+    /// existing per-lane failover, not by full pause+resume).
+    public static func didComeOnline(from previous: PathEvent?, to next: PathEvent) -> Bool {
+        guard let previous else { return false }
+        if case .offline = previous, case .online = next { return true }
+        return false
+    }
 }
 
 /// Namespace for the long-lived NWPathMonitor wrapper + the pure
