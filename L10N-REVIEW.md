@@ -1,9 +1,9 @@
 # Native-speaker review onramp
 
-Splynek ships **2,285 translations** across 5 non-English locales
-(pt-PT, es, fr, de, it).  All are AI-generated and machine-validated
-(catalog completeness + audit).  None have been reviewed by a native
-speaker.
+Splynek ships **2,675 translations** (535 strings × 5 locales) across
+pt-PT, es, fr, de, it.  All are AI-generated and machine-validated
+(catalog completeness + audit-script + CI guardrail enforcing 0
+missing on every PR).  None have been reviewed by a native speaker.
 
 This document is the contributor onramp for that pass.
 
@@ -167,10 +167,20 @@ gh pr create --title "l10n(de): native-speaker review pass" \
 - [x] Round 8: 28 format-spec entries for interpolated strings
       (428 → 457).  Per-locale completeness verified by
       `LocalizableCatalogTests`.
-- [x] Visual sanity sweep across all 5 locales (no layout overflow,
-      no obviously-wrong terms).
+- [x] v1.7.x audit-extension catch-up: extended `Scripts/find-missing-
+      translations.py` with 6 component-builder regex patterns
+      (`ContextCard.subtitle`, `TitledCard.title`, `EmptyStateView`
+      title + message, `MetricView.caption`, `StatusPill.text`),
+      surfacing 49 hidden strings the original audit was missing.
+      Catalog 480 → 535.
+- [x] Visual sanity sweep across all 5 locales — pt-PT walked
+      end-to-end through round 6; de / es / fr / it walked
+      end-to-end 2026-05-05 (DE+FR pass caught 6 InstallView
+      strings flipped to `LocalizedStringKey`).  No layout overflow,
+      no obviously-wrong terms.
 - [x] CI guardrail (`.github/workflows/lint.yml`) prevents future
-      regressions.
+      regressions — every PR runs the audit script and fails on any
+      new `Text("…")` literal not in the catalog.
 
 ## What's NOT done (review priority order)
 
