@@ -135,7 +135,11 @@ struct TrustView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.pdf]
         panel.nameFieldStringValue = "splynek-trust-\(Self.todayStamp).pdf"
-        panel.message = "Export the full Trust scan as a PDF — every cited concern, every primary source."
+        // v1.7.x audit fix: panel.message intentionally not set —
+        // see SovereigntyView.exportCSV for the rationale.  AppKit
+        // localization lookup against SwiftPM's xcstrings output
+        // doesn't resolve cleanly; a stale English message in a
+        // pt-PT-rendered UI is worse than no message.
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let scored = TrustExport.rankedScored(
             installedApps: scanner.apps,
@@ -155,7 +159,7 @@ struct TrustView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.png]
         panel.nameFieldStringValue = "splynek-trust-top10-\(Self.todayStamp).png"
-        panel.message = "Export the top 10 most-concerning apps as a 1200×1200 PNG for social sharing."
+        // panel.message intentionally not set — see exportPDF.
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let scored = TrustExport.rankedScored(
             installedApps: scanner.apps,

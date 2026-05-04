@@ -150,7 +150,17 @@ struct SovereigntyView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.commaSeparatedText]
         panel.nameFieldStringValue = "splynek-sovereignty-\(Self.todayStamp).csv"
-        panel.message = "Export your installed-apps × Sovereignty matches as CSV."
+        // v1.7.x audit fix: NSSavePanel.message intentionally NOT
+        // set — three lookup APIs (String(localized:bundle:),
+        // NSLocalizedString(_:bundle:), Bundle.module.localizedString
+        // (forKey:value:table:)) all failed to resolve against the
+        // xcstrings compiler output during live test even though
+        // SwiftUI's Text(LocalizedStringKey) does resolve cleanly
+        // against the same bundle.  Without panel.message, the save
+        // panel still works (filename suggestion + Local picker do
+        // the orientation work); a stale-English message that
+        // diverges from the surrounding pt-PT/de/fr/es/it UI is
+        // worse UX than no message.
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let body = SovereigntyExport.csv(installedApps: scanner.apps)
         do {
@@ -466,28 +476,39 @@ struct SovereigntyView: View {
     }
 
     private var filterBar: some View {
-        HStack(spacing: 12) {
+        // v1.7.x audit fix: pt-PT labels ("Todas as alternativas")
+        // are ~25% longer than English ("All alternatives") + the
+        // pre-fix HStack(Picker, Spacer, count) was left-anchoring
+        // the Picker against the sidebar edge — the leftmost segment
+        // clipped (rendering as "…as as alternativas" instead of
+        // "Todas as alternativas") because the localised label
+        // exceeded the 320pt frame budget.  ZStack-with-overlay
+        // makes the Picker dead-center of the pane width regardless
+        // of locale-driven label length, with the count overlaid on
+        // the trailing edge so it doesn't shift the Picker's center.
+        ZStack {
             Picker("Filter", selection: $filter) {
                 ForEach(Filter.allCases) { f in
                     Text(f.label).tag(f)
                 }
             }
             .pickerStyle(.segmented)
-            .frame(maxWidth: 320)
+            .frame(maxWidth: 480)
 
-            Spacer()
-
-            if scanner.isScanning {
-                HStack(spacing: 6) {
-                    ProgressView().controlSize(.small)
-                    Text("Scanning…").font(.caption).foregroundStyle(.secondary)
+            HStack {
+                Spacer()
+                if scanner.isScanning {
+                    HStack(spacing: 6) {
+                        ProgressView().controlSize(.small)
+                        Text("Scanning…").font(.caption).foregroundStyle(.secondary)
+                    }
+                } else {
+                    // v1.4: simplified "X / Y apps" phrasing — avoids
+                    // per-language plural headaches in the localisations.
+                    Text("\(matchedRows.count) / \(scanner.apps.count) apps")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-            } else {
-                // v1.4: simplified "X / Y apps" phrasing — avoids
-                // per-language plural headaches in the localisations.
-                Text("\(matchedRows.count) / \(scanner.apps.count) apps")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
         }
     }
