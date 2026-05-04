@@ -135,12 +135,8 @@ struct TrustView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.pdf]
         panel.nameFieldStringValue = "splynek-trust-\(Self.todayStamp).pdf"
-        // v1.7.x audit (root cause + workaround): see
-        // LocalizedString+Workaround.swift for why direct lookup
-        // bypasses the broken default matching.
-        panel.message = Bundle.module.localizedStringRespectingLocale(
-            forKey: "Export the full Trust scan as a research-grade PDF (all apps, every concern, every primary-source citation)"
-        )
+        // panel.message intentionally not set — see
+        // SovereigntyView.exportCSV for the long rationale.
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let scored = TrustExport.rankedScored(
             installedApps: scanner.apps,
@@ -160,9 +156,8 @@ struct TrustView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.png]
         panel.nameFieldStringValue = "splynek-trust-top10-\(Self.todayStamp).png"
-        panel.message = Bundle.module.localizedStringRespectingLocale(
-            forKey: "Export the top 10 most-concerning apps as a 1200×1200 PNG suitable for social sharing"
-        )
+        // panel.message intentionally not set — see
+        // SovereigntyView.exportCSV for the long rationale.
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let scored = TrustExport.rankedScored(
             installedApps: scanner.apps,

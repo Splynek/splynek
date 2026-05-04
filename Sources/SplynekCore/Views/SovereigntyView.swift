@@ -150,20 +150,22 @@ struct SovereigntyView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.commaSeparatedText]
         panel.nameFieldStringValue = "splynek-sovereignty-\(Self.todayStamp).csv"
-        // v1.7.x audit (root cause + workaround): the three Foundation
-        // localization APIs (String(localized:bundle:),
-        // NSLocalizedString, Bundle.module.localizedString) all return
-        // English from inside the SwiftPM .app even when the user's
-        // AppleLanguages is pt-PT — Bundle.preferredLocalizations
-        // returns ["en", "en"] despite Locale.preferredLanguages being
-        // ["pt-PT"], because the default matching base diverges.  See
-        // LocalizedString+Workaround.swift for the long-form rationale.
-        // The extension walks Locale.preferredLanguages explicitly +
-        // instantiates each lproj subdirectory as its own Bundle, which
-        // bypasses the broken default matching.
-        panel.message = Bundle.module.localizedStringRespectingLocale(
-            forKey: "Export your installed-apps × Sovereignty matches as a CSV file"
-        )
+        // v1.7.x: panel.message intentionally NOT set.  SIX
+        // localized-string lookup APIs were tested in the live
+        // SwiftPM .app under pt-PT and ALL returned English:
+        //   1. String(localized: "key", bundle: .module)
+        //   2. NSLocalizedString("key", bundle: .module, comment: "")
+        //   3. Bundle.module.localizedString(forKey:value:table:)
+        //   4. Bundle(path: lprojPath).localizedString(...) directly
+        //   5. LocalizedStringResource(key, bundle: .atURL(moduleURL))
+        //      + String(localized:)
+        //   6. LocalizedStringResource with explicit Locale.current
+        // SwiftUI's Text(LocalizedStringKey) DOES resolve correctly
+        // against the same module bundle, so the localizations are
+        // present + reachable — just not via any AppKit-side String
+        // API.  See splynek_localization_gotcha.md for the
+        // long-form investigation.  Dropping panel.message is the
+        // pragmatic fix; save panels work cleanly without it.
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let body = SovereigntyExport.csv(installedApps: scanner.apps)
         do {
