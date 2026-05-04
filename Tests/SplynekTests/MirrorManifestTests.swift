@@ -110,7 +110,8 @@ enum MirrorManifestTests {
                 let publishers = Set(MirrorManifest.allSets.map(\.publisher))
                 try expect(publishers.contains("Ubuntu"))
                 try expect(publishers.contains("Debian"))
-                try expectEqual(MirrorManifest.allSets.count, 2,
+                try expect(publishers.contains("Fedora"))
+                try expectEqual(MirrorManifest.allSets.count, 3,
                     "Got \(MirrorManifest.allSets.count) mirror sets; if a new publisher landed, update this assertion.")
             }
         }
@@ -215,6 +216,109 @@ enum MirrorManifestTests {
                 let primary = URL(string: "https://example.com/x")!
                 try expect(MirrorManifest.parallelAlternatives(for: primary).isEmpty)
                 try expect(MirrorManifest.lastResortAlternatives(for: primary).isEmpty)
+            }
+        }
+
+        TestHarness.suite("MirrorManifest — Fedora") {
+
+            // Fedora's annual rotation makes the path-shape verifier
+            // load-bearing: we claim release URLs but reject
+            // development / updates / archive paths so the curated
+            // mirror set isn't applied where it doesn't apply.
+
+            TestHarness.test("Claims download.fedoraproject.org release URLs") {
+                let yes = [
+                    "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.5.iso",
+                    "https://dl.fedoraproject.org/pub/fedora/linux/releases/40/Server/aarch64/iso/Fedora-Server-dvd-aarch64-40-1.14.iso",
+                    "https://download.fedoraproject.org/pub/fedora/linux/releases/42/Spins/x86_64/iso/Fedora-KDE-Live-x86_64-42-1.iso",
+                ].compactMap { URL(string: $0) }
+                for u in yes {
+                    try expect(MirrorManifest.fedora.matches(u),
+                        "Should match: \(u.absoluteString)")
+                }
+            }
+
+            TestHarness.test("Rejects non-release Fedora paths") {
+                let no = [
+                    // Development branch — different mirror infrastructure
+                    "https://dl.fedoraproject.org/pub/fedora/linux/development/rawhide/Workstation/x86_64/iso/Fedora-Workstation-Rawhide-x86_64-Live.iso",
+                    // Updates — completely different topology
+                    "https://dl.fedoraproject.org/pub/fedora/linux/updates/41/Everything/x86_64/Packages/k/kernel-6.13.iso",
+                    // /releases/development/ — non-numeric "version"
+                    "https://dl.fedoraproject.org/pub/fedora/linux/releases/development/41/Workstation/x86_64/iso/foo.iso",
+                ].compactMap { URL(string: $0) }
+                for u in no {
+                    try expect(!MirrorManifest.fedora.matches(u),
+                        "Should NOT match: \(u.absoluteString)")
+                }
+            }
+
+            TestHarness.test("Rejects non-Fedora hosts") {
+                let no = [
+                    "https://releases.ubuntu.com/24.04/ubuntu-24.04-desktop-amd64.iso",
+                    "https://example.com/fedora-fake.iso",
+                ].compactMap { URL(string: $0) }
+                for u in no {
+                    try expect(!MirrorManifest.fedora.matches(u),
+                        "Should NOT match: \(u.absoluteString)")
+                }
+            }
+
+            TestHarness.test("parseFedoraReleasePath extracts version + tail") {
+                let url = URL(string: "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.5.iso")!
+                let parsed = MirrorManifest.parseFedoraReleasePath(url)
+                try expectEqual(parsed?.version, "41")
+                try expectEqual(parsed?.tail,
+                    "Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.5.iso")
+            }
+
+            TestHarness.test("parseFedoraReleasePath handles dl. host's /pub/ prefix") {
+                let url = URL(string: "https://dl.fedoraproject.org/pub/fedora/linux/releases/40/Server/aarch64/iso/Fedora-Server-dvd-aarch64-40-1.14.iso")!
+                let parsed = MirrorManifest.parseFedoraReleasePath(url)
+                try expectEqual(parsed?.version, "40")
+                try expect(parsed?.tail.contains("Server/aarch64") ?? false)
+            }
+
+            TestHarness.test("Alternatives swap host but preserve version + tail") {
+                let primary = URL(string: "https://download.fedoraproject.org/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.5.iso")!
+                let alts = MirrorManifest.fedora.alternatives(primary)
+                // Expected: dl + 2 kernel.org + Wayback = 4
+                // (dl. isn't filtered out because primary is download.).
+                try expectEqual(alts.count, 4,
+                    "Expected dl + 2 kernel.org + Wayback = 4")
+                let suffix = "releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.5.iso"
+                for alt in alts.prefix(3) {
+                    try expect(alt.absoluteString.contains(suffix),
+                        "Tier-1 mirror URL should preserve version + tail: got \(alt.absoluteString)")
+                }
+                try expect(alts[3].absoluteString.hasPrefix("https://web.archive.org/"),
+                    "Wayback last")
+            }
+
+            TestHarness.test("Primary URL is filtered out of its own alternatives") {
+                // When user pastes a dl.fedoraproject.org URL, dl.
+                // shouldn't appear in its own alternatives — that'd
+                // duplicate the primary lane.
+                let primary = URL(string: "https://dl.fedoraproject.org/pub/fedora/linux/releases/41/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-41-1.5.iso")!
+                let alts = MirrorManifest.fedora.alternatives(primary)
+                for alt in alts {
+                    try expect(alt.absoluteString != primary.absoluteString,
+                        "Primary leaked into alternatives: \(alt.absoluteString)")
+                }
+                try expect(alts.count >= 3,
+                    "Expected kernel.org pair + Wayback even after dl. filter")
+            }
+
+            TestHarness.test("Annual rotation: future versions parse cleanly") {
+                // Fedora 50 doesn't exist yet, but the parser should
+                // handle whatever digits land in the URL — that's
+                // what "annual rotation tolerance" means in practice.
+                let future = URL(string: "https://download.fedoraproject.org/pub/fedora/linux/releases/50/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-50-1.0.iso")!
+                let parsed = MirrorManifest.parseFedoraReleasePath(future)
+                try expectEqual(parsed?.version, "50")
+                let alts = MirrorManifest.fedora.alternatives(future)
+                try expect(!alts.isEmpty)
+                try expect(alts[0].absoluteString.contains("releases/50/"))
             }
         }
     }

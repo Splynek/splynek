@@ -71,6 +71,7 @@ public enum MirrorManifest {
     public static let allSets: [MirrorSet] = [
         ubuntu,
         debian,
+        fedora,
     ]
 
     /// Public entry point.  Returns ranked fallback URLs the engine
@@ -230,6 +231,106 @@ public enum MirrorManifest {
             return alts
         }
     )
+
+    // MARK: - Fedora (download.fedoraproject.org → kernel.org + dl)
+    //
+    // Fedora's mirror landscape is more complex than Ubuntu/Debian
+    // because of two compounding factors:
+    //
+    //   1. **Annual rotation.**  Each Fedora major version (40, 41,
+    //      42, …) ships once a year and rotates out of the active
+    //      mirror set ~3 years later (older releases move to
+    //      archives.fedoraproject.org).  The match logic therefore
+    //      validates a `/releases/<digits>/` path segment so we
+    //      claim release URLs but NOT development branches
+    //      (`/development/<rawhide>/`) or updates (`/updates/`)
+    //      where the mirror set doesn't apply.
+    //
+    //   2. **Path-prefix divergence.**  Fedora-operated hosts
+    //      (download.fedoraproject.org, dl.fedoraproject.org) serve
+    //      under `/pub/fedora/linux/releases/<N>/...` whereas Tier-1
+    //      mirrors (kernel.org) drop the `/pub/` prefix:
+    //        download.fedoraproject.org/pub/fedora/linux/releases/41/...
+    //        dl.fedoraproject.org/pub/fedora/linux/releases/41/...
+    //        mirror.kernel.org/fedora/linux/releases/41/...
+    //      We extract the tail post-`/releases/<N>/` and rebuild
+    //      each mirror URL with its specific prefix convention.
+    //
+    // Mirror choice: kept tight (just kernel.org-operated mirrors +
+    // the dl. canonical CDN) because Fedora's MirrorManager (the
+    // metalink-based dynamic mirror selector) is the primary mirror
+    // discovery system in production; this MirrorSet is a Tier-1
+    // safety net, not a replacement for that infrastructure.
+    public static let fedora = MirrorSet(
+        publisher: "Fedora",
+        matches: { url in
+            guard let host = url.host?.lowercased() else { return false }
+            let isFedoraHost = host == "download.fedoraproject.org"
+                || host == "dl.fedoraproject.org"
+            guard isFedoraHost else { return false }
+            // Require `/releases/<digits>/` to filter out
+            // development / updates / archive paths that don't have
+            // the same Tier-1 mirror coverage.
+            return parseFedoraReleasePath(url) != nil
+        },
+        alternatives: { primary in
+            guard let parsed = parseFedoraReleasePath(primary)
+            else { return [] }
+            // `parsed.tail` is everything after `/releases/<N>/` —
+            // e.g. `Workstation/x86_64/iso/Fedora-…iso`.
+            let baseTemplates: [String] = [
+                // dl. canonical CDN (preserves /pub/ prefix)
+                "https://dl.fedoraproject.org/pub/fedora/linux/releases/\(parsed.version)/\(parsed.tail)",
+                // kernel.org mirrors (drop /pub/, keep /fedora/linux/)
+                "https://mirror.kernel.org/fedora/linux/releases/\(parsed.version)/\(parsed.tail)",
+                "https://mirrors.kernel.org/fedora/linux/releases/\(parsed.version)/\(parsed.tail)",
+            ]
+            // Filter out any candidate that's already the primary
+            // (when the user pasted a dl. URL, dl. shouldn't appear
+            // again as an "alternative").
+            var alts: [URL] = baseTemplates.compactMap { URL(string: $0) }
+                .filter { $0.absoluteString != primary.absoluteString }
+            // Wayback long-shot, like every other set.
+            if let wayback = URL(
+                string: "https://web.archive.org/web/2024/" + primary.absoluteString
+            ) {
+                alts.append(wayback)
+            }
+            return alts
+        }
+    )
+
+    /// Parsed Fedora release URL: the major-version + everything
+    /// past `/releases/<version>/`.  Used by both `matches` (as a
+    /// non-nil gate) and `alternatives` (to rebuild mirror URLs at
+    /// each Tier-1 host's specific prefix).  Internal-only — exposed
+    /// to tests via `@testable`.
+    struct FedoraReleasePath: Equatable {
+        let version: String  // e.g. "41"
+        let tail: String     // e.g. "Workstation/x86_64/iso/Fedora-…iso"
+    }
+
+    /// Walk the URL path components looking for `/releases/<digits>/
+    /// <something>`.  Returns nil for non-release paths (development,
+    /// updates, archive) so the matcher rejects them cleanly.
+    static func parseFedoraReleasePath(_ url: URL) -> FedoraReleasePath? {
+        let comps = url.pathComponents  // ["/", "pub", "fedora", "linux", "releases", "41", ...]
+        guard let releasesIdx = comps.firstIndex(of: "releases"),
+              releasesIdx + 1 < comps.count
+        else { return nil }
+        let version = comps[releasesIdx + 1]
+        // Version must be all-digits to filter out e.g.
+        // `/releases/development/` or `/releases/test/` paths.
+        guard !version.isEmpty, version.allSatisfy({ $0.isNumber })
+        else { return nil }
+        // Must have at least one component after the version (a
+        // bare `/releases/41/` directory listing isn't a download
+        // URL we should mirror).
+        guard releasesIdx + 2 < comps.count else { return nil }
+        let tailComps = comps[(releasesIdx + 2)...]
+        let tail = tailComps.joined(separator: "/")
+        return FedoraReleasePath(version: version, tail: tail)
+    }
 }
 
 // =====================================================================
