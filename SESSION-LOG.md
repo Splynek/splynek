@@ -6,7 +6,7 @@
 > when picking up a session cold and the next move isn't obvious from
 > HANDOFF alone.
 >
-> Last updated 2026-05-05.
+> Last updated 2026-05-04.
 
 ## TL;DR
 
@@ -19,8 +19,8 @@ auto-extraction + complete localization in 5 non-English locales
 with audit-script + CI guardrails enforcing non-regression."
 
 Catalog grew **56 → 535 strings** (×9.6) → **2,675 translations**.
-Tests grew **148 → 328** (×2.2).  Public-repo Swift files **49 → 66**.
-Apple App Review status: still pending day 9 of v1.0 re-review.
+Tests grew **148 → 340** (×2.3).  Public-repo Swift files **49 → 67**.
+Apple App Review status: still pending day 8 of v1.0 re-review.
 Nothing pushed, nothing tagged — `main` is hot.
 
 ## Architectural arc (chronological)
@@ -217,16 +217,50 @@ translations.py` with 6 new component-builder regex patterns →
 480 → 535 strings.  Then 4 new publisher patterns + the SMJobBless
 full implementation (above).
 
+### Latest landing (2026-05-04): Concierge persistence + PDF drag-to-summarize
+
+**Concierge transcript persistence** (`a1fc19c`).  Chat survives
+session restart via a JSON-backed store at `~/Library/Application
+Support/Splynek/concierge-transcript.json`.  Schema-versioned, capped
+at 200 messages, atomic write, all failure modes (corrupted JSON,
+missing file, schema mismatch, nil URL) return `[]` rather than
+crash.  `ConciergeState` got a `didSet`-persists hook on `chat` +
+load-on-init; `ConciergeMessage` got an explicit init so the
+persisted UUID round-trips (id defaults to `UUID()` so the 14
+existing call sites stay source-compatible).  Cards intentionally
+NOT persisted — they encode live state (URLs to scan reports, file
+paths in disk usage, "Download"/"Open" buttons that close over
+in-process closures) and would render interactive surfaces over
+stale data after a relaunch.  The text caption populated by the
+Pro dispatcher's `captionFor(card:)` preserves the conversation's
+readability, which is what users already see above each card.
+12 new tests across 4 suites: round-trip / failure modes /
+retention + clear / `ConciergeState` integration.  328 → 340 tests.
+
+**PDF drag-to-summarize** (`c64deb1`, Pro repo).  `.onDrop(of:
+[.pdf])` on `ConciergeView`'s outermost view, with a centered
+`.ultraThinMaterial` overlay banner ("Drop PDF to summarize") shown
+while a PDF is hovering.  UTType filter is `.pdf` specifically (not
+`.fileURL`) so non-PDF drops fall through to RootView's broader
+URL-as-download handler unchanged.  Free-tier returns false from the
+drop handler — `lockedUpsell` slot stays clean.  On drop:
+`vm.conciergeAsk("Summarize this PDF.", pickedPDF: url)` —
+`LiveConciergeBridge` already wires `pickedPDF` through
+`summarize_pdf`, so no new bridge plumbing.  Replaces the previous
+flow which required typing "summarize a PDF", LLM picking
+`summarize_pdf`, bridge returning "Pick a PDF first" error, then
+re-prompting via NSOpenPanel — now zero-step.
+
 ## Open positions (what a fresh session should know about)
 
-### Apple v1.0 review — **escalate within 24-48h**
+### Apple v1.0 review — escalate by day 10 if no movement
 
-Resubmitted 2026-04-26.  Status 2026-05-05: day 9, past the upper
-edge of the typical 1-7 day window.  Maintainer should escalate via
-Resolution Center.  Sample message: ask reviewer for an ETA,
-mention the v1.0 binary has been in queue since 2026-04-26 (9 days),
-reaffirm no VPN/NetworkExtension entitlement (the original
-rejection ground).
+Resubmitted 2026-04-26.  Status 2026-05-04: day 8, at the upper
+edge of the typical 1-7 day window.  If still pending at day 10,
+maintainer should escalate via Resolution Center.  Sample message:
+ask reviewer for an ETA, mention the v1.0 binary has been in queue
+since 2026-04-26 (8 days), reaffirm no VPN/NetworkExtension
+entitlement (the original rejection ground).
 
 If Apple cites 2.5.2 (the "vibe coding" guideline), paste
 `MAS-2.5.2-COMPLIANCE.md` into Resolution Center — the brief is
@@ -242,12 +276,12 @@ deprecates AppleScript admin-elevation or tightens sandbox policy.
 
 ### Concierge Pro polish
 
-Three open items in `splynek-pro`:
-1. Card-history persistence layer so session-restart doesn't blank
-   the chat (today the transcript is ephemeral).
-2. Drag-PDF flow that bypasses the suggestion-chip detour (today
-   the user has to click the "Summarize PDF" chip; better UX:
-   drag the PDF onto the input bar).
+~~1. Card-history persistence layer~~ — **shipped 2026-05-04**
+(`a1fc19c`).  See "Latest landing" above.
+
+~~2. Drag-PDF flow that bypasses the suggestion-chip detour~~ —
+**shipped 2026-05-04** (`c64deb1`, Pro).  See "Latest landing" above.
+
 3. The legacy `conciergeSend` still routes Spotlight + AppIntents +
    menu-bar callers.  v1.7.x unified the input-bar but those other
    surfaces still take the legacy path.  Migration is straightforward
@@ -284,6 +318,8 @@ is genuinely human work.
 ## Commit timeline (latest first, top of `main`)
 
 ```
+a1fc19c Concierge transcript persistence: ConciergeTranscriptStore + load-on-init + 12 tests
+75c25b6 Session transition: HANDOFF refresh + new SESSION-LOG.md
 e8ebb2a SMJobBless v1.8.2: privileged helper bundle + activated client + PkgInstaller fallback
 d2d4bfe PublisherPattern: Apache + Debian + Ubuntu + Arch + 15 tests
 e40fe01 Audit script extension + catalog catch-up: 49 strings × 5 locales
@@ -338,8 +374,8 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **535** | ×9.6 |
 | Translations (×5 locales) | 56 | **2,675** | ×47 |
-| Tests | 148 | **328** | ×2.2 |
-| Public-repo Swift files | 49 | **66** | +17 |
+| Tests | 148 | **340** | ×2.3 |
+| Public-repo Swift files | 49 | **67** | +18 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
 | Top-level docs | 1 (HANDOFF) | **6** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG) | +5 |

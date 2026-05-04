@@ -19,11 +19,11 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (328 tests, all green)
+**Tests:** `swift run splynek-test` (340 tests, all green)
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
-**Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-03.**
-**Architectural state on `main`: v1.7 + v1.8 + v1.9 work all landed locally, untagged.**
+**Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-04.**
+**Architectural state on `main`: v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.8.2 + v1.9 + v1.9.x all landed locally, untagged.**
 
 The `main` branch carries the v1.6.x localization rounds AND the v1.7→v1.9
 architecture (Concierge-as-Mac-Assistant + Verified Installer + Fleet 2.0
@@ -227,7 +227,7 @@ Mac App Store v1.0 is in re-review since 2026-04-26 (resubmitted with Resolution
 
 ---
 
-## ⚡ Session handoff — current state (2026-05-05)
+## ⚡ Session handoff — current state (2026-05-04)
 
 **For a fresh session picking this up.** TL;DR: localization closed at
 **535 strings × 5 locales = 2,675 translations** (audit-script
@@ -235,14 +235,16 @@ extension surfaced 49 hidden strings; all fixed; 0 missing).  **All 4
 non-PT-PT locales (de/es/fr/it) walked end-to-end + verified clean.**
 **v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.8.2 SMJobBless full
 plumbing + v1.9 + v1.9.x extensions all landed** — Concierge-as-
-Mac-Assistant with unified typed-input routing, Verified Installer
+Mac-Assistant with unified typed-input routing **+ chat-history
+persistence across launches (`ConciergeTranscriptStore`) + PDF
+drag-to-summarize on the Concierge tab**, Verified Installer
 with all 4 kind handlers including admin-domain .pkg via osascript
 (v1.8.1) + SMJobBless privileged-helper (v1.8.2 wired, awaiting
 maintainer's xcodegen + code-sign), Fleet 2.0 LAN peer cache with
 full discovery + auto-join + warm-cache digest dup-detection +
 PublisherPattern enrichment for 5 publishers (Mozilla / Apache /
-Debian / Ubuntu / Arch).  **328 tests passing.**  Apple v1.0 still
-pending re-review (day 9 → maintainer should consider Resolution
+Debian / Ubuntu / Arch).  **340 tests passing.**  Apple v1.0 still
+pending re-review (day 8 → maintainer should consider Resolution
 Center escalation by day 10); ASC monitor running daily.  Marketing
 still staged.  Nothing pushed, nothing tagged — `main` is hot but
 uncommitted-to-release.
@@ -257,7 +259,7 @@ call), gated on Apple's v1.0 clearing.
 cd "/Users/pcgm/Claude Code"
 git status                            # both repos must be clean
 swift build                           # < 10s, must succeed
-./.build/debug/splynek-test           # must show 328/328
+./.build/debug/splynek-test           # must show 340/340
 python3 Scripts/find-missing-translations.py  # must show 0 missing
 
 # 2. Read the latest 5 commits to see what just landed
@@ -279,7 +281,7 @@ commit, every architectural decision, and every open position).
 
 | Track | State | Where |
 |---|---|---|
-| **Apple App Store v1.0 review** | ⏳ Resubmitted 2026-04-26 (VPN-clarification Resolution Center reply + App Review Notes update + clicked "Atualizar revisão"). Status as of 2026-05-05: still in re-review, **day 9** — past the upper edge of the typical 1-7 day window.  **Maintainer should escalate via Resolution Center within 24–48 h** if no movement.  Sample message ready: ask reviewer for an ETA, mention the v1.0 binary has been in queue since 2026-04-26 (9 days), reaffirm no VPN/NetworkExtension entitlement.  ASC monitor cron `trig_01FdTsuA5J9d85sknvtFZTHj` fires daily 09:00 UTC against iTunes Lookup API; will send HIGH-priority notification when the binary lands.  **The 2.5.2 defence packet is staged** — if Apple cites 2.5.2, paste `MAS-2.5.2-COMPLIANCE.md` into Resolution Center. | App Store Connect |
+| **Apple App Store v1.0 review** | ⏳ Resubmitted 2026-04-26 (VPN-clarification Resolution Center reply + App Review Notes update + clicked "Atualizar revisão"). Status as of 2026-05-04: still in re-review, **day 8** — at the upper edge of the typical 1-7 day window.  **Maintainer should consider Resolution Center escalation by day 10** if no movement.  Sample message ready: ask reviewer for an ETA, mention the v1.0 binary has been in queue since 2026-04-26 (8 days), reaffirm no VPN/NetworkExtension entitlement.  ASC monitor cron `trig_01FdTsuA5J9d85sknvtFZTHj` fires daily 09:00 UTC against iTunes Lookup API; will send HIGH-priority notification when the binary lands.  **The 2.5.2 defence packet is staged** — if Apple cites 2.5.2, paste `MAS-2.5.2-COMPLIANCE.md` into Resolution Center. | App Store Connect |
 | **Sovereignty cron trigger** | ⏳ First fire **2026-05-01 09:00 UTC**. Public repo only; drafts up to 20 catalog entries from `Scripts/sources/*.json`, opens PR. | https://claude.ai/code/scheduled/trig_01JEuDpurUC21nHkumwdEfaB |
 | **Trust cron trigger** | ⏳ First fire **2026-05-15 09:00 UTC**. Refreshes catalog entries with `lastReviewed > 90 days`, checks NVD + HIBP for new findings, opens PR. | https://claude.ai/code/scheduled/trig_01VZNTUM4ikbYH5XBtpnn1ER |
 | **Quarterly audit cron** | ⏳ First fire **2026-06-01 09:00 UTC**. Audits a rotating area (Q1=networking, Q2=views, Q3=scripts, Q4=build), opens GitHub issue with `audit` label. | https://claude.ai/code/scheduled/trig_0161CxCRWwnG5F48ynpTaspi |
@@ -293,8 +295,8 @@ commit, every architectural decision, and every open position).
 
 | Repo | Branch | Latest commit | Status |
 |---|---|---|---|
-| `Splynek/splynek` (public) | `main` | will be at HEAD after this session's commit | clean working tree |
-| `Splynek/splynek-pro` (private) | `main` | `893d5bc` (v1.5.3 ContextCard migration) | clean |
+| `Splynek/splynek` (public) | `main` | `a1fc19c` (Concierge transcript persistence + 12 tests) — 53 commits ahead of origin | clean working tree |
+| `Splynek/splynek-pro` (private) | `main` | `c64deb1` (ConciergeView: drag PDF onto tab to summarize) — 4 commits ahead of origin | clean |
 | `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
 
 ### Latest release artifact
@@ -403,19 +405,26 @@ is a different integration: Steam needs to intercept its update URLs;
 Time Machine needs an SMB-extension boundary; Photos needs iCloud
 deep-link cooperation.  Pick the highest-value one first.
 
-**Concierge Mac Assistant Pro polish.**  v1.7 ships the dispatcher +
-card view + 4 suggestion chips in the empty state.  Still on the list:
-an inline "type your question" mode that always routes through the
-new Mac Assistant dispatcher (today the typed-input goes through the
-legacy `conciergeSend` path), a card-history persistence layer so
-session-restart doesn't blank the chat, a "PDF summarize from drag"
-flow that bypasses the suggestion-chip detour.
+~~**Concierge Mac Assistant Pro polish.**~~ — **all three sub-items
+shipped.** Inline typed-input through Mac-Assistant dispatcher landed
+in v1.7.x (commit 3a97d2c on the Pro repo).  Card-history persistence
+landed 2026-05-03 — `Sources/SplynekCore/ConciergeTranscriptStore.swift`
++ `ConciergeState` `didSet`-persists every chat mutation; load-on-init
+restores the transcript text-only (cards intentionally dropped — see
+the file header for why); 12 new tests covering round-trip + four
+failure modes + retention cap + clear semantics.  PDF drag-to-summarize
+landed 2026-05-04 — `.onDrop(of: [.pdf])` on `ConciergeView` with a
+centered `.ultraThinMaterial` overlay banner ("Drop PDF to summarize");
+free-tier returns false so `lockedUpsell` slot stays clean.  See
+`a1fc19c` (public) + `c64deb1` (Pro).
 
-**Localization cleanup — visual sweeps for de/es/fr/it.**  pt-PT was
-visually walked end-to-end in round 6.  The other four locales are
-catalog-correct + machine-validated (the LocalizableCatalogTests
-invariant), but no human has eyeballed them in the running app.
-~30 minutes per locale to walk every tab.
+~~**Localization cleanup — visual sweeps for de/es/fr/it.**~~ —
+**done.** All 4 non-PT-PT locales walked end-to-end 2026-05-05;
+DE+FR pass caught 6 InstallView strings flipped to `LocalizedStringKey`;
+audit-script extension (commit `e40fe01`) surfaced 49 hidden strings
+across 6 component-builder regex patterns; catalog 480 → 535 × 5 =
+2,675 translations.  See the "Localization state machine" section
+below for the now-canonical pipeline.
 
 **MAS resubmit when v1.0 clears.**  Re-cut the MAS xcarchive against
 the v1.7+ commits, upload via Xcode Organizer, attach the existing
@@ -447,12 +456,14 @@ All four debt items cleared 2026-04-26:
 v1.7 — Concierge as Mac Assistant
   Sources/SplynekCore/ConciergeTools.swift                ← 8-tool registry (compile-time)
   Sources/SplynekCore/ConciergeBridge.swift               ← LiveConciergeBridge dispatcher
+  Sources/SplynekCore/ConciergeTranscriptStore.swift      ← v1.7.x: chat persistence (load-on-init + didSet save)
   Sources/SplynekCore/HistorySearch.swift                 ← ranked history search
   Sources/SplynekCore/DiskUsageScanner.swift              ← top-N space-takers
   Sources/SplynekCore/PDFSummarizer.swift                 ← PDFKit text extraction
   Sources/SplynekCore/AppIntentsProvider.swift            ← +3 intents (Search/Disk/PDF)
   splynek-pro/Sources/SplynekPro/ConciergeMacAssistant.swift   ← LLM dispatcher (Pro)
   splynek-pro/Sources/SplynekPro/Views/ConciergeCardView.swift ← multi-card UI (Pro)
+  splynek-pro/Sources/SplynekPro/Views/ConciergeView.swift     ← v1.7.x: PDF drag-to-summarize .onDrop wiring
 
 v1.8 — Verified Installer
   Sources/SplynekCore/Installer/InstallSpec.swift                ← parsed spec types
@@ -514,7 +525,7 @@ Other v1.6.x → v1.9 docs the maintainer writes against
 ```
 1. Read HANDOFF.md (this file) top 300 lines
 2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
-3. swift run splynek-test (must show 328/328 — anything less is a regression)
+3. swift run splynek-test (must show 340/340 — anything less is a regression)
 4. python3 Scripts/find-missing-translations.py | head -5  → confirms catalog state
 5. Open https://claude.ai/code/scheduled and check the four triggers fired clean
 6. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status
@@ -525,7 +536,7 @@ If everything green → ask the user what to work on. The "v1.6 candidates" list
 ### Localization state machine — closed at round 8
 
 ```
-Catalog on `main`: 480 strings × 5 locales = 2,400 translations.
+Catalog on `main`: 535 strings × 5 locales = 2,675 translations.
 Audit (python3 Scripts/find-missing-translations.py): 0 missing.
 The CI guardrail (.github/workflows/lint.yml) runs the audit on every
 PR; any new Text("...") literal without a matching catalog entry
