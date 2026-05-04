@@ -55,6 +55,7 @@ enum PublisherPattern {
         debianReleases,
         ubuntuReleases,
         archReleases,
+        githubReleases,
     ]
 
     /// Walks `allPatterns` in order; returns the first publisher's
@@ -217,6 +218,57 @@ enum PublisherPattern {
             return await fetchAndParseSUMS(
                 at: sumsURL, filename: filename, session: session
             )
+        }
+    )
+
+    // MARK: - GitHub releases (github.com/<owner>/<repo>/releases/download/...)
+    //
+    // Most OSS projects on GitHub publish per-tag manifest files
+    // alongside their release assets:
+    //   https://github.com/<owner>/<repo>/releases/download/<tag>/<asset>
+    //   https://github.com/<owner>/<repo>/releases/download/<tag>/sha256sums.txt
+    //
+    // Two common naming conventions:
+    //   - `sha256sums.txt` (lowercase) — ripgrep, fd, bat, eza, helix, …
+    //   - `SHA256SUMS`     (uppercase) — less common but follows the
+    //     Mozilla / Linux-distro convention
+    //
+    // Per-asset `.sha256` siblings are also common; those are caught
+    // by the cheaper `Enrichment.probe(_:)` path before this pattern
+    // even runs.  The framework's cost here is two HTTP HEAD-likes
+    // (GET, then 404 short-circuits the second on most projects),
+    // returning nil cleanly so the existing per-asset probe takes
+    // over for projects that don't ship a manifest.
+    //
+    // Match scope: only `github.com` URLs whose path contains
+    // `/releases/download/`.  GitHub redirects asset GETs to
+    // `objects.githubusercontent.com/...` but the user-pasted URL is
+    // overwhelmingly the github.com form; we don't try to handle the
+    // post-redirect host (its parent directory doesn't expose the
+    // manifest).
+    static let githubReleases = Pattern(
+        name: "GitHub Releases",
+        matches: { url in
+            guard let host = url.host?.lowercased(), host == "github.com"
+            else { return false }
+            return url.path.contains("/releases/download/")
+        },
+        extract: { url, session in
+            guard let filename = url.pathComponents.last else { return nil }
+            let directory = url.deletingLastPathComponent()
+            // Try lowercase first (the GitHub-OSS convention) → uppercase
+            // fallback (Mozilla/Linux-distro convention some projects
+            // adopt).  First non-nil wins; nil → fall through to the
+            // existing per-asset .sha256 sibling probe.
+            for manifestName in ["sha256sums.txt", "SHA256SUMS"] {
+                let sumsURL = directory.appendingPathComponent(manifestName)
+                if let digest = await fetchAndParseSUMS(
+                    at: sumsURL, filename: filename, session: session
+                ) {
+                    return digest
+                }
+            }
+            return nil
         }
     )
 

@@ -58,6 +58,29 @@ enum PublisherPatternTests {
                 let url = URL(string: "https://archlinux.org/iso/2024.04.01/archlinux-2024.04.01-x86_64.iso")!
                 try expect(PublisherPattern.archReleases.matches(url))
             }
+
+            TestHarness.test("GitHub Releases pattern claims github.com/.../releases/download/...") {
+                let yes = [
+                    "https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep-14.1.0-x86_64-apple-darwin.tar.gz",
+                    "https://github.com/sharkdp/fd/releases/download/v10.0.0/fd-v10.0.0-x86_64-apple-darwin.tar.gz",
+                    "https://github.com/helix-editor/helix/releases/download/24.03/helix-24.03-aarch64-macos.tar.xz",
+                ].compactMap { URL(string: $0) }
+                let no = [
+                    // Same host, wrong path shape (PR / issue / blob URLs).
+                    "https://github.com/BurntSushi/ripgrep/pulls",
+                    "https://github.com/BurntSushi/ripgrep/blob/master/README.md",
+                    "https://github.com/BurntSushi/ripgrep/archive/refs/tags/14.1.0.tar.gz",
+                    // Post-redirect host should NOT match — its parent
+                    // directory doesn't expose the manifest.
+                    "https://objects.githubusercontent.com/github-production-release-asset/123/abc",
+                    // Other hosts.
+                    "https://gitlab.com/owner/repo/releases/download/v1/file.tar.gz",
+                ].compactMap { URL(string: $0) }
+                for u in yes { try expect(PublisherPattern.githubReleases.matches(u),
+                                          "Should match: \(u.absoluteString)") }
+                for u in no  { try expect(!PublisherPattern.githubReleases.matches(u),
+                                          "Should NOT match: \(u.absoluteString)") }
+            }
         }
 
         TestHarness.suite("PublisherPattern — SHA256SUMS parser") {
@@ -123,15 +146,28 @@ enum PublisherPatternTests {
 
         TestHarness.suite("PublisherPattern — registry walk") {
 
-            TestHarness.test("allPatterns has all five publishers") {
+            TestHarness.test("allPatterns has all six publishers") {
                 let names = Set(PublisherPattern.allPatterns.map(\.name))
                 try expect(names.contains("Mozilla"))
                 try expect(names.contains("Apache"))
                 try expect(names.contains("Debian"))
                 try expect(names.contains("Ubuntu"))
                 try expect(names.contains("Arch"))
-                try expect(PublisherPattern.allPatterns.count == 5,
+                try expect(names.contains("GitHub Releases"))
+                try expect(PublisherPattern.allPatterns.count == 6,
                            "Got \(PublisherPattern.allPatterns.count) patterns; if a new publisher landed, update this assertion.")
+            }
+
+            TestHarness.test("GitHub Releases parses lowercase sha256sums.txt") {
+                // ripgrep-style manifest line shape.
+                let body = """
+                    fa01debc1245fa01debc1245fa01debc1245fa01debc1245fa01debc1245fa01  ripgrep-14.1.0-x86_64-apple-darwin.tar.gz
+                    fa02debc1245fa02debc1245fa02debc1245fa02debc1245fa02debc1245fa02  ripgrep-14.1.0-x86_64-unknown-linux-musl.tar.gz
+                    """
+                let digest = PublisherPattern.parseSHA256SUMS(
+                    body, filename: "ripgrep-14.1.0-x86_64-apple-darwin.tar.gz"
+                )
+                try expectEqual(digest, "fa01debc1245fa01debc1245fa01debc1245fa01debc1245fa01debc1245fa01")
             }
 
             TestHarness.test("Non-matching URL returns nil from extractDigest") {
