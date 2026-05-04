@@ -468,6 +468,55 @@ drag) require maintainer-level inputs.
 
 Tests 425 → 442 (+17).  Audit clean (544 strings × 5 locales).
 
+### Latest landing (2026-05-04 part 5): localization fully mapped + Download verified live
+
+User followed up on the post-A→F honest-scope flags ("Localization
+gotcha is mapped but unsolved" + "G's deferred surfaces") with two
+explicit asks:
+
+1. **Try the LocalizedStringResource end-to-end fix.**  Did it.
+   Tested LocalizedStringResource(key, bundle: .atURL(...)) and the
+   variant with explicit Locale.current.  Both still return English
+   in the live .app — making 6 failed Foundation/SwiftUI APIs total.
+   The issue is now fully mapped: SwiftUI's Text uses the resource
+   pipeline via environment-aware rendering, while AppKit-side
+   String extraction reads the sandboxed-app per-process
+   AppleLanguages defaults which return ["en"] regardless of system
+   pref.  Definitive fix path (rewrite save panels as SwiftUI
+   .fileExporter sheets) documented as deferred — multi-week
+   refactor not warranted for save-panel captions.
+
+2. **Live-test G's deferred surfaces.**  Mixed outcomes:
+   - **Concierge: BLOCKED.**  Free-build ConciergeView in the public
+     repo is hardcoded as the always-render upsell.  The actual chat
+     surface lives in splynek-pro and swaps in only via the MAS
+     Xcode build's source-exclusion mechanism.  Patching
+     `ProStubs.swift::isPro = true` unlocks the sidebar PRO badges
+     but the view stays on the upsell — the chat code isn't in the
+     SwiftPM build.  Untestable from this build path.  Patch
+     reverted before commit.
+   - **Install: SKIPPED.**  Running installer(8) on any .pkg (even
+     a pkgbuild'd no-op) is destructive.  Not run without explicit
+     go-ahead.
+   - **Download: ✅ VERIFIED end-to-end.**  Drove a download of
+     https://releases.ubuntu.com/24.04/SHA256SUMS through the
+     Transferências tab.  File landed cleanly at
+     ~/Downloads/SHA256SUMS (594 bytes, real Ubuntu hashes for the
+     three 24.04.3 spins), Histórico bumped 7 → 8 entries, en0 lane
+     reached 100%, no errors.  Confirms the new S2 wire-up works
+     end-to-end on a real Ubuntu URL — VM injects
+     MirrorManifest.parallelAlternatives at engine creation, and
+     the curated Tier-1 mirrors get added to laneURLs without
+     breaking small-file completion.
+
+Net result of the two asks: localization is now durably understood
+(captured as memory entry splynek_localization_gotcha.md so the
+next session doesn't repeat the bisection); Concierge and Install
+deferred surfaces are documented as untestable-without-additional-
+infrastructure (Concierge needs MAS Xcode build; Install needs a
+real .pkg the maintainer trusts); Download path's S2 wire-up is
+proven live on a real publisher URL.
+
 ## Open positions (what a fresh session should know about)
 
 ### Apple v1.0 review — escalate by day 10 if no movement

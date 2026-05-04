@@ -376,7 +376,7 @@ commit, every architectural decision, and every open position).
 
 | Repo | Branch | Latest commit | Status |
 |---|---|---|---|
-| `Splynek/splynek` (public) | `main` | `590fdee` (A→F sweep: localization investigation + kernel.org publisher + engine-restart test + Trust PDF pagination + Swift 6 lint fix) — 73 commits ahead of origin | clean working tree |
+| `Splynek/splynek` (public) | `main` | `56f0dea` (localization fully mapped + Concierge BLOCKED + Download ✅ verified live) — 75 commits ahead of origin | clean working tree |
 | `Splynek/splynek-pro` (private) | `main` | `c64deb1` (ConciergeView: drag PDF onto tab to summarize) — 4 commits ahead of origin | clean |
 | `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
 
