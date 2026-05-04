@@ -56,6 +56,7 @@ enum PublisherPattern {
         ubuntuReleases,
         archReleases,
         githubReleases,
+        kernelOrgReleases,
     ]
 
     /// Walks `allPatterns` in order; returns the first publisher's
@@ -269,6 +270,39 @@ enum PublisherPattern {
                 }
             }
             return nil
+        }
+    )
+
+    // MARK: - kernel.org (Linux kernel source tarballs)
+    //
+    // kernel.org serves Linux kernel source tarballs at:
+    //   https://cdn.kernel.org/pub/linux/kernel/v<N>.x/linux-<ver>.tar.xz
+    //   https://kernel.org/pub/linux/kernel/v<N>.x/linux-<ver>.tar.xz
+    // alongside per-file `.sha256` siblings (and `.sign` for GPG):
+    //   https://cdn.kernel.org/pub/linux/kernel/v<N>.x/sha256sums.asc
+    //   https://cdn.kernel.org/pub/linux/kernel/v<N>.x/linux-<ver>.tar.xz.sha256  (some versions)
+    //
+    // Strategy: try the per-file `.sha256` sibling first (same shape
+    // Apache uses).  Most kernel tarballs since ~2020 ship one.  When
+    // absent, fall through to the existing cheap-probe path —
+    // `Enrichment.probe(_:)` already covers `.sha256` sibling discovery
+    // for arbitrary URLs, so this pattern's contribution is mainly the
+    // host-claim (so `extractDigest` returns a publisher tag) plus
+    // matching the cdn. + bare hosts.
+    static let kernelOrgReleases = Pattern(
+        name: "kernel.org",
+        matches: { url in
+            guard let host = url.host?.lowercased() else { return false }
+            let isKernelHost = host == "cdn.kernel.org"
+                || host == "kernel.org"
+                || host == "www.kernel.org"
+            guard isKernelHost else { return false }
+            return url.path.contains("/pub/linux/")
+        },
+        extract: { url, session in
+            let siblingURL = url.deletingLastPathComponent()
+                .appendingPathComponent(url.lastPathComponent + ".sha256")
+            return await fetchSimpleSHA(at: siblingURL, session: session)
         }
     )
 

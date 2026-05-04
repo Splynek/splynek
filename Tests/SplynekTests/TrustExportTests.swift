@@ -145,6 +145,86 @@ enum TrustExportTests {
                 }
             }
         }
+
+        TestHarness.suite("TrustExport — chunkAppsForPDF") {
+
+            // Walks the chunker against synthetic input — no catalog
+            // dependency, fully deterministic.  Verifies the
+            // first-chunk-smaller / continuation-chunks-bigger
+            // contract that lets the cover page fit alongside its
+            // ~5 apps while continuation pages carry ~8.
+
+            TestHarness.test("Empty input yields a single empty chunk (cover-only PDF)") {
+                let chunks = TrustExport.chunkAppsForPDF([])
+                try expectEqual(chunks.count, 1,
+                    "Empty PDF still has its cover page")
+                try expect(chunks[0].isEmpty,
+                    "First chunk is empty — the cover renders alone")
+            }
+
+            TestHarness.test("Single app fits in the first chunk only") {
+                let one = [makeScored(name: "OnlyApp", score: 50)]
+                let chunks = TrustExport.chunkAppsForPDF(one)
+                try expectEqual(chunks.count, 1)
+                try expectEqual(chunks[0].count, 1)
+            }
+
+            TestHarness.test("Five apps fit in the first chunk (default firstPage=5)") {
+                let five = (1...5).map { makeScored(name: "App\($0)", score: 50) }
+                let chunks = TrustExport.chunkAppsForPDF(five)
+                try expectEqual(chunks.count, 1, "Exactly fills first chunk")
+                try expectEqual(chunks[0].count, 5)
+            }
+
+            TestHarness.test("Six apps split: 5 on cover + 1 on continuation") {
+                let six = (1...6).map { makeScored(name: "App\($0)", score: 50) }
+                let chunks = TrustExport.chunkAppsForPDF(six)
+                try expectEqual(chunks.count, 2)
+                try expectEqual(chunks[0].count, 5, "First chunk: cover-fit")
+                try expectEqual(chunks[1].count, 1, "Second chunk: overflow")
+            }
+
+            TestHarness.test("13 apps split: 5 cover + 8 continuation = 2 pages") {
+                let thirteen = (1...13).map { makeScored(name: "App\($0)", score: 50) }
+                let chunks = TrustExport.chunkAppsForPDF(thirteen)
+                try expectEqual(chunks.count, 2)
+                try expectEqual(chunks[0].count, 5)
+                try expectEqual(chunks[1].count, 8, "Continuation page fills to 8")
+            }
+
+            TestHarness.test("21 apps split: 5 + 8 + 8 = 3 pages") {
+                let twentyOne = (1...21).map { makeScored(name: "App\($0)", score: 50) }
+                let chunks = TrustExport.chunkAppsForPDF(twentyOne)
+                try expectEqual(chunks.count, 3)
+                try expectEqual(chunks[0].count, 5)
+                try expectEqual(chunks[1].count, 8)
+                try expectEqual(chunks[2].count, 8)
+            }
+
+            TestHarness.test("Chunk boundaries preserve original order") {
+                let apps = (1...20).map { makeScored(name: "App\($0)", score: 50) }
+                let chunks = TrustExport.chunkAppsForPDF(apps)
+                let flattened = chunks.flatMap { $0 }
+                try expectEqual(flattened.count, 20)
+                for (i, item) in flattened.enumerated() {
+                    try expectEqual(item.app.name, "App\(i + 1)",
+                        "Chunk \(i): expected App\(i+1)")
+                }
+            }
+
+            TestHarness.test("Custom chunk sizes apply correctly") {
+                let ten = (1...10).map { makeScored(name: "App\($0)", score: 50) }
+                let chunks = TrustExport.chunkAppsForPDF(
+                    ten, firstPage: 2, continuationPage: 3
+                )
+                // 2 + 3 + 3 + 2 = 10 → 4 chunks
+                try expectEqual(chunks.count, 4)
+                try expectEqual(chunks[0].count, 2)
+                try expectEqual(chunks[1].count, 3)
+                try expectEqual(chunks[2].count, 3)
+                try expectEqual(chunks[3].count, 2, "Final chunk: remainder")
+            }
+        }
     }
 
     // MARK: - Fixtures
@@ -156,5 +236,29 @@ enum TrustExportTests {
             bundleURL: URL(fileURLWithPath: "/Applications/\(name).app"),
             version: "1.0"
         )
+    }
+
+    /// Synthetic ScoredApp for chunker tests — no catalog dependency.
+    private static func makeScored(name: String, score: Int) -> TrustExport.ScoredApp {
+        let app = SovereigntyScanner.InstalledApp(
+            id: "test.\(name)",
+            name: name,
+            bundleURL: URL(fileURLWithPath: "/Applications/\(name).app"),
+            version: "1.0"
+        )
+        let entry = TrustCatalog.Entry(
+            targetBundleID: "test.\(name)",
+            targetDisplayName: name,
+            lastReviewed: "2026-01-01",
+            concerns: [],
+            fallbackAlternatives: []
+        )
+        let s = TrustScorer.Score(
+            value: score,
+            level: score < 20 ? .low : score < 50 ? .moderate : score < 80 ? .high : .severe,
+            breakdown: [:],
+            hasConcerns: score > 0
+        )
+        return TrustExport.ScoredApp(app: app, entry: entry, score: s)
     }
 }

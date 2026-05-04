@@ -135,11 +135,12 @@ struct TrustView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.pdf]
         panel.nameFieldStringValue = "splynek-trust-\(Self.todayStamp).pdf"
-        // v1.7.x audit fix: panel.message intentionally not set —
-        // see SovereigntyView.exportCSV for the rationale.  AppKit
-        // localization lookup against SwiftPM's xcstrings output
-        // doesn't resolve cleanly; a stale English message in a
-        // pt-PT-rendered UI is worse than no message.
+        // v1.7.x audit (root cause + workaround): see
+        // LocalizedString+Workaround.swift for why direct lookup
+        // bypasses the broken default matching.
+        panel.message = Bundle.module.localizedStringRespectingLocale(
+            forKey: "Export the full Trust scan as a research-grade PDF (all apps, every concern, every primary-source citation)"
+        )
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let scored = TrustExport.rankedScored(
             installedApps: scanner.apps,
@@ -159,7 +160,9 @@ struct TrustView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.png]
         panel.nameFieldStringValue = "splynek-trust-top10-\(Self.todayStamp).png"
-        // panel.message intentionally not set — see exportPDF.
+        panel.message = Bundle.module.localizedStringRespectingLocale(
+            forKey: "Export the top 10 most-concerning apps as a 1200×1200 PNG suitable for social sharing"
+        )
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let scored = TrustExport.rankedScored(
             installedApps: scanner.apps,

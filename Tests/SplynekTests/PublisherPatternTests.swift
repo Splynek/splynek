@@ -59,6 +59,25 @@ enum PublisherPatternTests {
                 try expect(PublisherPattern.archReleases.matches(url))
             }
 
+            TestHarness.test("kernel.org pattern claims cdn.kernel.org + kernel.org /pub/linux/...") {
+                let yes = [
+                    "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.13.tar.xz",
+                    "https://kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz",
+                    "https://www.kernel.org/pub/linux/utils/util-linux/v2.40/util-linux-2.40.tar.xz",
+                ].compactMap { URL(string: $0) }
+                let no = [
+                    // Wrong host
+                    "https://example.com/pub/linux/kernel/v6.x/linux-6.13.tar.xz",
+                    // Right host but wrong path (kernel.org also hosts kup/, not for us)
+                    "https://kernel.org/about",
+                    "https://kernel.org/category/releases.html",
+                ].compactMap { URL(string: $0) }
+                for u in yes { try expect(PublisherPattern.kernelOrgReleases.matches(u),
+                                          "Should match: \(u.absoluteString)") }
+                for u in no  { try expect(!PublisherPattern.kernelOrgReleases.matches(u),
+                                          "Should NOT match: \(u.absoluteString)") }
+            }
+
             TestHarness.test("GitHub Releases pattern claims github.com/.../releases/download/...") {
                 let yes = [
                     "https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep-14.1.0-x86_64-apple-darwin.tar.gz",
@@ -146,7 +165,7 @@ enum PublisherPatternTests {
 
         TestHarness.suite("PublisherPattern — registry walk") {
 
-            TestHarness.test("allPatterns has all six publishers") {
+            TestHarness.test("allPatterns has the curated publisher set (7 entries)") {
                 let names = Set(PublisherPattern.allPatterns.map(\.name))
                 try expect(names.contains("Mozilla"))
                 try expect(names.contains("Apache"))
@@ -154,7 +173,9 @@ enum PublisherPatternTests {
                 try expect(names.contains("Ubuntu"))
                 try expect(names.contains("Arch"))
                 try expect(names.contains("GitHub Releases"))
-                try expect(PublisherPattern.allPatterns.count == 6,
+                try expect(names.contains("GitHub Releases"))
+                try expect(names.contains("kernel.org"))
+                try expect(PublisherPattern.allPatterns.count == 7,
                            "Got \(PublisherPattern.allPatterns.count) patterns; if a new publisher landed, update this assertion.")
             }
 

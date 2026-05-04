@@ -18,60 +18,103 @@ import SwiftUI
 // =====================================================================
 
 struct TrustReportPDFView: View {
+    /// Apps to render on THIS page (already chunked by
+    /// `TrustExport.chunkAppsForPDF`).
     let scored: [TrustExport.ScoredApp]
     let date: Date
+    /// True for the first page — show the cover (title +
+    /// methodology + summary stats); false for continuation pages
+    /// (show "Page X of Y" header).
+    var isCoverPage: Bool = true
+    var pageNumber: Int = 1
+    var totalPages: Int = 1
+    /// Full scored list (all apps) — only used on the cover page
+    /// for the summary-stats counts.  Nil on continuation pages.
+    var allScoredForCoverStats: [TrustExport.ScoredApp]? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // Header
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Trust Scan Report")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                Text(Self.dateFormatter.string(from: date))
-                    .font(.system(size: 11, weight: .regular))
+            if isCoverPage {
+                coverHeader
+                Divider()
+                Text(TrustExport.methodologyBlurb)
+                    .font(.system(size: 9.5))
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Divider()
+                summaryStats
+                Divider()
+            } else {
+                continuationHeader
+                Divider()
             }
 
-            Divider()
-
-            // Methodology blurb — anchors credibility
-            Text(TrustExport.methodologyBlurb)
-                .font(.system(size: 9.5))
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Divider()
-
-            // Summary stats
-            HStack(alignment: .firstTextBaseline, spacing: 24) {
-                statBlock(label: "Apps reviewed", value: "\(scored.count)")
-                statBlock(label: "Severe", value: "\(scored.filter { $0.score.level == .severe }.count)")
-                statBlock(label: "High", value: "\(scored.filter { $0.score.level == .high }.count)")
-                statBlock(label: "Moderate", value: "\(scored.filter { $0.score.level == .moderate }.count)")
-                statBlock(label: "Low / clean", value: "\(scored.filter { $0.score.level == .low }.count)")
-                Spacer()
-            }
-
-            Divider()
-
-            // Per-app sections
+            // Per-app sections (this page's chunk only)
             ForEach(scored, id: \.app.id) { item in
                 pdfAppSection(item)
             }
 
             Spacer()
 
-            // Footer
+            // Footer with slogan + page number
             VStack(alignment: .leading, spacing: 2) {
                 Divider()
-                Text(TrustExport.slogan)
-                    .font(.system(size: 8.5, weight: .medium))
-                    .foregroundStyle(.secondary)
+                HStack {
+                    Text(TrustExport.slogan)
+                        .font(.system(size: 8.5, weight: .medium))
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    if totalPages > 1 {
+                        Text("Page \(pageNumber) of \(totalPages)")
+                            .font(.system(size: 8.5, weight: .medium))
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
         }
         .padding(36)
         .frame(width: 612, height: 792, alignment: .topLeading)
         .background(Color.white)
+    }
+
+    @ViewBuilder
+    private var coverHeader: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Trust Scan Report")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+            Text(Self.dateFormatter.string(from: date))
+                .font(.system(size: 11, weight: .regular))
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private var continuationHeader: some View {
+        HStack {
+            Text("Trust Scan Report (continued)")
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text("Page \(pageNumber) of \(totalPages)")
+                .font(.system(size: 9, weight: .medium))
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private var summaryStats: some View {
+        // Counts come from the FULL scored list (all pages combined),
+        // not just this page's chunk — otherwise the cover would
+        // under-count when the catalog spans multiple pages.
+        let stats = allScoredForCoverStats ?? scored
+        HStack(alignment: .firstTextBaseline, spacing: 24) {
+            statBlock(label: "Apps reviewed", value: "\(stats.count)")
+            statBlock(label: "Severe", value: "\(stats.filter { $0.score.level == .severe }.count)")
+            statBlock(label: "High", value: "\(stats.filter { $0.score.level == .high }.count)")
+            statBlock(label: "Moderate", value: "\(stats.filter { $0.score.level == .moderate }.count)")
+            statBlock(label: "Low / clean", value: "\(stats.filter { $0.score.level == .low }.count)")
+            Spacer()
+        }
     }
 
     @ViewBuilder

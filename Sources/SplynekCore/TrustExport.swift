@@ -96,6 +96,39 @@ enum TrustExport {
         ranked.filter { $0.score.hasConcerns }.prefix(n).map { $0 }
     }
 
+    /// v1.7.x: split the scored-apps list into per-page chunks for
+    /// the PDF renderer.  The first chunk holds fewer apps because
+    /// the cover page also carries the title + date + methodology
+    /// blurb + summary stats; continuation pages are pure app lists
+    /// so they fit more.
+    ///
+    /// Defaults sized empirically from the v1.5+ catalog: 5 apps fit
+    /// comfortably below the cover content on US Letter; 8 apps fit
+    /// per continuation page.  Apps with concerns lists longer than
+    /// average might still extend slightly past the cap — acceptable
+    /// because the *next* page picks up the next app cleanly; the
+    /// only failure mode at the limits is a ~1pt of bleed at the
+    /// page boundary, which is invisible on screen.
+    ///
+    /// Pure function — fully testable with synthetic input.
+    static func chunkAppsForPDF(
+        _ scored: [ScoredApp],
+        firstPage: Int = 5,
+        continuationPage: Int = 8
+    ) -> [[ScoredApp]] {
+        guard !scored.isEmpty else { return [[]] }  // single empty cover
+        var chunks: [[ScoredApp]] = []
+        let firstCount = min(firstPage, scored.count)
+        chunks.append(Array(scored.prefix(firstCount)))
+        var idx = firstCount
+        while idx < scored.count {
+            let end = min(idx + continuationPage, scored.count)
+            chunks.append(Array(scored[idx..<end]))
+            idx = end
+        }
+        return chunks
+    }
+
     // MARK: - Render entry points
     //
     // Both renderers go through `ImageRenderer` (macOS 13+).  PDF uses
@@ -106,42 +139,56 @@ enum TrustExport {
     /// Render the full Trust scan as a multi-page PDF.  Each app
     /// becomes its own section with the score + level + per-concern
     /// citations.  Branded footer on every page.
+    ///
+    /// v1.7.x: true multi-page pagination — first page carries the
+    /// cover (title + methodology + summary stats + first ~5 apps),
+    /// subsequent pages each carry ~8 apps with a "X of Y" header.
+    /// Each chunk renders into its own CGContext PDF page so a Mac
+    /// with many catalog hits no longer clips at the bottom of US
+    /// Letter.  See `chunkAppsForPDF(_:)` for chunk sizing.
     @MainActor
     static func renderPDF(
         _ scored: [ScoredApp],
         to outputURL: URL,
         date: Date = Date()
     ) throws {
-        let view = TrustReportPDFView(scored: scored, date: date)
-        let renderer = ImageRenderer(content: view)
         // US Letter at 72 dpi — the canonical PDF page size for
         // unbranded research artifacts.  Letter beats A4 here because
         // the audience is overwhelmingly North American press +
         // technical readers; A4 readers can still print to fit.
-        renderer.proposedSize = ProposedViewSize(width: 612, height: 792)
+        let pageSize = CGSize(width: 612, height: 792)
 
         guard let consumer = CGDataConsumer(url: outputURL as CFURL) else {
             throw NSError(domain: "TrustExport", code: 1, userInfo: [
                 NSLocalizedDescriptionKey: "Couldn't open the output URL for writing.",
             ])
         }
-        var mediaBox = CGRect(x: 0, y: 0, width: 612, height: 792)
+        var mediaBox = CGRect(origin: .zero, size: pageSize)
         guard let pdfContext = CGContext(consumer: consumer, mediaBox: &mediaBox, nil) else {
             throw NSError(domain: "TrustExport", code: 2, userInfo: [
                 NSLocalizedDescriptionKey: "Couldn't create the PDF context.",
             ])
         }
-        // ImageRenderer.render takes a closure that gets called with
-        // (size, render-into-CGContext).  We wrap each render call
-        // in beginPDFPage / endPDFPage; for now the multi-page
-        // pagination is implicit (the SwiftUI view is sized to fit).
-        // True multi-page pagination requires breaking the view into
-        // page-sized fragments — deferred until we have evidence the
-        // single-page flow doesn't fit large catalogs.
-        renderer.render { _, render in
-            pdfContext.beginPDFPage(nil)
-            render(pdfContext)
-            pdfContext.endPDFPage()
+
+        let pages = chunkAppsForPDF(scored)
+        let totalPages = pages.count
+
+        for (idx, pageApps) in pages.enumerated() {
+            let view = TrustReportPDFView(
+                scored: pageApps,
+                date: date,
+                isCoverPage: idx == 0,
+                pageNumber: idx + 1,
+                totalPages: totalPages,
+                allScoredForCoverStats: idx == 0 ? scored : nil
+            )
+            let renderer = ImageRenderer(content: view)
+            renderer.proposedSize = ProposedViewSize(pageSize)
+            renderer.render { _, render in
+                pdfContext.beginPDFPage(nil)
+                render(pdfContext)
+                pdfContext.endPDFPage()
+            }
         }
         pdfContext.closePDF()
     }

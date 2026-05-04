@@ -295,7 +295,34 @@ final class DownloadEngine {
     /// `maxPathFlipRestarts` to defend against pathological flap
     /// loops.
     private var pathFlipRestartCount: Int = 0
-    private static let maxPathFlipRestarts = 6
+    static let maxPathFlipRestarts = 6
+
+    /// v1.7.x: pure decision predicate for the run() restart loop.
+    /// Factored out for testability — exercised by
+    /// `EngineRestartLoopTests` with synthetic state, then called
+    /// from inside `run()`'s `workerLoop:` against the live engine
+    /// state at each iteration.  Returning `.restart` means the
+    /// caller should bump `pathFlipRestartCount` + reset lane stats
+    /// + re-enter `runWorkers`; the other two outcomes mean exit
+    /// the loop and proceed to verify (or surface failure).
+    enum RestartLoopOutcome: Equatable, Sendable {
+        case completeOrCancelled
+        case giveUp
+        case restart
+    }
+
+    static func decideRestartLoopOutcome(
+        cancelled: Bool,
+        allDone: Bool,
+        pathFlagSet: Bool,
+        completedRestarts: Int,
+        maxRestarts: Int = DownloadEngine.maxPathFlipRestarts
+    ) -> RestartLoopOutcome {
+        if cancelled || allDone { return .completeOrCancelled }
+        if !pathFlagSet { return .giveUp }
+        if completedRestarts >= maxRestarts { return .giveUp }
+        return .restart
+    }
 
     private var historyTimerTask: Task<Void, Never>?
     private var sidecarURL: URL { outputURL.appendingPathExtension("splynek") }
@@ -546,21 +573,19 @@ final class DownloadEngine {
                     totalChunks: chunks.count,
                     probe: probed
                 )
-                if cancelFlag.isCancelled { break workerLoop }
-                if await queue.allDone() { break workerLoop }
-                guard pathRestartFlag.isSet else {
-                    // Lanes exited but neither cancelled nor complete
-                    // and no path flip — every lane failed over.
-                    // Existing behaviour (file ends incomplete, SHA
-                    // verify fails downstream) — break out so the
-                    // verify phase can surface the failure.
+                let outcome = Self.decideRestartLoopOutcome(
+                    cancelled: cancelFlag.isCancelled,
+                    allDone: await queue.allDone(),
+                    pathFlagSet: pathRestartFlag.isSet,
+                    completedRestarts: pathFlipRestartCount
+                )
+                switch outcome {
+                case .completeOrCancelled, .giveUp:
                     break workerLoop
+                case .restart:
+                    break  // fall through to the restart steps below
                 }
                 pathFlipRestartCount += 1
-                if pathFlipRestartCount >= Self.maxPathFlipRestarts {
-                    // Defensive — flap loop.  Bail.
-                    break workerLoop
-                }
                 // Reset lane stats so the next attempt isn't gated
                 // by stale errors/failedOver from the previous
                 // network's lifetime.

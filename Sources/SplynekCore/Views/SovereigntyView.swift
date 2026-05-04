@@ -150,17 +150,20 @@ struct SovereigntyView: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.commaSeparatedText]
         panel.nameFieldStringValue = "splynek-sovereignty-\(Self.todayStamp).csv"
-        // v1.7.x audit fix: NSSavePanel.message intentionally NOT
-        // set — three lookup APIs (String(localized:bundle:),
-        // NSLocalizedString(_:bundle:), Bundle.module.localizedString
-        // (forKey:value:table:)) all failed to resolve against the
-        // xcstrings compiler output during live test even though
-        // SwiftUI's Text(LocalizedStringKey) does resolve cleanly
-        // against the same bundle.  Without panel.message, the save
-        // panel still works (filename suggestion + Local picker do
-        // the orientation work); a stale-English message that
-        // diverges from the surrounding pt-PT/de/fr/es/it UI is
-        // worse UX than no message.
+        // v1.7.x audit (root cause + workaround): the three Foundation
+        // localization APIs (String(localized:bundle:),
+        // NSLocalizedString, Bundle.module.localizedString) all return
+        // English from inside the SwiftPM .app even when the user's
+        // AppleLanguages is pt-PT — Bundle.preferredLocalizations
+        // returns ["en", "en"] despite Locale.preferredLanguages being
+        // ["pt-PT"], because the default matching base diverges.  See
+        // LocalizedString+Workaround.swift for the long-form rationale.
+        // The extension walks Locale.preferredLanguages explicitly +
+        // instantiates each lproj subdirectory as its own Bundle, which
+        // bypasses the broken default matching.
+        panel.message = Bundle.module.localizedStringRespectingLocale(
+            forKey: "Export your installed-apps × Sovereignty matches as a CSV file"
+        )
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let body = SovereigntyExport.csv(installedApps: scanner.apps)
         do {

@@ -95,10 +95,19 @@ enum WatchedFolderTests {
                 // Regression guard: if someone extends the watcher, the
                 // handler dispatch in ViewModel.handleWatchedFile needs
                 // to learn about the new extension at the same time.
-                try expectEqual(
-                    WatchedFolder.handledExtensions,
-                    Set(["txt", "torrent", "metalink", "meta4"])
-                )
+                //
+                // v1.7.x: `handledExtensions` is `@MainActor` (its
+                // owning class is); `expectEqual`'s autoclosure isn't.
+                // `MainActor.assumeIsolated` performs the isolation
+                // hop without the async-test semaphore deadlock the
+                // harness's async test helper would cause (see the
+                // comment at the top of EngineExternalIngestTests).
+                try MainActor.assumeIsolated {
+                    try expectEqual(
+                        WatchedFolder.handledExtensions,
+                        Set(["txt", "torrent", "metalink", "meta4"])
+                    )
+                }
             }
         }
     }
