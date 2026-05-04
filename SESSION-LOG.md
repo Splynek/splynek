@@ -402,6 +402,72 @@ samples), end-to-end download (would need a real URL + network
 state changes to exercise the new S2 wire-up), Concierge PDF drag
 (in Pro repo, not in the public-only debug build).
 
+### Latest landing (2026-05-04 part 4): A→F punch-list sweep
+
+User explicitly requested "do all from A to G" of the post-S2
+deferred-items menu (`590fdee`).  6 of 7 shipped in one commit;
+G reduced to a smoke-test because the surfaces require maintainer
+inputs.
+
+**E** (Swift 6 warning fix in WatchedFolderTests, 1 line):
+`MainActor.assumeIsolated` wraps the expectEqual autoclosure.
+
+**A** (localization investigation, ~1 hour bisection): three
+Foundation APIs (`String(localized:bundle:)`, `NSLocalizedString
+(_:bundle:)`, `Bundle.module.localizedString(forKey:value:table:)`)
+all return English in the SwiftPM-built .app under pt-PT locale
+even though SwiftUI's `Text(LocalizedStringKey)` resolves correctly
+against the same `Bundle.module`.  Empirical finding:
+`Bundle.preferredLocalizations` returns `["en"]` inside the running
+app despite system `AppleLanguages = ["pt-PT"]`; direct lookup via
+`Bundle(path: lprojPath).localizedString(forKey:)` against the
+pt-PT.lproj subdirectory works in *script* context but fails in
+the live .app context.  Root cause not pinned (best guess: SwiftUI
+uses LocalizedStringResource which threads user prefs differently
+than AppKit's Bundle reads sandboxed-app per-process defaults).
+Shipped `LocalizedString+Workaround.swift` extension as right-shaped
+scaffolding for the next iteration; captured as durable memory
+entry `splynek_localization_gotcha.md` so future sessions don't
+waste time on the same bisection.
+
+**C** (kernel.org PublisherPattern): claims `cdn.kernel.org +
+kernel.org + www.kernel.org` URLs whose path contains `/pub/linux/`.
+Uses existing `fetchSimpleSHA` against the per-tarball `.sha256`
+sibling.  PublisherPattern count 6 → 7.
+
+**D** (engine restart-loop integration test): factored the run()
+restart-loop decision into a pure testable helper
+`DownloadEngine.decideRestartLoopOutcome(cancelled:allDone:
+pathFlagSet:completedRestarts:maxRestarts:) -> RestartLoopOutcome`
+(.completeOrCancelled / .giveUp / .restart).  Call site delegates;
+behaviour unchanged.  9 new tests covering exit-priority predicates +
+typical 6-restart-then-bail flap-loop walk-through.
+
+**B** (Trust PDF multi-page pagination): new
+`TrustExport.chunkAppsForPDF` splits scored apps into per-page
+chunks (firstPage=5 because cover takes space, continuationPage=8).
+`renderPDF` iterates chunks + emits one CGContext PDF page per
+chunk.  `TrustReportPDFView` gained `isCoverPage / pageNumber /
+totalPages / allScoredForCoverStats` parameters.  Cover renders
+methodology + summary stats (across full ranked list) + first 5
+apps; continuation pages render "Page X of Y" header + their app
+chunk.  Footer shows slogan + page number.  8 new chunker tests.
+
+**F** (memory consolidation, skill-driven): 6 files touched (2
+stale refreshed: current_state + mas_state from v1.3-era to
+v1.6.2+S2; 3 durable preserved + lightly updated; 1 new entry
+for the localization gotcha).  MEMORY.md index rewritten as 6
+lines.
+
+**G** (live test deferred surfaces, partial): rebuilt + launched +
+verified Trust PDF export still triggers cleanly with new
+pagination on a 1-app input (single page, same as pre-pagination).
+Other deferred surfaces (Concierge chat, Install drop targets,
+end-to-end download with network state changes, Concierge PDF
+drag) require maintainer-level inputs.
+
+Tests 425 → 442 (+17).  Audit clean (544 strings × 5 locales).
+
 ## Open positions (what a fresh session should know about)
 
 ### Apple v1.0 review — escalate by day 10 if no movement
