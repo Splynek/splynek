@@ -119,6 +119,13 @@ final class SplynekViewModel: ObservableObject {
     @Published var history: [HistoryEntry] = []
     @Published var laneProfile: [String: Double] = [:]
 
+    // S3 (yt-dlp swallow) — pre-flight detection state.  Probe runs
+    // once at boot; the result drives whether the Source view shows
+    // the "yt-dlp detected" badge + "Use yt-dlp" dispatch button when
+    // the user pastes a URL whose host matches `YtDlpProbe.preferredHosts`.
+    @Published var ytDlpState: YtDlpProbe.State?
+    let ytDlpProbe = YtDlpProbe()
+
     // Queue
     @Published var queue: [QueueEntry] = []
 
@@ -1033,6 +1040,13 @@ final class SplynekViewModel: ObservableObject {
         // Non-blocking AI detection. Sets `aiAvailable` if Ollama is
         // running locally with at least one model installed.
         Task { [weak self] in await self?.refreshAIStatus() }
+        // S3 pre-flight: detect yt-dlp on standard install paths.
+        // Drives "Use yt-dlp" dispatch UI in Source view.
+        Task { [weak self] in
+            guard let self else { return }
+            let s = await self.ytDlpProbe.probe()
+            await MainActor.run { self.ytDlpState = s }
+        }
     }
 
     /// Re-probe Ollama. Called at launch and from the AboutView
@@ -1574,6 +1588,63 @@ final class SplynekViewModel: ObservableObject {
 
     /// "Cancelled" tombstone. Completed jobs are kept — they're success
     /// and the user may still want to Reveal the file.
+    /// S3 — Dispatch the current `urlText` through yt-dlp.  Caller
+    /// must ensure `ytDlpState` is `.installed` and the URL host
+    /// matches `YtDlpProbe.preferredHosts` — UI gates the button.
+    /// Surfaces success / failure via `formErrorMessage` (cleared on
+    /// success) and records the completed file in DownloadHistory so
+    /// it shows up in Histórico like any other download.
+    func dispatchYtDlp() {
+        formErrorMessage = nil
+        let raw = urlText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let url = URL(string: raw),
+              let state = ytDlpState else {
+            formErrorMessage = "yt-dlp dispatch requires a valid URL + completed probe."
+            return
+        }
+        guard case .installed = state else {
+            formErrorMessage = "yt-dlp not installed.  Run `brew install yt-dlp`."
+            return
+        }
+        let outputDir = outputDirectory
+        Task { [weak self] in
+            let result = await YtDlpRunner.dispatch(
+                url: url,
+                outputDirectory: outputDir,
+                state: state
+            )
+            await MainActor.run {
+                guard let self else { return }
+                switch result {
+                case .success(let dr):
+                    // Mirror the engine's success path: record in history
+                    // so the row shows up in Histórico + the File Witness
+                    // receipt path can pick it up.
+                    let attrs = try? FileManager.default.attributesOfItem(atPath: dr.outputFile.path)
+                    let totalBytes = (attrs?[.size] as? NSNumber)?.int64Value ?? dr.bytesDownloaded
+                    DownloadHistory.record(
+                        HistoryEntry(
+                            id: UUID(),
+                            url: url.absoluteString,
+                            filename: dr.outputFile.lastPathComponent,
+                            outputPath: dr.outputFile.path,
+                            totalBytes: totalBytes,
+                            bytesPerInterface: [:],
+                            startedAt: Date().addingTimeInterval(-dr.durationSeconds),
+                            finishedAt: Date(),
+                            sha256: nil,  // yt-dlp doesn't surface a checksum
+                            secondsSaved: 0
+                        )
+                    )
+                    self.history = DownloadHistory.load()
+                    self.urlText = ""
+                case .failure(let err):
+                    self.formErrorMessage = String(describing: err)
+                }
+            }
+        }
+    }
+
     func start() {
         formErrorMessage = nil
         activeJobs.removeAll {

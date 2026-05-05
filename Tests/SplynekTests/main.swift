@@ -74,6 +74,7 @@ AtomicFlagTests.run()
 EngineRestartLoopTests.run()
 DownloadJobResumeTests.run()
 YtDlpProbeTests.run()
+YtDlpRunnerTests.run()
 DownloadReceiptTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,

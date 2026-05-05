@@ -246,6 +246,14 @@ struct DownloadView: View {
                 if let dup = vm.duplicate {
                     duplicateBanner(dup)
                 }
+                // S3 (yt-dlp swallow): if the user pasted a URL whose
+                // host yt-dlp handles natively (YouTube, Twitch,
+                // Instagram, TikTok, etc.) AND yt-dlp is detected on
+                // their system, surface a one-click dispatch.  The
+                // pasted URL won't work through Splynek's direct-HTTP
+                // engine for these sites, so this is a "do you want
+                // to fall through to yt-dlp?" affordance.
+                ytDlpDispatchRow
                 // QA P2 #14 (v0.43): inline Start / Queue row so
                 // users don't have to hunt for the toolbar. The
                 // toolbar buttons remain as the keyboard-shortcut
@@ -478,6 +486,51 @@ struct DownloadView: View {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5)
         )
+    }
+
+    /// S3 — yt-dlp dispatch affordance.  Visible only when the URL
+    /// host matches `YtDlpProbe.preferredHosts` (YouTube, Twitch,
+    /// Instagram, TikTok, X, Vimeo, Bilibili) AND yt-dlp is detected.
+    /// Clicking falls through to the user-installed yt-dlp; output
+    /// records in the standard download history.  In the MAS sandbox,
+    /// Process invocation is blocked; the button stays hidden there
+    /// because the probe reports `.sandboxBlocked`.
+    @ViewBuilder
+    private var ytDlpDispatchRow: some View {
+        if let pasted = URL(string: vm.urlText.trimmingCharacters(in: .whitespacesAndNewlines)),
+           pasted.scheme?.hasPrefix("http") == true,
+           YtDlpProbe.shouldRouteThroughYtDlp(pasted),
+           case .installed(let version, _) = vm.ytDlpState {
+            HStack(spacing: 8) {
+                Image(systemName: "play.tv")
+                    .foregroundStyle(.purple)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("yt-dlp detected — use it for this URL")
+                        .font(.caption)
+                    Text("Streaming-site URL.  yt-dlp \(version) will fetch the best available format.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Button {
+                    vm.dispatchYtDlp()
+                } label: {
+                    Label("Use yt-dlp", systemImage: "arrow.down.to.line")
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.purple.opacity(0.08))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .strokeBorder(Color.purple.opacity(0.25), lineWidth: 0.5)
+            )
+        }
     }
 
     /// Auto-enrichment pill row. Shown when the VM's background sibling

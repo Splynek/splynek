@@ -21196,6 +21196,111 @@
           }
         }
       }
+    },
+    "yt-dlp detected — use it for this URL": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp erkannt — für diese URL verwenden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp detectado — úsalo para esta URL"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp détecté — l'utiliser pour cette URL"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp rilevato — usalo per questo URL"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp detetado — usar para este URL"
+          }
+        }
+      }
+    },
+    "Streaming-site URL.  yt-dlp \\(version) will fetch the best available format.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Streaming-Site-URL.  yt-dlp \\(version) lädt das beste verfügbare Format."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL de sitio de streaming.  yt-dlp \\(version) descargará el mejor formato disponible."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL de site de streaming.  yt-dlp \\(version) téléchargera le meilleur format disponible."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL di sito di streaming.  yt-dlp \\(version) scaricherà il miglior formato disponibile."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL de site de streaming.  o yt-dlp \\(version) vai obter o melhor formato disponível."
+          }
+        }
+      }
+    },
+    "Use yt-dlp": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yt-dlp verwenden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usar yt-dlp"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utiliser yt-dlp"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa yt-dlp"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usar yt-dlp"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -85,7 +85,7 @@ public final class YtDlpProbe: ObservableObject {
     /// returning EPERM on `run()`.  We probe the cheapest possible
     /// command — `/bin/echo` — as a heuristic.  If even that fails,
     /// the sandbox is in effect and `notInstalled` would be misleading.
-    static var canRunProcess: Bool {
+    nonisolated static var canRunProcess: Bool {
         let p = Process()
         p.executableURL = URL(fileURLWithPath: "/bin/echo")
         p.arguments = ["splynek-sandbox-probe"]
