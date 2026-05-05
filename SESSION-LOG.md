@@ -757,9 +757,145 @@ coverage is most credibility-sensitive in DE + FR markets).
 Current translations are Claude-generated.  Native-speaker review
 is genuinely human work.
 
+### Latest landing (2026-05-05 part 2): full-audit sweep + B-F roadmap + S6 File Witness
+
+Single-session push of seven commits.  Started from "what's left
+on the rollup" and ended with S6 (Strategy Bet 6 from
+STRATEGY-2026.md) shipped end-to-end.
+
+**Resume-button v0.31 bug** — `8a2940b`.  User reported pause
+worked, resume didn't.  Read led to `Lifecycle.isActive` returning
+true for both `.running` AND `.paused`, so the `guard !isActive
+else { return }` in `DownloadJob.resume` silently no-op'd the
+exact case it was supposed to handle.  Bug present since the
+initial public commit `2ab1eee` (v0.31).  Wider blast radius than
+the manual button: the same `job.resume(...)` is what S2's
+`handlePathEvent` calls to auto-resume on Wi-Fi-back-online —
+Splynek's offline-pause worked end-to-end, but the online-resume
+half hit the same wall.  Fix mirrors the resume button's UI
+contract: `guard lifecycle == .paused || lifecycle == .failed
+else { return }`.  Live-verified against a real Ubuntu 24.04.4
+ISO download — paused at 161.9 MB, resumed at 208 MB (sidecar
+preserved chunks, no refetch).  +4 regression tests (447 → 451).
+
+**Sub-version consolidation** — `9f06ff9`.  Architectural-state
+line had grown to "v1.7 + v1.7.x + v1.8 + v1.8.1 + v1.8.2 + v1.9
++ v1.9.x + S2" — eight sub-versions all destined to ship as one
+combined release once Apple v1.0 clears.  Replaced with the single
+"next-release rollup" label + per-feature status line.  New memory
+file `splynek_versioning_policy.md` captures the rule (no new
+sub-version branches; future work piles into the rollup).
+
+**Full audit pass** — `e2309b1` + `b9b200c`.  Walked every tab in
+the public build live.  Caught `ProLockedView`'s `summary` parameter
+declared as `String` — SwiftUI's `Text(String)` doesn't auto-localize,
+unlike `Text(LocalizedStringKey)`.  Two ProLockedView summaries
+(Painel web móvel + Agendamento de transferências) had been rendering
+in English on pt-PT systems despite catalog translations existing.
+Promoted both to `LocalizedStringKey` at the type level.
+
+The deeper finding: `find-missing-translations.py` was processing
+files line-by-line, missing every multi-line component invocation
+(e.g. `ProLockedView(\n featureTitle: "...",\n summary: "..."\n)`).
+Switched to whole-file regex with offset-aware SKIP-L10N filter.
+Surfaced 21 strings that had been quietly missing for months.
+Plus History timeline footer "X across N days" + MCP endpoint URL
+truthfulness fix (free tier displays 127.0.0.1 to match actual
+binding instead of LAN IP).  Catalog 535 → 569 → still 569 across
+the audit + follow-up commits.
+
+**B-F sweep** — `1e8c9df`.  Five-bet roadmap landings:
+  - **B (Pro audit + L10N)**: Built the MAS xcarchive, walked
+    Concierge / Recipes / Settings end-to-end with the dev-override
+    Pro key set in the sandbox container.  Function-tested
+    (Concierge tool dispatch, Recipes 6-category UI, Settings ATIVO +
+    Pro features unlocked + Painel web URL truthful).  Found 49
+    splynek-pro UI strings the audit script wasn't covering.  Added
+    5-locale translations.  Extended audit script to scan splynek-pro
+    when checked out as a sibling.  Catalog 569 → 618.  Pro UI
+    confirmed in pt-PT after rebuild.
+  - **C (L10N onramp refresh)**: L10N-REVIEW.md updated for the
+    post-audit state (618 strings, 2026-05-05 audit-pass section,
+    Pro-repo scope).
+  - **D (publisher patterns)**: PyPI (path-segment SHA-256, no
+    network round-trip) + Hugging Face (api/models/<repo>/tree LFS oid).
+    +4 tests; allPatterns 7 → 9.
+  - **E (Stripe direct channel)**: STRIPE-DIRECT-CHANNEL.md design
+    doc — full architecture (Stripe Checkout → Cloudflare Worker
+    webhook → HMAC license mint → Postmark email), cost projection
+    (+37.5% margin vs MAS), maintainer operational checklist
+    (~3 hrs to set up accounts).  Code untouched in this commit;
+    implementation = 1 day client-side once accounts exist.
+  - **F (S-bet roadmap + S3 pre-flight)**: STRATEGY-FOLLOWUPS-2026-05.md
+    enumerates each S-bet's current state with kickoff steps.
+    Started S3 with `YtDlpProbe` — detects yt-dlp at standard
+    install paths (homebrew apple-silicon / intel / pip-user),
+    reads --version with strict regex (rejects shell injection),
+    exposes preferred-hosts set for future dispatch logic.
+    Pre-flight only — doesn't bundle yt-dlp, doesn't dispatch yet.
+    +15 tests.
+
+**S6 File Witness shipped end-to-end** — `17cb90a`.  The journalist /
+academic / build-engineer / compliance-team feature.  Every successful
+download now mints an Ed25519-signed JSON receipt.
+
+Architecture:
+  - `DeviceKeyManager` — per-device Ed25519 keypair in Keychain
+    (`kSecAttrAccessibleAfterFirstUnlock`, NOT iCloud-synced).
+    Lazy creation on first sign; `rotate()` for "reset device
+    identity".
+  - `DownloadReceipt` — schema v1 fields: splynek_receipt_schema,
+    url, sha256, size_bytes, finished_at (ISO 8601 with explicit Z),
+    device_pubkey (base64), signature (base64).  Signature covers
+    `JSONSerialization.data(withJSONObject:options:[.sortedKeys,
+    .withoutEscapingSlashes])` over the unsigned-fields subset —
+    matches what {Swift, Python, Node, Go} runtimes emit for
+    sortedKeys, so verifiers can be written in any of those.
+  - `ReceiptStore` — atomic on-disk persistence at
+    `~/Library/Application Support/Splynek/receipts/<sha256>.json`,
+    keyed by content SHA-256.  Failures intentionally silent.
+  - Engine integration — DownloadEngine's verify-phase success path
+    (right after `DownloadHistory.record`, where `contentHash` and
+    `totalBytes` are already known) calls `ReceiptStore.mintAndStore`.
+  - UI — `HistoryDetailSheet` footer shows "Export receipt" button
+    when a receipt exists for the row's sha256.  Click opens
+    NSSavePanel with localized message routing through
+    `Bundle.splynekCore.localizedStringForAppKit` for pt-PT/de/es/fr/it.
+  - Standalone verifier — `Scripts/verify-splynek-receipt.swift`,
+    two-form CLI (signature only / signature + file hash).  No
+    third-party deps; uses Foundation + CryptoKit.
+
+10 new tests — canonical JSON, sign/verify roundtrip, tamper
+rejection (URL, sha256, forged signature), encode/decode roundtrip
+preserves verifiability, schema version exposed, ISO 8601 round-trip.
+
+Live-verified end-to-end: real download of
+`https://releases.ubuntu.com/24.04/SHA256SUMS` (594 bytes) produced
+a receipt at the canonical path.  Standalone verifier confirmed
+both internal-consistency AND file-content-match against the
+on-disk file.  Export receipt button ("Exportar recibo") visible
+in pt-PT in HistoryDetailSheet footer.
+
+Threat model: signing key never leaves device; wiping the Mac =
+key gone but existing receipts still verify (pubkey is in each
+receipt).  No CA, no PKI chain, no Splynek-side database.  Same
+no-cloud / no-account / no-telemetry posture as the rest of the
+product.
+
+**Catalog growth this session**: 569 → 621 (+52 strings, +260
+translations across 5 locales).  **Tests**: 451 → 480 (+29).  **Build
+warnings**: 0 on clean rebuild throughout.  **Public repo** at
+86 commits ahead of origin; Pro repo at 3 commits ahead.
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
+17cb90a S6 File Witness: cryptographically-signed download receipts
+1e8c9df B-F roadmap landings: Pro L10N + 2 publishers + Stripe doc + S3 pre-flight
+b9b200c Audit follow-ups: History timeline footer L10N + MCP endpoint URL truthfulness
+e2309b1 Audit pass: ProLockedView localization + audit-script whole-file scan + 20 catalog gaps
+9f06ff9 Consolidate sub-version narrative → "next-release rollup"
+925e2d9 HANDOFF + SESSION-LOG: refresh for v0.31-era resume fix
 8a2940b DownloadJob.resume: fix v0.31-era no-op guard (+ regression test, +4 tests)
 952d154 HANDOFF + SESSION-LOG: capture MAS build restoration + Pro live-verify + input bar fix
 296117e MAS build path restored: Bundle.module → Bundle.splynekCore + AppShortcut cap + start(url:sha256:filename:) overload
