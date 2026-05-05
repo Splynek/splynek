@@ -23,14 +23,18 @@ xcrun stapler staple build/Splynek.dmg
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-04.**
-**Architectural state on `main`: v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.8.2 + v1.9 + v1.9.x + S2 (Unbreakable Resume) all landed locally, untagged.**
+**Architectural state on `main`: next-release rollup ready** — single coherent forward release containing Concierge-as-Mac-Assistant, Verified Installer (osascript + SMJobBless paths), Fleet 2.0 LAN peer cache (with warm-cache, auto-join, household swarm token), Bet S2 Unbreakable Resume (path-flip pause/resume with sidecar continuity + curated mirror failover for Ubuntu/Debian/Fedora), and the localization audit-script + CI guardrails.
 
-The `main` branch carries the v1.6.x localization rounds AND the v1.7→v1.9
-architecture (Concierge-as-Mac-Assistant + Verified Installer + Fleet 2.0
-LAN peer-cache).  Info.plist intentionally still says 1.6.2 because none
-of the architectural work has been visually + binary-tested as a single
-release; tagging happens after the maintainer picks a cut point.  Holding
-all release gestures (push tag, cut DMG, deploy landing, push cask) until
+**Versioning policy (set 2026-05-05):** stop opening new sub-version branches (no more v1.7.x, v1.8.x, v1.9.x, S2/S3/etc.) — all forward work piles into the single "next-release rollup" until tagged.  Sub-versions were useful as in-flight planning labels but became unmanageable proliferation; consolidate at land time.
+
+**Code-completeness:** every architectural item is wired + tested in unit + live form, with one exception:
+- **SMJobBless privileged-helper bundle** is fully wired in `project.yml` (target declared, Info.plist with SMAuthorizedClients, embedded copy step in main app, SMPrivilegedExecutables in main app's Info.plist), but its **activation gate is maintainer-only**: requires `xcodegen generate && xcodebuild -scheme SplynekHelper`, swapping the dev OU=58C6YC5GB5 anchor for the Apple Distribution leaf cert SubjectKeyIdentifier, and smoke-testing against a sample admin .pkg.  Until those steps complete the helper is unreachable + every install path falls back to the v1.8.1 osascript admin route (which works today and ships).  Not a code-fixable gap from a Claude session.
+
+The `main` branch carries the v1.6.x localization rounds AND the rollup
+architecture above.  Info.plist intentionally still says 1.6.2 because
+the rollup hasn't been visually + binary-tested as a single release;
+tagging happens after the maintainer picks a cut point.  Holding all
+release gestures (push tag, cut DMG, deploy landing, push cask) until
 Apple v1.0 clears Mac App Store re-review.
 
 Catalog state on `main` (after v1.6.2 rounds 1–8 + v1.7→v1.9.7 i18n adds + audit-extension catch-up):
@@ -310,21 +314,23 @@ What's NOT yet live-tested (deferred):
 **535 strings × 5 locales = 2,675 translations** (audit-script
 extension surfaced 49 hidden strings; all fixed; 0 missing).  **All 4
 non-PT-PT locales (de/es/fr/it) walked end-to-end + verified clean.**
-**v1.7 + v1.7.x polish + v1.8 + v1.8.1 + v1.8.2 SMJobBless full
-plumbing + v1.9 + v1.9.x extensions all landed** — Concierge-as-
-Mac-Assistant with unified typed-input routing **+ chat-history
-persistence across launches (`ConciergeTranscriptStore`) + PDF
-drag-to-summarize on the Concierge tab**, Verified Installer
-with all 4 kind handlers including admin-domain .pkg via osascript
-(v1.8.1) + SMJobBless privileged-helper (v1.8.2 wired, awaiting
-maintainer's xcodegen + code-sign), Fleet 2.0 LAN peer cache with
-full discovery + auto-join + warm-cache digest dup-detection +
+**Next-release rollup landed** — Concierge-as-Mac-Assistant with
+unified typed-input routing + chat-history persistence across
+launches (`ConciergeTranscriptStore`) + PDF drag-to-summarize on
+the Concierge tab; Verified Installer with all 4 kind handlers
+including admin-domain .pkg via osascript + SMJobBless privileged-
+helper bundle wired (activation gate is maintainer-only: xcodegen
++ xcodebuild -scheme SplynekHelper + Apple Distribution leaf-SKID
+swap + .pkg smoke test); Fleet 2.0 LAN peer cache with full
+discovery + auto-join + warm-cache digest dup-detection;
 PublisherPattern enrichment for 6 publishers (Mozilla / Apache /
-Debian / Ubuntu / Arch / GitHub Releases) **+ Bet S2 "Unbreakable
-Resume" active end-to-end** (`PathMonitorObserver` auto-pauses on
-Wi-Fi drop + auto-resumes on Wi-Fi return; `MirrorManifest` injects
+Debian / Ubuntu / Arch / GitHub Releases); **Unbreakable Resume**
+active end-to-end (`PathMonitorObserver` auto-pauses on Wi-Fi
+drop + auto-resumes on Wi-Fi return; `MirrorManifest` injects
 curated Tier-1 mirrors as parallel lanes alongside the primary URL,
-sidecar preserves resume state across all of it; resume guard fixed in `8a2940b` — bug had been there since v0.31).  **451 tests passing, 0 build warnings on clean rebuild.**  Apple v1.0 still
+sidecar preserves resume state across all of it; resume guard
+fixed in `8a2940b` — bug had been there since v0.31).
+**451 tests passing, 0 build warnings on clean rebuild.**  Apple v1.0 still
 pending re-review (day 8 → maintainer should consider Resolution
 Center escalation by day 10); ASC monitor running daily.  Marketing
 still staged.  Nothing pushed, nothing tagged — `main` is hot but
@@ -531,7 +537,7 @@ All four debt items cleared 2026-04-26:
 - `homebrew-cask` upstream PR (#261294) closed at notability; resubmit when stars cross 75. Thread is the timestamp record — leave it.
 - ~~4 Trust catalog entries with >18-month-old sources~~ — **re-verified 2026-04-26.** BIS URL was actually dead (redirected to homepage); replaced with the canonical Federal Register Final Determination 2024-13869 URL. CISA URL blocks bots but works in browser. HIBP entries (Adobe 2013, Evernote 2013) are page-anchors that work in browser; substantively still correct (a 2013 breach is a 2013 breach). All 5 entries' `lastReviewed` bumped to 2026-04-26. Added `Federal Register` to validator's `knownSources` allowlist.
 
-### Architecture inventory — v1.7 + v1.8 + v1.9 (current)
+### Architecture inventory — next-release rollup (sub-version labels are historical only)
 
 ```
 v1.7 — Concierge as Mac Assistant
