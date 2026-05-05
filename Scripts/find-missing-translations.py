@@ -74,6 +74,12 @@ PATTERNS = [
     re.compile(r'MetricView\([^)]*?caption:\s*"((?:[^"\\]|\\.)*)"'),
     # StatusPill(text: "...", style: ...)
     re.compile(r'StatusPill\(\s*text:\s*"((?:[^"\\]|\\.)*)"'),
+    # 2026-05-05 audit: ProLockedView's featureTitle + summary are
+    # LocalizedStringKey now (was String — silently rendered untranslated
+    # at runtime + invisible to this script).  Add explicit regexes so
+    # future Pro-gate placeholders don't slip through.
+    re.compile(r'ProLockedView\([^)]*?featureTitle:\s*"((?:[^"\\]|\\.)*)"'),
+    re.compile(r'ProLockedView\([^)]*?summary:\s*"((?:[^"\\]|\\.)*)"'),
 ]
 
 
@@ -187,36 +193,67 @@ def _is_pure_interpolation(s: str) -> bool:
 
 def extract_strings(filepath: Path) -> set[str]:
     """Return every quoted string literal that's likely a localizable
-    user-visible string in the file."""
+    user-visible string in the file.
+
+    2026-05-05: switched from per-line to whole-file scanning.  The
+    line-by-line pass missed multi-line component invocations like:
+
+        ProLockedView(
+            featureTitle: "Download schedule",
+            summary: "Only run downloads inside a time window — ...",
+            ...
+        )
+
+    because the `featureTitle:` literal sits on a different line from
+    the opening paren.  Caught during the 2026-05-05 full audit when
+    a Settings-tab string rendered in English in the pt-PT build but
+    the audit reported clean.  SKIP-L10N suppression still works —
+    matched strings get filtered if their physical line in the file
+    contains the marker.
+    """
     found = set()
     text = filepath.read_text()
-    # Skip lines marked SKIP-L10N.
+    # Pre-compute each match's line so we can honour SKIP-L10N.
+    line_starts = []
+    pos = 0
+    for ln in text.split("\n"):
+        line_starts.append(pos)
+        pos += len(ln) + 1  # +1 for the newline
     lines = text.split("\n")
-    for line in lines:
-        if "SKIP-L10N" in line:
-            continue
-        for pat in PATTERNS:
-            for m in pat.finditer(line):
-                s = m.group(1)
-                # v1.6.2: decode Swift `\u{XXXX}` escapes so the
-                # captured literal matches the catalog key.
-                s = _decode_swift_unicode_escapes(s)
-                if not s.strip():
-                    continue
-                # Ignore strings that are mostly format specifiers.
-                if re.fullmatch(r'[%@\s\d.]+', s):
-                    continue
-                # Ignore single-character punctuation/glyphs.
-                if len(s) <= 2 and not s.isalnum():
-                    continue
-                # Ignore SF Symbols (no space, lowercase + dot).
-                if re.fullmatch(r'[a-z0-9.]+', s) and len(s) < 30:
-                    continue
-                # v1.6.2: skip pure-interpolation strings — they're
-                # runtime values (counts, versions, ports), not copy.
-                if _is_pure_interpolation(s):
-                    continue
-                found.add(s)
+
+    def line_for_offset(offset: int) -> str:
+        # Binary-search-able, but linear is fine for our file sizes.
+        for i, start in enumerate(line_starts):
+            if start > offset:
+                return lines[i - 1]
+        return lines[-1]
+
+    for pat in PATTERNS:
+        for m in pat.finditer(text):
+            literal_offset = m.start(1)
+            host_line = line_for_offset(literal_offset)
+            if "SKIP-L10N" in host_line:
+                continue
+            s = m.group(1)
+            # v1.6.2: decode Swift `\u{XXXX}` escapes so the
+            # captured literal matches the catalog key.
+            s = _decode_swift_unicode_escapes(s)
+            if not s.strip():
+                continue
+            # Ignore strings that are mostly format specifiers.
+            if re.fullmatch(r'[%@\s\d.]+', s):
+                continue
+            # Ignore single-character punctuation/glyphs.
+            if len(s) <= 2 and not s.isalnum():
+                continue
+            # Ignore SF Symbols (no space, lowercase + dot).
+            if re.fullmatch(r'[a-z0-9.]+', s) and len(s) < 30:
+                continue
+            # v1.6.2: skip pure-interpolation strings — they're
+            # runtime values (counts, versions, ports), not copy.
+            if _is_pure_interpolation(s):
+                continue
+            found.add(s)
     return found
 
 

@@ -10,14 +10,21 @@ import SwiftUI
 /// "this exists, it's $29 on MAS" message rather than silently
 /// hiding the feature.
 struct ProLockedView: View {
-    let featureTitle: String
-    let summary: String
+    // v1.6.2 wrapped featureTitle at use site; full audit 2026-05-05
+    // moved both featureTitle + summary to LocalizedStringKey at the
+    // type level — String parameters silently fail SwiftUI's
+    // localization (Text(String) doesn't lookup) and aren't seen by
+    // find-missing-translations.py either, so summary strings on this
+    // view sat in source untranslated for months without tooling
+    // catching them.  LocalizedStringKey enforces localization both
+    // at runtime + audit-time.
+    let featureTitle: LocalizedStringKey
+    let summary: LocalizedStringKey
     let systemImage: String
     let onUnlock: () -> Void
 
     var body: some View {
-        // v1.6.2: TitledCard's title is LocalizedStringKey now; wrap.
-        TitledCard(title: LocalizedStringKey(featureTitle), systemImage: systemImage) {
+        TitledCard(title: featureTitle, systemImage: systemImage) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
                     Image(systemName: "sparkles")

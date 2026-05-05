@@ -313,7 +313,12 @@ struct SettingsView: View {
                 } else {
                     HStack(spacing: 10) {
                         Image(systemName: "minus.circle.fill").foregroundStyle(.secondary)
-                        Text(vm.aiUnavailableReason ?? "Ollama not detected.")
+                        // 2026-05-05 audit: aiUnavailableReason is String;
+                        // Text(String) doesn't localize.  Wrap so the
+                        // pt-PT/de/es/fr/it translations in the catalog
+                        // are honoured (e.g. "Splynek Pro (Mac App Store) —
+                        // AI features aren't in the free build.").
+                        Text(LocalizedStringKey(vm.aiUnavailableReason ?? "Ollama not detected."))
                             .font(.callout).foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer()
