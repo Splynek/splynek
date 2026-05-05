@@ -203,6 +203,12 @@ public final class FleetCoordinator: ObservableObject {
     /// here.  Same fleet token guards the route as the web dashboard.
     public var mcpServer: MCPServer?
 
+    /// Strategy Bet S5 — HLS pre-buffer proxy.  Always live (no opt-in
+    /// gate at the listener level) because the route is gated upstream
+    /// by token check + the Splynek browser extension only redirects
+    /// when the user explicitly enabled Accelerator.
+    public let hlsServer = HLSProxyServer()
+
     /// What the listener should actually use when deciding to
     /// loopback-bind. Exposed internal for tests.
     var effectiveLoopbackOnly: Bool {
@@ -769,6 +775,14 @@ public final class FleetCoordinator: ObservableObject {
             await serveMCP(conn, path: path, body: body, method: method)
         } else if path.hasPrefix("/splynek/v1/swarm") {
             await serveSwarm(conn, path: path, body: body, method: method)
+        } else if HLSProxyServer.handlesPath(path) {
+            // Strategy Bet S5 — HLS pre-buffer proxy route.  Client
+            // is the user's browser (with the Splynek Accelerator
+            // extension installed); the extension's
+            // declarativeNetRequest rule rewrites HLS manifest URLs
+            // to point here.  Token check is identical to the rest
+            // of the API surface — no public exposure.
+            await serveHLS(conn, path: path)
         } else if path == "/" || path.isEmpty {
             // Courtesy redirect so http://mac:port/ on the phone just works.
             let redirect =
@@ -1153,6 +1167,58 @@ public final class FleetCoordinator: ObservableObject {
             return
         }
         try? await respondJSON(conn, body: respData)
+    }
+
+    // MARK: Strategy Bet S5 — HLS pre-buffer proxy
+
+    /// Dispatch an `/hls/<sid>/<kind>?u=<base64>` request to
+    /// HLSProxyServer.  Token-gated like the rest of the API surface.
+    /// On success, streams the body back as application/vnd.apple.mpegurl
+    /// (for manifests) or the inferred segment Content-Type (.ts /
+    /// .m4s / .mp4 / etc.) so the browser's HTML5 player accepts it.
+    private func serveHLS(_ conn: NWConnection, path: String) async {
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        // Reconstruct a URL we can pass to HLSProxyServer.parseRoute.
+        // We have only the path-+-query portion; prepend a dummy scheme
+        // + host so URLComponents/URL parsing works the same as if it
+        // came from a full request line.
+        guard let url = URL(string: "http://localhost\(path)") else {
+            try? await respond(conn, status: "400 Bad Request"); return
+        }
+        guard let route = HLSProxyServer.parseRoute(url) else {
+            try? await respond(conn, status: "400 Bad Request"); return
+        }
+        let proxyBase = URL(string: "http://127.0.0.1:\(self.port)/hls")!
+        let fetchSegment: @Sendable (URL) async -> Data? = { segURL in
+            return await HLSProxyServer.fetchUpstream(segURL)
+        }
+        let result: (body: Data, contentType: String)
+        switch route {
+        case .master(let sid, let upstream):
+            result = await self.hlsServer.handleMaster(
+                sessionID: sid, upstream: upstream, proxyBase: proxyBase
+            )
+        case .variant(let sid, let upstream):
+            result = await self.hlsServer.handleVariant(
+                sessionID: sid, upstream: upstream,
+                proxyBase: proxyBase, fetchSegment: fetchSegment
+            )
+        case .segment(let sid, let upstream):
+            result = await self.hlsServer.handleSegment(
+                sessionID: sid, upstream: upstream, fetchSegment: fetchSegment
+            )
+        }
+        let head =
+            "HTTP/1.1 200 OK\r\n" +
+            "Content-Type: \(result.contentType)\r\n" +
+            "Content-Length: \(result.body.count)\r\n" +
+            "Cache-Control: no-store\r\n" +
+            "Access-Control-Allow-Origin: *\r\n" +
+            "Connection: close\r\n\r\n"
+        try? await fleetSend(conn, Data(head.utf8) + result.body)
+        conn.cancel()
     }
 
     // MARK: Swarm v1.9

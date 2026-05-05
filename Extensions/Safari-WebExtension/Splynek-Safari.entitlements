@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTD/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Apple requires Safari WebExtensions to run sandboxed.  No
+         additional entitlements needed: webRequest / downloads /
+         notifications / storage are all granted via the manifest's
+         `permissions` array, not via app-side entitlements. -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+</dict>
+</plist>

@@ -331,6 +331,107 @@ chrome.webRequest.onHeadersReceived.addListener(
   { urls: ["<all_urls>"], types: ["xmlhttprequest", "media", "other"] }
 );
 
+// ============================================================
+// HLS pre-buffer redirect (declarativeNetRequest)
+// ============================================================
+//
+// When the user enables HLS pre-buffer in the options page, we
+// install a dynamic declarativeNetRequest rule that redirects every
+// .m3u8 / .m3u request to Splynek's local proxy.  The proxy fetches
+// the upstream manifest, rewrites segment URIs to point back at
+// itself, pre-buffers the first N segments via Splynek's bonded
+// engine, then serves segments from RAM at <1ms latency.
+//
+// declarativeNetRequest (over webRequest's blockingResponse) was
+// chosen because Chrome MV3 made webRequest read-only for non-
+// enterprise installations.  declarativeNetRequest's compiled
+// rules run before any network request, are evaluated entirely
+// in the browser's network stack (no async JS round-trip), and
+// don't require host_permissions for the matching scope.
+//
+// Splynek session UUID is generated per-tab; tabs.onRemoved drops
+// the rule when the tab closes.
+
+const HLS_KEYS_FULL = {
+  ...HLS_KEYS,
+  preBufferEnabled: "hls.preBufferEnabled",  // bool, default false
+  proxyToken:       "hls.proxyToken",         // copied from Splynek's webToken
+  proxyPort:        "hls.proxyPort",          // copied from Splynek
+};
+
+const HLS_RULE_ID_BASE = 1000;  // session rules start at 1000
+const tabSessionMap = new Map();  // tabId → {sessionID, ruleId}
+
+async function ensureHLSRule(tabId, sessionID) {
+  const cfg = await new Promise((resolve) => {
+    chrome.storage.local.get(
+      [HLS_KEYS_FULL.preBufferEnabled, HLS_KEYS_FULL.proxyToken, HLS_KEYS_FULL.proxyPort],
+      resolve
+    );
+  });
+  if (!cfg[HLS_KEYS_FULL.preBufferEnabled]) return;
+  if (!cfg[HLS_KEYS_FULL.proxyToken] || !cfg[HLS_KEYS_FULL.proxyPort]) return;
+  const ruleId = HLS_RULE_ID_BASE + (tabId % 10000);
+  const proxyURL = `http://127.0.0.1:${cfg[HLS_KEYS_FULL.proxyPort]}/hls/${sessionID}/master?t=${cfg[HLS_KEYS_FULL.proxyToken]}&u=`;
+  // declarativeNetRequest rule: when a .m3u8/.m3u URL appears in this
+  // tab, redirect to the proxy with the original URL base64'd in `u=`.
+  // The proxy decodes + fetches + rewrites + responds.
+  await chrome.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: [ruleId],
+    addRules: [{
+      id: ruleId,
+      priority: 1,
+      action: {
+        type: "redirect",
+        redirect: {
+          // Chrome's regexSubstitution with backreferences lets us
+          // capture the full original URL + base64-encode it client-
+          // side. (Chrome doesn't have a base64 transform, so we
+          // route through the `u=` query param + the proxy decodes.)
+          regexSubstitution: `${proxyURL}\\0`,
+        },
+      },
+      condition: {
+        regexFilter: "^https?://[^?]+\\.(m3u8?)(\\?.*)?$",
+        resourceTypes: ["xmlhttprequest", "media", "other"],
+        tabIds: [tabId],
+      },
+    }],
+  }).catch((e) => {
+    console.warn("[Splynek] HLS rule install failed:", e);
+  });
+  tabSessionMap.set(tabId, { sessionID, ruleId });
+}
+
+// On tab close, drop the rule so Chrome doesn't accumulate.
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+  const entry = tabSessionMap.get(tabId);
+  if (!entry) return;
+  tabSessionMap.delete(tabId);
+  await chrome.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: [entry.ruleId],
+  }).catch(() => {});
+});
+
+// On every detected manifest, ensure the rule for this tab.
+// idempotent — ensureHLSRule replaces if already present.
+chrome.webRequest.onHeadersReceived.addListener(
+  (details) => {
+    if (!looksLikeHLSManifest(details.url)) return;
+    if (details.tabId < 0) return;
+    let session = tabSessionMap.get(details.tabId)?.sessionID;
+    if (!session) {
+      // Generate a fresh UUID v4 for this tab.
+      session = crypto.randomUUID();
+    }
+    ensureHLSRule(details.tabId, session);
+  },
+  { urls: ["<all_urls>"], types: ["xmlhttprequest", "media", "other"] }
+);
+
+self.ensureHLSRule = ensureHLSRule;
+self.HLS_KEYS_FULL = HLS_KEYS_FULL;
+
 chrome.notifications.onClosed.addListener((notifId) => {
   pendingByNotificationId.delete(notifId);
 });

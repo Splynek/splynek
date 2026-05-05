@@ -196,5 +196,138 @@ enum HLSManifestTests {
                 try expectEqual(attrs["NAME"], "med")
             }
         }
+
+        TestHarness.suite("HLSManifest — DRM detection") {
+
+            TestHarness.test("Plain manifest is not flagged") {
+                let body = """
+                #EXTM3U
+                #EXT-X-TARGETDURATION:6
+                #EXTINF:5.0,
+                seg0.ts
+                #EXT-X-ENDLIST
+                """
+                try expect(!HLSManifest.hasDRM(body))
+            }
+
+            TestHarness.test("AES-128 segment encryption flagged") {
+                let body = """
+                #EXTM3U
+                #EXT-X-KEY:METHOD=AES-128,URI="https://example.com/key.bin"
+                #EXT-X-TARGETDURATION:6
+                #EXTINF:5.0,
+                seg0.ts
+                """
+                try expect(HLSManifest.hasDRM(body))
+            }
+
+            TestHarness.test("FairPlay session-key flagged at master level") {
+                let body = """
+                #EXTM3U
+                #EXT-X-SESSION-KEY:METHOD=SAMPLE-AES,URI="skd://key",KEYFORMAT="com.apple.streamingkeydelivery"
+                #EXT-X-STREAM-INF:BANDWIDTH=2000000
+                main.m3u8
+                """
+                try expect(HLSManifest.hasDRM(body))
+            }
+
+            TestHarness.test("METHOD=NONE explicitly NOT flagged") {
+                // Spec quirk: an explicit "no encryption" tag exists.
+                // Pre-buffer is fine for these.
+                let body = """
+                #EXTM3U
+                #EXT-X-KEY:METHOD=NONE
+                #EXTINF:5.0,
+                seg0.ts
+                """
+                try expect(!HLSManifest.hasDRM(body))
+            }
+        }
+
+        TestHarness.suite("HLSManifest — URL rewriter") {
+
+            TestHarness.test("Master playlist variants get rewritten through proxy") {
+                let body = """
+                #EXTM3U
+                #EXT-X-STREAM-INF:BANDWIDTH=500000
+                low.m3u8
+                #EXT-X-STREAM-INF:BANDWIDTH=2000000
+                high.m3u8
+                """
+                guard case .master(let pl) = HLSManifest.parse(body) else {
+                    try expect(false, "Expected master")
+                    return
+                }
+                let baseURL = URL(string: "https://cdn.example.com/stream/master.m3u8")!
+                let proxy = URL(string: "http://127.0.0.1:64267/hls")!
+                let sid = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
+                let rewritten = HLSManifest.rewriteMasterURIs(
+                    body, variants: pl.variants,
+                    baseURL: baseURL, proxyBase: proxy, sessionID: sid
+                )
+                try expect(rewritten.contains("http://127.0.0.1:64267/hls/11111111-1111-1111-1111-111111111111/v?u="),
+                           "Expected proxy redirect, got: \(rewritten)")
+                // The pre-existing #EXT-X-STREAM-INF tags must be
+                // preserved verbatim — the player relies on them.
+                try expect(rewritten.contains("#EXT-X-STREAM-INF:BANDWIDTH=500000"))
+                // The original variant URIs must be GONE.
+                try expect(!rewritten.contains("\nlow.m3u8"))
+                try expect(!rewritten.contains("\nhigh.m3u8"))
+            }
+
+            TestHarness.test("Media playlist segments get rewritten through proxy") {
+                let body = """
+                #EXTM3U
+                #EXT-X-TARGETDURATION:6
+                #EXT-X-MEDIA-SEQUENCE:0
+                #EXTINF:5.0,
+                seg0.ts
+                #EXTINF:5.0,
+                seg1.ts
+                #EXT-X-ENDLIST
+                """
+                guard case .media(let pl) = HLSManifest.parse(body) else {
+                    try expect(false, "Expected media")
+                    return
+                }
+                let baseURL = URL(string: "https://cdn.example.com/720p/v.m3u8")!
+                let proxy = URL(string: "http://127.0.0.1:64267/hls")!
+                let sid = UUID(uuidString: "22222222-2222-2222-2222-222222222222")!
+                let rewritten = HLSManifest.rewriteMediaURIs(
+                    body, segments: pl.segments,
+                    baseURL: baseURL, proxyBase: proxy, sessionID: sid
+                )
+                try expect(rewritten.contains("/hls/22222222-2222-2222-2222-222222222222/s?u="),
+                           "Expected segment proxy, got: \(rewritten)")
+                try expect(rewritten.contains("#EXT-X-TARGETDURATION:6"))
+                try expect(rewritten.contains("#EXT-X-ENDLIST"))
+            }
+
+            TestHarness.test("Base64URL roundtrip — no padding, URL-safe charset") {
+                let cases = [
+                    "https://cdn.example.com/720p/seg42.ts",
+                    "https://cdn.example.com/path?with=query&and=ampersand",
+                    "https://example.com/",
+                ]
+                for original in cases {
+                    let encoded = HLSManifest.base64URL(original)
+                    try expect(!encoded.contains("+"), "Got + in: \(encoded)")
+                    try expect(!encoded.contains("/"), "Got / in: \(encoded)")
+                    try expect(!encoded.contains("="), "Got = in: \(encoded)")
+                    let decoded = HLSManifest.decodeBase64URL(encoded)
+                    try expectEqual(decoded, original)
+                }
+            }
+
+            TestHarness.test("Relative URI resolution against base URL") {
+                let base = URL(string: "https://cdn.example.com/stream/dir/master.m3u8")!
+                let abs1 = HLSManifest.absoluteURL(forRelative: "seg.ts", baseURL: base)
+                try expectEqual(abs1.absoluteString, "https://cdn.example.com/stream/dir/seg.ts")
+                let abs2 = HLSManifest.absoluteURL(forRelative: "../other.ts", baseURL: base)
+                try expectEqual(abs2.absoluteString, "https://cdn.example.com/stream/other.ts")
+                let abs3 = HLSManifest.absoluteURL(forRelative: "https://other.host/x.ts", baseURL: base)
+                try expectEqual(abs3.absoluteString, "https://other.host/x.ts")
+            }
+        }
     }
 }

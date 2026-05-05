@@ -171,6 +171,27 @@
     <p class="hint">These hosts are excluded from the intercept. Useful for internal corporate downloads where Splynek can't authenticate, or hosts where Chrome's download UX is preferred.</p>
   </div>
 
+  <h2>HLS Pre-Buffer (experimental)</h2>
+  <div class="card">
+    <label class="toggle">
+      <input type="checkbox" id="hlsEnabled">
+      <span>
+        <strong>Enable HLS pre-buffer</strong>
+        <div class="hint">When on, Splynek's local proxy fetches HLS playlist + segment requests via the multi-interface bonded engine.  Result: video streams load instantly + never buffer on weak Wi-Fi.  Default off; experimental.</div>
+      </span>
+    </label>
+    <div class="threshold">
+      <label for="hlsProxyPort">Splynek port:</label>
+      <input type="number" id="hlsProxyPort" min="1024" max="65535" step="1" placeholder="64267">
+      <span style="font-size: 12px; color: var(--mute);">(found in Splynek → Settings → Painel web)</span>
+    </div>
+    <div class="threshold" style="margin-top: 8px;">
+      <label for="hlsProxyToken">Token:</label>
+      <input type="text" id="hlsProxyToken" placeholder="copy from Splynek" style="flex: 1; min-width: 250px;" autocomplete="off">
+    </div>
+    <p class="hint">DRM streams (Netflix, Disney+, Apple TV+) are skipped automatically — Splynek won't intercept them.  Open-HLS streams (YouTube non-Premium, Vimeo, Twitch, Plex) are accelerated.</p>
+  </div>
+
   <h2>About</h2>
   <p class="hint">
     The Accelerator only intercepts. It never makes its own network requests, never reads page DOM (no content scripts), never phones home. Per-host preferences sync across your Chrome installs via <code>chrome.storage.sync</code>.

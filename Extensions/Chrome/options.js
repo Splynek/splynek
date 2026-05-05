@@ -11,6 +11,15 @@ const KEYS = {
   always: "accel.alwaysHosts",
 };
 
+// HLS keys live in chrome.storage.local (not .sync) because the
+// proxy token + port are per-machine and shouldn't roam across
+// the user's browsers on different Macs.
+const HLS_KEYS = {
+  preBufferEnabled: "hls.preBufferEnabled",
+  proxyToken:       "hls.proxyToken",
+  proxyPort:        "hls.proxyPort",
+};
+
 const els = {
   enabled: document.getElementById("enabled"),
   threshold: document.getElementById("threshold"),
@@ -24,6 +33,29 @@ const els = {
 
 document.addEventListener("DOMContentLoaded", () => {
   refresh();
+  refreshHLS();
+
+  const hlsEnabled = document.getElementById("hlsEnabled");
+  const hlsPort = document.getElementById("hlsProxyPort");
+  const hlsToken = document.getElementById("hlsProxyToken");
+  if (hlsEnabled) {
+    hlsEnabled.addEventListener("change", () => {
+      chrome.storage.local.set({ [HLS_KEYS.preBufferEnabled]: hlsEnabled.checked });
+    });
+  }
+  if (hlsPort) {
+    hlsPort.addEventListener("change", () => {
+      const v = parseInt(hlsPort.value, 10);
+      if (Number.isFinite(v) && v >= 1024 && v <= 65535) {
+        chrome.storage.local.set({ [HLS_KEYS.proxyPort]: v });
+      }
+    });
+  }
+  if (hlsToken) {
+    hlsToken.addEventListener("change", () => {
+      chrome.storage.local.set({ [HLS_KEYS.proxyToken]: hlsToken.value.trim() });
+    });
+  }
 
   els.enabled.addEventListener("change", () => {
     chrome.storage.sync.set({ [KEYS.enabled]: els.enabled.checked });
@@ -147,6 +179,20 @@ function sanitizeHost(raw) {
   if (s.startsWith(".") || s.endsWith(".")) return null;
   if (!s.includes(".")) return null;
   return s;
+}
+
+function refreshHLS() {
+  chrome.storage.local.get(
+    [HLS_KEYS.preBufferEnabled, HLS_KEYS.proxyPort, HLS_KEYS.proxyToken],
+    (got) => {
+      const en = document.getElementById("hlsEnabled");
+      const port = document.getElementById("hlsProxyPort");
+      const token = document.getElementById("hlsProxyToken");
+      if (en) en.checked = !!got[HLS_KEYS.preBufferEnabled];
+      if (port && got[HLS_KEYS.proxyPort]) port.value = got[HLS_KEYS.proxyPort];
+      if (token && got[HLS_KEYS.proxyToken]) token.value = got[HLS_KEYS.proxyToken];
+    }
+  );
 }
 
 // Expose for tests.

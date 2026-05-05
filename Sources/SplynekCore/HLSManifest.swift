@@ -228,4 +228,129 @@ public enum HLSManifest {
         }
         return sorted.first
     }
+
+    // MARK: - DRM detection
+
+    /// Returns true if the manifest has any encryption tag indicating
+    /// DRM (Widevine / FairPlay / Sample-AES / etc.).  Splynek MUST
+    /// pass these manifests through unchanged; pre-buffering DRM'd
+    /// content is technically possible but legally fraught and
+    /// undesirable for Splynek's positioning.
+    ///
+    /// HLS encryption is signalled by `#EXT-X-KEY:METHOD=...` for
+    /// segment encryption (any non-NONE method) or by
+    /// `#EXT-X-SESSION-KEY` at the master level.
+    public static func hasDRM(_ body: String) -> Bool {
+        for raw in body.split(separator: "\n", omittingEmptySubsequences: true) {
+            let line = raw.trimmingCharacters(in: .whitespaces)
+            if line.hasPrefix("#EXT-X-KEY:") || line.hasPrefix("#EXT-X-SESSION-KEY:") {
+                let attrs = parseAttributeList(after: line.contains("SESSION-KEY")
+                    ? "#EXT-X-SESSION-KEY:"
+                    : "#EXT-X-KEY:", in: line)
+                if let method = attrs["METHOD"], method != "NONE" {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    // MARK: - URL rewriting (proxy redirect)
+
+    /// Rewrite a master playlist's variant URIs so they go through
+    /// Splynek's local HLS proxy.  Each variant URI becomes a
+    /// proxy URL that encodes the original variant's host + path so
+    /// the proxy can re-resolve it.
+    ///
+    /// Format of rewritten URL:
+    ///   <proxyBase>/<sessionID>/v?u=<base64-url-encoded-original-uri>
+    ///
+    /// The `v` (= variant) path differentiates from `s` (= segment)
+    /// + `m` (= sub-playlist for direct media) so the proxy router
+    /// can dispatch quickly without re-parsing.
+    ///
+    /// Lines other than variant URIs are passed through unchanged
+    /// — preserves all #EXT-X-STREAM-INF attribute lines + extension
+    /// tags Apple may add in future schema versions.
+    public static func rewriteMasterURIs(
+        _ body: String,
+        variants: [Variant],
+        baseURL: URL,
+        proxyBase: URL,
+        sessionID: UUID
+    ) -> String {
+        let variantURIs = Set(variants.map(\.uri))
+        var rewritten: [String] = []
+        for raw in body.split(separator: "\n", omittingEmptySubsequences: false) {
+            let line = String(raw)
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if !trimmed.hasPrefix("#") && variantURIs.contains(trimmed) && !trimmed.isEmpty {
+                let absoluteURI = absoluteURL(forRelative: trimmed, baseURL: baseURL)
+                let encoded = base64URL(absoluteURI.absoluteString)
+                let proxied = "\(proxyBase.absoluteString)/\(sessionID.uuidString)/v?u=\(encoded)"
+                rewritten.append(proxied)
+            } else {
+                rewritten.append(line)
+            }
+        }
+        return rewritten.joined(separator: "\n")
+    }
+
+    /// Same shape but for media playlists: rewrite each segment URI
+    /// to point at the proxy's `/s` path (segment).
+    public static func rewriteMediaURIs(
+        _ body: String,
+        segments: [Segment],
+        baseURL: URL,
+        proxyBase: URL,
+        sessionID: UUID
+    ) -> String {
+        let segmentURIs = Set(segments.map(\.uri))
+        var rewritten: [String] = []
+        for raw in body.split(separator: "\n", omittingEmptySubsequences: false) {
+            let line = String(raw)
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            if !trimmed.hasPrefix("#") && segmentURIs.contains(trimmed) && !trimmed.isEmpty {
+                let absoluteURI = absoluteURL(forRelative: trimmed, baseURL: baseURL)
+                let encoded = base64URL(absoluteURI.absoluteString)
+                let proxied = "\(proxyBase.absoluteString)/\(sessionID.uuidString)/s?u=\(encoded)"
+                rewritten.append(proxied)
+            } else {
+                rewritten.append(line)
+            }
+        }
+        return rewritten.joined(separator: "\n")
+    }
+
+    /// Resolve a relative URI in a manifest against its baseURL.
+    /// Absolute URIs (starting with http(s)://) pass through.
+    static func absoluteURL(forRelative uri: String, baseURL: URL) -> URL {
+        if uri.hasPrefix("http://") || uri.hasPrefix("https://") {
+            return URL(string: uri) ?? baseURL
+        }
+        return URL(string: uri, relativeTo: baseURL)?.absoluteURL ?? baseURL
+    }
+
+    /// URL-safe base64 (no `+/=`, just `-_`).  Used to embed the
+    /// original variant/segment URI inside our proxy URL's query
+    /// string without escape-encoding pain.
+    static func base64URL(_ s: String) -> String {
+        let data = Data(s.utf8)
+        return data.base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+    }
+
+    /// Inverse of `base64URL` — decode a URI from a proxy URL's
+    /// `?u=` query parameter.  Returns nil on malformed input.
+    public static func decodeBase64URL(_ s: String) -> String? {
+        var b64 = s
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        // Re-pad to a multiple of 4.
+        while b64.count % 4 != 0 { b64 += "=" }
+        guard let data = Data(base64Encoded: b64) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
 }

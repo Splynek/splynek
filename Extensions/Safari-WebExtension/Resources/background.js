@@ -144,7 +144,7 @@ X.downloads.onCreated.addListener(async (item) => {
   pendingByNotificationId.set(notifId, { downloadId: item.id, url: item.url, host });
   X.notifications.create(notifId, {
     type: "basic",
-    iconUrl: "icons/icon-128.png",
+    iconUrl: "icon-128.png",
     title: "Splynek can fetch this faster",
     message: `${sizeMB} MB from ${host || "this server"}.  Send to Splynek to bond every network you have.`,
     contextMessage: host

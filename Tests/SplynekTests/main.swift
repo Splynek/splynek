@@ -77,6 +77,8 @@ YtDlpProbeTests.run()
 YtDlpRunnerTests.run()
 DownloadReceiptTests.run()
 HLSManifestTests.run()
+HLSRingBufferTests.run()
+HLSProxyServerTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

@@ -228,6 +228,15 @@ targets:
         copy: true
         codeSign: true
         embed: true
+      # 2026-05-05 (Strategy Bet S5): Safari WebExtension bundled into
+      # the host app.  When the user installs Splynek, Safari's
+      # Settings → Extensions automatically lists "Splynek" — they
+      # tick it once to enable.  Same UX as the Chrome extension's
+      # Load Unpacked, but ships pre-built.
+      - target: Splynek-Safari-Extension
+        copy: true
+        codeSign: true
+        embed: true
 
   # v1.8.2: privileged installer helper.  Runs as a launchd daemon
   # at root after first SMAppService.daemon.register() prompt.  See
@@ -282,6 +291,53 @@ targets:
           -sectcreate __TEXT __info_plist Sources/SplynekHelper/Info.plist
           -sectcreate __TEXT __launchd_plist
           Sources/SplynekHelper/app.splynek.Splynek.helper.plist
+
+  # Strategy Bet S5: Safari WebExtension as appex.  The web-extension
+  # JS / HTML / CSS / icons live in Extensions/Safari-WebExtension/
+  # Resources/ and ship verbatim inside the appex bundle's Resources/.
+  # The Swift handler is a minimal NSExtensionRequestHandling stub —
+  # all extension logic is JavaScript today.
+  Splynek-Safari-Extension:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: Extensions/Safari-WebExtension/SafariWebExtensionHandler.swift
+      # The Resources/ folder's CONTENTS get copied into the appex
+      # bundle's `Contents/Resources/` (not the folder itself).  Use
+      # `buildPhase: resources` so xcodegen iterates the children
+      # rather than shipping the folder as one opaque blob (which
+      # double-nests as Contents/Resources/Resources/...).  Manifest
+      # paths like `popup.html`, `icons/icon-128.png` then resolve
+      # correctly against Apple's Safari WebExtension convention.
+      - path: Extensions/Safari-WebExtension/Resources
+        buildPhase: resources
+        excludes:
+          - "**/.DS_Store"
+    info:
+      path: Extensions/Safari-WebExtension/Info.plist
+      # NSExtension keys identify this as a Safari WebExtension.
+      # SFSafariWebExtensionConverterVersion ties to Apple's
+      # `safari-web-extension-converter` tool's output schema; "16"
+      # is the macOS Sequoia / Safari 18 schema (current as of
+      # 2026-05-05).  When Apple bumps the schema, this number
+      # bumps too — Apple keeps it backwards-compatible.
+      properties:
+        CFBundleDisplayName: Splynek Safari Extension
+        CFBundleIdentifier: app.splynek.Splynek.SafariExtension
+        NSHumanReadableCopyright: "© 2026 Splynek"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.Safari.web-extension
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).SafariWebExtensionHandler
+          SFSafariWebExtensionManifestPath: Resources/manifest.json
+        SFSafariWebExtensionConverterVersion: "16"
+    settings:
+      base:
+        PRODUCT_NAME: SplynekSafariExtension
+        PRODUCT_BUNDLE_IDENTIFIER: app.splynek.Splynek.SafariExtension
+        CODE_SIGN_ENTITLEMENTS: Extensions/Safari-WebExtension/Splynek-Safari.entitlements
+        SKIP_INSTALL: NO
+        SWIFT_VERSION: "5.9"
+        MACOSX_DEPLOYMENT_TARGET: "13.0"
 
 schemes:
   Splynek:
