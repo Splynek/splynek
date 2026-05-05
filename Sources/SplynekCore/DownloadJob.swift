@@ -182,7 +182,11 @@ final class DownloadJob: ObservableObject, Identifiable {
 
     /// Restart a paused (or failed) job. `onFinish` is re-registered.
     func resume(onFinish: @escaping @MainActor (DownloadJob) -> Void) {
-        guard !lifecycle.isActive else { return }
+        // `Lifecycle.isActive` is true for both .running AND .paused, so
+        // a `!isActive` guard would silently block the exact case this
+        // method is supposed to handle. Mirror the resume button's UI
+        // contract instead: only .paused and .failed reach this method.
+        guard lifecycle == .paused || lifecycle == .failed else { return }
         // The engine's own sidecar detection re-hydrates completed chunks,
         // so we just start a fresh one with identical parameters.
         start(onFinish: onFinish)
