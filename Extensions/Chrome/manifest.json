@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Splynek — Download with Splynek",
   "short_name": "Splynek",
-  "version": "0.22.0",
+  "version": "0.23.0",
   "description": "Send links and current pages to Splynek, the macOS multi-interface download aggregator. Optionally intercepts large downloads (>50 MB) so Splynek can finish them on every network you have.",
   "permissions": ["contextMenus", "activeTab", "tabs", "storage", "webRequest", "downloads", "notifications"],
   "host_permissions": ["<all_urls>"],
@@ -18,6 +18,10 @@
       "48":  "icons/icon-48.png",
       "128": "icons/icon-128.png"
     }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
   },
   "icons": {
     "16":  "icons/icon-16.png",

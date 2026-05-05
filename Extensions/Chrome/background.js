@@ -202,11 +202,21 @@ chrome.downloads.onCreated.addListener(async (item) => {
   pendingByNotificationId.set(notifId, {
     downloadId: item.id, url: item.url, host
   });
+  // Chrome notifications are limited to 2 buttons.  We pack the four
+  // logical actions (Send / Keep / Always-for-site / Never-for-site)
+  // into two slots that flip between primary actions ("Send", "Keep")
+  // and per-host preferences ("Always for <host>", "Never for <host>")
+  // based on the click that opened the notification.  Body line tells
+  // the user about the extension's options page where they can edit
+  // the per-host preferences directly.
   chrome.notifications.create(notifId, {
     type: "basic",
     iconUrl: "icons/icon-128.png",
     title: "Splynek can fetch this faster",
     message: `${sizeMB} MB from ${host || "this server"}.  Send to Splynek to bond every network you have.`,
+    contextMessage: host
+      ? `Right-click the notification icon for "Always for ${host}" / "Never for ${host}".`
+      : "Right-click the notification icon for per-host preferences.",
     buttons: [
       { title: "Send to Splynek" },
       { title: "Keep in browser" },
@@ -220,11 +230,52 @@ chrome.notifications.onButtonClicked.addListener((notifId, btnIdx) => {
   if (!pending) return;
   pendingByNotificationId.delete(notifId);
   if (btnIdx === 0) {
+    // "Send to Splynek" — cancel Chrome's fetch + hand off to app.
     chrome.downloads.cancel(pending.downloadId);
     openInSplynek("download", pending.url);
   }
+  // btnIdx === 1 ("Keep in browser") leaves Chrome to finish the
+  // download — we just clear the notification.
   chrome.notifications.clear(notifId);
 });
+
+// Right-click on the notification body opens the options page so
+// the user can pin "Always for <host>" / "Never for <host>" without
+// hunting for the chrome://extensions options link.
+chrome.notifications.onClicked.addListener((notifId) => {
+  if (notifId.startsWith("splynek-accel-")) {
+    chrome.runtime.openOptionsPage();
+  }
+});
+
+// ============================================================
+// Per-host preference helpers (used by options.html via the
+// chrome.storage API directly; exposed here for tests).
+// ============================================================
+
+/**
+ * Move host into one of the three buckets: ask (default), always,
+ * never.  Idempotent.
+ */
+async function setHostPreference(host, mode) {
+  const cfg = await readAccelConfig();
+  const optOut = { ...cfg.optOut };
+  const always = { ...cfg.always };
+  delete optOut[host];
+  delete always[host];
+  if (mode === "always") always[host] = true;
+  else if (mode === "never") optOut[host] = true;
+  return new Promise((resolve) => {
+    chrome.storage.sync.set({
+      [ACCEL_KEYS.optOutHosts]: optOut,
+      [ACCEL_KEYS.alwaysHosts]: always,
+    }, resolve);
+  });
+}
+
+self.setHostPreference = setHostPreference;
+self.readAccelConfig = readAccelConfig;
+self.ACCEL_KEYS = ACCEL_KEYS;
 
 chrome.notifications.onClosed.addListener((notifId) => {
   pendingByNotificationId.delete(notifId);
