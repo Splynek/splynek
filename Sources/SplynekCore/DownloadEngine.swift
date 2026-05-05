@@ -679,6 +679,9 @@ final class DownloadEngine {
             let laneBytes = await MainActor.run {
                 Dictionary(uniqueKeysWithValues: progress.lanes.map { ($0.interface.name, $0.bytesTotal) })
             }
+            let finalSha = contentHash.isEmpty
+                ? sha256Expected
+                : contentHash.lowercased()
             DownloadHistory.record(
                 HistoryEntry(
                     id: UUID(),
@@ -689,12 +692,21 @@ final class DownloadEngine {
                     bytesPerInterface: laneBytes,
                     startedAt: startTime,
                     finishedAt: Date(),
-                    sha256: contentHash.isEmpty
-                        ? sha256Expected
-                        : contentHash.lowercased(),
+                    sha256: finalSha,
                     secondsSaved: report.secondsSaved
                 )
             )
+            // S6 (File Witness): mint a signed receipt for this
+            // successfully-verified download.  Failures here are
+            // intentionally silent — the receipt is an additive
+            // attestation, not a precondition.
+            await MainActor.run {
+                ReceiptStore.mintAndStore(
+                    url: url,
+                    sha256: finalSha,
+                    sizeBytes: totalBytes
+                )
+            }
             // QA P2 #10 (v0.43): the lane-level HostUsage.credit
             // call lives inside LaneConnection.streamRange. Tiny
             // files and single-shot paths occasionally skip that

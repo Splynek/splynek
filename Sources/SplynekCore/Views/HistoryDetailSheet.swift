@@ -322,6 +322,21 @@ struct HistoryDetailSheet: View {
             .buttonStyle(.bordered)
             .disabled(!FileManager.default.fileExists(atPath: entry.outputPath))
 
+            // S6 (File Witness): export the cryptographically-signed
+            // receipt for this download, if one exists.  Visible only
+            // when the engine successfully minted a receipt — typically
+            // any download that completed with SHA-256 verification.
+            if let sha = entry.sha256, !sha.isEmpty,
+               ReceiptStore.exists(forSha256: sha) {
+                Button {
+                    exportReceipt(forSha: sha)
+                } label: {
+                    Label("Export receipt", systemImage: "checkmark.seal")
+                }
+                .buttonStyle(.bordered)
+                .help("Export the cryptographically-signed download receipt as JSON.")
+            }
+
             Spacer()
 
             Button {
@@ -334,5 +349,23 @@ struct HistoryDetailSheet: View {
         }
         .padding(14)
         .background(Color(nsColor: .controlBackgroundColor))
+    }
+
+    /// Open NSSavePanel + write the receipt JSON to the chosen path.
+    /// Receipts are small (<1 KB), so we write synchronously.
+    private func exportReceipt(forSha sha: String) {
+        guard let receipt = ReceiptStore.read(forSha256: sha),
+              let body = try? receipt.prettyJSON() else { return }
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.json]
+        panel.nameFieldStringValue = "splynek-receipt-\(String(sha.prefix(8))).json"
+        panel.message = Bundle.splynekCore.localizedStringForAppKit(
+            "Export the signed download receipt as a JSON file. Anyone can verify it offline with the bundled `verify-splynek-receipt.swift` script.",
+            fallback: "Export the signed download receipt as a JSON file. Anyone can verify it offline with the bundled `verify-splynek-receipt.swift` script."
+        )
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            try? body.write(to: url)
+        }
     }
 }

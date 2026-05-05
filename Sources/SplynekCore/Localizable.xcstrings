@@ -21091,6 +21091,111 @@
           }
         }
       }
+    },
+    "Export receipt": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beleg exportieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar recibo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter le reçu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta ricevuta"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar recibo"
+          }
+        }
+      }
+    },
+    "Export the cryptographically-signed download receipt as JSON.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den kryptografisch signierten Download-Beleg als JSON exportieren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar el recibo de descarga firmado criptográficamente como JSON."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter le reçu de téléchargement signé cryptographiquement au format JSON."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta la ricevuta di download firmata crittograficamente in formato JSON."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporta o recibo de transferência assinado criptograficamente como JSON."
+          }
+        }
+      }
+    },
+    "Export the signed download receipt as a JSON file. Anyone can verify it offline with the bundled `verify-splynek-receipt.swift` script.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den signierten Download-Beleg als JSON-Datei exportieren. Jeder kann ihn offline mit dem mitgelieferten Skript `verify-splynek-receipt.swift` überprüfen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporta el recibo de descarga firmado como archivo JSON. Cualquiera puede verificarlo sin conexión con el script incluido `verify-splynek-receipt.swift`."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporter le reçu de téléchargement signé sous forme de fichier JSON. N'importe qui peut le vérifier hors ligne avec le script fourni `verify-splynek-receipt.swift`."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esporta la ricevuta di download firmata come file JSON. Chiunque può verificarla offline con lo script incluso `verify-splynek-receipt.swift`."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporta o recibo de transferência assinado como ficheiro JSON. Qualquer pessoa pode verificá-lo offline com o script incluído `verify-splynek-receipt.swift`."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
