@@ -1191,7 +1191,27 @@ public final class FleetCoordinator: ObservableObject {
             try? await respond(conn, status: "400 Bad Request"); return
         }
         let proxyBase = URL(string: "http://127.0.0.1:\(self.port)/hls")!
+        // Strategy Bet S5: discover currently-up interfaces lazily,
+        // once per request.  Used by the segment fetcher to bond
+        // byte ranges across every available NIC.
+        let bondInterfaces = await InterfaceDiscovery.current()
+            .filter { $0.nwInterface != nil }
         let fetchSegment: @Sendable (URL) async -> Data? = { segURL in
+            // If the user has multiple interfaces, pull the segment
+            // via BondedFetcher so byte ranges go across them in
+            // parallel.  Falls back to single-interface URLSession
+            // fetch when only one interface is up (same as
+            // URLSession.shared would have done).
+            if bondInterfaces.count >= 2 {
+                if let data = await BondedFetcher.fetch(
+                    url: segURL, interfaces: bondInterfaces
+                ) {
+                    return data
+                }
+                // Fall through to URLSession on bonded failure
+                // (server doesn't support Range, transient interface
+                // flap, etc.).
+            }
             return await HLSProxyServer.fetchUpstream(segURL)
         }
         let result: (body: Data, contentType: String)

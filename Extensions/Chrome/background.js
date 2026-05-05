@@ -301,11 +301,14 @@ const HLS_KEYS = {
 };
 
 function looksLikeHLSManifest(url) {
-  // Mirrors HLSManifest.looksLikeManifestURL on the Swift side.
+  // Mirrors HLSManifest.looksLikeManifestURL + DASHManifest.looksLikeManifestURL
+  // on the Swift side.  The proxy auto-detects HLS vs DASH from
+  // the body, so we just need to redirect any streaming manifest.
   try {
     const u = new URL(url);
     const path = u.pathname.toLowerCase();
-    return path.endsWith(".m3u8") || path.endsWith(".m3u");
+    return path.endsWith(".m3u8") || path.endsWith(".m3u")
+        || path.endsWith(".mpd") || path.endsWith(".dash");
   } catch { return false; }
 }
 
@@ -392,7 +395,9 @@ async function ensureHLSRule(tabId, sessionID) {
         },
       },
       condition: {
-        regexFilter: "^https?://[^?]+\\.(m3u8?)(\\?.*)?$",
+        // Match either HLS (.m3u8 / .m3u) or DASH (.mpd / .dash).
+        // The proxy auto-detects the format from the response body.
+        regexFilter: "^https?://[^?]+\\.(m3u8?|mpd|dash)(\\?.*)?$",
         resourceTypes: ["xmlhttprequest", "media", "other"],
         tabIds: [tabId],
       },

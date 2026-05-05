@@ -136,9 +136,9 @@ public final class HLSProxyServer {
         return data
     }
 
-    /// Handle a `/master` route: fetch upstream, rewrite variant URIs
-    /// to point at `/v` proxy paths, return rewritten body.  DRM
-    /// passes through unchanged.
+    /// Handle a `/master` route: fetch upstream, detect protocol
+    /// (HLS or DASH), rewrite URLs to point at proxy paths, return
+    /// rewritten body.  DRM (either protocol) passes through unchanged.
     public func handleMaster(
         sessionID: UUID,
         upstream: URL,
@@ -150,20 +150,41 @@ public final class HLSProxyServer {
         else {
             return (Data(), "application/vnd.apple.mpegurl")
         }
-        if HLSManifest.hasDRM(body) {
-            return (raw, "application/vnd.apple.mpegurl")
+        // Dispatch by content sniff so the same /master route handles
+        // HLS .m3u8 + DASH .mpd transparently.  The browser extension
+        // doesn't need to differentiate; the proxy figures it out.
+        switch DASHManifest.detectKind(body) {
+        case .hls:
+            if HLSManifest.hasDRM(body) {
+                return (raw, "application/vnd.apple.mpegurl")
+            }
+            guard case .master(let pl) = HLSManifest.parse(body) else {
+                return (raw, "application/vnd.apple.mpegurl")
+            }
+            let rewritten = HLSManifest.rewriteMasterURIs(
+                body, variants: pl.variants,
+                baseURL: upstream, proxyBase: proxyBase,
+                sessionID: sessionID
+            )
+            return (Data(rewritten.utf8), "application/vnd.apple.mpegurl")
+        case .dash:
+            if DASHManifest.hasDRM(body) {
+                return (raw, "application/dash+xml")
+            }
+            let rewritten = DASHManifest.rewriteMediaURLs(
+                body,
+                baseURL: upstream,
+                proxyBase: proxyBase,
+                sessionID: sessionID
+            )
+            return (Data(rewritten.utf8), "application/dash+xml")
+        case .unknown:
+            // Body isn't HLS or DASH — pass through verbatim.  Could
+            // be a per-segment .ts file the browser fetched directly
+            // through the master URL, or a non-streaming MIME the
+            // server happened to return.
+            return (raw, "application/octet-stream")
         }
-        guard case .master(let pl) = HLSManifest.parse(body) else {
-            return (raw, "application/vnd.apple.mpegurl")
-        }
-        let rewritten = HLSManifest.rewriteMasterURIs(
-            body,
-            variants: pl.variants,
-            baseURL: upstream,
-            proxyBase: proxyBase,
-            sessionID: sessionID
-        )
-        return (Data(rewritten.utf8), "application/vnd.apple.mpegurl")
     }
 
     /// Handle a `/v` route: fetch upstream variant playlist, rewrite
