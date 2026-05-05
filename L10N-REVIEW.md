@@ -1,11 +1,22 @@
 # Native-speaker review onramp
 
-Splynek ships **2,675 translations** (535 strings × 5 locales) across
+Splynek ships **3,090 translations** (618 strings × 5 locales) across
 pt-PT, es, fr, de, it.  All are AI-generated and machine-validated
 (catalog completeness + audit-script + CI guardrail enforcing 0
 missing on every PR).  None have been reviewed by a native speaker.
 
 This document is the contributor onramp for that pass.
+
+**Catalog scope:** the catalog covers BOTH the public free-tier UI
+(under `Sources/SplynekCore/`) AND the private Pro UI (under
+`/Users/pcgm/splynek-pro/Sources/SplynekPro/` — Concierge, Recipes,
+AI-assist surfaces).  In MAS builds the Pro views look up keys from
+the same `Localizable.xcstrings` shipped in `SplynekCore`.  The audit
+script scans both repos when the Pro repo is present as a sibling
+checkout.  As a reviewer you'll see the Pro tab in your locale's
+build only if you have access to the private Pro sources at archive
+time — for the public DMG / SwiftPM debug build the Pro tab shows
+the locked-state placeholder, which still goes through the catalog.
 
 ## Why this exists
 
@@ -173,11 +184,31 @@ gh pr create --title "l10n(de): native-speaker review pass" \
       title + message, `MetricView.caption`, `StatusPill.text`),
       surfacing 49 hidden strings the original audit was missing.
       Catalog 480 → 535.
+- [x] 2026-05-05 full audit pass:
+      - Switched audit script from per-line to whole-file regex
+        scanning — surfaced 21 multi-line-component-arg strings that
+        had been quietly missing for months.  Catalog 535 → 569.
+      - Promoted `ProLockedView.featureTitle` and `summary` from
+        `String` to `LocalizedStringKey` at the type level — SwiftUI's
+        `Text(String)` doesn't auto-localize and existing pt-PT
+        translations weren't being honoured.
+      - Extended audit script to scan `splynek-pro/Sources/SplynekPro/`
+        as well — surfaced 49 Pro-tier UI strings (Concierge tab,
+        Recipes tab, AI-status messages) never covered.  Catalog
+        569 → 618.
+      - History timeline footer "X across N days" + MCP endpoint URL
+        truthfulness (free tier displays 127.0.0.1 to match actual
+        binding).
+      - 2 ProLockedView regexes added to `find-missing-translations.py`
+        so future Pro-gate placeholders get caught at PR time.
 - [x] Visual sanity sweep across all 5 locales — pt-PT walked
       end-to-end through round 6; de / es / fr / it walked
       end-to-end 2026-05-05 (DE+FR pass caught 6 InstallView
       strings flipped to `LocalizedStringKey`).  No layout overflow,
-      no obviously-wrong terms.
+      no obviously-wrong terms.  Pro-tier pt-PT walkthrough
+      2026-05-05 against MAS build with dev-override; Concierge
+      header subtitle + Recipes Objetivo/Ideias sections + Settings
+      ProLockedView placeholders all confirmed in pt-PT.
 - [x] CI guardrail (`.github/workflows/lint.yml`) prevents future
       regressions — every PR runs the audit script and fails on any
       new `Text("…")` literal not in the catalog.

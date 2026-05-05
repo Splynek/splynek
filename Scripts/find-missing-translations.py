@@ -30,6 +30,14 @@ ROOT = Path(__file__).parent.parent
 VIEWS_DIR = ROOT / "Sources" / "SplynekCore" / "Views"
 CATALOG = ROOT / "Sources" / "SplynekCore" / "Localizable.xcstrings"
 
+# 2026-05-05: also scan splynek-pro (private repo, sibling checkout).
+# Pro UI strings flow through Bundle.main in MAS builds, picking up
+# the same Localizable.xcstrings from SplynekCore — but the audit
+# was only scanning SplynekCore/Views, so 49 Pro UI strings sat
+# untranslated for months.  Added during the full audit pass.
+PRO_REPO = ROOT.parent / "splynek-pro"
+PRO_VIEWS_DIR = PRO_REPO / "Sources" / "SplynekPro"
+
 # Regex matching Swift string literals inside the calls we care about.
 # We capture the string between quotes, allowing escaped quotes.
 PATTERNS = [
@@ -302,14 +310,24 @@ def main():
     # `"Open %@ in your browser"` were being re-flagged from sources
     # like `Text("Open \(host) in your browser")`.
     by_file = {}
-    for swift in sorted(VIEWS_DIR.rglob("*.swift")):
-        strings = extract_strings(swift)
-        missing = sorted(
-            s for s in strings
-            if not (normalize_keys(s) & catalog_keys)
-        )
-        if missing:
-            by_file[swift.relative_to(ROOT)] = missing
+    scan_dirs = [VIEWS_DIR]
+    # Add the Pro repo's UI sources if checked out as a sibling.
+    if PRO_VIEWS_DIR.exists():
+        scan_dirs.append(PRO_VIEWS_DIR)
+    for views_dir in scan_dirs:
+        for swift in sorted(views_dir.rglob("*.swift")):
+            strings = extract_strings(swift)
+            missing = sorted(
+                s for s in strings
+                if not (normalize_keys(s) & catalog_keys)
+            )
+            if missing:
+                # Display path relative to whichever repo it lives in.
+                try:
+                    rel = swift.relative_to(ROOT)
+                except ValueError:
+                    rel = swift.relative_to(PRO_REPO.parent)
+                by_file[rel] = missing
 
     total_missing = sum(len(v) for v in by_file.values())
     print(f"Found {total_missing} unique strings missing from catalog "

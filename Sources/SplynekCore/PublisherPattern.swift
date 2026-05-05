@@ -57,6 +57,8 @@ enum PublisherPattern {
         archReleases,
         githubReleases,
         kernelOrgReleases,
+        pypiPackages,
+        huggingFaceModels,
     ]
 
     /// Walks `allPatterns` in order; returns the first publisher's
@@ -349,6 +351,107 @@ enum PublisherPattern {
         }
         return nil
     }
+
+    // MARK: - PyPI (files.pythonhosted.org tarballs / wheels)
+    //
+    // PyPI's web URL for a package version is
+    //   https://pypi.org/project/<pkg>/<ver>/
+    // but the actual download URL the user pastes typically points at
+    //   https://files.pythonhosted.org/packages/<2-letter>/<2-letter>/
+    //     <hash>/<pkg>-<ver>-<tags>.whl  (or .tar.gz)
+    //
+    // The `<hash>` directory segment is itself the SHA-256 of the file —
+    // PyPI uses content-addressing for storage.  So the digest is right
+    // there in the URL, no network round-trip needed.
+    //
+    // Defensive: validate the hash segment IS 64 hex chars before
+    // returning it.  PyPI's URL shape has been stable since ~2017 but
+    // we don't trust path segments uncritically.
+    static let pypiPackages = Pattern(
+        name: "PyPI",
+        matches: { url in
+            guard let host = url.host?.lowercased() else { return false }
+            return host == "files.pythonhosted.org"
+        },
+        extract: { url, _ in
+            // Path is "/packages/<aa>/<bb>/<64-hex-hash>/<filename>"
+            // The hash is the 4th component (index 3 after the leading "/")
+            let parts = url.pathComponents
+            guard parts.count >= 5,
+                  parts[1] == "packages"
+            else { return nil }
+            let candidate = parts[4]
+            return isHex64(candidate) ? candidate.lowercased() : nil
+        }
+    )
+
+    // MARK: - Hugging Face (model + dataset file downloads)
+    //
+    // Hugging Face download URLs:
+    //   https://huggingface.co/<org>/<repo>/resolve/<rev>/<path>
+    //   https://huggingface.co/<org>/<repo>/raw/<rev>/<path>
+    //
+    // The HF API exposes per-file metadata at:
+    //   https://huggingface.co/api/models/<org>/<repo>/tree/<rev>?path=<path>
+    // and (for LFS-tracked binaries) returns each file's `lfs.oid` —
+    // a SHA-256 of the file contents.  Non-LFS small files have no
+    // hash field; for those we return nil and the user falls through
+    // to the `.sha256` sibling probe (HF doesn't ship one — but the
+    // Pattern still claims the URL, which gets the publisher tag in
+    // the UI).
+    //
+    // Match scope: huggingface.co only (resolve + raw paths).  CDN
+    // edge URLs (cdn-lfs.huggingface.co) get redirected from
+    // huggingface.co requests; the user-pasted URL is the public
+    // huggingface.co form.
+    static let huggingFaceModels = Pattern(
+        name: "Hugging Face",
+        matches: { url in
+            guard let host = url.host?.lowercased(), host == "huggingface.co"
+            else { return false }
+            return url.path.contains("/resolve/") || url.path.contains("/raw/")
+        },
+        extract: { url, session in
+            // Parse: /<org>/<repo>/(resolve|raw)/<rev>/<path...>
+            let parts = url.pathComponents
+            guard parts.count >= 6 else { return nil }
+            let org = parts[1]
+            let repo = parts[2]
+            // parts[3] is "resolve" or "raw"
+            let rev = parts[4]
+            let filePath = parts[5...].joined(separator: "/")
+            // Drop the trailing path's last segment for the API's `path` query
+            let dirComponents = parts[5...].dropLast()
+            let dir = dirComponents.joined(separator: "/")
+            guard let apiURL = URL(string:
+                "https://huggingface.co/api/models/\(org)/\(repo)/tree/\(rev)"
+                + (dir.isEmpty ? "" : "?path=\(dir)")
+            ) else { return nil }
+            var req = URLRequest(url: apiURL)
+            req.timeoutInterval = 5
+            req.setValue("application/json", forHTTPHeaderField: "Accept")
+            guard let (data, resp) = try? await session.data(for: req),
+                  let http = resp as? HTTPURLResponse,
+                  http.statusCode < 400
+            else { return nil }
+            // API returns an array of file entries, each with `path`,
+            // `type`, and (for LFS files) `lfs: { oid: <sha256> }`.
+            guard let arr = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
+            else { return nil }
+            let target = filePath
+            for entry in arr {
+                guard let entryPath = entry["path"] as? String else { continue }
+                if entryPath != target { continue }
+                if let lfs = entry["lfs"] as? [String: Any],
+                   let oid = lfs["oid"] as? String,
+                   isHex64(oid) {
+                    return oid.lowercased()
+                }
+                return nil  // file found but not LFS-tracked; no hash
+            }
+            return nil
+        }
+    )
 
     // MARK: - Parsing
 

@@ -100,6 +100,61 @@ enum PublisherPatternTests {
                 for u in no  { try expect(!PublisherPattern.githubReleases.matches(u),
                                           "Should NOT match: \(u.absoluteString)") }
             }
+
+            TestHarness.test("PyPI pattern claims files.pythonhosted.org") {
+                let yes = [
+                    "https://files.pythonhosted.org/packages/9c/0e/a2f9b1d10cd0c9a/c0fe96b1d5b9a/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl",
+                    "https://files.pythonhosted.org/packages/a1/b2/c3d4e5f6071829304050607080900a0b0c0d0e0f10111213141516171819/example-1.0.tar.gz",
+                ].compactMap { URL(string: $0) }
+                let no = [
+                    "https://pypi.org/project/numpy/1.26.4/",
+                    "https://github.com/numpy/numpy/releases/download/v1.26.4/numpy.tar.gz",
+                ].compactMap { URL(string: $0) }
+                for u in yes { try expect(PublisherPattern.pypiPackages.matches(u),
+                                          "Should match: \(u.absoluteString)") }
+                for u in no  { try expect(!PublisherPattern.pypiPackages.matches(u),
+                                          "Should NOT match: \(u.absoluteString)") }
+            }
+
+            TestHarness.test("Hugging Face pattern claims huggingface.co/.../resolve/... or /raw/...") {
+                let yes = [
+                    "https://huggingface.co/meta-llama/Llama-3.1-8B/resolve/main/model.safetensors",
+                    "https://huggingface.co/openai/whisper-large-v3/resolve/main/pytorch_model.bin",
+                    "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/raw/main/config.json",
+                ].compactMap { URL(string: $0) }
+                let no = [
+                    // Tree-listing URL — not a download
+                    "https://huggingface.co/meta-llama/Llama-3.1-8B",
+                    "https://huggingface.co/meta-llama/Llama-3.1-8B/tree/main",
+                    // Wrong host
+                    "https://hf.co/some-model",
+                ].compactMap { URL(string: $0) }
+                for u in yes { try expect(PublisherPattern.huggingFaceModels.matches(u),
+                                          "Should match: \(u.absoluteString)") }
+                for u in no  { try expect(!PublisherPattern.huggingFaceModels.matches(u),
+                                          "Should NOT match: \(u.absoluteString)") }
+            }
+        }
+
+        TestHarness.suite("PublisherPattern — content-addressed extraction") {
+
+            TestHarness.test("PyPI extracts SHA-256 from path segment (no network)") {
+                // Real-shape PyPI URL where the 4th path component IS the
+                // SHA-256 of the file.  No network needed — pure URL parse.
+                let url = URL(string: "https://files.pythonhosted.org/packages/9c/0e/9d8be4d4cb86d4d2d4f1ec2cb44a8aaef79e2828bf90c45e9b81f33dabc8d70d/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl")!
+                let digest = await PublisherPattern.pypiPackages.extract(url, .shared)
+                try expect(digest == "9d8be4d4cb86d4d2d4f1ec2cb44a8aaef79e2828bf90c45e9b81f33dabc8d70d",
+                           "Got: \(digest ?? "nil")")
+            }
+
+            TestHarness.test("PyPI rejects path with non-hex segment") {
+                // Path looks PyPI-shaped but the hash position isn't 64 hex
+                // (truncated or letters > F).  Should return nil rather
+                // than blindly trust the URL.
+                let url = URL(string: "https://files.pythonhosted.org/packages/aa/bb/notreallyahash/file.whl")!
+                let digest = await PublisherPattern.pypiPackages.extract(url, .shared)
+                try expect(digest == nil, "Got: \(digest ?? "nil")")
+            }
         }
 
         TestHarness.suite("PublisherPattern — SHA256SUMS parser") {
@@ -165,7 +220,7 @@ enum PublisherPatternTests {
 
         TestHarness.suite("PublisherPattern — registry walk") {
 
-            TestHarness.test("allPatterns has the curated publisher set (7 entries)") {
+            TestHarness.test("allPatterns has the curated publisher set (9 entries)") {
                 let names = Set(PublisherPattern.allPatterns.map(\.name))
                 try expect(names.contains("Mozilla"))
                 try expect(names.contains("Apache"))
@@ -175,7 +230,7 @@ enum PublisherPatternTests {
                 try expect(names.contains("GitHub Releases"))
                 try expect(names.contains("GitHub Releases"))
                 try expect(names.contains("kernel.org"))
-                try expect(PublisherPattern.allPatterns.count == 7,
+                try expect(PublisherPattern.allPatterns.count == 9,
                            "Got \(PublisherPattern.allPatterns.count) patterns; if a new publisher landed, update this assertion.")
             }
 
