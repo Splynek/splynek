@@ -278,13 +278,25 @@ public final class FleetCoordinator: ObservableObject {
     /// the coordinator doesn't need to see the VM type.
     var onCancelAll: (() -> Void)?
 
-    /// LAN-visible base URL a mobile device can open to reach the web
-    /// dashboard. Uses the first non-loopback IPv4 address the OS has
-    /// assigned — good enough for the same-Wi-Fi handoff case which is
-    /// 99% of the use. Returns `nil` until the listener binds.
+    /// Base URL a client can open to reach the web dashboard or MCP
+    /// endpoint. Returns `nil` until the listener binds.
+    ///
+    /// 2026-05-05 audit: this used to always return the first LAN IPv4,
+    /// but in the free tier `proGateForcesLoopback` is true and the
+    /// listener actually binds 127.0.0.1 only — so the URL displayed
+    /// in Settings (QR code) and Agentes (MCP endpoint copy field) was
+    /// untruthful: a phone scanning the QR or an MCP client copying the
+    /// URL onto another machine would silently fail to connect.  Now
+    /// honour `effectiveLoopbackOnly`: when the listener is loopback-
+    /// only, the URL points to 127.0.0.1; otherwise to the LAN IP.
     func webDashboardURL() -> URL? {
         guard port > 0 else { return nil }
-        let host = Self.firstLANAddress() ?? "localhost"
+        let host: String
+        if effectiveLoopbackOnly {
+            host = "127.0.0.1"
+        } else {
+            host = Self.firstLANAddress() ?? "localhost"
+        }
         return URL(string: "http://\(host):\(port)/splynek/v1/ui?t=\(webToken)")
     }
 

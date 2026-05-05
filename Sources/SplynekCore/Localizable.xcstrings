@@ -19166,6 +19166,216 @@
           }
         }
       }
+    },
+    "%@ across 1 day": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ über 1 Tag"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ a lo largo de 1 día"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ sur 1 jour"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ in 1 giorno"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ao longo de 1 dia"
+          }
+        }
+      }
+    },
+    "%@ across %lld days": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ über %2$lld Tage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ a lo largo de %2$lld días"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ sur %2$lld jours"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ in %2$lld giorni"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ao longo de %2$lld dias"
+          }
+        }
+      }
+    },
+    "No host activity": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Host-Aktivität"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin actividad por servidor"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune activité par hôte"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna attività per host"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem atividade por servidor"
+          }
+        }
+      }
+    },
+    "No cellular activity": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Mobilfunk-Aktivität"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin actividad móvil"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune activité cellulaire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna attività cellulare"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem atividade móvel"
+          }
+        }
+      }
+    },
+    "Once a download runs, per-host totals show up here. Historical days roll in after midnight.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobald ein Download läuft, erscheinen hier die Gesamtwerte pro Host. Historische Tage werden nach Mitternacht ergänzt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una vez que se ejecute una descarga, los totales por servidor aparecerán aquí. Los días históricos se añaden después de medianoche."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dès qu'un téléchargement est lancé, les totaux par hôte apparaissent ici. Les jours d'archive s'ajoutent après minuit."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una volta avviato un download, i totali per host appaiono qui. I giorni storici vengono aggiunti dopo mezzanotte."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assim que uma transferência arrancar, os totais por servidor aparecem aqui. Os dias do histórico entram depois da meia-noite."
+          }
+        }
+      }
+    },
+    "Cellular totals appear once a download uses a cellular interface. Historical days roll in after midnight.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mobilfunk-Gesamtwerte erscheinen, sobald ein Download eine mobile Schnittstelle nutzt. Historische Tage werden nach Mitternacht ergänzt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los totales móviles aparecen una vez que una descarga usa una interfaz móvil. Los días históricos se añaden después de medianoche."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les totaux cellulaires apparaissent dès qu'un téléchargement utilise une interface mobile. Les jours d'archive s'ajoutent après minuit."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I totali cellulari appaiono una volta che un download usa un'interfaccia mobile. I giorni storici vengono aggiunti dopo mezzanotte."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Os totais móveis aparecem assim que uma transferência usar uma interface móvel. Os dias do histórico entram depois da meia-noite."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

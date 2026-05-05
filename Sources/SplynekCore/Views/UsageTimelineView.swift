@@ -111,9 +111,12 @@ struct UsageTimelineView: View {
                 .font(.caption).foregroundStyle(.secondary)
                 .lineLimit(1).truncationMode(.tail)
             Spacer()
-            Menu("\(windowDays) days") {
+            // 2026-05-05 audit: "\(windowDays) days" was a plain Swift
+            // interpolation rendering English-only.  LocalizedStringKey
+            // with interpolation lets SwiftUI route through the catalog.
+            Menu(LocalizedStringKey("\(windowDays) days")) {
                 ForEach([7, 14, 30, 60, 90], id: \.self) { n in
-                    Button("\(n) days") { windowDays = n }
+                    Button(LocalizedStringKey("\(n) days")) { windowDays = n }
                 }
             }
             .menuStyle(.borderlessButton)
@@ -140,13 +143,28 @@ struct UsageTimelineView: View {
         }
     }
 
-    private var summary: String {
+    /// Footer summary like "3,59 GB ao longo de 4 dias".
+    ///
+    /// 2026-05-05 audit: was a plain Swift String with `"…across…"` /
+    /// trailing-`s` pluralization — English-only and bypassed the
+    /// localization catalog entirely.  Switching to LocalizedStringKey
+    /// with interpolation routes through the catalog (SwiftUI substitutes
+    /// the live values into the matching key).  Singular and plural
+    /// branches are separate keys because pt-PT/de/es/fr/it pluralize
+    /// differently (and a few have no irregular form for "day").
+    private var summary: LocalizedStringKey {
         guard !points.isEmpty else { return "" }
         let total = points.reduce(Int64(0)) { $0 + $1.bytes }
         let dayCount = Set(points.map(\.date)).count
-        return "\(formatBytes(total)) across \(dayCount) day\(dayCount == 1 ? "" : "s")"
+        let totalStr = formatBytes(total)
+        return dayCount == 1
+            ? "\(totalStr) across 1 day"
+            : "\(totalStr) across \(dayCount) days"
     }
 
+    // emptyTitle/emptyMessage stay String — EmptyStateView already
+    // wraps them with LocalizedStringKey internally for the runtime
+    // catalog lookup.  Catalog entries added 2026-05-05.
     private var emptyTitle: String {
         switch mode {
         case .host:     return "No host activity"
