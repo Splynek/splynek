@@ -19,7 +19,7 @@ auto-extraction + complete localization in 5 non-English locales
 with audit-script + CI guardrails enforcing non-regression."
 
 Catalog grew **56 → 535 strings** (×9.6) → **2,675 translations**.
-Tests grew **148 → 382** (×2.6).  Public-repo Swift files **49 → 69**.
+Tests grew **148 → 451** (×3.0).  Build warnings: **906 → 0** on clean rebuild (Swift 6 strict-concurrency cleanup across 6 infrastructure files).  v0.31-era resume-button no-op guard fixed in `8a2940b` (was hidden behind `Lifecycle.isActive` returning true for `.paused` — bug since initial public commit; same path defeats the second half of S2 auto-resume on Wi-Fi return).
 Apple App Review status: still pending day 8 of v1.0 re-review.
 Nothing pushed, nothing tagged — `main` is hot.
 
@@ -570,7 +570,7 @@ distinct outcomes:
    sub-fix, in the same arc): `MainActor.assumeIsolated` wrap.
 
 Final hot state: `swift build` produces 0 warnings + 0 errors on
-clean rebuild; 447/447 tests pass; audit clean (544 strings × 5
+clean rebuild; 451/451 tests pass; audit clean (544 strings × 5
 locales); helper Info.plist no longer drifts after build.  Working
 tree clean after build.  Localization gotcha memory entry
 rewritten as SOLVED with the full investigation + the working fix.
@@ -622,6 +622,76 @@ is short.  Fix: pull inputBar (+ Divider) out of the inner VStack
 into `.safeAreaInset(edge: .bottom)` modifier on the outer view.
 safeAreaInset reserves bottom space the inner content can't claim
 regardless of any maxHeight settings below it.
+
+### Latest landing (2026-05-05): v0.31-era resume-button no-op guard fixed
+
+User flagged "the resume button doesn't work — pause works, resume
+doesn't" while we were mid-test of S2 (Unbreakable Resume) via the
+CLI fallback path (live Wi-Fi-flip test had failed earlier because
+my own Anthropic API connection died with the Wi-Fi).
+
+Read led to [DownloadJob.swift:185](Sources/SplynekCore/DownloadJob.swift:185):
+
+```swift
+var isActive: Bool { self == .running || self == .paused }
+func resume(onFinish: ...) {
+    guard !lifecycle.isActive else { return }
+    start(onFinish: onFinish)
+}
+```
+
+`Lifecycle.isActive` is `true` for `.paused`.  So `!isActive` is
+`false` whenever the user clicks resume on a paused job, the guard
+fires the early-return, and resume() is a silent no-op.  Bug
+present since `2ab1eee` — v0.31 initial public commit.
+
+**Wider blast radius than the manual button.**  The same `job.resume(...)`
+method is what `VM.handlePathEvent` calls to auto-resume jobs that
+S2 paused on a Wi-Fi drop.  So Bet S2's offline-pause worked
+(verified earlier in session via menubar speed indicator dropping
+to 0 the moment Wi-Fi was cut), but the online-resume half also
+hit this guard and no-op'd.  The Bet S2 trifecta on `main` was
+half-broken end-to-end since landing.
+
+**Fix:** invert the guard intent into an explicit allow-list that
+mirrors the resume button's UI contract:
+```swift
+guard lifecycle == .paused || lifecycle == .failed else { return }
+```
+The `start()` method (which resume() calls) already has its own
+`guard lifecycle != .running` so the fix doesn't add a second
+race-condition path against a double-press.
+
+**Regression test:** [Tests/SplynekTests/DownloadJobResumeTests.swift](Tests/SplynekTests/DownloadJobResumeTests.swift)
+covers all 6 lifecycle states + asserts paused→running, failed→running,
+running stays running, completed/cancelled/pending stay put.  Uses
+`MainActor.assumeIsolated` (sync) like the existing
+ConciergeTranscriptStore + TrustExport tests do — DownloadJob's init
+is @MainActor and the harness blocks the main thread on a
+DispatchSemaphore so an async-test path would deadlock.  +4 tests
+(447 → 451).
+
+**Live-verified:** real Ubuntu 24.04.4 ISO download.  Pre-pause
+8.4 MB/s @ 112 MB / 1.8%; pause froze it at 161.9 MB / 2.6% with
+"EM PAUSA" badge; resume picked up at 208 MB / 3.3% @ 10.7 MB/s
+with "AO VIVO" + "Downloading" phase.  Bytes-progress crucially
+went **forward** from 161.9 MB, not back to zero — sidecar resume
+preserved the chunks already on disk.  Downloaded only 47 MB total
+across the verify, then cancelled.  Landed in `8a2940b`.
+
+**Lesson learned (worth carrying forward).**  Two things:
+1. Audit code paths that have been working "since forever" by
+   testing them, not by trusting the tests.  This was a
+   fully-broken UI button hidden in a method that compiled, ran,
+   and silently no-op'd — no crash, no log line, no test fail.
+   The unit tests didn't cover resume() because the only
+   integration path was through the @MainActor live-engine surface.
+2. When rolling out a feature like S2 that *also calls* a
+   pre-existing method, exercise the pre-existing method's actual
+   transitions in a fresh integration check, not just the
+   pure-decision predicates.  If we'd run a manual pause→resume
+   sequence on the existing resume button before landing S2, we'd
+   have caught it in a single live test.
 
 ## Open positions (what a fresh session should know about)
 
@@ -690,6 +760,9 @@ is genuinely human work.
 ## Commit timeline (latest first, top of `main`)
 
 ```
+8a2940b DownloadJob.resume: fix v0.31-era no-op guard (+ regression test, +4 tests)
+952d154 HANDOFF + SESSION-LOG: capture MAS build restoration + Pro live-verify + input bar fix
+296117e MAS build path restored: Bundle.module → Bundle.splynekCore + AppShortcut cap + start(url:sha256:filename:) overload
 b07d788 Live-test fixes: SovereigntyView filterBar overflow + drop save-panel localized message
 b9e4e97 Audit fixes: 3 real issues across S2 + Wayback wiring
 58a970e HANDOFF + SESSION-LOG: refresh for S2 trifecta + GitHub publisher + SMJobBless runbook + L10N counts
@@ -763,8 +836,8 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **535** | ×9.6 |
 | Translations (×5 locales) | 56 | **2,675** | ×47 |
-| Tests | 148 | **382** | ×2.6 |
-| Public-repo Swift files | 49 | **69** | +20 |
+| Tests | 148 | **451** | ×3.0 |
+| Public-repo Swift files | 49 | **67** (top-level SplynekCore) / 123 (recursive) | +18 / +74 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
 | Top-level docs | 1 (HANDOFF) | **6** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG) | +5 |
