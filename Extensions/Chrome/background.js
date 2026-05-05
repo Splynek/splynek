@@ -277,6 +277,60 @@ self.setHostPreference = setHostPreference;
 self.readAccelConfig = readAccelConfig;
 self.ACCEL_KEYS = ACCEL_KEYS;
 
+// ============================================================
+// Strategy Bet S5 second half — HLS pre-buffer detection
+// (scaffolding only, 2026-05-05)
+// ============================================================
+//
+// HLS streams are detectable by URL extension (.m3u8 / .m3u) +
+// Content-Type ("application/vnd.apple.mpegurl" or
+// "application/x-mpegurl").  When we see one, we record the
+// detection in storage so the user can opt-in via the options
+// page; in v0.24+ this turns into "redirect playlist requests
+// through Splynek's local HLS proxy at 127.0.0.1:<port>/hls/...".
+//
+// Today's scaffolding: just *count* detections and surface them
+// in the options page so users (a) know the feature is sniffing
+// for streams and (b) can see it actually works on their sites
+// before we wire up the proxy redirect.
+
+const HLS_KEYS = {
+  detectionCount: "hls.detectionCount",
+  lastSeenURL:    "hls.lastSeenURL",
+  lastSeenAt:     "hls.lastSeenAt",
+};
+
+function looksLikeHLSManifest(url) {
+  // Mirrors HLSManifest.looksLikeManifestURL on the Swift side.
+  try {
+    const u = new URL(url);
+    const path = u.pathname.toLowerCase();
+    return path.endsWith(".m3u8") || path.endsWith(".m3u");
+  } catch { return false; }
+}
+
+chrome.webRequest.onHeadersReceived.addListener(
+  (details) => {
+    if (!looksLikeHLSManifest(details.url)) {
+      // Cheap path miss — don't even check content-type for
+      // non-manifest-shaped URLs.
+      return;
+    }
+    chrome.storage.local.get(
+      [HLS_KEYS.detectionCount, HLS_KEYS.lastSeenURL, HLS_KEYS.lastSeenAt],
+      (got) => {
+        const count = (got[HLS_KEYS.detectionCount] || 0) + 1;
+        chrome.storage.local.set({
+          [HLS_KEYS.detectionCount]: count,
+          [HLS_KEYS.lastSeenURL]: details.url,
+          [HLS_KEYS.lastSeenAt]: Date.now(),
+        });
+      }
+    );
+  },
+  { urls: ["<all_urls>"], types: ["xmlhttprequest", "media", "other"] }
+);
+
 chrome.notifications.onClosed.addListener((notifId) => {
   pendingByNotificationId.delete(notifId);
 });

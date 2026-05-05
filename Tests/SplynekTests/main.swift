@@ -76,6 +76,7 @@ DownloadJobResumeTests.run()
 YtDlpProbeTests.run()
 YtDlpRunnerTests.run()
 DownloadReceiptTests.run()
+HLSManifestTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private
