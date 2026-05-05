@@ -54,15 +54,61 @@ integrity checks. The extension has no access to Splynek's internals.
 
 ## Permissions
 
-| Permission   | Why                                                   |
-|--------------|-------------------------------------------------------|
-| `contextMenus` | Right-click items on links / images / pages         |
-| `activeTab`    | Read the URL of the current tab for the popup       |
-| `tabs`         | Create a short-lived background tab to trigger      |
-|                | the `splynek://` scheme, then close it              |
-| `storage`      | Reserved for future prefs (not used today)          |
+| Permission     | Why                                                 |
+|----------------|-----------------------------------------------------|
+| `contextMenus` | Right-click items on links / images / pages       |
+| `activeTab`    | Read the URL of the current tab for the popup     |
+| `tabs`         | Create a short-lived background tab to trigger    |
+|                | the `splynek://` scheme, then close it            |
+| `storage`      | Persist Accelerator opt-in + per-host preferences |
+| `webRequest`   | (v0.22) Observe downloads for the Accelerator     |
+| `downloads`    | Cancel a Chrome download when the user picks      |
+|                | "Send to Splynek" from the Accelerator notif      |
+| `notifications`| Show the Accelerator prompt when a >50 MB         |
+|                | download is about to start                        |
+| `host_permissions: <all_urls>` | Required for `webRequest` to       |
+|                see download URLs cross-host                         |
 
-No content scripts. No host permissions. No background network.
+No content scripts. No background network requests of our own —
+`webRequest` is observe-only.
+
+## Accelerator (v0.22+, off by default)
+
+When you enable the **Accelerator** toggle in the popup, the
+extension watches every browser-initiated download.  If the file is
+≥ 50 MB, it shows a notification:
+
+> Splynek can fetch this faster
+> 247.3 MB from releases.example.org.  Send to Splynek to bond
+> every network you have.
+> [ Send to Splynek ]   [ Keep in browser ]
+
+If you click "Send to Splynek", the Chrome download is cancelled and
+the URL hands off to Splynek.  Splynek's multi-interface engine then
+fetches the file across every Wi-Fi / Ethernet / iPhone-tether
+connection you have at the same time — typically 2–4× faster on a
+home network with cable + 5G tether.
+
+**Per-host preferences** are stored in `chrome.storage.sync`:
+- `accel.optOutHosts` — never prompt for these hosts (e.g. internal
+  corporate Sharepoint where Splynek can't reach the auth)
+- `accel.alwaysHosts` — always send these hosts to Splynek without
+  the notification (e.g. ubuntu.com, mozilla.org, large CDNs)
+
+These lists are populated by the future "Never for this site" /
+"Always for this site" notification buttons (v0.23 — currently the
+notification only has Send / Keep buttons; opt-out is via the popup
+UI for now).
+
+**Threshold** defaults to 50 MB.  Override with:
+```js
+chrome.storage.sync.set({ "accel.thresholdBytes": 100 * 1024 * 1024 });
+```
+
+The Accelerator does NOT touch the page DOM, does NOT proxy any
+traffic, does NOT make its own network requests.  It only
+**observes** Chrome's download stack and **redirects** large
+downloads with explicit per-file consent.
 
 ## Uninstall
 

@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlEl = document.getElementById("url");
   const downloadBtn = document.getElementById("download");
   const queueBtn = document.getElementById("queue");
+  const accelToggle = document.getElementById("accel-toggle");
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs && tabs[0];
@@ -19,6 +20,19 @@ document.addEventListener("DOMContentLoaded", () => {
     downloadBtn.addEventListener("click", () => dispatch("download", tab.url));
     queueBtn.addEventListener("click",    () => dispatch("queue",    tab.url));
   });
+
+  // S5: Accelerator opt-in toggle.  Default off because it adds an
+  // intercept notification on every >50 MB download — surprising for
+  // users who didn't ask.  Once enabled, the per-host opt-out + always
+  // lists in chrome.storage.sync keep prompt-fatigue bounded.
+  if (accelToggle) {
+    chrome.storage.sync.get("accel.enabled", (got) => {
+      accelToggle.checked = !!got["accel.enabled"];
+    });
+    accelToggle.addEventListener("change", () => {
+      chrome.storage.sync.set({ "accel.enabled": accelToggle.checked });
+    });
+  }
 });
 
 function dispatch(action, url) {

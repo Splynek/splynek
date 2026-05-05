@@ -1,13 +1,22 @@
 // Splynek Chrome extension — service worker (Manifest V3).
 //
-// The extension has one job: take a URL the user cares about (a link they
-// right-clicked, or the current tab) and hand it to Splynek via the
-// `splynek://` scheme that the native app registers.
+// Two jobs:
 //
-// No native messaging, no cross-origin fetches, no permissions beyond
-// contextMenus + activeTab + tabs + storage. Splynek's URL scheme is the
-// integration contract, so the extension stays tiny and Chrome Web Store
-// review is straightforward.
+// 1. **Manual hand-off** (existing).  Take a URL the user cares about
+//    (a link they right-clicked, or the current tab) and hand it to
+//    Splynek via the `splynek://` scheme that the native app registers.
+//
+// 2. **Accelerator intercept** (2026-05-05, Strategy Bet S5 first half).
+//    Watch every browser-initiated download via `chrome.downloads.onCreated`.
+//    If the file is large enough that Splynek's multi-interface bonding
+//    would help (default threshold: 50 MB), cancel the Chrome download
+//    and offer to fetch it through Splynek instead via a notification.
+//    Per-host opt-out via `chrome.storage.sync` keeps the prompt-fatigue
+//    bounded.
+//
+// No native messaging, no cross-origin fetches.  Splynek's URL scheme
+// is the integration contract.  All accelerator decisions are local —
+// no server round-trips.
 
 const MENU_IDS = {
   downloadLink: "splynek-download-link",
@@ -109,3 +118,114 @@ function openInSplynek(action, url, extras = {}) {
     }
   });
 }
+
+// ============================================================
+// Strategy Bet S5 first half — Accelerator intercept
+// ============================================================
+//
+// Chrome's download stack invokes `chrome.downloads.onCreated` BEFORE
+// the user's browser starts pulling bytes (technically right after the
+// HTTP response headers are received).  At that moment we know:
+//   - the URL
+//   - `totalBytes` (Content-Length, or 0 if not advertised)
+//   - the source tab + referrer
+//   - the proposed local filename
+//
+// Decision flow:
+//   1. If accelerator is disabled in storage → ignore.
+//   2. If totalBytes < THRESHOLD_BYTES → ignore.  Small files are
+//      latency-bound, not bandwidth-bound; multi-interface bonding
+//      offers no win.
+//   3. If host is on the per-user opt-out list → ignore.
+//   4. Otherwise: notify the user "Splynek can fetch this faster.
+//      [Send to Splynek] [Keep here] [Never for this site]".
+//
+// We don't auto-cancel + redirect.  That's a hostile UX — the user
+// initiated the download in their browser, surprises are bad.  The
+// notification gives an EXPLICIT consent moment per file; once they
+// approve once for a site, we remember the answer.
+
+const THRESHOLD_BYTES_DEFAULT = 50 * 1024 * 1024;  // 50 MB
+
+const ACCEL_KEYS = {
+  enabled: "accel.enabled",          // bool, default false (opt-in)
+  threshold: "accel.thresholdBytes", // number, default 50 MB
+  optOutHosts: "accel.optOutHosts",  // {host: true} object
+  alwaysHosts: "accel.alwaysHosts",  // {host: true} — auto-Splynek
+};
+
+async function readAccelConfig() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(
+      [ACCEL_KEYS.enabled, ACCEL_KEYS.threshold,
+       ACCEL_KEYS.optOutHosts, ACCEL_KEYS.alwaysHosts],
+      (got) => {
+        resolve({
+          enabled: !!got[ACCEL_KEYS.enabled],
+          threshold: typeof got[ACCEL_KEYS.threshold] === "number"
+            ? got[ACCEL_KEYS.threshold]
+            : THRESHOLD_BYTES_DEFAULT,
+          optOut: got[ACCEL_KEYS.optOutHosts] || {},
+          always: got[ACCEL_KEYS.alwaysHosts] || {},
+        });
+      }
+    );
+  });
+}
+
+function hostFor(url) {
+  try { return new URL(url).hostname.toLowerCase(); }
+  catch { return null; }
+}
+
+// Track download → notification mapping so the click handler can find
+// the right download to cancel + redirect.
+const pendingByNotificationId = new Map();
+
+chrome.downloads.onCreated.addListener(async (item) => {
+  const cfg = await readAccelConfig();
+  if (!cfg.enabled) return;
+  if (item.totalBytes < cfg.threshold) return;
+  if (!item.url) return;
+  const host = hostFor(item.url);
+  if (host && cfg.optOut[host]) return;
+
+  if (host && cfg.always[host]) {
+    // User previously chose "always send <host> to Splynek".
+    chrome.downloads.cancel(item.id);
+    openInSplynek("download", item.url);
+    return;
+  }
+
+  const sizeMB = (item.totalBytes / (1024 * 1024)).toFixed(1);
+  const notifId = `splynek-accel-${item.id}`;
+  pendingByNotificationId.set(notifId, {
+    downloadId: item.id, url: item.url, host
+  });
+  chrome.notifications.create(notifId, {
+    type: "basic",
+    iconUrl: "icons/icon-128.png",
+    title: "Splynek can fetch this faster",
+    message: `${sizeMB} MB from ${host || "this server"}.  Send to Splynek to bond every network you have.`,
+    buttons: [
+      { title: "Send to Splynek" },
+      { title: "Keep in browser" },
+    ],
+    requireInteraction: true,
+  });
+});
+
+chrome.notifications.onButtonClicked.addListener((notifId, btnIdx) => {
+  const pending = pendingByNotificationId.get(notifId);
+  if (!pending) return;
+  pendingByNotificationId.delete(notifId);
+  if (btnIdx === 0) {
+    chrome.downloads.cancel(pending.downloadId);
+    openInSplynek("download", pending.url);
+  }
+  chrome.notifications.clear(notifId);
+});
+
+chrome.notifications.onClosed.addListener((notifId) => {
+  pendingByNotificationId.delete(notifId);
+});
