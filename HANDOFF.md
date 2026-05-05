@@ -376,7 +376,8 @@ commit, every architectural decision, and every open position).
 
 | Repo | Branch | Latest commit | Status |
 |---|---|---|---|
-| `Splynek/splynek` (public) | `main` | `74cd74a` (perfection pass — localization SOLVED + 906→0 warnings + helper plist drift fixed) — 78 commits ahead of origin | clean working tree |
+| `Splynek/splynek` (public) | `main` | `296117e` (MAS build path restored — Bundle.splynekCore + start(url:) overload + AppShortcut cap) — 79 commits ahead of origin | clean working tree |
+| `Splynek/splynek-pro` (private) | `main` | `803b830` (ConciergeView layout fix — input bar via safeAreaInset) + `369a69d` (DecodeError + LocalizedStringKey wrap) — 3 commits ahead of origin | clean |
 | `Splynek/splynek-pro` (private) | `main` | `c64deb1` (ConciergeView: drag PDF onto tab to summarize) — 4 commits ahead of origin | clean |
 | `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
 

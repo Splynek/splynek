@@ -575,6 +575,54 @@ locales); helper Info.plist no longer drifts after build.  Working
 tree clean after build.  Localization gotcha memory entry
 rewritten as SOLVED with the full investigation + the working fix.
 
+### Latest landing (2026-05-04 part 7): MAS build path restored + Concierge input-bar fix
+
+User asked to see the live Pro version + audit it.  This required
+building the MAS xcarchive (the SwiftPM build path is free-tier-only;
+the chat surface, Pro-Concierge view, and AI-assist UI live in
+splynek-pro and only swap into the binary at MAS-build time via
+xcodegen-driven source-exclusion).
+
+The MAS build had accumulated tech debt across two repos that
+blocked the archive: 6 distinct error categories spanning Bundle.module
+non-existence (xcodegen targets aren't SwiftPM), missing
+start(url:sha256:filename:) overload that Pro's onDownload callback
+expects, private handleConciergeAction, AppShortcut cap (13 > 10),
+String-not-Error in `Result<_, String>`, and a String→LocalizedStringKey
+gap in RecipeView.  Fixed across `296117e` (public) + `369a69d` (Pro).
+
+**Bundle.module → Bundle.splynekCore.**  New cross-build wrapper in
+LocalizedString+DirectPlist.swift wraps `#if SWIFT_PACKAGE` so SwiftPM
+builds use Bundle.module + xcodegen builds use Bundle.main.  Either
+way, directPlistLookup walks Bundle.main's in-app paths internally
+so the localization SOLVED state holds across both build paths.
+
+**License-gate live test via dev override:** the splynek-pro
+LicenseManager has a built-in `splynekDevProUnlocked` UserDefaults
+key for App Review Team demos.  Sandbox-container preferences are
+isolated from `defaults write` against the bundle ID at the
+top-level Preferences/, so a temporary code patch (isPro = true
+hardcoded) was the working path for live verification.  Patches
+reverted before commit.
+
+**Live-verified Pro Concierge surface:** 4 Mac-Assistant suggestion
+chips (What apps installed, What's eating disk, Sovereignty
+alternatives, Trust scores) + 4 legacy chips (download/queue/
+history/cancel) + provider footer "Using Apple on-device model
+via Apple Intelligence" + input bar with "Ask anything…"
+placeholder.  Plus AI-assist purple bar on the Transferências tab
+(✨ Or describe it — "latest Ubuntu 24.04 desktop ISO" / Perguntar).
+
+**Concierge input-bar layout bug FOUND + FIXED (`803b830`):** during
+live verification, user spotted the input bar clipped at the
+window's bottom in empty-state mode.  Root cause: emptyState VStack
+uses `.frame(maxHeight: .infinity)` to center its hero + chips,
+which competes with the inputBar's intrinsic height when the window
+is short.  Fix: pull inputBar (+ Divider) out of the inner VStack
+into `.safeAreaInset(edge: .bottom)` modifier on the outer view.
+safeAreaInset reserves bottom space the inner content can't claim
+regardless of any maxHeight settings below it.
+
 ## Open positions (what a fresh session should know about)
 
 ### Apple v1.0 review — escalate by day 10 if no movement
