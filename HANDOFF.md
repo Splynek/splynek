@@ -19,11 +19,11 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (480 tests, all green) — `swift build` produces **0 warnings on clean rebuild**
+**Tests:** `swift run splynek-test` (552 tests, all green) — `swift build` produces **0 warnings on clean rebuild**
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-04.**
-**Architectural state on `main`: next-release rollup ready** — single coherent forward release containing Concierge-as-Mac-Assistant, Verified Installer (osascript + SMJobBless paths), Fleet 2.0 LAN peer cache (with warm-cache, auto-join, household swarm token), Bet S2 Unbreakable Resume (path-flip pause/resume with sidecar continuity + curated mirror failover for Ubuntu/Debian/Fedora), **Bet S6 File Witness (Ed25519-signed download receipts with standalone verifier)**, **9 publisher patterns** (Mozilla/Apache/Debian/Ubuntu/Arch/GitHub/kernel.org/PyPI/Hugging Face) for digest auto-extraction, and the localization audit-script + CI guardrails (whole-file scan, scans both public + Pro repos).
+**Architectural state on `main`: next-release rollup ready** — single coherent forward release containing Concierge-as-Mac-Assistant, Verified Installer (osascript + SMJobBless paths), Fleet 2.0 LAN peer cache (with warm-cache, auto-join, household swarm token), **Bet S2 Unbreakable Resume** (path-flip pause/resume with sidecar continuity + curated mirror failover for Ubuntu/Debian/Fedora), **Bet S3 yt-dlp swallow** (DMG-only dispatch when user has yt-dlp installed; YouTube/Twitch/Instagram/TikTok/X/Vimeo/Bilibili route through it), **Bet S5 Browser Accelerator** (Chrome + Safari WebExtensions with `declarativeNetRequest` redirect; intercepts ≥50 MB downloads + HLS/DASH manifest URLs; HLSProxyServer rewrites segment URLs through localhost proxy + pre-buffers via BondedFetcher's multi-interface bonded Range fetch + LRU ring buffer), **Bet S6 File Witness** (Ed25519-signed download receipts with standalone verifier), **9 publisher patterns** (Mozilla/Apache/Debian/Ubuntu/Arch/GitHub/kernel.org/PyPI/Hugging Face) for digest auto-extraction, and the localization audit-script + CI guardrails (whole-file scan, scans both public + Pro repos).
 
 **Versioning policy (set 2026-05-05):** stop opening new sub-version branches (no more v1.7.x, v1.8.x, v1.9.x, S2/S3/etc.) — all forward work piles into the single "next-release rollup" until tagged.  Sub-versions were useful as in-flight planning labels but became unmanageable proliferation; consolidate at land time.
 
@@ -330,7 +330,7 @@ drop + auto-resumes on Wi-Fi return; `MirrorManifest` injects
 curated Tier-1 mirrors as parallel lanes alongside the primary URL,
 sidecar preserves resume state across all of it; resume guard
 fixed in `8a2940b` — bug had been there since v0.31).
-**480 tests passing, 0 build warnings on clean rebuild.**  Apple v1.0 still
+**552 tests passing, 0 build warnings on clean rebuild.**  Apple v1.0 still
 pending re-review (day 8 → maintainer should consider Resolution
 Center escalation by day 10); ASC monitor running daily.  Marketing
 still staged.  Nothing pushed, nothing tagged — `main` is hot but
@@ -346,7 +346,7 @@ call), gated on Apple's v1.0 clearing.
 cd "/Users/pcgm/Claude Code"
 git status                            # both repos must be clean
 swift build                           # < 10s, must succeed
-./.build/debug/splynek-test           # must show 480/480
+./.build/debug/splynek-test           # must show 552/552
 python3 Scripts/find-missing-translations.py  # must show 0 missing
 
 # 2. Read the latest 5 commits to see what just landed
@@ -382,7 +382,7 @@ commit, every architectural decision, and every open position).
 
 | Repo | Branch | Latest commit | Status |
 |---|---|---|---|
-| `Splynek/splynek` (public) | `main` | `17cb90a` (S6 File Witness: Ed25519-signed download receipts + standalone verifier) — 86 commits ahead of origin | clean working tree |
+| `Splynek/splynek` (public) | `main` | `e9e7002` (S5 ship: bonded segment fetch + DASH manifest support) — 93 commits ahead of origin | clean working tree |
 | `Splynek/splynek-pro` (private) | `main` | `803b830` (ConciergeView layout fix — input bar via safeAreaInset) — 3 commits ahead of origin (commits: `c64deb1` PDF drag-to-summarize, `369a69d` MAS build fixes, `803b830` input bar fix) | clean |
 | `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
 
@@ -578,7 +578,30 @@ v1.9 — Fleet 2.0 LAN peer cache
   Sources/SplynekCore/Fleet/SwarmAnnouncementObserver.swift      ← peer-side poller
   Sources/SplynekCore/Fleet/SwarmParticipant.swift               ← peer fetch state machine
 
-Tests added across the v1.7 → v1.9 work
+S3 — yt-dlp swallow (DMG-only dispatch)
+  Sources/SplynekCore/YtDlpProbe.swift                           ← probe Homebrew/pip install paths + parse --version
+  Sources/SplynekCore/YtDlpRunner.swift                          ← subprocess invocation + progress/bytes/title parsers
+  Sources/SplynekCore/Views/DownloadView.swift                   ← ytDlpDispatchRow (purple card, host-aware, "Use yt-dlp" button)
+  Sources/SplynekCore/ViewModel.swift                            ← dispatchYtDlp() wires into DownloadHistory record
+
+S5 — Browser Accelerator (HLS+DASH bonded pre-buffer)
+  Sources/SplynekCore/HLSManifest.swift                          ← HLS master/media parser, DRM detector, URL rewriter
+  Sources/SplynekCore/DASHManifest.swift                         ← MPEG-DASH MPD parser + DRM (Widevine/PlayReady/FairPlay)
+  Sources/SplynekCore/HLSRingBuffer.swift                        ← per-session 256 MB LRU segment cache
+  Sources/SplynekCore/HLSProxyServer.swift                       ← /master + /v + /s routes; auto-detects HLS/DASH
+  Sources/SplynekCore/BondedFetcher.swift                        ← multi-interface bonded Range fetch (LaneConnection-based)
+  Sources/SplynekCore/FleetCoordinator.swift                     ← /hls/* dispatch + InterfaceDiscovery for BondedFetcher
+  Extensions/Chrome/manifest.json + background.js + options.html ← declarativeNetRequest redirect, opt-in toggle
+  Extensions/Safari-WebExtension/                                 ← .appex via xcodegen, JS ported with browser/chrome shim
+
+S6 — File Witness (cryptographic download receipts)
+  Sources/SplynekCore/DeviceKeyManager.swift                     ← per-device Ed25519 keypair in Keychain
+  Sources/SplynekCore/DownloadReceipt.swift                      ← schema v1 + canonical-JSON sign/verify
+  Sources/SplynekCore/ReceiptStore.swift                         ← ~/Library/Application Support/Splynek/receipts/
+  Sources/SplynekCore/Views/HistoryDetailSheet.swift             ← "Export receipt" footer button (per-locale via directPlistLookup)
+  Scripts/verify-splynek-receipt.swift                            ← standalone offline verifier CLI
+
+Tests added across the v1.7 → S6 work
   Tests/SplynekTests/ConciergeBridgeTests.swift
   Tests/SplynekTests/HistorySearchTests.swift            (if present)
   Tests/SplynekTests/DiskUsageScannerTests.swift         (if present)
@@ -595,6 +618,15 @@ Tests added across the v1.7 → v1.9 work
   Tests/SplynekTests/EngineExternalIngestTests.swift
   Tests/SplynekTests/FleetChunkSwarmTests.swift
   Tests/SplynekTests/LocalizableCatalogTests.swift       (catalog completeness invariant)
+  Tests/SplynekTests/YtDlpProbeTests.swift               (S3 probe)
+  Tests/SplynekTests/YtDlpRunnerTests.swift              (S3 parsers)
+  Tests/SplynekTests/HLSManifestTests.swift              (S5 HLS parser + DRM + rewriter)
+  Tests/SplynekTests/HLSRingBufferTests.swift            (S5 LRU eviction)
+  Tests/SplynekTests/HLSProxyServerTests.swift           (S5 route parsing)
+  Tests/SplynekTests/BondedFetcherTests.swift            (S5 splitRange)
+  Tests/SplynekTests/DASHManifestTests.swift             (S5 DASH parser + DRM)
+  Tests/SplynekTests/DownloadReceiptTests.swift          (S6 sign/verify roundtrip)
+  Tests/SplynekTests/DownloadJobResumeTests.swift        (resume-button v0.31 fix)
 
 Other v1.6.x → v1.9 docs the maintainer writes against
   MAS-2.5.2-COMPLIANCE.md     ← reviewer-facing brief on Apple's vibe-coding stance
@@ -618,7 +650,7 @@ Other v1.6.x → v1.9 docs the maintainer writes against
 ```
 1. Read HANDOFF.md (this file) top 300 lines
 2. cd /Users/pcgm/Claude Code; git status (both repos must be clean)
-3. swift run splynek-test (must show 480/480 — anything less is a regression)
+3. swift run splynek-test (must show 552/552 — anything less is a regression)
 4. python3 Scripts/find-missing-translations.py | head -5  → confirms catalog state
 5. Open https://claude.ai/code/scheduled and check the four triggers fired clean
 6. Open https://appstoreconnect.apple.com → Splynek → Distribuição → check v1.0 status

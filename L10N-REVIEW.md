@@ -1,6 +1,6 @@
 # Native-speaker review onramp
 
-Splynek ships **3,090 translations** (618 strings × 5 locales) across
+Splynek ships **3,120 translations** (624 strings × 5 locales) across
 pt-PT, es, fr, de, it.  All are AI-generated and machine-validated
 (catalog completeness + audit-script + CI guardrail enforcing 0
 missing on every PR).  None have been reviewed by a native speaker.

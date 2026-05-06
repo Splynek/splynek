@@ -1,11 +1,20 @@
-# Splynek HLS pre-buffer — design doc (Strategy Bet S5 second half)
+# Splynek HLS+DASH pre-buffer — design doc (Strategy Bet S5 second half)
 
-> Status: **scaffolding shipped 2026-05-05**.  The manifest parser
-> (`HLSManifest.swift`) lives + is tested (14 tests).  The Chrome
-> extension counts manifest detections in `chrome.storage.local`.
-> The proxy + ring-buffer + bonded-segment-fetch layers are NOT
-> shipped yet — this doc captures the architecture so the next
-> session can build them straight-line.
+> Status: **functionally complete as of 2026-05-05** (commits `6850e48`
+> + `e9e7002`).  All five components shipping:
+>
+> - HLS manifest parser (`HLSManifest.swift`) + 30 tests
+> - DASH manifest parser (`DASHManifest.swift`) + 12 tests
+> - LRU ring buffer (`HLSRingBuffer.swift`) + 8 tests
+> - Proxy server (`HLSProxyServer.swift`, `@MainActor`) + 8 tests
+> - Multi-interface bonded segment fetch (`BondedFetcher.swift`) + 7 tests
+> - Chrome `declarativeNetRequest` redirect rule, off-by-default
+> - FleetCoordinator `/hls/*` route dispatch, token-gated
+>
+> Live test on real Vimeo / Twitch — and measuring the buffering
+> improvement vs control — is the manual verification step that's
+> still pending.  All other code paths are covered by unit tests
+> + smoke-build green.
 
 ## What's the bet
 
@@ -203,27 +212,43 @@ Per-stream sessionID (`<sid>` above) gets generated when we first
 see a manifest URL; subsequent fetches against the same hostname
 in the same browser tab share the session.
 
-## What's tested today (14 tests)
+## What's tested today (65 tests)
 
-`HLSManifestTests.swift` covers:
-- Kind detection (master / media / notHLS / EXTM3U-only edge case)
-- Master playlist parser (quoted CODECS with embedded comma,
-  multi-variant ABR ladder + `pickVariant` correctness)
-- Media playlist parser (live vs VOD via ENDLIST presence,
-  byte-range segments for fragmented MP4)
-- URL pre-filter (`.m3u8` / `.m3u` extensions, query-string
-  tolerance, case-insensitivity)
-- Attribute-list parser (mixed quoted + unquoted attributes —
-  the parser most likely to break on real-world manifests)
+`HLSManifestTests.swift` (30) — kind detection, master + media
+parsers, quoted CODECS with embedded comma, multi-variant ABR ladder
++ `pickVariant`, live vs VOD via ENDLIST, byte-range segments for
+fragmented MP4, URL pre-filter, attribute-list parser, **DRM
+detection (4 schemes)**, **URL rewriter for master + media playlists**,
+base64URL roundtrip, relative URI resolution.
+
+`DASHManifestTests.swift` (12) — MPD root recognition, HLS-vs-DASH-
+vs-unknown classification, URL extension pre-filter, DRM detection
+(Widevine / PlayReady / FairPlay / Common Encryption baseline),
+URL extraction (BaseURL + SegmentTemplate media + initialization),
+URL rewriter (BaseURL → proxy, DRM body pass-through).
+
+`HLSRingBufferTests.swift` (8) — empty / insert / replace / LRU
+eviction at capacity / get-touches-LRU / oversized-segment-fits-
+once / clear / snapshot diagnostics.
+
+`HLSProxyServerTests.swift` (8) — handlesPath, parseRoute (master
++ variant + segment + garbage rejection), session lifecycle, prune-
+by-age.
+
+`BondedFetcherTests.swift` (7) — splitRange invariants: single
+part returns full range, even split, non-divisible total, contiguous-
+no-gap-no-overlap across many shapes, zero parts, tiny-file-many-
+parts, single-byte file.
 
 ## What's NOT tested yet (next-session work)
 
-- Manifest URL rewriting (no rewriter exists yet)
-- Ring-buffer LRU eviction
-- Pre-fetch task scheduling under playhead movement
+- Pre-fetch task scheduling under playhead movement (integration
+  test against a fake-segment-server fixture)
 - Player ABR-switch handling (variant change mid-session)
-- DRM detection — must pass-through Widevine / FairPlay manifests
-  unchanged + skip pre-buffering for them
+- HLS+DASH live test on real Vimeo / Twitch — measure buffering
+  improvement vs control (manual click-through)
+- Real bandwidth split between interfaces under BondedFetcher
+  (instrument LaneStats per-interface bytes during HLS playback)
 
 ## Threat model + privacy
 

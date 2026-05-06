@@ -1,9 +1,13 @@
 # Splynek Accelerator (Strategy Bet S5) — design + status
 
-> **Status: scaffolding shipped 2026-05-05 in commit `bf9d3a0`+.**  The
-> Chrome extension's accelerator intercept is live (off by default).
-> HLS pre-buffer + Safari/Firefox parity + advanced UX (Never-for-site
-> button, in-extension dashboard) are the next milestones.
+> **Status: end-to-end functionally complete as of 2026-05-05
+> (commit `e9e7002`).**  Chrome accelerator intercept (downloads),
+> Safari WebExtension parity (xcodegen-built .appex), HLS+DASH
+> pre-buffer with multi-interface bonded segment fetch — all
+> shipping.  Off-by-default opt-in; user enables in extension popup.
+> Next milestones (Firefox port, live testing on real Vimeo/Twitch,
+> SOCKS proxy for non-browser apps) are smaller now that the
+> infrastructure is in place.
 
 ## What's the bet
 
@@ -37,84 +41,64 @@ Trade-offs:
   Firefox.  Manifest V3 is now Chrome's hard requirement;
   Safari WebExtension is Apple's; Firefox supports both.
 
-## What's shipped (v0.22)
+## What's shipped (v0.23, 2026-05-05)
 
 | Piece | File | Status |
 |---|---|---|
 | Manifest V3 with new permissions | `manifest.json` | Live |
 | `downloads.onCreated` intercept | `background.js` | Live |
 | Threshold check (default 50 MB, overridable) | `background.js` | Live |
-| Per-host opt-out + always-on lists | `background.js` (read), TODO buttons | Read-side live |
+| Per-host opt-out + always-on lists | `background.js` + `options.html` | Live (full UX) |
 | User-facing toggle in popup | `popup.html` + `popup.js` | Live |
 | Notification with Send / Keep buttons | `background.js` | Live |
-| `splynek://download?url=...` hand-off | `background.js` (existing) | Live |
+| Notification right-click → openOptionsPage | `background.js` | Live (v0.23) |
+| `splynek://download?url=...` hand-off | `background.js` | Live |
+| **HLS+DASH manifest detection** | `background.js` (`looksLikeHLSManifest`) | Live |
+| **`declarativeNetRequest` redirect** for HLS+DASH | `background.js` (per-tab session rules) | Live |
+| **Splynek-side HLS+DASH proxy** | `Sources/SplynekCore/HLSProxyServer.swift` | Live |
+| **Multi-interface bonded segment fetch** | `Sources/SplynekCore/BondedFetcher.swift` | Live |
+| **Per-session ring buffer (256 MB LRU)** | `Sources/SplynekCore/HLSRingBuffer.swift` | Live |
+| **DRM detection + pass-through** | `HLSManifest.hasDRM` + `DASHManifest.hasDRM` | Live |
+| **Safari WebExtension** | `Extensions/Safari-WebExtension/` (xcodegen .appex) | Live |
 
-## What's NOT shipped yet (next milestones)
+## What's NOT shipped yet (next milestones — much smaller now)
 
-### Milestone 1 — Notification UX completion (v0.23, ~half-day)
+### Milestone A — Live test on real streams (manual click-through)
 
-The intercept notification currently only has Send / Keep buttons.
-Need:
-- "Never for this site" → adds host to `accel.optOutHosts`
-- "Always for this site" → adds host to `accel.alwaysHosts`,
-  silences future prompts for that host
+The HLS+DASH proxy + BondedFetcher have green unit tests + clean
+local builds.  The remaining unknown is real-world behaviour: open
+a Vimeo-hosted DRM-free video on weak Wi-Fi + 5G tether with
+Accelerator + HLS pre-buffer enabled, observe (a) playback start
+latency, (b) buffering events, (c) network split between interfaces.
+Compare against control (extension disabled).  Expected: instant
+start, zero buffering, ~2× throughput on a fast multi-NIC setup.
 
-Also: dedicated options page (`options.html`) for editing the host
-lists after-the-fact.  Right now once you've added a host you can't
-remove it without devtools.
+### Milestone B — Firefox port (~3 days)
 
-### Milestone 2 — Safari WebExtension parity (~1 week)
+Same code as Safari with namespace shimming.  Firefox supports
+MV3 fully; doesn't require a containing app bundle, so distribution
+is trivial (firefox.com/addons listing).  Manifest field
+differences: `browser_specific_settings.gecko` for extension ID,
+slightly different `webRequest` event semantics.  Most JS stays
+verbatim.
 
-Apple's Safari WebExtensions are MV3-compatible with shape changes:
-- `browser` namespace instead of `chrome` (most APIs identical)
-- Safari requires the extension to be packaged inside a Mac app
-  bundle (`.appex`).  The Splynek app already builds via xcodegen;
-  add a target for `Splynek-Safari-Extension.appex`.
-- `chrome.notifications` doesn't exist in Safari; use the in-page
-  toast surface from a content script + page action.
-
-The dispatch logic + threshold + storage all carry over unchanged.
-
-### Milestone 3 — Firefox MV2/MV3 hybrid (~3 days)
-
-Firefox supports MV3 fully but with a different `browser` namespace
-+ slightly different webRequest semantics.  Same code as Safari with
-namespace shimming.  Firefox doesn't require a containing app
-bundle, so distribution is trivial (firefox.com/addons listing).
-
-### Milestone 4 — HLS pre-buffer (the harder piece, ~3 weeks)
-
-This is the strategy memo's "video streams that never buffer" demo
-moment.  When the extension sees an `m3u8` master playlist or
-`mpd` MPEG-DASH manifest:
-
-1. Mark the URL as a streaming session.
-2. Open a local HTTP proxy port (Splynek's existing one on
-   `127.0.0.1:<port>` — we'd add a new route specifically for
-   manifest-rewriting).
-3. Rewrite the manifest to point to the local proxy.
-4. The proxy fetches each segment via Splynek's bonded engine,
-   stores 30–60s ahead in a temp ring buffer, serves them to the
-   browser's HTML5 player on demand.
-
-Requires (a) a manifest-rewriter that handles HLS variant negotiation
-+ DASH adaptation set selection without breaking the player's ABR
-ladder, and (b) a proxy that can hit each segment in ≤200ms (most
-servers don't do bonded multi-connect on small files; the win comes
-from pre-fetch buffering, not within-segment bonding).
-
-Legally safe: HLS pre-buffer applies only to DRM-free streams (YouTube
-non-Premium, Vimeo public, Twitch, Plex).  Widevine / FairPlay
-streams (Netflix, Disney+, Apple TV+) are off-limits — we wouldn't
-intercept them even if technically possible.
-
-### Milestone 5 — SOCKS proxy for non-browser apps (advanced, ~1 week)
+### Milestone C — SOCKS proxy for non-browser apps (advanced, ~1 week)
 
 For the 5% of power users who want Slack / Transmit / rsync to also
 bond.  Splynek exposes a SOCKS5 proxy on `127.0.0.1:1080`; users
 point individual apps at it via per-app settings.
 
 NOT a system-wide VPN.  NOT a default-on feature.  Power users only.
+
+### Milestone D — App Store concerns for Safari extension
+
+The Safari WebExtension's `<all_urls>` host permission for
+`webRequest` may trigger App Review questions.  Mitigation: app's
+review notes already explain Splynek is a download manager;
+Accelerator intercept feature description fits the existing review
+narrative.  Plan to ship the Safari extension AFTER v1.0 clears
++ submit v1.0.1 with extension included so reviewers can pattern-
+match against an already-approved binary.
 
 ## Privacy + threat model
 

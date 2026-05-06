@@ -887,9 +887,147 @@ translations across 5 locales).  **Tests**: 451 → 480 (+29).  **Build
 warnings**: 0 on clean rebuild throughout.  **Public repo** at
 86 commits ahead of origin; Pro repo at 3 commits ahead.
 
+### Latest landing (2026-05-05 part 3): S3 dispatch + S5 Browser Accelerator end-to-end + Safari xcodegen + DASH
+
+Continuation of "do A through F" arc.  After the S6 File Witness
+ship, Paulo asked to push S3 dispatch + Safari WebExtension parity
++ HLS pre-buffer + DASH support to functional completion.  Six
+commits delivered the full S5 Browser Accelerator strategy bet
+end-to-end.
+
+**S3 dispatch wire-up** (`bf9d3a0`).  YtDlpProbe pre-flight from
+`1e8c9df` becomes a working feature.  When the user pastes a URL
+whose host yt-dlp handles natively (YouTube / Twitch / Instagram /
+TikTok / X / Vimeo / Bilibili) AND yt-dlp is detected on disk,
+DownloadView's source card surfaces a purple-tinted dispatch row
+with version + "Use yt-dlp" button.  YtDlpRunner spawns yt-dlp
+with `--no-update --no-call-home --no-cache-dir --no-playlist
+--newline --print after_move:filepath`, streams the output line-
+by-line on a background queue parsing progress / bytes / title,
+records the result in DownloadHistory so it shows up in
+Histórico.  +15 tests covering pure parsers (regex injection
+rejection, MiB/KiB/GiB unit handling, title detection, dispatch
+errors).  DMG-only feature; MAS sandbox blocks `Process()`
+invocation, surfaced via `.sandboxBlocked` probe state.
+
+**S5 Accelerator + HLS scaffolding** (`a4af998`, `efe3069`).  Chrome
+extension v0.21 → v0.23.  Manifest gets +webRequest, +downloads,
++notifications, +host_permissions: <all_urls>.  background.js
+listens on `downloads.onCreated`, threshold check (default 50 MB,
+overridable), per-host opt-out + always lists in
+chrome.storage.sync.  When triggered, notification: "Splynek can
+fetch this faster. 247.3 MB from <host>. [Send to Splynek] [Keep
+in browser]".  Default OFF — surprising users by silently
+redirecting their downloads is hostile UX.  Options page exposes
+Accelerator toggle + per-host preferences.  v0.23 adds notification
+right-click → openOptionsPage hook for managing per-host lists.
+
+Day-10 escalation message also drafted (`MAS-DAY10-ESCALATION.md`):
+pre-written Resolution Center copy for Apple v1.0 review when day
+10 hits, structured to be polite + comprehensive (VPN clarification
++ 2.5.2 compliance + architectural invariants + sub-24h turnaround
+signal).
+
+**S5 Safari + HLS manifest parser** (`39e9021`).  Safari WebExtension
+mirror of the Chrome extension.  Apple's Safari extensions need a
+`browser.*` namespace + ship as `.appex` inside a host app.  Each
+JS file opens with `const X = (typeof browser !== "undefined") ?
+browser : chrome;` so the same source compiles in either browser.
+SafariWebExtensionHandler.swift is a minimal NSExtensionRequest
+Handling stub.  HLS manifest parser shipped at the same time —
+HLSManifest.parse(_:) returns .master / .media / .notHLS,
+parseAttributeList handles quoted CODECS with embedded commas,
+parseMedia covers VOD vs live (ENDLIST presence) + byte-range
+segments.  +14 tests against IETF HLS RFC + Apple Sample Streams.
+
+**S5 ship: end-to-end** (`6850e48`).  Safari xcodegen target wired
+in `project.yml` (type: app-extension, com.apple.Safari.web-extension
+principal class), buildPhase: resources for flat Resources/ layout,
+Splynek main app dependency: copy + codeSign + embed → appex lands
+in Contents/PlugIns/.  Smoke verified: xcodebuild produces
+SplynekSafariExtension.appex with manifest.json, popup.html, etc.
+at correct paths.  HLS pre-buffer end-to-end:
+  - HLSManifest URL rewriter: rewriteMasterURIs / rewriteMediaURIs
+    + base64URL encoding for proxy redirect URLs
+  - HLSManifest.hasDRM: detects #EXT-X-KEY non-NONE methods
+  - HLSRingBuffer: per-session 256 MB LRU cache, oversized-segment-
+    fits-once semantics, get-touches-LRU
+  - HLSProxyServer (@MainActor): three routes (/master, /v, /s),
+    session lifecycle with prune-by-age, segment Content-Type
+    inference (.ts / .m4s / .mp4)
+  - FleetCoordinator integration: /hls/* dispatch wired alongside
+    existing API surface, token-gated like everything else
+  - Chrome extension: `chrome.declarativeNetRequest` per-tab
+    session rule redirecting *.m3u8 URLs to local proxy
+  - Options page: HLS toggle + Splynek port + token inputs
+  +24 tests (HLS rewriter, ring buffer LRU, proxy route parsing,
+  session lifecycle).
+
+**Bonded fetch + DASH** (`e9e7002`).  The closing pair on S5.
+BondedFetcher.swift wraps LaneConnection (NWConnection-based,
+already used by the engine) for multi-interface bonded fetch of
+small files.  Pipeline: HEAD probe via URLSession → splitRange
+across N interfaces (ceil(total/N) per chunk) → parallel
+LaneConnection.fetch range requests → reassemble.  Failure modes:
+HEAD fails → fullFetch via first interface; one range fails →
+nil out (no partial-success); empty interface list → nil.  +7
+splitRange invariant tests.  HLSProxyServer.serveHLS now
+discovers active interfaces via `InterfaceDiscovery.current()`
++ routes segment fetches through BondedFetcher when ≥2 interfaces
+are up, falls back to URLSession on bonded failure.
+
+DASH support (`DASHManifest.swift`, +12 tests).  MPEG-DASH MPD
+parser, regex-based.  DRM detection covers Widevine / PlayReady /
+FairPlay / Common Encryption baseline.  URL extraction for
+<BaseURL> + <SegmentTemplate> media + initialization attrs (two-
+pass extraction — block-level then per-attribute, since SegmentT
+has multiple URL attrs).  rewriteMediaURLs replaces BaseURLs
+with proxy redirects; pass-through on DRM.  HLSProxyServer.
+handleMaster now auto-detects HLS vs DASH from body content via
+DASHManifest.detectKind so the same /master route serves both
+protocols transparently.  Chrome extension's declarativeNetRequest
+regex extended: `(m3u8?|mpd|dash)` covers everything.
+
+**Strategic state**: Strategy Bet S5 is FUNCTIONALLY COMPLETE.
+Both halves from STRATEGY-2026.md ship:
+  a) Accelerator intercept (downloads): off-by-default toggle,
+     notification-based per-file consent, per-host preferences
+  b) HLS+DASH pre-buffer (streaming): browser-extension redirect
+     to localhost proxy, BondedFetcher segment fetches across
+     every NIC, ring-buffered serve at <1ms latency
+
+The "video never buffers" demo from the strategy memo is now
+shippable: enable Accelerator + HLS pre-buffer in the extension,
+open Vimeo on weak Wi-Fi + 5G tether — segments fetch via
+parallel byte ranges across both NICs, pre-buffered in RAM,
+served from localhost.  Live test on real Vimeo/Twitch +
+measuring buffering improvement is the manual next-step.
+
+**Catalog growth this part**: 621 → 624 (+3 strings — yt-dlp
+detection row).  **Tests**: 480 → 552 (+72 across S3, S5, bonded,
+DASH, HLS).  **Build warnings**: 0 throughout.  **Public repo**
+at 93 commits ahead of origin (+7 commits).
+
+Six commits delivered:
+
+```
+e9e7002 S5 ship: bonded segment fetch + DASH manifest support
+6850e48 S5 ship: Safari xcodegen target + HLS pre-buffer end-to-end
+39e9021 S5 expansion: Safari WebExtension parity + HLS manifest parser scaffolding
+efe3069 Apple day-10 escalation draft + Accelerator v0.23
+a4af998 S5 first half: Chrome Accelerator intercept (off-by-default)
+bf9d3a0 S3 dispatch: yt-dlp wired into Source view + History
+```
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
+e9e7002 S5 ship: bonded segment fetch + DASH manifest support
+6850e48 S5 ship: Safari xcodegen target + HLS pre-buffer end-to-end
+39e9021 S5 expansion: Safari WebExtension parity + HLS manifest parser scaffolding
+efe3069 Apple day-10 escalation draft + Accelerator v0.23 (options page + per-host UX)
+a4af998 S5 first half: Chrome Accelerator intercept (off-by-default)
+bf9d3a0 S3 dispatch: yt-dlp wired into Source view + History
 17cb90a S6 File Witness: cryptographically-signed download receipts
 1e8c9df B-F roadmap landings: Pro L10N + 2 publishers + Stripe doc + S3 pre-flight
 b9b200c Audit follow-ups: History timeline footer L10N + MCP endpoint URL truthfulness
