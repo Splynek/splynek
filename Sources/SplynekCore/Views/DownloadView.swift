@@ -191,7 +191,7 @@ struct DownloadView: View {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundStyle(.secondary)
                         }
-                        .buttonStyle(.borderless)
+                        .buttonStyle(.splynekHover)
                     }
                 }
                 .padding(10)
@@ -617,7 +617,7 @@ struct DownloadView: View {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundStyle(.secondary)
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.splynekHover)
         }
         .padding(12)
         .background(
@@ -737,7 +737,7 @@ struct DownloadView: View {
                                 Image(systemName: "xmark.circle.fill")
                                     .foregroundStyle(.secondary)
                             }
-                            .buttonStyle(.borderless)
+                            .buttonStyle(.splynekHover)
                             .help("Clear")
                             .accessibilityLabel("Clear checksum")
                         }
@@ -899,7 +899,7 @@ struct DownloadView: View {
             if !vm.mirrors.isEmpty {
                 StatusPill(text: "\(vm.mirrors.count) MIRRORS", style: .info)
                 Button("Clear") { vm.clearMirrors() }
-                    .buttonStyle(.borderless).controlSize(.small)
+                    .buttonStyle(.splynekHover).controlSize(.small)
                     .help("Drop the mirror list and fall back to the single URL above.")
             }
             Divider().frame(height: 20)
@@ -911,7 +911,7 @@ struct DownloadView: View {
             if let m = vm.merkleManifest {
                 StatusPill(text: "\(m.leafHexes.count) CHUNKS", style: .success)
                 Button("Clear") { vm.clearMerkleManifest() }
-                    .buttonStyle(.borderless).controlSize(.small)
+                    .buttonStyle(.splynekHover).controlSize(.small)
                     .help("Drop the chunk-fingerprint file and fall back to end-of-file integrity check.")
             }
             Spacer()
@@ -955,7 +955,7 @@ struct DownloadView: View {
             Button { vm.exportCellularBudgetCSV() } label: {
                 Image(systemName: "square.and.arrow.up")
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.splynekHover)
             .help("Export today + historical daily totals as CSV.")
         }
         .padding(10)
@@ -1003,7 +1003,7 @@ struct DownloadView: View {
                                     Image(systemName: "minus.circle.fill")
                                         .foregroundStyle(.secondary)
                                 }
-                                .buttonStyle(.borderless)
+                                .buttonStyle(.splynekHover)
                             }
                             .padding(.horizontal, 10).padding(.vertical, 4)
                             .background(
@@ -1061,7 +1061,7 @@ struct DownloadView: View {
                 Button { Task { await vm.refreshInterfaces() } } label: {
                     Image(systemName: "arrow.clockwise")
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
             )
         ) {
             if vm.interfaces.isEmpty {
@@ -1105,7 +1105,7 @@ struct DownloadView: View {
                 Button { vm.clearFinishedJobs() } label: {
                     Label("Clear finished", systemImage: "trash")
                 }
-                .buttonStyle(.borderless).controlSize(.small)
+                .buttonStyle(.splynekHover).controlSize(.small)
             }
         }
     }
@@ -1333,23 +1333,23 @@ private struct JobCard: View {
                 Button { vm.pauseJob(job) } label: {
                     Image(systemName: "pause.fill")
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
                 .help("Pause; sidecar is retained so resume picks up here.")
                 Button(role: .destructive) { job.cancel() } label: {
                     Image(systemName: "xmark")
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
                 .help("Cancel.")
             case .paused, .failed:
                 Button { vm.resumeJob(job) } label: {
                     Image(systemName: "play.fill")
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
                 .help(job.lifecycle == .paused ? "Resume." : "Retry.")
                 Button(role: .destructive) { vm.removeJob(job) } label: {
                     Image(systemName: "trash")
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
             case .completed, .cancelled, .pending:
                 if job.lifecycle == .completed {
                     Button {
@@ -1357,13 +1357,13 @@ private struct JobCard: View {
                     } label: {
                         Image(systemName: "magnifyingglass.circle")
                     }
-                    .buttonStyle(.borderless)
+                    .buttonStyle(.splynekHover)
                     .help("Reveal in Finder.")
                 }
                 Button(role: .destructive) { vm.removeJob(job) } label: {
                     Image(systemName: "trash")
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
                 .disabled(job.lifecycle == .pending)
             }
         }

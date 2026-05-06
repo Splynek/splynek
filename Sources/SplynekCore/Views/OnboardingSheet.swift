@@ -40,7 +40,7 @@ struct OnboardingSheet: View {
                 stepDots
                 Spacer()
                 Button("Skip") { complete() }
-                    .buttonStyle(.borderless)
+                    .buttonStyle(.splynekHover)
                     .foregroundStyle(.secondary)
                     .controlSize(.small)
             }

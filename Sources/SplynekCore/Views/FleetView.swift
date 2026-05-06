@@ -223,7 +223,7 @@ struct FleetView: View {
                                 Image(systemName: "eye.slash")
                                     .foregroundStyle(.secondary)
                             }
-                            .buttonStyle(.borderless)
+                            .buttonStyle(.splynekHover)
                             .help("Stop sharing this file with other Splyneks on the LAN. The file and history entry are kept; only fleet sharing stops.")
                         }
                     }
@@ -243,7 +243,7 @@ struct FleetView: View {
                                     vm.toggleFleetSharing(url: url)
                                 }
                             }
-                            .buttonStyle(.borderless)
+                            .buttonStyle(.splynekHover)
                             .controlSize(.small)
                         }
                     }

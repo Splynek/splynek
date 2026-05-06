@@ -89,7 +89,7 @@ struct LegalView: View {
                     } label: {
                         Image(systemName: "arrow.up.right.square")
                     }
-                    .buttonStyle(.borderless)
+                    .buttonStyle(.splynekHover)
                     .help("Reveal the source Markdown in Finder")
                 }
             )

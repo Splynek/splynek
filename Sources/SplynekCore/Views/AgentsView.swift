@@ -102,7 +102,7 @@ struct AgentsView: View {
                                 } label: {
                                     Image(systemName: "doc.on.doc")
                                 }
-                                .buttonStyle(.borderless)
+                                .buttonStyle(.splynekHover)
                                 .help("Copy endpoint URL")
                                 .accessibilityLabel("Copy endpoint URL to clipboard")
                             }
@@ -388,7 +388,7 @@ struct AgentsView: View {
                             } label: {
                                 Image(systemName: "doc.on.doc")
                             }
-                            .buttonStyle(.borderless)
+                            .buttonStyle(.splynekHover)
                             .help("Copy snippet")
                             .accessibilityLabel("Copy setup snippet to clipboard")
                             .padding(.top, 8)

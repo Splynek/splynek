@@ -289,7 +289,7 @@ struct SettingsView: View {
                 } label: {
                     Image(systemName: "arrow.clockwise")
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
                 .help("Re-probe localhost:11434 for Ollama")
             )
         ) {
@@ -619,7 +619,7 @@ struct SettingsView: View {
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
-                    .buttonStyle(.borderless)
+                    .buttonStyle(.splynekHover)
                     .help("Refresh login-item status from macOS")
                 }
             }

@@ -100,7 +100,7 @@ struct UsageTimelineView: View {
             } label: {
                 Image(systemName: "square.and.arrow.up")
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.splynekHover)
             .help("Export the full timeline as CSV.")
         }
     }

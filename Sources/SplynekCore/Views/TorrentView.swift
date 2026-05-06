@@ -123,7 +123,7 @@ struct TorrentView: View {
                 Button { Task { await vm.refreshInterfaces() } } label: {
                     Image(systemName: "arrow.clockwise")
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
                 .disabled(vm.isTorrenting)
             )
         ) {

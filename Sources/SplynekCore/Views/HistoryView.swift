@@ -92,7 +92,7 @@ struct HistoryView: View {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(.secondary)
                     }
-                    .buttonStyle(.borderless)
+                    .buttonStyle(.splynekHover)
                 } else {
                     Button {
                         vm.searchHistoryViaAI(aiQuery)
@@ -157,7 +157,7 @@ struct HistoryView: View {
                         Label("Export CSV", systemImage: "square.and.arrow.up")
                             .labelStyle(.iconOnly)
                     }
-                    .buttonStyle(.borderless)
+                    .buttonStyle(.splynekHover)
                     .help("Export today + historical daily snapshots as CSV.")
                 )
             ) {
@@ -182,7 +182,7 @@ struct HistoryView: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.secondary)
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.splynekHover)
             }
         }
         .padding(10)
@@ -319,7 +319,7 @@ private struct HistoryRow: View {
                 Image(systemName: "info.circle.fill")
                     .foregroundStyle(Color.accentColor)
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.splynekHover)
             .help("Show details — speedup, per-interface contribution, SHA-256.")
 
             Button {
@@ -328,7 +328,7 @@ private struct HistoryRow: View {
                 Image(systemName: "folder")
                     .foregroundStyle(.secondary)
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.splynekHover)
             .help("Reveal the downloaded file in Finder.")
         }
         .contentShape(Rectangle())
