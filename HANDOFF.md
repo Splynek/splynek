@@ -19,7 +19,7 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (648 tests, all green — was 552 before S4; +96 net) — `swift build` produces **0 warnings on clean rebuild**
+**Tests:** `swift run splynek-test` (692 tests, all green — was 552 before S4; +140 net across S4 + 5-track sweep + 3-phase product expansion) — `swift build` produces **0 warnings on clean rebuild**
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-07.**

@@ -1873,9 +1873,122 @@ Demo recipe (per strategy memo "video never buffers"):
 | Trust entries with ≥1 fallback | 2 | **43** | +41 |
 | Telemetry surfaces | 0 | **9** counters + 1 gauge | new capability |
 
+### Latest landing (2026-05-07 part 7): Three-phase product expansion
+
+User asked for four things in one prompt: deliveryKind badges,
+free-vs-paid Savings tab, audited Trust expansion (already shipped
+in part 6), and the Updates tab.  Three commits delivered the
+remaining product expansion in one continuous run.
+
+#### Phase 1 — deliveryKind badges (`b40c2e0`)
+
+Closed the UX gap where ~92% of Sovereignty alts had no `downloadURL`
+and silently degraded to "Get installer" → homepage, landing users
+on SaaS sign-up walls.  New `SovereigntyCatalog.DeliveryKind` enum:
+
+  directDownload    ⬇  one-click DMG/PKG/ZIP via Splynek
+  macAppStore       🍎 deep-link to macappstore://
+  webService        🌐 no native app — opens in browser
+  homebrew          ⌘  copy `brew install …` to clipboard
+  signupRequired    🔐 publisher requires free account
+  purchaseRequired  💳 publisher requires payment
+  versionEmbedded   ⬇  direct download with version-embedded URL
+  comingSoon        🚧 desktop announced but not shipped
+
+Each kind has a `displayLabel`, SF Symbol (`symbol`), and factual
+`tooltip`.  UI changes: capsule badge above each alt's name, plus
+per-kind CTA button (Install / Open in App Store / Open / Copy
+brew / Visit / Visit project).  Auto-classified all 3,194 alts:
+
+  versionEmbedded   1339   webService      1162
+  purchaseRequired   296   directDownload   257
+  homebrew           113   comingSoon        27
+
+#### Phase 2 — Pricing + Savings tab (`5197f76`)
+
+New top-level "Savings" sidebar tab.  Three sections:
+
+  - Hero: "Your Mac costs ~$X/year. Up to $Y is replaceable
+    with free alternatives."
+  - Breakdown: subscription / one-time / freemium pills with
+    per-bucket annualized cost.
+  - Paid apps list: each row shows installed app icon + cost +
+    pricing-page link + free-alternative chip ("Save ~$120/yr"
+    + Install button).
+
+Pricing seed dataset: ~50 well-known paid Mac apps (Adobe CC suite,
+Microsoft 365, Spotify, Things 3, Bear, OmniFocus, DEVONthink,
+Setapp, 1Password, Sketch, Affinity Suite, etc.) — each with
+publisher-cited sourceURL.  Free alternatives sourced from
+Sovereignty filtered to `.oss`/`.europeAndOSS` origins AND
+deliveryKind ∈ {directDownload, versionEmbedded, homebrew} —
+no SaaS sign-up walls.
+
+#### Phase 3 — Updates tab (`fe1cc4e`)
+
+New "Updates" sidebar tab.  Universal updater unifying:
+
+  .sparkle(feedURL:)            ~70% of paid Mac apps
+  .githubReleases(owner:repo:)  OSS apps released via GitHub
+  .macAppStore(adamID:)         MAS-managed (read-only surface)
+  .homebrew(formulaName:)       brew-installed
+  .publisherRSS(feedURL:)       generic feed fallback
+  .unknown                      manual flow
+
+UpdateSourceResolver: reads each installed app's Info.plist
+`SUFeedURL` (Sparkle) → falls back to a curated
+`wellKnownSources` table (Stats / Element / VSCodium / Zed) →
+`.unknown`.  HTTPS-only on Sparkle.
+
+SparkleAppcast.swift: pure-Swift Sparkle 2.x XML parser via
+XMLParser — no Sparkle.framework dependency.  Extracts version,
+download URL, size, SHA-256, release notes from the first
+`<item>` (reverse-chrono convention).
+
+UpdatesView: three sections — Updates available (per-app row with
+source badge + version diff `1.5.0 → 1.6.0` + size + release
+notes + Update button), Unchecked (resolved-source-but-no-version-
+yet), Manual (unknown-source disclosure group).  "Update all"
+toolbar queues every pending update via the existing VM start
+path — inherits S5 BondedFetcher + S6 File Witness for free.
+
+#### Strategic angle
+
+Splynek's update story is genuinely better than alternatives:
+
+  - BondedFetcher (S5)  → updates download via multi-NIC bonded
+                          byte ranges
+  - File Witness (S6)   → Ed25519 receipt + rollback on verify-fail
+  - MirrorManifest      → curated OS-distro mirrors (Ubuntu /
+                          Debian / Fedora)
+
+No other Mac updater bonds + verifies + mirrors-on-failure.
+
+#### Numbers across the 3-phase expansion
+
+| Metric | Before phase 1 | After phase 3 | Δ |
+|---|---:|---:|---:|
+| Tests | 648 | **692** | +44 (DeliveryKind 9 + Savings 14 + AppUpdate 21) |
+| Sidebar tabs | 14 | **16** | +2 (Savings + Updates) |
+| Sovereignty alts with explicit deliveryKind | 0 | **3,194** | +3,194 |
+| AppPricing seed | n/a | **50** apps with sourceURL | new |
+| UpdateSource enum cases wired | n/a | **6** | new |
+
+Three commits delivered:
+
+```
+341c648 Updates tab: universal app updater with Sparkle parser + multi-source resolver
+674332a Savings tab: pricing schema + free-alts-to-paid-apps + annual cost hero
+b40c2e0 Sovereignty: deliveryKind badges + per-kind action buttons
+```
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
+341c648 Updates tab: universal app updater with Sparkle parser + multi-source resolver
+674332a Savings tab: pricing schema + free-alts-to-paid-apps + annual cost hero
+b40c2e0 Sovereignty: deliveryKind badges + per-kind action buttons
+cff9723 Documentation: five-track sweep landed 2026-05-07
 969db71 S5 instrumentation: HLSProxyServer telemetry + /hls/stats + watch script
 e151e16 Trust: inherit 86 fallbackAlternatives from Sovereignty across 41 entries
 74915be iOS Companion L10n scaffolding: 51 strings × 5 locales
@@ -1980,7 +2093,7 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **628** | ×11.2 |
 | Translations (×5 locales) | 56 | **3,140** | ×56 |
-| Tests | 148 | **648** | ×4.4 |
+| Tests | 148 | **692** | ×4.7 |
 | Public-repo Swift files | 49 | **69** (top-level SplynekCore) / 146 (recursive incl. iOS/) | +20 / +97 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
