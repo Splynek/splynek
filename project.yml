@@ -371,6 +371,15 @@ targets:
         excludes:
           - "Info.plist"
       - path: iOS/Shared
+      # S4 polish (2026-05-07): localization scaffolding.  iOS-side
+      # `Localizable.xcstrings` mirrors the macOS pattern from
+      # `Sources/SplynekCore/Localizable.xcstrings`.  SwiftUI's
+      # `Text("…")` initializer takes a `LocalizedStringKey`
+      # implicitly when called with a string literal, so the existing
+      # iOS code already binds to the catalog without any code
+      # changes.  5 locales: en (source) + de + es + fr + it + pt-PT.
+    resources:
+      - path: iOS/SplynekCompanion/Localizable.xcstrings
     info:
       # xcodegen GENERATES the Info.plist at this path on every run
       # from `properties:` below — never read it as a source-of-truth

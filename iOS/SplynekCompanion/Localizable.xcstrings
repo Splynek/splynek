@@ -1,0 +1,465 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "About": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Über" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Acerca de" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "À propos" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Informazioni" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Sobre" } }
+      }
+    },
+    "Build": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Build" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Build" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Build" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Build" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Build" } }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Abbrechen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Cancelar" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Annuler" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Annulla" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Cancelar" } }
+      }
+    },
+    "Couldn't find a URL to share": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Keine URL zum Teilen gefunden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "No se encontró ninguna URL para compartir" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Aucune URL trouvée à partager" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun URL trovato da condividere" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Não foi encontrado um URL para partilhar" } }
+      }
+    },
+    "Discovered on this network": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "In diesem Netzwerk gefunden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Detectados en esta red" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Détectés sur ce réseau" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Rilevati su questa rete" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Detetados nesta rede" } }
+      }
+    },
+    "Faster — open Splynek on your Mac, go to Settings → Web dashboard, and aim at the iPhone-pair QR.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Schneller — öffne Splynek auf deinem Mac, gehe zu Einstellungen → Web-Dashboard und richte die Kamera auf den iPhone-Pair-QR." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Más rápido — abre Splynek en tu Mac, ve a Ajustes → Panel web y apunta al QR de emparejamiento del iPhone." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Plus rapide — ouvre Splynek sur ton Mac, va dans Réglages → Tableau web et vise le QR d'appairage iPhone." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Più veloce — apri Splynek sul Mac, vai in Impostazioni → Dashboard web e inquadra il QR di abbinamento iPhone." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Mais rápido — abre o Splynek no Mac, vai a Definições → Painel web e aponta para o QR de emparelhamento iPhone." } }
+      }
+    },
+    "Host (e.g. mac.local or 192.168.1.20)": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Host (z. B. mac.local oder 192.168.1.20)" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Host (p. ej. mac.local o 192.168.1.20)" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Hôte (ex. mac.local ou 192.168.1.20)" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Host (es. mac.local o 192.168.1.20)" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Anfitrião (ex. mac.local ou 192.168.1.20)" } }
+      }
+    },
+    "Mac": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Mac" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Mac" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Mac" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Mac" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Mac" } }
+      }
+    },
+    "Macs": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Macs" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Macs" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Macs" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Macs" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Macs" } }
+      }
+    },
+    "Name (e.g. Paulo's MacBook)": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Name (z. B. Paulos MacBook)" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Nombre (p. ej. el MacBook de Paulo)" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Nom (ex. MacBook de Paulo)" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nome (es. MacBook di Paulo)" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Nome (ex. MacBook do Paulo)" } }
+      }
+    },
+    "No Macs paired. Switch to the Macs tab to pair one first.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Keine Macs verbunden. Wechsle zum Macs-Tab, um einen zu verbinden." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Ningún Mac emparejado. Cambia a la pestaña Macs para emparejar uno." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Aucun Mac appairé. Va dans l'onglet Macs pour en appairer un." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun Mac abbinato. Vai alla scheda Macs per abbinarne uno." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Nenhum Mac emparelhado. Muda para o separador Macs para emparelhar um." } }
+      }
+    },
+    "No Macs paired yet": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Noch keine Macs verbunden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Aún no hay ningún Mac emparejado" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Aucun Mac appairé pour le moment" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun Mac abbinato" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Ainda não há Macs emparelhados" } }
+      }
+    },
+    "No Macs paired yet. Add one from the Macs tab.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Noch keine Macs verbunden. Füge einen über den Macs-Tab hinzu." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Aún no hay ningún Mac emparejado. Añade uno desde la pestaña Macs." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Aucun Mac appairé pour le moment. Ajoutes-en un depuis l'onglet Macs." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun Mac abbinato. Aggiungine uno dalla scheda Macs." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Ainda não há Macs emparelhados. Adiciona um a partir do separador Macs." } }
+      }
+    },
+    "No active downloads": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Keine aktiven Downloads" } },
+        "es": { "stringUnit": { "state": "translated", "value": "No hay descargas activas" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Aucun téléchargement en cours" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun download attivo" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Sem transferências ativas" } }
+      }
+    },
+    "On this Wi-Fi": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "In diesem WLAN" } },
+        "es": { "stringUnit": { "state": "translated", "value": "En esta Wi-Fi" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Sur ce Wi-Fi" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Su questa Wi-Fi" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Nesta Wi-Fi" } }
+      }
+    },
+    "Open Splynek Companion to pair your Mac, then come back here.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Öffne Splynek Companion, um deinen Mac zu verbinden, und komm dann zurück." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Abre Splynek Companion para emparejar tu Mac y vuelve aquí." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Ouvre Splynek Companion pour appairer ton Mac, puis reviens ici." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Apri Splynek Companion per abbinare il Mac, poi torna qui." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Abre o Splynek Companion para emparelhar o teu Mac e volta aqui." } }
+      }
+    },
+    "Open Splynek on your Mac, go to Settings → Sharing, and tap the copy-token button.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Öffne Splynek auf deinem Mac, gehe zu Einstellungen → Teilen und tippe auf „Token kopieren\"." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Abre Splynek en tu Mac, ve a Ajustes → Compartir y pulsa el botón Copiar token." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Ouvre Splynek sur ton Mac, va dans Réglages → Partage et appuie sur Copier le jeton." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Apri Splynek sul Mac, vai in Impostazioni → Condivisione e tocca Copia token." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Abre o Splynek no Mac, vai a Definições → Partilha e toca em Copiar token." } }
+      }
+    },
+    "Open Splynek on your Mac, then tap + to pair.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Öffne Splynek auf deinem Mac und tippe dann auf +, um zu verbinden." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Abre Splynek en tu Mac y pulsa + para emparejar." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Ouvre Splynek sur ton Mac, puis appuie sur + pour appairer." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Apri Splynek sul Mac, poi tocca + per abbinare." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Abre o Splynek no Mac e toca em + para emparelhar." } }
+      }
+    },
+    "Pair": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Verbinden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Emparejar" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Appairer" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Abbina" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Emparelhar" } }
+      }
+    },
+    "Pair a Mac": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Mac verbinden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Emparejar un Mac" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Appairer un Mac" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Abbina un Mac" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Emparelhar um Mac" } }
+      }
+    },
+    "Paired": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Verbunden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Emparejados" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Appairés" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Abbinati" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Emparelhados" } }
+      }
+    },
+    "Paired Macs": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Verbundene Macs" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Macs emparejados" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Macs appairés" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Mac abbinati" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Macs emparelhados" } }
+      }
+    },
+    "Pairing…": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Verbinden …" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Emparejando…" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Appairage…" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Abbinamento…" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "A emparelhar…" } }
+      }
+    },
+    "Paste from clipboard": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Aus Zwischenablage einfügen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Pegar del portapapeles" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Coller depuis le presse-papiers" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Incolla dagli appunti" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Colar da área de transferência" } }
+      }
+    },
+    "Paste from Mac → Settings → Sharing": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Vom Mac → Einstellungen → Teilen einfügen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Pegar desde Mac → Ajustes → Compartir" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Coller depuis Mac → Réglages → Partage" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Incolla da Mac → Impostazioni → Condivisione" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Colar do Mac → Definições → Partilha" } }
+      }
+    },
+    "Point at the QR in Splynek → Settings → Web dashboard": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Auf den QR in Splynek → Einstellungen → Web-Dashboard zielen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Apunta al QR en Splynek → Ajustes → Panel web" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Vise le QR dans Splynek → Réglages → Tableau web" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Inquadra il QR in Splynek → Impostazioni → Dashboard web" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Aponta para o QR em Splynek → Definições → Painel web" } }
+      }
+    },
+    "Port (default 18280)": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Port (Standard 18280)" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Puerto (predeterminado 18280)" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Port (par défaut 18280)" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Porta (predefinita 18280)" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Porta (predefinição 18280)" } }
+      }
+    },
+    "Queue download": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Download in Warteschlange" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Poner descarga en cola" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Mettre en file d'attente" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Aggiungi in coda" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Adicionar à fila" } }
+      }
+    },
+    "Queued": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "In Warteschlange" } },
+        "es": { "stringUnit": { "state": "translated", "value": "En cola" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "En file d'attente" } },
+        "it": { "stringUnit": { "state": "translated", "value": "In coda" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Em fila" } }
+      }
+    },
+    "Reachable via iCloud": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Über iCloud erreichbar" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Accesible vía iCloud" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Accessible via iCloud" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Raggiungibile tramite iCloud" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Acessível via iCloud" } }
+      }
+    },
+    "Relay": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Relais" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Reenvío" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Relais" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Inoltro" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Reencaminhamento" } }
+      }
+    },
+    "Scan QR from Mac": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "QR vom Mac scannen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Escanear QR del Mac" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Scanner le QR du Mac" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Scansiona il QR dal Mac" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Ler QR do Mac" } }
+      }
+    },
+    "Send": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Senden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Enviar" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Envoyer" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Enviar" } }
+      }
+    },
+    "Send to": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Senden an" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Enviar a" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Envoyer à" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia a" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Enviar para" } }
+      }
+    },
+    "Send to Splynek": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "An Splynek senden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Enviar a Splynek" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Envoyer à Splynek" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia a Splynek" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Enviar para o Splynek" } }
+      }
+    },
+    "Send via iCloud when off Wi-Fi": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Über iCloud senden, wenn kein WLAN verfügbar" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Enviar por iCloud sin Wi-Fi" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Envoyer via iCloud sans Wi-Fi" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia tramite iCloud senza Wi-Fi" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Enviar via iCloud sem Wi-Fi" } }
+      }
+    },
+    "Sending…": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Senden …" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Enviando…" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Envoi…" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invio…" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "A enviar…" } }
+      }
+    },
+    "Sent via iCloud": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Über iCloud gesendet" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Enviado vía iCloud" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Envoyé via iCloud" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Inviato tramite iCloud" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Enviado via iCloud" } }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Einstellungen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Ajustes" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Réglages" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Impostazioni" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Definições" } }
+      }
+    },
+    "Splynek Companion": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Splynek Companion" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Splynek Companion" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Splynek Companion" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Splynek Companion" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Splynek Companion" } }
+      }
+    },
+    "Submit": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Senden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Enviar" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Envoyer" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Enviar" } }
+      }
+    },
+    "Submit URL": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "URL senden" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Enviar URL" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Envoyer un URL" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Invia URL" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Enviar URL" } }
+      }
+    },
+    "Tap Test pairing to send a /status request and confirm the token + LAN route are healthy.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Tippe auf „Verbindung testen\", um eine /status-Anfrage zu senden und den Token + die LAN-Route zu bestätigen." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Pulsa Probar emparejamiento para enviar una solicitud /status y confirmar que el token y la ruta LAN están bien." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Appuie sur Tester l'appairage pour envoyer une requête /status et confirmer que le jeton et la route LAN sont OK." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Tocca Verifica abbinamento per inviare una richiesta /status e confermare che token e percorso LAN siano OK." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Toca em Testar emparelhamento para enviar um pedido /status e confirmar que o token + rota LAN estão saudáveis." } }
+      }
+    },
+    "Test pairing": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Verbindung testen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Probar emparejamiento" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Tester l'appairage" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Verifica abbinamento" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Testar emparelhamento" } }
+      }
+    },
+    "This extension works on URL-shaped content — articles, video pages, file links, etc.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Diese Erweiterung funktioniert mit URL-Inhalten — Artikel, Video-Seiten, Datei-Links usw." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Esta extensión funciona con contenido tipo URL — artículos, páginas de vídeo, enlaces a archivos, etc." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Cette extension fonctionne avec du contenu URL — articles, pages vidéo, liens de fichier, etc." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Questa estensione funziona con contenuti URL — articoli, pagine video, link a file, ecc." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Esta extensão funciona com conteúdos URL — artigos, páginas de vídeo, ligações para ficheiros, etc." } }
+      }
+    },
+    "Token": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Token" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Token" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Jeton" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Token" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Token" } }
+      }
+    },
+    "URL": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "URL" } },
+        "es": { "stringUnit": { "state": "translated", "value": "URL" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "URL" } },
+        "it": { "stringUnit": { "state": "translated", "value": "URL" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "URL" } }
+      }
+    },
+    "URL to download": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "URL zum Herunterladen" } },
+        "es": { "stringUnit": { "state": "translated", "value": "URL para descargar" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "URL à télécharger" } },
+        "it": { "stringUnit": { "state": "translated", "value": "URL da scaricare" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "URL para transferir" } }
+      }
+    },
+    "URLs only send over local Wi-Fi. Submissions fail when the Mac is unreachable.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "URLs werden nur über lokales WLAN gesendet. Übermittlungen scheitern, wenn der Mac nicht erreichbar ist." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Los URLs solo se envían por Wi-Fi local. Los envíos fallan si el Mac no está accesible." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Les URLs n'envoient que par Wi-Fi local. L'envoi échoue si le Mac n'est pas joignable." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Gli URL si inviano solo via Wi-Fi locale. L'invio fallisce se il Mac non è raggiungibile." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Os URLs só são enviados por Wi-Fi local. Os envios falham quando o Mac está inacessível." } }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Version" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Versión" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Version" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Versione" } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Versão" } }
+      }
+    },
+    "When the iPhone can't reach the Mac over Wi-Fi, the URL is sent through your private iCloud database. The Mac picks it up within 60 seconds the next time it polls. Nothing leaves your iCloud account.": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Wenn das iPhone den Mac nicht über WLAN erreicht, wird die URL über deine private iCloud-Datenbank gesendet. Der Mac holt sie innerhalb von 60 Sekunden beim nächsten Abruf ab. Nichts verlässt deinen iCloud-Account." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Cuando el iPhone no llega al Mac por Wi-Fi, el URL se envía por tu base de datos privada de iCloud. El Mac la recoge en 60 segundos en el siguiente sondeo. Nada sale de tu cuenta de iCloud." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Quand l'iPhone n'atteint pas le Mac en Wi-Fi, l'URL passe par ta base privée iCloud. Le Mac la récupère sous 60 secondes au prochain sondage. Rien ne quitte ton compte iCloud." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Quando l'iPhone non raggiunge il Mac in Wi-Fi, l'URL passa per il tuo database iCloud privato. Il Mac la recupera entro 60 secondi al prossimo poll. Niente lascia il tuo account iCloud." } },
+        "pt-PT": { "stringUnit": { "state": "translated", "value": "Quando o iPhone não chega ao Mac por Wi-Fi, o URL passa pela tua base de dados privada do iCloud. O Mac apanha-o em 60 segundos no próximo poll. Nada sai da tua conta iCloud." } }
+      }
+    }
+  },
+  "version": "1.0"
+}
