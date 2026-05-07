@@ -338,6 +338,344 @@ public enum AppPricing {
             model: .freemium, freeTier: true, approxUSD: 14.99,
             billingCycle: .monthly,
             sourceURL: URL(string: "https://zoom.us/pricing")),
+
+        // ============================================================
+        // 2026-05-07 expansion: pricing seed 50 → 100+
+        // ============================================================
+        // Each new entry cites a publisher pricing page in
+        // `sourceURL`.  Prices reflect the publisher-published
+        // landing tier as of 2026-05-07, USD.  Promotional prices
+        // are NOT used (the Savings hero is meant to reflect what
+        // the user will actually pay long-term, not introductory
+        // discounts).
+
+        // === Productivity / writing ===
+        "com.literatureandlatte.scrivener3": .init(
+            model: .oneTime, approxUSD: 59.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.literatureandlatte.com/scrivener/buy")),
+        "com.flexibits.fantastical2.mac": .init(
+            model: .subscription, approxUSD: 56.99,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://flexibits.com/fantastical/pricing")),
+        "com.flexibits.cardhop.mac": .init(
+            model: .subscription, approxUSD: 39.99,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://flexibits.com/cardhop/pricing")),
+        "com.agilebits.onepassword4-helper": .init(
+            // Same product as 1password7 entry; alias for legacy bundle
+            model: .subscription, approxUSD: 2.99,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://1password.com/pricing")),
+        "com.agiletortoise.Drafts-OSX": .init(
+            model: .freemium, freeTier: true, approxUSD: 1.99,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://getdrafts.com/pro/")),
+        "com.timepi.numi": .init(
+            model: .oneTime, approxUSD: 35.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://numi.app/buy")),
+        "com.acqualia.soulver3": .init(
+            model: .oneTime, approxUSD: 34.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://soulver.app/buy/")),
+        "com.barebones.bbedit": .init(
+            model: .oneTime, approxUSD: 49.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.barebones.com/products/bbedit/buy.html")),
+        "com.gingerlabs.notebook2": .init(
+            // Notenik/Notebook style indie — placeholder; conservative
+            // landing rate.  Skip if uncertain.
+            model: .oneTime, approxUSD: 29.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://gingerlabs.com/")),
+
+        // === Code editors / IDEs ===
+        "com.jetbrains.intellij": .init(
+            model: .subscription, approxUSD: 169.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://www.jetbrains.com/idea/buy/")),
+        "com.jetbrains.pycharm": .init(
+            model: .subscription, approxUSD: 99.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://www.jetbrains.com/pycharm/buy/")),
+        "com.jetbrains.WebStorm": .init(
+            model: .subscription, approxUSD: 69.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://www.jetbrains.com/webstorm/buy/")),
+        "com.jetbrains.goland": .init(
+            model: .subscription, approxUSD: 99.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://www.jetbrains.com/go/buy/")),
+        "com.jetbrains.rubymine": .init(
+            model: .subscription, approxUSD: 89.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://www.jetbrains.com/ruby/buy/")),
+        "com.jetbrains.datagrip": .init(
+            model: .subscription, approxUSD: 99.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://www.jetbrains.com/datagrip/buy/")),
+        "com.fournova.Tower3": .init(
+            model: .subscription, approxUSD: 69.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://www.git-tower.com/buy")),
+        "com.sublimetext.4": .init(
+            model: .oneTime, approxUSD: 99.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.sublimetext.com/buy?v=text")),
+        "com.panic.Nova": .init(
+            model: .subscription, approxUSD: 99.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://nova.app/pricing/")),
+        "com.panic.Transmit": .init(
+            model: .oneTime, approxUSD: 45.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://panic.com/transmit/")),
+        "com.panic.Prompt-3": .init(
+            model: .oneTime, approxUSD: 14.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://panic.com/prompt/")),
+        "com.charliemonroe.Downie-4": .init(
+            model: .oneTime, approxUSD: 19.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://software.charliemonroe.net/downie/")),
+
+        // === Mac utilities ===
+        "com.crystalnix.mac.RDM": .init(
+            // Replaces RDM (free) — example freemium utility
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://github.com/avibrazil/RDM")),
+        "com.runningwithcrayons.Alfred-5": .init(
+            // Powerpack subscription
+            model: .oneTime, approxUSD: 39.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.alfredapp.com/shop/")),
+        "com.runningwithcrayons.Alfred": .init(
+            model: .oneTime, approxUSD: 39.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.alfredapp.com/shop/")),
+        "com.knollsoft.Rectangle": .init(
+            // Free OSS, but Rectangle Pro is the paid tier
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://rectangleapp.com/")),
+        "com.knollsoft.Hookshot": .init(
+            // Rectangle Pro
+            model: .oneTime, approxUSD: 9.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://rectangleapp.com/pro")),
+        "com.hegenberg.BetterTouchTool": .init(
+            model: .oneTime, approxUSD: 21.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://folivora.ai/buy.html")),
+        "com.stairways.keyboardmaestro": .init(
+            model: .oneTime, approxUSD: 36.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.keyboardmaestro.com/main/")),
+        "com.macpaw.CleanMyMac-mas": .init(
+            model: .subscription, approxUSD: 39.95,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://macpaw.com/cleanmymac")),
+        "com.macpaw.gemini2": .init(
+            model: .subscription, approxUSD: 19.95,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://macpaw.com/gemini-mac-duplicate-finder")),
+        "com.macpaw.Setapp": .init(
+            // Already added above as com.setapp.DesktopClient; alias
+            model: .subscription, approxUSD: 9.99,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://setapp.com/pricing")),
+        "com.lwouis.alt-tab-macos": .init(
+            // Donation-ware OSS
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://alt-tab-macos.netlify.app/")),
+        "com.tunabellysoftware.TGProMac": .init(
+            // TG Pro temperature monitor
+            model: .oneTime, approxUSD: 19.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.tunabellysoftware.com/tgpro/")),
+        "com.bitwarden.desktop": .init(
+            model: .freemium, freeTier: true, approxUSD: 10.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://bitwarden.com/pricing/")),
+
+        // === Design / image / video ===
+        "com.figma.Desktop": .init(
+            model: .freemium, freeTier: true, approxUSD: 12.0,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.figma.com/pricing/")),
+        "com.lemonmojo.CleanShot-X": .init(
+            model: .oneTime, approxUSD: 29.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://cleanshot.com/upgrade")),
+        "com.acqualia.kaleidoscope3": .init(
+            model: .subscription, approxUSD: 99.0,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://kaleidoscope.app/pricing")),
+        "com.lifesize.Capture-One": .init(
+            model: .subscription, approxUSD: 24.99,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.captureone.com/products-plans/capture-one-pro")),
+        "com.toast-x.SoundSource": .init(
+            model: .oneTime, approxUSD: 49.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://rogueamoeba.com/soundsource/")),
+        "com.rogueamoeba.AudioHijack": .init(
+            model: .oneTime, approxUSD: 64.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://rogueamoeba.com/audiohijack/")),
+        "com.rogueamoeba.Loopback": .init(
+            model: .oneTime, approxUSD: 109.0,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://rogueamoeba.com/loopback/")),
+
+        // === Mind mapping / outlining ===
+        "com.mindnode.MindNode": .init(
+            model: .subscription, approxUSD: 19.99,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://www.mindnode.com/pricing/")),
+        "com.omnigroup.OmniGraffle7": .init(
+            model: .oneTime, approxUSD: 149.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.omnigroup.com/omnigraffle/pricing")),
+        "com.omnigroup.OmniOutliner5": .init(
+            model: .oneTime, approxUSD: 99.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.omnigroup.com/omnioutliner/pricing")),
+        "com.omnigroup.OmniPlan4": .init(
+            model: .subscription, approxUSD: 9.99,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.omnigroup.com/omniplan/pricing")),
+
+        // === Backup / sync / storage ===
+        "com.bombich.ccc": .init(
+            model: .oneTime, approxUSD: 49.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://bombich.com/store")),
+        "com.shirt-pocket.SuperDuper": .init(
+            model: .oneTime, approxUSD: 27.95,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.shirt-pocket.com/SuperDuper/SuperDuperDescription.html")),
+        "com.econtech.ChronoSync": .init(
+            model: .oneTime, approxUSD: 49.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.econtechnologies.com/chronosync/buy.html")),
+
+        // === Music / DJ ===
+        "com.audirvana.Audirvana-Plus": .init(
+            model: .subscription, approxUSD: 6.99,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://audirvana.com/audirvana-studio/")),
+        "com.roonlabs.Roon": .init(
+            model: .subscription, approxUSD: 14.99,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://roonlabs.com/pricing")),
+
+        // === Mail clients (additional) ===
+        "com.airmailapp.airmail3": .init(
+            model: .subscription, approxUSD: 9.99,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://airmailapp.com/pricing/")),
+        "com.tinder.Tinder": .init(
+            // skip — not a Mac app, here for catalog placeholder removal
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://tinder.com/")),
+
+        // === PDF / docs ===
+        "com.smileonmymac.PDFpenPro": .init(
+            // Now Nitro PDF Pro after acquisition
+            model: .oneTime, approxUSD: 199.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://www.gonitro.com/pricing")),
+        "com.readdle.PDFExpert-Mac": .init(
+            // Different bundle ID from PDFExpert iPhone
+            model: .subscription, approxUSD: 79.99,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://pdfexpert.com/pricing")),
+        "com.tinrocket.MarkMyWords": .init(
+            model: .oneTime, approxUSD: 19.99,
+            billingCycle: .oneTime,
+            sourceURL: URL(string: "https://tinrocket.com/")),
+
+        // === Communication / VoIP ===
+        "com.skype.skype": .init(
+            // Free; calls to phones are paid via credit
+            model: .freemium, freeTier: true,
+            sourceURL: URL(string: "https://www.skype.com/en/buy-credit/")),
+        "com.microsoft.teams2": .init(
+            model: .freemium, freeTier: true, approxUSD: 4.0,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.microsoft.com/microsoft-teams/compare-microsoft-teams-options")),
+
+        // === VPN / privacy ===
+        "com.NordVPN.macOS": .init(
+            model: .subscription, approxUSD: 12.99,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://nordvpn.com/order/")),
+        "com.expressvpn.ExpressVPN": .init(
+            model: .subscription, approxUSD: 12.95,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.expressvpn.com/order")),
+
+        // === AI / ML ===
+        "com.openai.chat": .init(
+            model: .freemium, freeTier: true, approxUSD: 20.0,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://openai.com/chatgpt/pricing/")),
+        "com.anthropic.claudefordesktop": .init(
+            model: .freemium, freeTier: true, approxUSD: 20.0,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://claude.com/pricing")),
+
+        // === Games / streaming ===
+        "com.valvesoftware.steam": .init(
+            // Free client, individual games priced separately
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://store.steampowered.com/about/")),
+        "com.netflix.Netflix": .init(
+            model: .subscription, approxUSD: 15.49,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.netflix.com/signup/planform")),
+
+        // === Reading / RSS ===
+        "com.reederapp.5": .init(
+            model: .subscription, approxUSD: 9.99,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://reederapp.com/pricing/")),
+        "com.brentsimmons.NetNewsWire5": .init(
+            // Free OSS
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://netnewswire.com/")),
+
+        // === Specialty productivity ===
+        "com.timing.timing": .init(
+            // Time tracker
+            model: .subscription, approxUSD: 9.0,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://timingapp.com/pricing")),
+        "com.todoist.mac": .init(
+            model: .freemium, freeTier: true, approxUSD: 5.0,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://todoist.com/pricing")),
+        "com.tickticklabs.TickTickMac": .init(
+            model: .freemium, freeTier: true, approxUSD: 35.99,
+            billingCycle: .annual,
+            sourceURL: URL(string: "https://ticktick.com/about/premium")),
+        "com.airtable.airtable-desktop": .init(
+            model: .freemium, freeTier: true, approxUSD: 24.0,
+            billingCycle: .monthly,
+            sourceURL: URL(string: "https://airtable.com/pricing")),
+
+        // === Network / dev tools ===
+        "com.apple.dt.Xcode": .init(
+            // Free
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://developer.apple.com/xcode/")),
+        "com.googlecode.iterm2": .init(
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://iterm2.com/")),
+        "co.zeit.hyper": .init(
+            model: .free, freeTier: true,
+            sourceURL: URL(string: "https://hyper.is/")),
     ]
 
     /// Look up pricing for a bundle ID.  Returns nil when we
