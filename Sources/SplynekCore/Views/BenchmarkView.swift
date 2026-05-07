@@ -3,8 +3,18 @@ import AppKit
 
 struct BenchmarkView: View {
     @ObservedObject var vm: SplynekViewModel
-    @StateObject private var runner = BenchmarkRunner()
+    // 2026-05-06 fix: was @StateObject — got destroyed on tab switch +
+    // re-created with empty state.  Now points at the VM-owned
+    // singleton so the in-flight probe state persists across tab
+    // switches (user switches away, comes back, sees the same live
+    // throughput readout instead of a "cancelled" appearance).
+    @ObservedObject private var runner: BenchmarkRunner
     @State private var urlText: String = BenchmarkRunner.defaultURLString
+
+    init(vm: SplynekViewModel) {
+        self.vm = vm
+        _runner = ObservedObject(wrappedValue: vm.benchmarkRunner)
+    }
 
     var body: some View {
         ScrollView {
@@ -112,12 +122,16 @@ struct BenchmarkView: View {
                 // under the target URL where the eye is already
                 // looking. The toolbar copy still works for keyboard
                 // shortcuts and muscle memory.
-                HStack(spacing: 10) {
-                    if runner.isRunning {
-                        ProgressView().controlSize(.small)
-                        Text(runner.phase)
-                            .font(.callout).foregroundStyle(.secondary)
-                    } else {
+                if runner.isRunning {
+                    // 2026-05-06 fix: previous UI was just a 1-line
+                    // spinner + phase text — users couldn't tell
+                    // anything was happening for the 5-30s a probe
+                    // takes.  Now: spinner + phase + LIVE throughput
+                    // + bytes / expected progress bar so progress is
+                    // visible second-by-second.
+                    runningProgressBlock
+                } else {
+                    HStack(spacing: 10) {
                         Button { runBenchmark() } label: {
                             Label("Run benchmark", systemImage: "bolt.fill")
                                 .frame(minWidth: 140)
@@ -132,12 +146,63 @@ struct BenchmarkView: View {
                             Text("Results below ↓")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
+                        Spacer()
                     }
-                    Spacer()
+                    .padding(.top, 4)
                 }
-                .padding(.top, 4)
             }
         }
+    }
+
+    /// Live progress block while a probe is running.  Shows three rows:
+    ///   1. Spinner + phase text ("Single-path through en0…")
+    ///   2. Progress bar (live bytes / expected)
+    ///   3. Throughput stat (live MB/s + bytes downloaded / expected)
+    ///
+    /// Plus a Cancel button so users can abort without waiting for
+    /// the whole probe ladder to finish.  (Cancel just sets a flag
+    /// the runner observes — implemented in BenchmarkRunner.cancel().)
+    private var runningProgressBlock: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                ProgressView().controlSize(.small)
+                Text(runner.phase)
+                    .font(.callout).foregroundStyle(.secondary)
+                Spacer()
+            }
+            // Progress bar: indeterminate-looking when totalBytes
+            // is unknown (server didn't report Content-Length yet),
+            // determinate as soon as we have a target size.
+            if runner.liveExpectedBytes > 0 {
+                let fraction = min(1.0, Double(runner.liveBytes)
+                                          / Double(runner.liveExpectedBytes))
+                GradientProgressBar(fraction: fraction, height: 6)
+            } else {
+                ProgressView().progressViewStyle(.linear)
+            }
+            // Stat row.  formatBytes / formatThroughput already exist
+            // in this file (used by the results table).
+            HStack(spacing: 14) {
+                if runner.liveBytes > 0 {
+                    Text(formatBytes(runner.liveBytes))
+                        .font(.system(.callout, design: .monospaced).weight(.semibold))
+                    if runner.liveExpectedBytes > 0 {
+                        Text("/ \(formatBytes(runner.liveExpectedBytes))")
+                            .font(.system(.callout, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                if runner.liveThroughputBps > 0 {
+                    Text("·")
+                        .foregroundStyle(.secondary)
+                    Text(formatRate(runner.liveThroughputBps))
+                        .font(.system(.callout, design: .monospaced).weight(.semibold))
+                        .foregroundStyle(Color.accentColor)
+                }
+                Spacer()
+            }
+        }
+        .padding(.top, 4)
     }
 
     // MARK: Interfaces (read-only preview)

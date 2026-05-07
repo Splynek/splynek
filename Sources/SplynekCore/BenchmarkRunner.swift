@@ -25,6 +25,16 @@ final class BenchmarkRunner: ObservableObject {
     @Published var isRunning: Bool = false
     @Published var phase: String = ""
 
+    /// Live progress for the in-flight probe.  2026-05-06 fix: the
+    /// previous UI showed only `phase + spinner` while a probe ran,
+    /// which made multi-second downloads feel like nothing was
+    /// happening.  These three properties are polled by the run
+    /// loop every 250 ms and surface throughput / bytes / expected
+    /// in the source-card row so the user sees live activity.
+    @Published var liveBytes: Int64 = 0
+    @Published var liveExpectedBytes: Int64 = 0
+    @Published var liveThroughputBps: Double = 0
+
     /// Default target — Hetzner's 100 MB file is a conventional benchmark
     /// target that's CDN-backed, range-capable, and free.
     static let defaultURLString = "https://ash-speed.hetzner.com/100MB.bin"
@@ -93,10 +103,45 @@ final class BenchmarkRunner: ObservableObject {
             progress: progress
         )
         let started = Date()
+
+        // 2026-05-06 fix: poll the progress object every 250 ms during
+        // the probe and surface bytes / throughput / expected on the
+        // runner's @Published properties so the UI shows live activity.
+        // Earlier UX: just a spinner + phase text — users couldn't tell
+        // anything was happening.  The poll task cancels itself when
+        // the engine.run() completes (we cancel + await it explicitly).
+        liveBytes = 0
+        liveExpectedBytes = 0
+        liveThroughputBps = 0
+        let pollTask = Task { [weak self] in
+            while !Task.isCancelled {
+                let now = Date()
+                let elapsed = max(0.001, now.timeIntervalSince(started))
+                let bytes = progress.downloaded
+                let total = progress.totalBytes
+                await MainActor.run {
+                    self?.liveBytes = bytes
+                    self?.liveExpectedBytes = total
+                    self?.liveThroughputBps = Double(bytes) / elapsed
+                }
+                try? await Task.sleep(nanoseconds: 250_000_000)
+            }
+        }
+
         await engine.run()
+        pollTask.cancel()
+
         let duration = max(0.001, Date().timeIntervalSince(started))
         let bytes = progress.downloaded
         let bps = Double(bytes) / duration
+
+        // Drop the live state — the next probe's first poll will
+        // reset it; clearing here makes the inter-probe transition
+        // visually clean (the live row goes blank for a frame
+        // rather than showing stale numbers from the prior probe).
+        liveBytes = 0
+        liveExpectedBytes = 0
+        liveThroughputBps = 0
 
         return Probe(
             label: label,

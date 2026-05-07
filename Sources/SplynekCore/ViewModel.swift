@@ -126,6 +126,15 @@ final class SplynekViewModel: ObservableObject {
     @Published var ytDlpState: YtDlpProbe.State?
     let ytDlpProbe = YtDlpProbe()
 
+    // BenchmarkRunner is owned by the VM (not the BenchmarkView) so
+    // it survives tab switches.  Earlier UX bug 2026-05-06: switching
+    // away from the Benchmark tab tore down @StateObject — the
+    // running probe Task captured `runner` so kept executing, but
+    // the UI showed a fresh runner with isRunning=false.  Hoisting
+    // ownership here makes the same instance persist for the app's
+    // lifetime, so coming back to the tab shows the live state.
+    let benchmarkRunner = BenchmarkRunner()
+
     // Queue
     @Published var queue: [QueueEntry] = []
 
