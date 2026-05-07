@@ -23,12 +23,26 @@ let package = Package(
         // declaration; SPM alone auto-exports library targets but
         // Xcode's package integration doesn't.
         .library(name: "SplynekCore", targets: ["SplynekCore"]),
+        // S4 iOS Companion (2026-05-07) — the shared core that the
+        // iOS app + Share Extension both compile.  Built here as a
+        // platform-portable library so `splynek-test` can exercise
+        // PairedMacClient / PairedMacStore / ShareExtractor / Bonjour
+        // TXT decoding from the same Mac toolchain that runs the
+        // rest of the test suite.  iOS-only types (UIKit / SwiftUI
+        // views) are NOT in this library — they live under
+        // iOS/SplynekCompanion + iOS/SplynekShareExtension and are
+        // compiled by the Xcode iOS targets only.
+        .library(name: "SplynekCompanionCore", targets: ["SplynekCompanionCore"]),
     ],
     targets: [
         .target(
             name: "SplynekCore",
             path: "Sources/SplynekCore",
             resources: [.process("Localizable.xcstrings")]
+        ),
+        .target(
+            name: "SplynekCompanionCore",
+            path: "iOS/Shared"
         ),
         .executableTarget(
             name: "Splynek",
@@ -42,7 +56,7 @@ let package = Package(
         ),
         .executableTarget(
             name: "splynek-test",
-            dependencies: ["SplynekCore"],
+            dependencies: ["SplynekCore", "SplynekCompanionCore"],
             path: "Tests/SplynekTests"
         ),
     ]

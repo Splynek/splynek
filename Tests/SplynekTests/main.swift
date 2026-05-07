@@ -82,6 +82,15 @@ HLSProxyServerTests.run()
 BondedFetcherTests.run()
 DASHManifestTests.run()
 
+// S4 iOS Companion (2026-05-07): pure-Swift logic from the iOS
+// app + Share Extension's shared core (PairedMac, ShareExtractor,
+// SplynekTXTRecord, PairedMacStore in-memory mode).  UIKit / SwiftUI
+// surfaces are not tested here — they live under iOS/SplynekCompanion
+// + iOS/SplynekShareExtension and require the iOS Simulator.
+CompanionShareExtractorTests.run()
+CompanionBonjourTests.run()
+CompanionStoreTests.run()
+
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private
 // Splynek/splynek-pro repo.

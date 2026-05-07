@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDisplayName</key>
+    <string>Send to Splynek</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundlePackageType</key>
+    <string>XPC!</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(MARKETING_VERSION)</string>
+    <key>CFBundleVersion</key>
+    <string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>NSExtension</key>
+    <dict>
+        <key>NSExtensionPointIdentifier</key>
+        <string>com.apple.share-services</string>
+        <key>NSExtensionPrincipalClass</key>
+        <string>$(PRODUCT_MODULE_NAME).ShareViewController</string>
+        <key>NSExtensionAttributes</key>
+        <dict>
+            <!--
+                Activation rule: any input item carrying a URL or text
+                payload activates the extension.  The matrix below
+                accepts everything from a single Safari URL share to a
+                multi-line note that contains a URL embedded in it
+                (NSDataDetector handles the embedded case).
+            -->
+            <key>NSExtensionActivationRule</key>
+            <dict>
+                <key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
+                <integer>1</integer>
+                <key>NSExtensionActivationSupportsText</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+    <!--
+        Same Bonjour + cleartext exceptions the host app declares.
+        The Share Extension makes its own HTTP requests to the
+        paired Mac, so it needs its own ATS dispensation.
+    -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Splynek sends URLs to Macs on your Wi-Fi.</string>
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_splynek-fleet._tcp</string>
+    </array>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsLocalNetworking</key>
+        <true/>
+    </dict>
+</dict>
+</plist>

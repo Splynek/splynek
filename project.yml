@@ -339,6 +339,79 @@ targets:
         SWIFT_VERSION: "5.9"
         MACOSX_DEPLOYMENT_TARGET: "13.0"
 
+  # ==========================================================
+  # Strategy Bet S4 — iOS Companion (foundation, 2026-05-07)
+  # ==========================================================
+  #
+  # Two new targets paired together, both iOS:
+  #
+  #   • SplynekCompanion         — the iPhone app (free on App Store)
+  #   • SplynekShareExtension    — the "Send to Splynek" Share Extension
+  #
+  # Architecture mirrors the macOS Safari WebExtension setup: app +
+  # extension, shared App Group, separate Info.plists, shared sources
+  # under iOS/Shared/ are compiled into BOTH targets so the Share
+  # Extension carries its own copy of PairedMacStore + PairedMacClient
+  # + ShareExtractor + Bonjour browser without a framework dependency.
+  #
+  # Build:
+  #   xcodebuild -project Splynek.xcodeproj -scheme SplynekCompanion \
+  #     -destination 'generic/platform=iOS' archive
+  #
+  # The companion ships independently from the macOS app — it talks to
+  # Splynek-Mac purely over the LAN REST API that already exists, so
+  # there's no Mac-side code change required for the iOS app to work.
+
+  SplynekCompanion:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: iOS/SplynekCompanion
+      - path: iOS/Shared
+    info:
+      path: iOS/SplynekCompanion/Info.plist
+    settings:
+      base:
+        PRODUCT_NAME: Splynek
+        PRODUCT_BUNDLE_IDENTIFIER: app.splynek.companion
+        CODE_SIGN_ENTITLEMENTS: iOS/Resources/SplynekCompanion.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"  # iPhone + iPad
+        SWIFT_VERSION: "5.9"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        # Companion ships under its own marketing version track —
+        # decoupled from the Mac app's MARKETING_VERSION at the workspace
+        # level, but matches it here for consistency on the first cut.
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        ENABLE_HARDENED_RUNTIME: "NO"  # iOS doesn't use this entitlement
+        CODE_SIGN_STYLE: Automatic
+    dependencies:
+      - target: SplynekShareExtension
+        embed: true
+        codeSign: true
+
+  SplynekShareExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: iOS/SplynekShareExtension
+      - path: iOS/Shared
+    info:
+      path: iOS/SplynekShareExtension/Info.plist
+    settings:
+      base:
+        PRODUCT_NAME: SplynekShare
+        PRODUCT_BUNDLE_IDENTIFIER: app.splynek.companion.ShareExtension
+        CODE_SIGN_ENTITLEMENTS: iOS/Resources/SplynekShareExtension.entitlements
+        SKIP_INSTALL: "YES"
+        SWIFT_VERSION: "5.9"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Automatic
+
 schemes:
   Splynek:
     build:
@@ -356,3 +429,12 @@ schemes:
       config: Debug
     archive:
       config: Release-MAS
+  SplynekCompanion:
+    build:
+      targets:
+        SplynekCompanion: all
+        SplynekShareExtension: all
+    run:
+      config: Debug
+    archive:
+      config: Release

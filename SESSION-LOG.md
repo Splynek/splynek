@@ -1200,9 +1200,178 @@ ab31170 Documentation refresh: HANDOFF + SESSION-LOG + L10N + design docs
   shippable but unmeasured against real streams.  Manual,
   deferred.
 
+### Latest landing (2026-05-07 part 2): Strategy Bet S4 — iPhone Companion foundation
+
+User asked to "jump in S4" — the iPhone Companion strategy bet from
+`STRATEGY-2026.md`.  STRATEGY puts the full ship at week 8-16
+alongside Pro+ tier; this commit lands the **foundation skeleton**
+so the build system + tests + shared core are in place and the
+remaining phase-2 work (Live Activity, QR pairing, CloudKit relay)
+becomes multi-day chunks of focused work rather than ground-up
+infrastructure.
+
+#### Architecture choice: Mac side untouched
+
+The crucial early decision was that `FleetCoordinator` already
+exposes everything an iOS companion needs:
+
+- Bonjour service `_splynek-fleet._tcp` with TXT keys
+  `uuid` / `name` / `ver` / `swarm`
+- `POST /splynek/v1/api/queue?t=<token>`  body `{"url": "..."}`
+  → 202 Accepted
+- `GET  /splynek/v1/api/jobs?t=<token>`   → active job list
+- `GET  /splynek/v1/status`               → liveness / pairing probe
+
+So the iOS app is purely a consumer.  No Mac-side commits required.
+
+#### Targets + layout
+
+Two new iOS targets in `project.yml`:
+
+- **SplynekCompanion** (`type: application`, iOS 17+) — the iPhone
+  app, marketing version 0.1.0, App Group `group.app.splynek.companion`
+  + keychain access group same.
+- **SplynekShareExtension** (`type: app-extension`, iOS 17+) — the
+  Share Extension, embedded into the host app, same App Group +
+  keychain.
+
+Shared sources under `iOS/Shared/` are compiled into BOTH targets
+AND exposed as a SwiftPM library `SplynekCompanionCore` so the
+existing `swift run splynek-test` harness exercises them on the
+Mac toolchain — no iOS Simulator round-trip in the unit-test loop.
+
+```
+iOS/
+├── SplynekCompanion/           main app: SwiftUI tab root,
+│   │                              PairedMacsView, PairingSheet,
+│   │                              JobsView, SubmitURLView
+│   └── Info.plist + entitlements
+├── SplynekShareExtension/      Share Extension:
+│   │                              ShareViewController + ShareSheetView
+│   └── Info.plist + entitlements
+└── Shared/                     compiled into both targets +
+                                   exposed as SplynekCompanionCore SPM lib
+```
+
+#### Shared core (`iOS/Shared/`)
+
+Five files — all platform-portable Swift, no UIKit / SwiftUI in the
+public surface so they compile on the macOS test runner:
+
+- `PairedMac.swift` — Codable record (uuid / displayName /
+  lastKnownHost / lastKnownPort / token / lastSeen).
+- `PairedMacStore.swift` — App Group + keychain persistence.  Plist
+  in `UserDefaults(suiteName: "group.app.splynek.companion")` for
+  metadata; per-Mac token in keychain with `kSecAttrAccessGroup` set
+  to the App Group identifier so both targets can read/write.
+  In-memory mode for tests.
+- `PairedMacClient.swift` — actor-based HTTP client.  Three
+  methods (`ping`, `queue(url:)`, `download(url:)`, `jobs()`).
+  5-second request timeout so the Share Extension returns to the
+  host app fast even when the Mac is asleep.  Permissive JSON
+  decoding (handles both top-level array + `{"jobs": [...]}` shapes
+  for forward-compat).
+- `ShareExtractor.swift` — pure URL extraction from
+  NSItemProvider payloads.  Handles `URL` / `NSURL` / `String`;
+  uses `NSDataDetector` for URLs embedded in free-text shares.
+  `bestURL(from:)` prefers https → http → file.  `canonicalize(_:)`
+  strips utm_*, fbclid, gclid, mc_cid, mc_eid, _hsenc, _hsmi,
+  ref_src, ref_url for visual dedup (NOT a privacy filter — Trust
+  scan handles that).
+- `SplynekBonjourBrowser.swift` — `NWBrowser` wrapper for
+  `_splynek-fleet._tcp` + a pure `SplynekTXTRecord.decode(...)`
+  function that maps the TXT dict to a `Discovered` model
+  (testable without `Network.framework`).
+
+#### Main app (`iOS/SplynekCompanion/`)
+
+Five SwiftUI files:
+
+- `SplynekCompanionApp.swift` — `@main`.
+- `ContentView.swift` — TabView with two tabs (Macs / Submit).
+- `PairedMacsView.swift` — paired-Mac list + Bonjour-discovered Mac
+  list ("on this Wi-Fi"), `+` to add, swipe-to-delete.  Live
+  online/offline pill driven by Bonjour discovery overlap.
+- `PairingSheet.swift` — three-field form (display name / host:port
+  / token), hits `/splynek/v1/status` to confirm reachability +
+  auth, saves on success.
+- `JobsView.swift` — per-Mac active-jobs list, polling at 2s
+  intervals while visible.  Includes inline "submit URL" row so
+  the user can queue from anywhere in the app.
+- `SubmitURLView.swift` — type-or-paste fallback when not coming
+  from the Share Extension.
+
+#### Share Extension (`iOS/SplynekShareExtension/`)
+
+Two files:
+
+- `ShareViewController.swift` — UIKit lifecycle wrapper.  Walks
+  `extensionContext.inputItems` → `NSItemProvider.attachments` →
+  `loadItem(forTypeIdentifier:)` for `public.url` /
+  `public.plain-text` / `public.text`, hands payloads to
+  `ShareExtractor.bestURL(...)`, presents the SwiftUI sheet.
+- `ShareSheetView.swift` — three states (URL + paired Macs / URL
+  but no paired Macs / no URL extracted).  Picker auto-selects
+  most-recently-seen Mac.  Tap Send → POST to Mac → dismiss.
+
+#### Tests
+
+27 new tests across three suites in
+`Tests/SplynekTests/Companion*Tests.swift`:
+
+- `CompanionShareExtractorTests` — payload-type coverage (URL /
+  NSURL / String / nil), `bestURL` preference order, canonicalize
+  (utm strip / fbclid / gclid / preserves non-tracking / idempotent).
+- `CompanionBonjourTests` — `SplynekTXTRecord.decode` (missing
+  uuid → nil, minimal valid, swarm flag, version surfacing,
+  display name fallback).
+- `CompanionStoreTests` — in-memory `PairedMacStore` CRUD,
+  upsert-overwrites, sort-by-displayName, `PairedMac.baseURL`.
+
+After this commit: **579 tests passing** (was 552 — +27).
+
+#### What's NOT in the foundation
+
+Tracked in `IOS-COMPANION.md`:
+
+- **Live Activity (ActivityKit)** for download progress on the
+  lock screen + Dynamic Island, mirrored to the Mac menu bar via
+  macOS 26's Live-Activity passthrough.  Requires APNS push tokens
+  + a Mac-side push provider via `FleetCoordinator` job-progress
+  hook.  Multi-day work; phase 2.
+- **QR-code pairing** as alternative to manual token paste.  Mac
+  shows `splynek://pair?host=&port=&token=` QR; phone scans it.
+- **CloudKit relay** for over-cellular submission when phone isn't
+  on the same Wi-Fi.  Private CloudKit zone + `CKDatabaseSubscription`
+  on the Mac side.
+- **TestFlight** — gated on Apple v1.0 macOS clearance to avoid
+  fragmenting App Review attention.
+
+#### Why ship foundation now (vs. wait for phase 2)
+
+- The build system catches API breakages early — every CI rebuild
+  now compiles all five targets.
+- The shared core is unit-tested at PR time, which protects the
+  REST surface the iOS app depends on against silent Mac-side
+  breakage.
+- `IOS-COMPANION.md` documents the architecture so a phase-2 push
+  doesn't need to re-derive the design.
+
+**Catalog growth this part**: tests 552 → 579 (+27).  Source files
++ ~12 (5 shared + 5 main app + 2 extension).  Documentation: new
+`IOS-COMPANION.md` (~150 lines).  **Build warnings**: 0 throughout.
+
+One commit delivers the foundation:
+
+```
+(pending) S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
+```
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
+(pending) S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
+aaddef8 Documentation: 2026-05-06/07 sweep + URL-verification automation
 72e57b9 Sovereignty: automate URL verification with Content-Type validation + auto-prune
 d22b9ce Sovereignty catalog: verified direct download URLs + 8 new alternatives
 702fb25 UI fixes: Instalar checkbox confusion, hover tint contrast, Sovereignty action equality
@@ -1297,11 +1466,11 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **628** | ×11.2 |
 | Translations (×5 locales) | 56 | **3,140** | ×56 |
-| Tests | 148 | **552** | ×3.7 |
-| Public-repo Swift files | 49 | **68** (top-level SplynekCore) / 123 (recursive) | +19 / +74 |
+| Tests | 148 | **579** | ×3.9 |
+| Public-repo Swift files | 49 | **68** (top-level SplynekCore) / 135 (recursive incl. iOS/) | +19 / +86 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
-| Top-level docs | 1 (HANDOFF) | **6** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG) | +5 |
+| Top-level docs | 1 (HANDOFF) | **7** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG + IOS-COMPANION) | +6 |
 | Architecture invariant comments | ~3 (catalog + sandbox) | **~15** (every AI-touching, code-execution-adjacent file) | +12 |
 | CI guardrails | 1 (sovereignty-weekly: lint+urls) | **3** (+ lint.yml + sovereignty-weekly: prune-broken-downloads auto-PR) | +2 |
 | Trust catalog entries | 30 | 151 | +121 |
@@ -1323,9 +1492,12 @@ Worth being explicit about:
   binary uploads.
 - **Native-speaker review not done.**  All translations are
   Claude-generated; `L10N-REVIEW.md` is the onramp for the human pass.
-- **iOS Companion not started.**  Per HANDOFF "Honest non-goals"
-  — iPhone can't add value to the multi-interface engine; only
-  worth doing once Mac Splynek has clear pull.
+- **iOS Companion phase 2 not started.**  Foundation skeleton
+  shipped 2026-05-07 (build system + shared core + UI shell + Share
+  Extension + 27 tests).  Phase 2 is Live Activity (ActivityKit
+  with macOS-26 menu-bar mirror), QR-code pairing, and CloudKit
+  relay for over-cellular submission.  Each is multi-day; deferred
+  until Apple v1.0 macOS clears.  See `IOS-COMPANION.md` punch list.
 
 ## When to re-read this doc
 
