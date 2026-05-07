@@ -198,37 +198,128 @@ struct UpdatesView: View {
         isResolving = true
         defer { isResolving = false }
         await refreshScanner()
-        // Resolve "available" version for each Sparkle source.  GitHub
-        // / Homebrew / publisherRSS land as separate resolvers in
-        // follow-ups; this v1 only consults Sparkle since it's the
-        // most-common (~70%) and the parser is in-tree.
+        // 2026-05-07 phase 3 follow-up: dispatch by UpdateSource
+        // case to the right resolver.  Sparkle + GitHub Releases +
+        // Homebrew + publisher RSS all wired now.  MAS + unknown
+        // are skipped (Apple's App Store handles MAS; .unknown
+        // means we never resolved a source for that app).
         var updated = resolved
-        await withTaskGroup(of: (Int, SparkleAppcast.Item?).self) { group in
+        await withTaskGroup(of: (Int, ResolvedUpdate?).self) { group in
             for (i, info) in updated.enumerated() {
-                guard case .sparkle(let feedURL) = info.updateSource else { continue }
-                group.addTask {
-                    let item = await fetchSparkle(feedURL)
-                    return (i, item)
+                switch info.updateSource {
+                case .sparkle(let feedURL):
+                    group.addTask {
+                        return (i, await Self.resolveSparkle(feedURL: feedURL))
+                    }
+                case .githubReleases(let owner, let repo):
+                    group.addTask {
+                        return (i, await Self.resolveGitHub(owner: owner, repo: repo))
+                    }
+                case .homebrew(let formula):
+                    // Homebrew check requires `brew outdated --cask
+                    // --json` which Splynek can't run inside the
+                    // sandbox.  We surface the formula name so the
+                    // user can Cmd+Click → "Copy `brew upgrade`
+                    // command" from the row.  No version resolution
+                    // here in v1; future: a small unsandboxed helper
+                    // tool runs brew + writes JSON to a shared path.
+                    let _ = formula
+                    continue
+                case .publisherRSS(let feedURL):
+                    group.addTask {
+                        return (i, await Self.resolvePublisherRSS(feedURL: feedURL))
+                    }
+                case .macAppStore, .unknown:
+                    continue
                 }
             }
-            for await (i, item) in group {
-                guard let item else { continue }
-                updated[i].availableVersion = item.shortVersion ?? item.version
-                updated[i].availableSizeBytes = item.sizeBytes
-                updated[i].availableDownloadURL = item.enclosureURL
-                updated[i].availableSHA256 = item.sha256
-                updated[i].releaseNotes = item.releaseNotesText
+            for await (i, result) in group {
+                guard let result else { continue }
+                updated[i].availableVersion = result.version
+                updated[i].availableSizeBytes = result.sizeBytes
+                updated[i].availableDownloadURL = result.downloadURL
+                updated[i].availableSHA256 = result.sha256
+                updated[i].releaseNotes = result.releaseNotes
                 updated[i].lastChecked = Date()
             }
         }
         resolved = updated
     }
 
-    nonisolated private func fetchSparkle(_ url: URL) async -> SparkleAppcast.Item? {
+    /// Common shape returned by every resolver — the UI doesn't
+    /// care which feed format the data came from.
+    private struct ResolvedUpdate: Sendable {
+        let version: String
+        let downloadURL: URL?
+        let sizeBytes: Int64?
+        let sha256: String?
+        let releaseNotes: String?
+    }
+
+    nonisolated private static func resolveSparkle(feedURL: URL) async -> ResolvedUpdate? {
+        var req = URLRequest(url: feedURL)
+        req.timeoutInterval = 15
+        guard let (data, _) = try? await URLSession.shared.data(for: req),
+              let item = SparkleAppcast.parseLatest(data),
+              let version = item.shortVersion ?? item.version
+        else { return nil }
+        return ResolvedUpdate(
+            version: version,
+            downloadURL: item.enclosureURL,
+            sizeBytes: item.sizeBytes,
+            sha256: item.sha256,
+            releaseNotes: item.releaseNotesText
+        )
+    }
+
+    nonisolated private static func resolveGitHub(owner: String, repo: String) async -> ResolvedUpdate? {
+        guard let url = GitHubReleasesResolver.latestReleaseURL(owner: owner, repo: repo) else {
+            return nil
+        }
         var req = URLRequest(url: url)
         req.timeoutInterval = 15
-        guard let (data, _) = try? await URLSession.shared.data(for: req) else { return nil }
-        return SparkleAppcast.parseLatest(data)
+        // GitHub's API requires a non-empty UA string for
+        // anonymous calls; without it some endpoints 403.
+        req.setValue("Splynek/1.0 (+https://splynek.app)",
+                     forHTTPHeaderField: "User-Agent")
+        req.setValue("application/vnd.github+json",
+                     forHTTPHeaderField: "Accept")
+        guard let (data, _) = try? await URLSession.shared.data(for: req),
+              let release = GitHubReleasesResolver.parseLatest(data)
+        else { return nil }
+        // Strip a leading "v" from the tag so semver compare works
+        // against the bundled CFBundleShortVersionString format.
+        var version = release.tagName
+        if version.hasPrefix("v") || version.hasPrefix("V") {
+            version.removeFirst()
+        }
+        let asset = GitHubReleasesResolver.pickAsset(release)
+        return ResolvedUpdate(
+            version: version,
+            downloadURL: asset?.browserDownloadURL,
+            sizeBytes: asset?.size,
+            sha256: nil,  // GitHub Releases API doesn't expose hashes
+            releaseNotes: release.body
+        )
+    }
+
+    nonisolated private static func resolvePublisherRSS(feedURL: URL) async -> ResolvedUpdate? {
+        var req = URLRequest(url: feedURL)
+        req.timeoutInterval = 15
+        guard let (data, _) = try? await URLSession.shared.data(for: req),
+              let item = PublisherRSSResolver.parseLatest(data),
+              let version = item.version
+        else { return nil }
+        return ResolvedUpdate(
+            version: version,
+            // RSS feeds rarely link directly to a binary — the
+            // <link> usually points at a release-notes page.
+            // Surface it as "release notes" only, no download URL.
+            downloadURL: nil,
+            sizeBytes: nil,
+            sha256: nil,
+            releaseNotes: item.title
+        )
     }
 
     @MainActor

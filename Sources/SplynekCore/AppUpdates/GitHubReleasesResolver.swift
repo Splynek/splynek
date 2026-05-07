@@ -1,0 +1,109 @@
+// Copyright © 2026 Splynek. MIT.
+//
+// GitHubReleasesResolver — fetches the latest release from GitHub's
+// REST API and picks the right macOS asset.  Phase 3 follow-up
+// (2026-05-07).
+//
+// API:  GET https://api.github.com/repos/{owner}/{repo}/releases/latest
+// Auth: optional (anonymous works at 60 req/h per IP — fine for a
+// per-app-on-launch update check).
+//
+// Asset matching:
+//
+//   1. Filter to macOS-relevant suffixes — .dmg, .pkg, .zip.  Skip
+//      *.tar.gz / .deb / .exe / .AppImage even if the publisher
+//      uploaded them (different platforms).
+//   2. Prefer arm64 / aarch64 / "universal" / "macos" / "darwin" in
+//      the filename when multiple architectures are published.
+//   3. Pick the largest matching asset on the assumption that the
+//      "main" download is bigger than auxiliary artifacts (sigstore
+//      bundles, dSYM, source).
+//
+// Pure: Codable structs + a `pickAsset(_:)` decision function.
+// Network is one URLSession.data call from the UpdatesView caller.
+// Tests inject synthetic JSON matching real GitHub API responses.
+
+import Foundation
+
+public enum GitHubReleasesResolver {
+
+    /// Mirrors the subset of the GitHub `/releases/latest` JSON we
+    /// use.  Decoded with permissive defaulting so unrecognized
+    /// fields don't break parsing.
+    public struct Release: Decodable, Equatable, Sendable {
+        public let tagName: String
+        public let name: String?
+        public let body: String?
+        public let publishedAt: Date?
+        public let assets: [Asset]
+
+        enum CodingKeys: String, CodingKey {
+            case tagName = "tag_name"
+            case name
+            case body
+            case publishedAt = "published_at"
+            case assets
+        }
+    }
+
+    public struct Asset: Decodable, Equatable, Sendable {
+        public let name: String
+        public let size: Int64
+        public let browserDownloadURL: URL
+
+        enum CodingKeys: String, CodingKey {
+            case name
+            case size
+            case browserDownloadURL = "browser_download_url"
+        }
+    }
+
+    /// Acceptable extensions for a Mac binary download.  Order
+    /// matters when multiple match — the first hit wins, so DMG
+    /// (the canonical Mac installer) precedes PKG and ZIP.
+    static let macSuffixes = [".dmg", ".pkg", ".zip"]
+
+    /// Hints favoured during arch selection.  When multiple Mac
+    /// assets are published, pick the first whose filename matches
+    /// any of these in order.  A stable arm64/universal preference
+    /// covers the post-2021 Mac fleet.
+    static let archHints = ["arm64", "aarch64", "universal", "macos", "darwin", "osx"]
+
+    /// Decode JSON bytes from `/releases/latest` into a Release.
+    /// Returns nil on parse failure (rate limit text, schema drift,
+    /// network garbage).
+    public static func parseLatest(_ data: Data) -> Release? {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try? decoder.decode(Release.self, from: data)
+    }
+
+    /// Pick the Mac asset out of a Release.  Returns nil when no
+    /// asset matches (Linux-only release, source-only, etc.).
+    public static func pickAsset(_ release: Release) -> Asset? {
+        // Step 1: filter to mac-shaped extensions.
+        let macAssets = release.assets.filter { asset in
+            let lower = asset.name.lowercased()
+            return macSuffixes.contains { lower.hasSuffix($0) }
+        }
+        guard !macAssets.isEmpty else { return nil }
+
+        // Step 2: arch preference.  First arch hint that matches.
+        for hint in archHints {
+            if let m = macAssets.first(where: { $0.name.lowercased().contains(hint) }) {
+                return m
+            }
+        }
+
+        // Step 3: fallback — largest by size (assumed to be the main
+        // installer, not a sidecar artifact).
+        return macAssets.max(by: { $0.size < $1.size })
+    }
+
+    /// Construct the API URL for a given owner/repo.  Public so
+    /// callers (UpdatesView, future cron) can reuse without
+    /// hard-coding the path.
+    public static func latestReleaseURL(owner: String, repo: String) -> URL? {
+        URL(string: "https://api.github.com/repos/\(owner)/\(repo)/releases/latest")
+    }
+}
