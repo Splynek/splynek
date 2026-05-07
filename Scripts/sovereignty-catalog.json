@@ -1011,6 +1011,7 @@
           "origin": "oss"
         },
         {
+          "downloadURL": "https://proton.me/download/PassDesktop/macos/ProtonPass.dmg",
           "homepage": "https://proton.me/pass",
           "id": "dashlane:proton-pass",
           "name": "Proton Pass",
@@ -1649,6 +1650,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "navicat:dbeaver",
           "name": "DBeaver",
@@ -3470,6 +3472,7 @@
           "origin": "oss"
         },
         {
+          "downloadURL": "https://proton.me/download/PassDesktop/macos/ProtonPass.dmg",
           "homepage": "https://proton.me/pass",
           "id": "kpm:protonpass",
           "name": "Proton Pass",
@@ -5118,6 +5121,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "supabase:dbeaver",
           "name": "DBeaver",
@@ -5139,6 +5143,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "planetscale:dbeaver",
           "name": "DBeaver",
@@ -5160,6 +5165,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "mongo-compass:dbeaver",
           "name": "DBeaver",
@@ -5181,6 +5187,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "cockroach:dbeaver",
           "name": "DBeaver",
@@ -5746,6 +5753,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://download.anydesk.com/anydesk.dmg",
           "homepage": "https://anydesk.com",
           "id": "citrix:anydesk",
           "name": "AnyDesk",
@@ -5753,6 +5761,7 @@
           "origin": "europe"
         },
         {
+          "downloadURL": "https://download.teamviewer.com/download/TeamViewer.dmg",
           "homepage": "https://www.teamviewer.com",
           "id": "citrix:teamviewer",
           "name": "TeamViewer",
@@ -5774,6 +5783,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://download.anydesk.com/anydesk.dmg",
           "homepage": "https://anydesk.com",
           "id": "rdc:anydesk",
           "name": "AnyDesk",
@@ -5781,6 +5791,7 @@
           "origin": "europe"
         },
         {
+          "downloadURL": "https://download.teamviewer.com/download/TeamViewer.dmg",
           "homepage": "https://www.teamviewer.com",
           "id": "rdc:teamviewer",
           "name": "TeamViewer",
@@ -5802,6 +5813,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://download.anydesk.com/anydesk.dmg",
           "homepage": "https://anydesk.com",
           "id": "ard:anydesk",
           "name": "AnyDesk",
@@ -5809,6 +5821,7 @@
           "origin": "europe"
         },
         {
+          "downloadURL": "https://download.teamviewer.com/download/TeamViewer.dmg",
           "homepage": "https://www.teamviewer.com",
           "id": "ard:teamviewer",
           "name": "TeamViewer",
@@ -5830,6 +5843,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://download.anydesk.com/anydesk.dmg",
           "homepage": "https://anydesk.com",
           "id": "jumpdesktop:anydesk",
           "name": "AnyDesk",
@@ -5837,6 +5851,7 @@
           "origin": "europe"
         },
         {
+          "downloadURL": "https://download.teamviewer.com/download/TeamViewer.dmg",
           "homepage": "https://www.teamviewer.com",
           "id": "jumpdesktop:teamviewer",
           "name": "TeamViewer",
@@ -8590,6 +8605,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://download.anydesk.com/anydesk.dmg",
           "homepage": "https://anydesk.com",
           "id": "workspaces:anydesk",
           "name": "AnyDesk",
@@ -8597,6 +8613,7 @@
           "origin": "europe"
         },
         {
+          "downloadURL": "https://download.teamviewer.com/download/TeamViewer.dmg",
           "homepage": "https://www.teamviewer.com",
           "id": "workspaces:teamviewer",
           "name": "TeamViewer",
@@ -8647,6 +8664,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://download.anydesk.com/anydesk.dmg",
           "homepage": "https://anydesk.com",
           "id": "logmein:anydesk",
           "name": "AnyDesk",
@@ -8654,6 +8672,7 @@
           "origin": "europe"
         },
         {
+          "downloadURL": "https://download.teamviewer.com/download/TeamViewer.dmg",
           "homepage": "https://www.teamviewer.com",
           "id": "logmein:teamviewer",
           "name": "TeamViewer",
@@ -9433,6 +9452,7 @@
           "origin": "oss"
         },
         {
+          "downloadURL": "https://proton.me/download/PassDesktop/macos/ProtonPass.dmg",
           "homepage": "https://proton.me/pass",
           "id": "1p7-dup:protonpass",
           "name": "Proton Pass",
@@ -9959,6 +9979,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "msaccess:dbeaver",
           "name": "DBeaver",
@@ -10079,6 +10100,7 @@
           "origin": "oss"
         },
         {
+          "downloadURL": "https://proton.me/download/PassDesktop/macos/ProtonPass.dmg",
           "homepage": "https://proton.me/pass",
           "id": "msauth:protonpass",
           "name": "Proton Pass",
@@ -10716,6 +10738,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://download.anydesk.com/anydesk.dmg",
           "homepage": "https://anydesk.com",
           "id": "worklink:anydesk",
           "name": "AnyDesk",
@@ -10723,6 +10746,7 @@
           "origin": "europe"
         },
         {
+          "downloadURL": "https://download.teamviewer.com/download/TeamViewer.dmg",
           "homepage": "https://www.teamviewer.com",
           "id": "worklink:teamviewer",
           "name": "TeamViewer",
@@ -10808,6 +10832,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://download.anydesk.com/anydesk.dmg",
           "homepage": "https://anydesk.com",
           "id": "appstream:anydesk",
           "name": "AnyDesk",
@@ -10815,6 +10840,7 @@
           "origin": "europe"
         },
         {
+          "downloadURL": "https://download.teamviewer.com/download/TeamViewer.dmg",
           "homepage": "https://www.teamviewer.com",
           "id": "appstream:teamviewer",
           "name": "TeamViewer",
@@ -16410,6 +16436,7 @@
           "origin": "oss"
         },
         {
+          "downloadURL": "https://proton.me/download/PassDesktop/macos/ProtonPass.dmg",
           "homepage": "https://proton.me/pass",
           "id": "enpass:protonpass",
           "name": "Proton Pass",
@@ -21722,6 +21749,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "snowflake:dbeaver",
           "name": "DBeaver",
@@ -21743,6 +21771,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "databricks:dbeaver",
           "name": "DBeaver",
@@ -21764,6 +21793,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "starrocks:dbeaver",
           "name": "DBeaver",
@@ -21785,6 +21815,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "redshift-db:dbeaver",
           "name": "DBeaver",
@@ -27301,6 +27332,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "pinecone:dbeaver",
           "name": "DBeaver",
@@ -27322,6 +27354,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "chroma:dbeaver",
           "name": "DBeaver",
@@ -27343,6 +27376,7 @@
     {
       "alternatives": [
         {
+          "downloadURL": "https://dbeaver.io/files/dbeaver-ce-latest-macos-aarch64.dmg",
           "homepage": "https://dbeaver.io",
           "id": "milvus:dbeaver",
           "name": "DBeaver",
