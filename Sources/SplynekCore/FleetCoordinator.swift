@@ -847,6 +847,11 @@ public final class FleetCoordinator: ObservableObject {
             await serveMCP(conn, path: path, body: body, method: method)
         } else if path.hasPrefix("/splynek/v1/swarm") {
             await serveSwarm(conn, path: path, body: body, method: method)
+        } else if path.hasPrefix("/splynek/v1/hls/stats") {
+            // S5 instrumentation (2026-05-07) — live counters for
+            // `Scripts/hls-watch.sh` to poll while the user opens a
+            // real video.  Token-gated; see HLSProxyServer.Telemetry.
+            await serveHLSStats(conn, path: path, method: method)
         } else if HLSProxyServer.handlesPath(path) {
             // Strategy Bet S5 — HLS pre-buffer proxy route.  Client
             // is the user's browser (with the Splynek Accelerator
@@ -1244,6 +1249,55 @@ public final class FleetCoordinator: ObservableObject {
     // MARK: Strategy Bet S5 — HLS pre-buffer proxy
 
     /// Dispatch an `/hls/<sid>/<kind>?u=<base64>` request to
+    /// `GET /splynek/v1/hls/stats?t=<token>` — live HLSProxyServer
+    /// counters (S5 instrumentation, 2026-05-07).  Returns the
+    /// `HLSProxyServer.Telemetry` struct as JSON.  Polled by
+    /// `Scripts/hls-watch.sh` once per second while the user opens
+    /// a real video.  Also accepts `?reset=1` to zero the counters
+    /// before starting a fresh measurement.
+    @MainActor
+    private func serveHLSStats(_ conn: NWConnection, path: String, method: String) async {
+        guard method == "GET" else {
+            try? await respond(conn, status: "405 Method Not Allowed"); return
+        }
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        // Reset?
+        if let resetVal = queryParam("reset", in: path), resetVal == "1" {
+            self.hlsServer.resetTelemetry()
+        }
+        let snapshot = self.hlsServer.telemetry
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        guard let body = try? encoder.encode(snapshot) else {
+            try? await respond(conn, status: "500 Internal Server Error"); return
+        }
+        let head =
+            "HTTP/1.1 200 OK\r\n" +
+            "Content-Type: application/json; charset=utf-8\r\n" +
+            "Content-Length: \(body.count)\r\n" +
+            "Cache-Control: no-store\r\n" +
+            "Connection: close\r\n\r\n"
+        try? await fleetSend(conn, Data(head.utf8) + body)
+        conn.cancel()
+    }
+
+    /// Tiny query-string lookup — `tokenFromQuery` already covers the
+    /// `?t=` case but the stats endpoint also supports `?reset=1`.
+    /// Returns the first value for `key`, or nil.
+    private func queryParam(_ key: String, in path: String) -> String? {
+        guard let qIdx = path.firstIndex(of: "?") else { return nil }
+        let qs = path[path.index(after: qIdx)...]
+        for pair in qs.split(separator: "&") {
+            let kv = pair.split(separator: "=", maxSplits: 1)
+            if kv.count == 2 && kv[0] == Substring(key) {
+                return String(kv[1])
+            }
+        }
+        return nil
+    }
+
     /// HLSProxyServer.  Token-gated like the rest of the API surface.
     /// On success, streams the body back as application/vnd.apple.mpegurl
     /// (for manifests) or the inferred segment Content-Type (.ts /

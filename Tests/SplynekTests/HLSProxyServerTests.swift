@@ -113,5 +113,95 @@ enum HLSProxyServerTests {
                 }
             }
         }
+
+        // S5 instrumentation (2026-05-07) — telemetry counters that
+        // back the /splynek/v1/hls/stats endpoint + Scripts/hls-watch.sh.
+        TestHarness.suite("HLSProxyServer — telemetry counters") {
+
+            TestHarness.test("Initial telemetry is all zero") {
+                Task { @MainActor in
+                    let server = HLSProxyServer()
+                    try expect(server.telemetry.sessionsActive == 0)
+                    try expect(server.telemetry.masterFetches == 0)
+                    try expect(server.telemetry.variantFetches == 0)
+                    try expect(server.telemetry.segmentRequests == 0)
+                    try expect(server.telemetry.segmentCacheHits == 0)
+                    try expect(server.telemetry.segmentCacheMisses == 0)
+                    try expect(server.telemetry.bytesFromCache == 0)
+                    try expect(server.telemetry.bytesFromOrigin == 0)
+                    try expect(server.telemetry.cacheHitRate == 0)
+                }
+            }
+
+            TestHarness.test("session(for:) bumps sessionsActive gauge") {
+                Task { @MainActor in
+                    let server = HLSProxyServer()
+                    let url = URL(string: "https://example.com/m.m3u8")!
+                    _ = server.session(for: UUID(), masterURL: url)
+                    try expect(server.telemetry.sessionsActive == 1)
+                    _ = server.session(for: UUID(), masterURL: url)
+                    try expect(server.telemetry.sessionsActive == 2)
+                }
+            }
+
+            TestHarness.test("prune(olderThan:) updates sessionsActive gauge") {
+                Task { @MainActor in
+                    let server = HLSProxyServer()
+                    _ = server.session(for: UUID(),
+                                       masterURL: URL(string: "https://x.x/m.m3u8")!)
+                    try expect(server.telemetry.sessionsActive == 1)
+                    server.prune(olderThan: Date().addingTimeInterval(60))
+                    try expect(server.telemetry.sessionsActive == 0)
+                }
+            }
+
+            TestHarness.test("cacheHitRate computes 0..1 from hit + miss") {
+                Task { @MainActor in
+                    let server = HLSProxyServer()
+                    server.telemetry.segmentCacheHits = 9
+                    server.telemetry.segmentCacheMisses = 1
+                    try expect(abs(server.telemetry.cacheHitRate - 0.9) < 1e-9)
+                    server.telemetry.segmentCacheHits = 0
+                    server.telemetry.segmentCacheMisses = 0
+                    try expect(server.telemetry.cacheHitRate == 0)
+                    server.telemetry.segmentCacheHits = 5
+                    server.telemetry.segmentCacheMisses = 5
+                    try expect(abs(server.telemetry.cacheHitRate - 0.5) < 1e-9)
+                }
+            }
+
+            TestHarness.test("resetTelemetry zeroes counters but preserves session gauge") {
+                Task { @MainActor in
+                    let server = HLSProxyServer()
+                    server.telemetry.segmentRequests = 100
+                    server.telemetry.segmentCacheHits = 90
+                    _ = server.session(
+                        for: UUID(),
+                        masterURL: URL(string: "https://x.x/m.m3u8")!)
+                    try expect(server.telemetry.sessionsActive == 1)
+                    server.resetTelemetry()
+                    try expect(server.telemetry.segmentRequests == 0)
+                    try expect(server.telemetry.segmentCacheHits == 0)
+                    try expect(server.telemetry.sessionsActive == 1)  // gauge re-derived from sessions
+                }
+            }
+
+            TestHarness.test("Telemetry is Codable round-trip identical") {
+                let encoder = JSONEncoder()
+                let decoder = JSONDecoder()
+                var t = HLSProxyServer.Telemetry()
+                t.segmentRequests = 42
+                t.segmentCacheHits = 30
+                t.segmentCacheMisses = 12
+                t.bytesFromCache = 1_234_567
+                t.bytesFromOrigin = 89_012
+                let data = try encoder.encode(t)
+                let decoded = try decoder.decode(HLSProxyServer.Telemetry.self, from: data)
+                try expect(decoded.segmentRequests == 42)
+                try expect(decoded.segmentCacheHits == 30)
+                try expect(decoded.bytesFromCache == 1_234_567)
+                try expect(abs(decoded.cacheHitRate - 30.0/42.0) < 1e-9)
+            }
+        }
     }
 }

@@ -46,6 +46,58 @@ public final class HLSProxyServer {
     /// bigger wastes bandwidth, smaller re-introduces buffering.
     public var prefetchDepth: Int = 5
 
+    // MARK: Telemetry (S5 instrumentation, 2026-05-07)
+    //
+    // Live counters that quantify "is the HLS pre-buffer doing its
+    // job?"  Surfaced through `FleetCoordinator` at GET
+    // `/splynek/v1/hls/stats?t=<token>` for `Scripts/hls-watch.sh` to
+    // poll while the user opens a real Vimeo / Twitch / YouTube URL.
+    //
+    // Why exposed: the strategy memo's "video never buffers" demo
+    // claim — segments fetch via parallel byte ranges across both
+    // NICs, pre-buffered in RAM, served from localhost.  The numbers
+    // here let us prove or disprove that live, instead of relying on
+    // subjective "feels smoother."
+    //
+    // Counters are read every 1s by the watch script; eventual
+    // consistency is fine.  We store as `Int` (not `UInt64`) so JSON
+    // encode is straightforward.
+
+    public struct Telemetry: Codable, Sendable {
+        public var sessionsActive: Int      = 0  // gauge
+        public var masterFetches: Int       = 0  // counter
+        public var variantFetches: Int      = 0  // counter
+        public var prefetchInsertions: Int  = 0  // counter — pre-fetch path
+        public var segmentRequests: Int     = 0  // counter — total /s GETs
+        public var segmentCacheHits: Int    = 0  // counter — served from ring
+        public var segmentCacheMisses: Int  = 0  // counter — on-demand fetch
+        public var bytesFromCache: Int      = 0  // counter — bytes served from ring
+        public var bytesFromOrigin: Int     = 0  // counter — bytes pulled fresh
+        /// Hit rate over the lifetime of this server.  0..1.  When the
+        /// pre-buffer is healthy this should sit ≥0.85 — segments served
+        /// before the player asks for them.
+        public var cacheHitRate: Double {
+            let total = segmentCacheHits + segmentCacheMisses
+            return total > 0 ? Double(segmentCacheHits) / Double(total) : 0
+        }
+    }
+
+    /// Internal-set so `@testable import SplynekCore` can drive
+    /// counters directly in unit tests (cache-hit-rate computation,
+    /// reset semantics).  Read-only from callers outside the module
+    /// — they should mutate via the increment-at-call-site pattern
+    /// that handleMaster / handleVariant / handleSegment use, or
+    /// call `resetTelemetry()`.
+    internal(set) public var telemetry = Telemetry()
+
+    /// Reset all counters.  Useful for "start a fresh measurement
+    /// before opening this video" workflows from `hls-watch.sh`.
+    public func resetTelemetry() {
+        var t = Telemetry()
+        t.sessionsActive = sessions.count
+        telemetry = t
+    }
+
     public init() {}
 
     /// True if a path looks like an HLS proxy route the server should
@@ -110,6 +162,7 @@ public final class HLSProxyServer {
             lastTouchedAt: Date()
         )
         sessions[id] = fresh
+        telemetry.sessionsActive = sessions.count
         return fresh
     }
 
@@ -118,6 +171,7 @@ public final class HLSProxyServer {
     /// reclaim memory from abandoned playbacks.
     public func prune(olderThan cutoff: Date) {
         sessions = sessions.filter { _, s in s.lastTouchedAt >= cutoff }
+        telemetry.sessionsActive = sessions.count
     }
 
     // MARK: - Upstream fetch + rewrite
@@ -144,6 +198,7 @@ public final class HLSProxyServer {
         upstream: URL,
         proxyBase: URL
     ) async -> (body: Data, contentType: String) {
+        telemetry.masterFetches += 1
         _ = self.session(for: sessionID, masterURL: upstream)
         guard let raw = await Self.fetchUpstream(upstream),
               let body = String(data: raw, encoding: .utf8)
@@ -196,6 +251,7 @@ public final class HLSProxyServer {
         proxyBase: URL,
         fetchSegment: @escaping @Sendable (URL) async -> Data?
     ) async -> (body: Data, contentType: String) {
+        telemetry.variantFetches += 1
         var sess: Session
         if let existing = sessions[sessionID] {
             sess = existing
@@ -238,6 +294,7 @@ public final class HLSProxyServer {
                             session.ringBuffer.insert(url: absURL, data: data)
                             session.lastTouchedAt = Date()
                             self.sessions[sessionID] = session
+                            self.telemetry.prefetchInsertions += 1
                         }
                     }
                 }
@@ -257,17 +314,22 @@ public final class HLSProxyServer {
         upstream: URL,
         fetchSegment: @escaping @Sendable (URL) async -> Data?
     ) async -> (body: Data, contentType: String) {
+        telemetry.segmentRequests += 1
         // Mutate the session in-place: get() touches LRU.
         if var sess = sessions[sessionID],
            let cached = sess.ringBuffer.get(upstream) {
             sess.lastTouchedAt = Date()
             sessions[sessionID] = sess
+            telemetry.segmentCacheHits += 1
+            telemetry.bytesFromCache += cached.count
             return (cached, segmentContentType(for: upstream))
         }
         // Cache miss — fetch on-demand and insert.
+        telemetry.segmentCacheMisses += 1
         guard let data = await fetchSegment(upstream) else {
             return (Data(), segmentContentType(for: upstream))
         }
+        telemetry.bytesFromOrigin += data.count
         if var sess = sessions[sessionID] {
             sess.ringBuffer.insert(url: upstream, data: data)
             sess.lastTouchedAt = Date()
