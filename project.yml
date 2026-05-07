@@ -389,6 +389,11 @@ targets:
       # changes.  5 locales: en (source) + de + es + fr + it + pt-PT.
     resources:
       - path: iOS/SplynekCompanion/Localizable.xcstrings
+      # 2026-05-07 follow-up: iOS app icon.  Sourced from the macOS
+      # Splynek.icns 1024×1024 slice for visual consistency between
+      # Mac + iPhone.  Single iOS 17+ asset (the system rounds the
+      # corners + scales to all required sizes from the 1024 source).
+      - path: iOS/SplynekCompanion/Assets.xcassets
     info:
       # xcodegen GENERATES the Info.plist at this path on every run
       # from `properties:` below — never read it as a source-of-truth
@@ -399,6 +404,10 @@ targets:
         CFBundleDisplayName: Splynek
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        # CFBundleIconName tells iOS which asset-catalog entry to
+        # use for the home-screen icon.  Without this, iOS shows the
+        # blank/translucent placeholder we just had on the Simulator.
+        CFBundleIconName: AppIcon
         LSRequiresIPhoneOS: true
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
