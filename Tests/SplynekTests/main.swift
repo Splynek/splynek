@@ -109,6 +109,9 @@ CompanionPairingHealthTests.run()
 DeliveryKindTests.run()
 // Phase 2: AppPricing schema + SavingsSummary computation.
 SavingsTests.run()
+// Phase 3: Updates tab — AppUpdateInfo + UpdateSourceResolver +
+// SparkleAppcast pure-Swift parser.
+AppUpdateTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private
