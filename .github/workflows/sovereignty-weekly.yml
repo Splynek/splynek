@@ -22,9 +22,14 @@ on:
 # issue (Octokit returned 403 "Resource not accessible by integration"
 # in the 2026-04-27 run without this).  Granting at workflow level so
 # both jobs share the same minimum-required scope.
+#
+# v1.5.7: the new auto-prune job needs `contents: write` + `pull-requests:
+# write` to commit the pruned-catalog diff and open a PR.  PR review is
+# still required before merge — the workflow doesn't auto-merge.
 permissions:
-  contents: read
+  contents: write
   issues: write
+  pull-requests: write
 
 jobs:
   lint:
@@ -112,3 +117,91 @@ jobs:
                 title, body, labels: ['sovereignty-url-rot'],
               });
             }
+
+  # v1.5.7: auto-prune broken downloadURLs.
+  #
+  # Runs after the URL-liveness check.  Verifies every downloadURL in the
+  # catalog (with full Content-Type validation — a 200 OK that returns
+  # text/html is treated as broken because it's a landing page, not a
+  # binary installer).  When broken downloadURLs are found, the catalog
+  # is rewritten in place with those URLs removed (the alternative entry
+  # stays — only its `downloadURL` field is dropped, falling back to
+  # homepage-only).  The diff is opened as a PR for human review.
+  #
+  # Only weekly cron + manual dispatch trigger this — never on PRs (that
+  # would create cycles).  Transient failures (429 / 5xx / DNS blips) are
+  # NEVER pruned, only true rot.
+  prune-broken-downloads:
+    runs-on: macos-latest
+    if: github.event_name != 'pull_request'
+    needs: urls
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify + auto-prune broken downloadURLs
+        id: prune
+        run: |
+          swift Scripts/check-urls.swift \
+            --prune-broken-downloads --json \
+            --concurrency 30 --timeout 20 \
+            > prune-report.json
+          jq -r '"rotted=\(.rottedCount) pruned=\(.prunedCount)"' prune-report.json
+          echo "pruned=$(jq -r '.prunedCount' prune-report.json)" >> $GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prune-report-${{ github.run_number }}
+          path: prune-report.json
+      - name: Re-validate catalog after prune (must still lint clean)
+        if: steps.prune.outputs.pruned != '0'
+        run: swift Scripts/validate-catalog.swift --strict
+      - name: Regenerate Swift catalog after prune
+        if: steps.prune.outputs.pruned != '0'
+        run: swift Scripts/regenerate-sovereignty-catalog.swift
+      - name: Open PR with auto-prune diff
+        if: steps.prune.outputs.pruned != '0'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto/sovereignty-prune-${{ github.run_number }}
+          base: main
+          delete-branch: true
+          commit-message: |
+            sovereignty: auto-prune broken downloadURLs
+
+            Removed downloadURLs that failed verification (true rot only —
+            transient 429 / 5xx / DNS failures are not pruned).
+
+            Includes Content-Type validation: a 200 OK that returns
+            text/html on a downloadURL counts as broken because it's a
+            landing page, not a binary installer.
+
+            Run: ${{ github.run_id }}
+          title: "sovereignty: auto-prune broken downloadURLs (run #${{ github.run_number }})"
+          body: |
+            Automated prune from `.github/workflows/sovereignty-weekly.yml`.
+
+            **Pruned:** ${{ steps.prune.outputs.pruned }} broken downloadURL(s).
+
+            ### What this PR does
+            - Removed `downloadURL` fields whose target failed verification.
+              Alternative entries are kept; they fall back to homepage-only.
+            - Re-ran the offline catalog validator (`--strict`) — passes.
+            - Regenerated `SovereigntyCatalog+Entries.swift`.
+
+            ### Why each URL was flagged
+            See attached `prune-report.json` artifact for the full report,
+            including the Content-Type each broken URL returned.
+
+            Common failure modes:
+            - **`200 html(...)`** — landing page, not a binary installer
+              (e.g. GitHub `releases/latest/download/Foo.dmg` 404'd into
+              the org's HTML 404 page).
+            - **`404` / `403`** — URL no longer exists or CDN bot-block
+              that survived the HEAD→GET retry.
+            - **`unparseable`** — server returned non-HTTP response.
+
+            Transient failures (429 rate-limits, 5xx, DNS blips) are
+            **never** pruned by this workflow — they're tracked separately
+            in the URL-rot issue.
+          labels: |
+            sovereignty-auto-prune
+            automated

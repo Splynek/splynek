@@ -1,6 +1,7 @@
 #!/usr/bin/env swift
 
-// v1.4 quality engine: concurrent online URL checker.
+// v1.5.7 quality engine: concurrent online URL checker + Content-Type
+// validator + auto-pruner.
 //
 // Hits every homepage + downloadURL in Scripts/sovereignty-catalog.json
 // with a HEAD (falling back to GET if HEAD isn't allowed) and reports
@@ -51,6 +52,13 @@ struct Check {
         case networkError(String)
         case timeout
         case unparseable
+        // v1.5.7: returned 2xx/3xx but Content-Type proves the response is a
+        // landing page, not the binary installer the catalog promised.  This
+        // is the "78% manual-verification failure mode" — GitHub releases/latest
+        // patterns where the artifact filename embedded a version number, so
+        // `releases/latest/download/Foo.dmg` 404'd silently into Foo's HTML 404
+        // page (which still status-200s with a friendly browser message).
+        case wrongContentType(Int, String)  // (statusCode, contentTypeReturned)
     }
     let altID: String
     let entry: String
@@ -58,6 +66,7 @@ struct Check {
     let url: String
     let status: Status
     let elapsedMs: Int
+    let contentType: String?  // captured for diagnostics + downstream Content-Type checks
 
     var isOK: Bool {
         switch status {
@@ -98,6 +107,10 @@ struct Check {
             return true
         case .unparseable:
             return false  // genuine — URL is malformed
+        case .wrongContentType:
+            // Catalog lied about what's at this URL — not transient,
+            // it's a maintainer error.
+            return false
         }
     }
 
@@ -110,47 +123,117 @@ struct Check {
         case .networkError(let m):       return "net:\(m)"
         case .timeout:                   return "timeout"
         case .unparseable:               return "unparseable"
+        case .wrongContentType(let code, let ct): return "\(code) html(\(ct))"
         }
     }
 }
 
+// MARK: - Content-Type heuristics
+//
+// What a *real* downloadURL must return.  Apple platforms commonly serve:
+//   application/x-apple-diskimage   (DMG)
+//   application/x-iso9660-image     (ISO/DMG sometimes)
+//   application/octet-stream        (everything else — CDNs default to this)
+//   application/zip                 (Ollama, iTerm2)
+//   application/x-xar               (PKG)
+//   application/x-newton-compatible-pkg (PKG variant)
+//   application/x-msdownload        (rare — installers signed as MSI/EXE wrappers)
+//
+// HTML / text returns — even with status 200 — are landing pages.  This is
+// the exact failure mode the manual 2026-05-06 verification round caught:
+// `releases/latest/download/Foo.dmg` patterns whose artifact filename
+// embedded a version number 404'd silently into a friendly HTML 404 page.
+//
+// Returns true if the Content-Type is acceptable for a binary download.
+func isBinaryContentType(_ ct: String?) -> Bool {
+    guard let raw = ct?.lowercased() else { return false }
+    // Strip parameters: "application/zip; charset=binary" → "application/zip"
+    let mime = raw.split(separator: ";").first.map(String.init)?
+        .trimmingCharacters(in: .whitespaces) ?? raw
+    if mime.hasPrefix("application/") {
+        // Reject application/json, application/xml, application/javascript,
+        // application/xhtml+xml — those are all "the server is talking to
+        // you", not "here's your installer".
+        if mime == "application/json" || mime == "application/xml"
+            || mime == "application/xhtml+xml" || mime == "application/javascript"
+            || mime == "application/ld+json" {
+            return false
+        }
+        return true
+    }
+    // text/*, image/*, video/* — not an installer.
+    return false
+}
+
 // MARK: - HTTP
 
-func checkURL(_ url: URL, timeout: TimeInterval) async -> (Check.Status, Int) {
+/// Returns (status, elapsedMs, capturedContentType).  The Content-Type is the
+/// raw value of the response's `Content-Type` header (or nil if absent), used
+/// downstream by `classifyDownload` to flag HTML-landing-pages-on-2xx.
+func checkURL(_ url: URL, timeout: TimeInterval, kind: String)
+    async -> (Check.Status, Int, String?)
+{
     let t0 = Date()
     var req = URLRequest(url: url, timeoutInterval: timeout)
     req.httpMethod = "HEAD"
-    req.setValue("Splynek-URLChecker/1.4 (+https://splynek.app)", forHTTPHeaderField: "User-Agent")
+    req.setValue("Splynek-URLChecker/1.5 (+https://splynek.app)", forHTTPHeaderField: "User-Agent")
     req.setValue("*/*", forHTTPHeaderField: "Accept")
+
+    func extractCT(_ http: HTTPURLResponse) -> String? {
+        // Header lookup is case-insensitive per RFC 7230, but
+        // HTTPURLResponse.allHeaderFields is a plain dictionary.  Try a few
+        // common casings.
+        for key in ["Content-Type", "content-type", "Content-type"] {
+            if let v = http.value(forHTTPHeaderField: key) { return v }
+        }
+        return nil
+    }
 
     do {
         let (_, response) = try await URLSession.shared.data(for: req)
         let elapsed = Int(Date().timeIntervalSince(t0) * 1000)
         guard let http = response as? HTTPURLResponse else {
-            return (.unparseable, elapsed)
+            return (.unparseable, elapsed, nil)
         }
         if http.statusCode == 405 || http.statusCode == 403 {
-            // Retry with GET — some hosts block HEAD.
+            // Retry with GET — some hosts block HEAD.  Some hosts also
+            // serve different Content-Type on HEAD vs GET (returning
+            // text/html for HEAD even when GET would yield octet-stream),
+            // so the GET retry also gives us a more accurate content type.
             var getReq = req; getReq.httpMethod = "GET"
+            // Limit body reads on the GET retry — we only need headers.
+            // URLSession doesn't expose a built-in cap, but in practice
+            // most CDNs respect Range; harmless if ignored.
+            getReq.setValue("bytes=0-0", forHTTPHeaderField: "Range")
             let (_, resp2) = try await URLSession.shared.data(for: getReq)
             let el2 = Int(Date().timeIntervalSince(t0) * 1000)
             if let h2 = resp2 as? HTTPURLResponse {
-                return (classify(h2, originalURL: url), el2)
+                let ct = extractCT(h2)
+                return (classify(h2, contentType: ct, kind: kind), el2, ct)
             }
-            return (.unparseable, el2)
+            return (.unparseable, el2, nil)
         }
-        return (classify(http, originalURL: url), elapsed)
+        let ct = extractCT(http)
+        return (classify(http, contentType: ct, kind: kind), elapsed, ct)
     } catch {
         let elapsed = Int(Date().timeIntervalSince(t0) * 1000)
         let ns = error as NSError
-        if ns.code == NSURLErrorTimedOut { return (.timeout, elapsed) }
-        return (.networkError(ns.domain + "/" + String(ns.code)), elapsed)
+        if ns.code == NSURLErrorTimedOut { return (.timeout, elapsed, nil) }
+        return (.networkError(ns.domain + "/" + String(ns.code)), elapsed, nil)
     }
 }
 
-func classify(_ http: HTTPURLResponse, originalURL: URL) -> Check.Status {
+func classify(_ http: HTTPURLResponse, contentType: String?, kind: String) -> Check.Status {
     let code = http.statusCode
-    if (200...299).contains(code) { return .ok(code) }
+    if (200...299).contains(code) {
+        // For downloadURLs, a 2xx alone isn't enough — the response body must
+        // actually be a binary, not a "we couldn't find that page but here's
+        // a 200 anyway" landing page.  Homepages legitimately return text/html.
+        if kind == "download" && !isBinaryContentType(contentType) {
+            return .wrongContentType(code, contentType ?? "(none)")
+        }
+        return .ok(code)
+    }
     if (300...399).contains(code) {
         let landing = http.url?.absoluteString ?? ""
         return .redirect(code, landing)
@@ -169,6 +252,12 @@ var concurrency = 20
 var perRequestTimeout: TimeInterval = 15
 var onlyDownload = false
 var onlyHomepage = false
+// v1.5.7: --prune-broken-downloads removes downloadURLs from the catalog
+// that fail verification (true rot only — transient failures are skipped so
+// a flaky run doesn't strip working URLs).  The alternative entry stays;
+// only its downloadURL field is dropped, falling back to homepage-only.
+// Used by the weekly cron to open an auto-PR rather than a tracking issue.
+var pruneBroken = false
 
 var i = 0
 while i < args.count {
@@ -178,6 +267,11 @@ while i < args.count {
     case "--fail-on-rot":  failOnRot = true
     case "--only-download": onlyDownload = true
     case "--only-homepage": onlyHomepage = true
+    case "--prune-broken-downloads":
+        pruneBroken = true
+        // Pruning implies download-only verification.  No reason to spend
+        // time checking homepages when we're not going to act on them.
+        onlyDownload = true
     case "--concurrency":
         if i + 1 < args.count, let v = Int(args[i+1]) {
             concurrency = v; i += 1
@@ -193,12 +287,21 @@ while i < args.count {
         Usage:
           swift Scripts/check-urls.swift [flags]
 
-        --json              Emit JSON to stdout instead of text.
-        --fail-on-rot       Exit non-zero if any URL rots.
-        --concurrency N     Parallel workers (default 20).
-        --timeout S         Per-request timeout seconds (default 15).
-        --only-download     Check only downloadURLs (skip homepages).
-        --only-homepage     Check only homepages (skip downloadURLs).
+        --json                       Emit JSON to stdout instead of text.
+        --fail-on-rot                Exit non-zero if any URL rots.
+        --concurrency N              Parallel workers (default 20).
+        --timeout S                  Per-request timeout seconds (default 15).
+        --only-download              Check only downloadURLs (skip homepages).
+        --only-homepage              Check only homepages (skip downloadURLs).
+        --prune-broken-downloads     Verify all downloadURLs and rewrite
+                                     Scripts/sovereignty-catalog.json with broken
+                                     ones removed.  Only true rot is pruned;
+                                     transient failures (429 / 5xx / DNS blips)
+                                     are left alone.  Implies --only-download.
+                                     This includes Content-Type validation:
+                                     a 200 OK that returns text/html on a
+                                     downloadURL is treated as broken (it's
+                                     a landing page, not a binary installer).
         """)
         exit(0)
     default:
@@ -245,10 +348,12 @@ func run() async {
                     let idx = nextIdx
                     let t = tasks[idx]
                     group.addTask {
-                        let (status, elapsed) = await checkURL(t.url, timeout: perRequestTimeout)
+                        let (status, elapsed, ct) = await checkURL(
+                            t.url, timeout: perRequestTimeout, kind: t.kind)
                         return (idx, Check(altID: t.altID, entry: t.entryID,
                                            kind: t.kind, url: t.urlStr,
-                                           status: status, elapsedMs: elapsed))
+                                           status: status, elapsedMs: elapsed,
+                                           contentType: ct))
                     }
                     inFlight += 1
                     nextIdx += 1
@@ -272,6 +377,73 @@ func run() async {
         let rotted    = failing.filter { !$0.isTransient }
         let transient = failing.filter {  $0.isTransient }
 
+        // v1.5.7: --prune-broken-downloads — rewrite the catalog in place,
+        // dropping downloadURL fields whose verification failed (true rot
+        // only, never transient).  Done with JSONSerialization so we
+        // preserve everything else (notes, origin, ordering) byte-for-byte.
+        var prunedCount = 0
+        if pruneBroken {
+            // Build the set of (entryBundleID, altID) tuples whose download
+            // failed for real.  Only `kind == "download"` makes it in; we
+            // already restricted tasks to download-only via onlyDownload.
+            let toPrune: Set<String> = Set(rotted
+                .filter { $0.kind == "download" }
+                .map { "\($0.entry)\u{0001}\($0.altID)" })
+
+            if !toPrune.isEmpty {
+                guard
+                    let raw = try? Data(contentsOf: jsonURL),
+                    var root = try? JSONSerialization.jsonObject(with: raw, options: []) as? [String: Any],
+                    var entries = root["entries"] as? [[String: Any]]
+                else {
+                    fputs("error: --prune-broken-downloads couldn't reparse catalog\n", stderr)
+                    exit(1)
+                }
+                for ei in 0..<entries.count {
+                    guard
+                        let bid = entries[ei]["targetBundleID"] as? String,
+                        var alts = entries[ei]["alternatives"] as? [[String: Any]]
+                    else { continue }
+                    for ai in 0..<alts.count {
+                        guard let aid = alts[ai]["id"] as? String else { continue }
+                        let key = "\(bid)\u{0001}\(aid)"
+                        if toPrune.contains(key) && alts[ai]["downloadURL"] != nil {
+                            alts[ai].removeValue(forKey: "downloadURL")
+                            prunedCount += 1
+                        }
+                    }
+                    entries[ei]["alternatives"] = alts
+                }
+                root["entries"] = entries
+                // Match the existing catalog's formatting: 2-space indent,
+                // sorted keys, no escaped slashes.  This minimizes diff
+                // noise so the auto-PR is a clean read.
+                let opts: JSONSerialization.WritingOptions = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+                if let outData = try? JSONSerialization.data(withJSONObject: root, options: opts) {
+                    do {
+                        try outData.write(to: jsonURL)
+                        // JSONSerialization uses 2-space indent already on
+                        // macOS; appending a trailing newline to match Git
+                        // / POSIX file convention.
+                        if let fh = try? FileHandle(forWritingTo: jsonURL) {
+                            try fh.seekToEnd()
+                            fh.write(Data([0x0A]))
+                            try fh.close()
+                        }
+                    } catch {
+                        fputs("error: failed to write pruned catalog: \(error)\n", stderr)
+                        exit(1)
+                    }
+                } else {
+                    fputs("error: failed to encode pruned catalog\n", stderr)
+                    exit(1)
+                }
+            }
+            if !emitJSON {
+                fputs("Pruned \(prunedCount) broken downloadURL(s) from the catalog.\n", stderr)
+            }
+        }
+
         if emitJSON {
             struct Out: Encodable {
                 let total: Int
@@ -281,13 +453,17 @@ func run() async {
                 let transientCount: Int
                 let rotted: [Item]
                 let transient: [Item]
+                let prunedCount: Int  // 0 if not in --prune-broken-downloads mode
                 struct Item: Encodable {
-                    let entry, alt, kind, url, status: String; let elapsedMs: Int
+                    let entry, alt, kind, url, status: String
+                    let contentType: String?
+                    let elapsedMs: Int
                 }
             }
             let mapper: (Check) -> Out.Item = {
                 .init(entry: $0.entry, alt: $0.altID, kind: $0.kind,
                       url: $0.url, status: $0.shortMessage,
+                      contentType: $0.contentType,
                       elapsedMs: $0.elapsedMs)
             }
             let out = Out(
@@ -297,7 +473,8 @@ func run() async {
                 rottedCount: rotted.count,
                 transientCount: transient.count,
                 rotted: rotted.map(mapper),
-                transient: transient.map(mapper)
+                transient: transient.map(mapper),
+                prunedCount: prunedCount
             )
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
@@ -329,7 +506,9 @@ func run() async {
                 }
             }
             print("")
-            print("Total: \(checks.count) · OK: \(checks.count - failing.count) · Rotted: \(rotted.count) · Transient: \(transient.count)")
+            var summary = "Total: \(checks.count) · OK: \(checks.count - failing.count) · Rotted: \(rotted.count) · Transient: \(transient.count)"
+            if pruneBroken { summary += " · Pruned: \(prunedCount)" }
+            print(summary)
         }
 
         // v1.5.6: only true rot fails the run — transient noise (rate
