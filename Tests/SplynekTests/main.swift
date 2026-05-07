@@ -104,6 +104,9 @@ CompanionCloudKitRecordTests.run()
 // S4 polish (2026-05-07): per-Mac health classifier driving the
 // iOS Settings tab's status badges.
 CompanionPairingHealthTests.run()
+// 2026-05-07 product expansion phase 1: deliveryKind classifier
+// driving Sovereignty UI badges.
+DeliveryKindTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

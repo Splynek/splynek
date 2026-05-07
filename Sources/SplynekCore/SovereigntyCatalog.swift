@@ -114,6 +114,98 @@ enum SovereigntyCatalog {
         }
     }
 
+    /// What kind of distribution channel an alternative ships
+    /// through.  Drives both the badge and the call-to-action button
+    /// the UI surfaces — replaces the binary "downloadURL or not"
+    /// fallback that confused users into expecting a DMG and getting
+    /// a SaaS sign-up wall instead.
+    ///
+    /// 2026-05-07: introduced after the Sovereignty coverage push
+    /// found that ~92% of alternatives don't have a `downloadURL`,
+    /// for legitimate reasons that the UI never communicated.
+    enum DeliveryKind: String, Codable, Hashable, Sendable, CaseIterable {
+        /// Stable, canonical DMG / PKG / ZIP — `downloadURL` resolves
+        /// to a binary Content-Type.  Splynek installs in one click.
+        case directDownload
+        /// Native Mac app, but distributed exclusively via Mac App
+        /// Store.  UI deep-links to `macappstore://…` instead of
+        /// trying to download.
+        case macAppStore
+        /// No native Mac app exists — service is web-only (Mastodon,
+        /// Bluesky, Mailbox.org, Plausible, etc.).  UI says "Open"
+        /// and skips any "Install" pretense.
+        case webService
+        /// Native CLI / app distributed via Homebrew.  UI offers a
+        /// "Copy `brew install …`" affordance.
+        case homebrew
+        /// Native Mac app exists but downloading requires a free
+        /// account (Tuta, some Proton tiers, etc.).
+        case signupRequired
+        /// Native Mac app exists but downloading requires payment
+        /// (F-Secure, MUBI client, ClamXAV, Spotify-paid-only, etc.).
+        case purchaseRequired
+        /// Native Mac app exists with a publisher-canonical URL,
+        /// but the URL embeds a version number that won't survive
+        /// a release.  The auto-prune cron watches for breakage.
+        /// UI behaves like .directDownload until the verifier flags it.
+        case versionEmbedded
+        /// Desktop app announced but not yet shipped (rare; e.g. a
+        /// publicly-promised port).  UI is "Visit (in development)".
+        case comingSoon
+
+        /// Short user-facing label for the badge ("Direct download",
+        /// "App Store", "Web service", …).
+        var displayLabel: String {
+            switch self {
+            case .directDownload:    return "Direct download"
+            case .macAppStore:       return "App Store"
+            case .webService:        return "Web service"
+            case .homebrew:          return "Homebrew"
+            case .signupRequired:    return "Account required"
+            case .purchaseRequired:  return "Purchase required"
+            case .versionEmbedded:   return "Direct download"
+            case .comingSoon:        return "In development"
+            }
+        }
+
+        /// SF Symbol name used in the UI badge.
+        var symbol: String {
+            switch self {
+            case .directDownload:    return "arrow.down.circle.fill"
+            case .macAppStore:       return "apple.logo"
+            case .webService:        return "globe"
+            case .homebrew:          return "terminal"
+            case .signupRequired:    return "person.crop.circle.badge.questionmark"
+            case .purchaseRequired:  return "creditcard"
+            case .versionEmbedded:   return "arrow.down.circle.fill"
+            case .comingSoon:        return "hammer"
+            }
+        }
+
+        /// Tooltip explainer surfaced on hover / long-press.  Each
+        /// reads as a calm factual sentence, not editorial framing.
+        var tooltip: String {
+            switch self {
+            case .directDownload:
+                return "One-click install via Splynek. Verified binary download URL."
+            case .macAppStore:
+                return "Distributed exclusively via the Mac App Store. Opens Apple's App Store app to install."
+            case .webService:
+                return "No native Mac app — runs in your browser."
+            case .homebrew:
+                return "Install via Homebrew. Tap to copy the brew install command."
+            case .signupRequired:
+                return "Free Mac app, but downloading requires creating an account on the publisher's site."
+            case .purchaseRequired:
+                return "Mac app exists, but downloading requires payment on the publisher's site."
+            case .versionEmbedded:
+                return "Direct download. The auto-pruner watches this URL weekly — if a publisher releases a new version with a different filename, the URL is dropped."
+            case .comingSoon:
+                return "Desktop app announced by the publisher but not yet shipped. Splynek tracks the project page."
+            }
+        }
+    }
+
     struct Alternative: Codable, Identifiable, Hashable, Sendable {
         let id: String          // stable key, "<targetBundleID>:<slug>"
         let origin: Origin
@@ -135,15 +227,32 @@ enum SovereigntyCatalog {
         /// hallucinating stale URLs — the user takes one click
         /// more but lands on a real page.
         let downloadURL: URL?
+        /// 2026-05-07: explicit distribution channel.  Drives the
+        /// UI's badge + CTA-button choice.  Optional in the JSON
+        /// schema for back-compat with pre-2026-05-07 entries —
+        /// the regenerator infers a sensible default at load time
+        /// (`directDownload` if `downloadURL != nil`, otherwise
+        /// `webService` as the most common no-download case).
+        let deliveryKind: DeliveryKind?
 
         init(id: String, origin: Origin, name: String,
-             homepage: URL, note: String, downloadURL: URL? = nil) {
+             homepage: URL, note: String, downloadURL: URL? = nil,
+             deliveryKind: DeliveryKind? = nil) {
             self.id = id
             self.origin = origin
             self.name = name
             self.homepage = homepage
             self.note = note
             self.downloadURL = downloadURL
+            self.deliveryKind = deliveryKind
+        }
+
+        /// Resolves the effective delivery kind, applying the back-
+        /// compat default when `deliveryKind` is nil.  UI callers
+        /// use this rather than the raw stored value.
+        public var effectiveDeliveryKind: DeliveryKind {
+            if let k = deliveryKind { return k }
+            return downloadURL != nil ? .directDownload : .webService
         }
     }
 

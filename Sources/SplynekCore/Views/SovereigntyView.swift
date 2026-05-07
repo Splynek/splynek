@@ -583,8 +583,11 @@ struct SovereigntyView: View {
         HStack(alignment: .top, spacing: 10) {
             originBadge(for: alt.origin)
             VStack(alignment: .leading, spacing: 3) {
-                Text(alt.name)
-                    .font(.system(.subheadline, weight: .semibold))
+                HStack(spacing: 6) {
+                    Text(alt.name)
+                        .font(.system(.subheadline, weight: .semibold))
+                    deliveryKindBadge(for: alt)
+                }
                 Text(alt.note)
                     .font(.caption).foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -610,44 +613,176 @@ struct SovereigntyView: View {
     /// JSON source could submit `file:///` or `data:` schemes via the
     /// discovery pipeline — we defence-in-depth here so the URL never
     /// reaches the download engine even if validation upstream fails.
+    /// 2026-05-07 (Phase 1 UX): one-line badge that names what kind
+    /// of distribution channel the alt ships through.  Hover-tooltip
+    /// gives the longer explainer.  Replaces the silent "downloadURL
+    /// or not" fallback that confused users into expecting a DMG and
+    /// getting a SaaS sign-up wall.
+    @ViewBuilder
+    private func deliveryKindBadge(for alt: SovereigntyCatalog.Alternative) -> some View {
+        let kind = alt.effectiveDeliveryKind
+        Label(kind.displayLabel, systemImage: kind.symbol)
+            .font(.system(.caption2, weight: .medium))
+            .labelStyle(.titleAndIcon)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(
+                Capsule()
+                    .fill(Color.primary.opacity(0.06))
+            )
+            .foregroundStyle(.secondary)
+            .help(kind.tooltip)
+            .accessibilityLabel("Distribution: \(kind.displayLabel)")
+    }
+
+    /// Per-DeliveryKind call-to-action.  Each kind gets a button
+    /// shape + label + behavior tuned to what the user will actually
+    /// encounter on the other side — no more "Install" buttons that
+    /// silently land on a SaaS sign-up wall.
     @ViewBuilder
     private func actionButton(for alt: SovereigntyCatalog.Alternative) -> some View {
-        // 2026-05-06 UX rebalance: Paulo flagged "most options show
-        // 'Visitar' instead of 'Instalar' — Install should be the
-        // norm, Visit only a last resort."  Catalog reality: only
-        // ~1.4% of 3186 alternatives carry a direct downloadURL,
-        // so 98% rendered as Visit.  Two changes here:
-        //
-        //   1. When downloadURL exists → "Install via Splynek" with
-        //      borderedProminent + arrow.down.circle.fill (unchanged).
-        //   2. When only homepage → "Get installer →" with the SAME
-        //      borderedProminent style.  Both buttons now read as
-        //      "primary action you take to get this app."  Visit-as-
-        //      fallback semantics gone.  Tooltip clarifies the path.
-        if let dl = alt.downloadURL, isSafeDownloadScheme(dl) {
+        let kind = alt.effectiveDeliveryKind
+        switch kind {
+        case .directDownload, .versionEmbedded:
+            // Real binary URL OR a publisher URL we believe is
+            // currently working (auto-prune watches it).  Same UI.
+            if let dl = alt.downloadURL, isSafeDownloadScheme(dl) {
+                Button {
+                    vm.urlText = dl.absoluteString
+                    vm.start()
+                } label: {
+                    Label("Install", systemImage: "arrow.down.circle.fill")
+                        .labelStyle(.titleAndIcon)
+                        .font(.callout)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .help("Download \(alt.name) directly via Splynek (multi-interface, verified).")
+                .accessibilityLabel("Install \(alt.name) via Splynek")
+            } else if isSafeHomepageScheme(alt.homepage) {
+                getInstallerButton(for: alt)
+            }
+        case .macAppStore:
+            // Map http(s) homepage to a `macappstore://` deep-link
+            // when possible.  If the homepage is a plain web page,
+            // fall through to "Open" — the user lands on the
+            // publisher's "Get on Mac App Store" landing.
+            Link(destination: macAppStoreURL(for: alt) ?? alt.homepage) {
+                Label("Open in App Store", systemImage: "apple.logo")
+                    .labelStyle(.titleAndIcon)
+                    .font(.callout)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+            .help("Open \(alt.name) in the Mac App Store.")
+            .accessibilityLabel("Open \(alt.name) in App Store")
+        case .webService:
+            // No native app exists — open in browser, no install pretense.
+            if isSafeHomepageScheme(alt.homepage) {
+                Link(destination: alt.homepage) {
+                    Label("Open", systemImage: "arrow.up.right.square")
+                        .labelStyle(.titleAndIcon)
+                        .font(.callout)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .help("Open \(alt.name) in your browser. No native Mac app — runs in the browser.")
+                .accessibilityLabel("Open \(alt.name) in browser")
+            }
+        case .homebrew:
+            // Copy the brew install command to the clipboard.
             Button {
-                vm.urlText = dl.absoluteString
-                vm.start()
+                copyToClipboard("brew install \(homebrewFormulaName(for: alt))")
             } label: {
-                Label("Install", systemImage: "arrow.down.circle.fill")
+                Label("Copy brew", systemImage: "terminal")
                     .labelStyle(.titleAndIcon)
                     .font(.callout)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.bordered)
             .controlSize(.small)
-            .help("Download \(alt.name) directly via Splynek (multi-interface, verified).")
-            .accessibilityLabel("Install \(alt.name) via Splynek")
-        } else if isSafeHomepageScheme(alt.homepage) {
-            Link(destination: alt.homepage) {
-                Label("Get installer", systemImage: "arrow.up.right.square")
-                    .labelStyle(.titleAndIcon)
-                    .font(.callout)
+            .help("Copy `brew install \(homebrewFormulaName(for: alt))` to the clipboard, then paste into Terminal.")
+            .accessibilityLabel("Copy Homebrew install command for \(alt.name)")
+        case .signupRequired, .purchaseRequired:
+            // Mac binary exists but the publisher gates the download
+            // behind an account or payment.  Honest CTA: "Visit"
+            // (no install pretense) + the badge already says why.
+            if isSafeHomepageScheme(alt.homepage) {
+                Link(destination: alt.homepage) {
+                    Label("Visit", systemImage: "arrow.up.right.square")
+                        .labelStyle(.titleAndIcon)
+                        .font(.callout)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .help(kind == .signupRequired
+                      ? "\(alt.name) requires a free account on the publisher's site to download."
+                      : "\(alt.name) is paid — purchase on the publisher's site to download.")
+                .accessibilityLabel("Visit \(alt.name) (\(kind.displayLabel.lowercased()))")
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.small)
-            .help("Splynek doesn't have a direct download URL for \(alt.name) yet — opens \(alt.homepage.host ?? alt.name) where you can grab the installer.")
-            .accessibilityLabel("Open \(alt.name) download page in browser")
+        case .comingSoon:
+            // Placeholder — desktop announced but not shipped.
+            if isSafeHomepageScheme(alt.homepage) {
+                Link(destination: alt.homepage) {
+                    Label("Visit project", systemImage: "hammer")
+                        .labelStyle(.titleAndIcon)
+                        .font(.callout)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .help("\(alt.name)'s desktop app is announced but not yet shipped. Splynek tracks the project page.")
+                .accessibilityLabel("Visit \(alt.name) project page")
+            }
         }
+    }
+
+    @ViewBuilder
+    private func getInstallerButton(for alt: SovereigntyCatalog.Alternative) -> some View {
+        Link(destination: alt.homepage) {
+            Label("Get installer", systemImage: "arrow.up.right.square")
+                .labelStyle(.titleAndIcon)
+                .font(.callout)
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.small)
+        .help("Splynek doesn't have a direct download URL for \(alt.name) yet — opens \(alt.homepage.host ?? alt.name) where you can grab the installer.")
+        .accessibilityLabel("Open \(alt.name) download page in browser")
+    }
+
+    /// Best-effort macappstore:// deep-link.  When the alt's homepage
+    /// itself points at apps.apple.com, we can rewrite directly.
+    /// Otherwise we hand back nil and the caller falls through to
+    /// the homepage.
+    private func macAppStoreURL(for alt: SovereigntyCatalog.Alternative) -> URL? {
+        guard let host = alt.homepage.host?.lowercased(),
+              host == "apps.apple.com"
+        else { return nil }
+        // apps.apple.com URLs accept macappstore:// when the path
+        // matches the App Store schema.  Apple supports this on macOS.
+        var s = alt.homepage.absoluteString
+        s = s.replacingOccurrences(of: "https://apps.apple.com",
+                                   with: "macappstore://apps.apple.com")
+        return URL(string: s)
+    }
+
+    /// Heuristic: derive the brew formula name from the alt's name.
+    /// Lowercased + non-alphanumerics replaced with hyphens.  Good
+    /// enough for the well-known formulas in our Homebrew bucket
+    /// (hcloud, scaleway, ovhcloud, opentofu, kubectl, etc.).
+    private func homebrewFormulaName(for alt: SovereigntyCatalog.Alternative) -> String {
+        let lower = alt.name.lowercased()
+        var slug = ""
+        for c in lower {
+            if c.isLetter || c.isNumber { slug.append(c) }
+            else if !slug.isEmpty && slug.last != "-" { slug.append("-") }
+        }
+        return slug.trimmingCharacters(in: CharacterSet(charactersIn: "-"))
+    }
+
+    private func copyToClipboard(_ s: String) {
+        #if canImport(AppKit)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(s, forType: .string)
+        #endif
     }
 
     /// Allow only `https://` for downloads — the engine doesn't gain

@@ -27,6 +27,10 @@ struct RawAlt: Decodable {
     let homepage: String
     let note: String
     let downloadURL: String?
+    /// 2026-05-07: explicit distribution channel.  Optional for
+    /// back-compat with pre-2026-05-07 catalog entries; SovereigntyCatalog
+    /// `effectiveDeliveryKind` infers a default at load time.
+    let deliveryKind: String?
 }
 
 struct RawEntry: Decodable {
@@ -178,6 +182,9 @@ do {
             out += "                      note: \(swiftStringLit(alt.note))"
             if let dl = alt.downloadURL {
                 out += ",\n                      downloadURL: URL(string: \(swiftStringLit(dl)))"
+            }
+            if let kind = alt.deliveryKind, !kind.isEmpty {
+                out += ",\n                      deliveryKind: .\(kind)"
             }
             out += "),\n"
         }
