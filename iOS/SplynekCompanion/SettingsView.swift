@@ -26,7 +26,9 @@ struct SettingsView: View {
 
     private var store: PairedMacStore? { PairedMacStore() }
 
-    private struct ProbeResult {
+    // fileprivate (not private) so the file-private `MacRow` struct
+    // below can declare a `probe: SettingsView.ProbeResult?` field.
+    fileprivate struct ProbeResult {
         let success: Bool
         let detail: String
         let when: Date

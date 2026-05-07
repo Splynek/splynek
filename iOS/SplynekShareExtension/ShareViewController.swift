@@ -110,7 +110,7 @@ final class ShareViewController: UIViewController {
         // never falls back — re-pair is the only fix.
         let store = PairedMacStore()
         let relayEnabled = store?.cloudKitRelayEnabled ?? true
-        let device = await UIDevice.current.name
+        let device = UIDevice.current.name
         let result = await PairedMacClient(mac: mac).submitWithRelay(
             url: url,
             senderDevice: device,

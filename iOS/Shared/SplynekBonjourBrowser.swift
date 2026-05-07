@@ -59,8 +59,10 @@ public final class SplynekBonjourBrowser {
         )
         let browser = NWBrowser(for: descriptor, using: params)
         self.browser = browser
-        browser.browseResultsChangedHandler = { [weak self] results, _ in
-            guard let self else { return }
+        browser.browseResultsChangedHandler = { results, _ in
+            // Static decode: no per-instance state needed; safe to
+            // drop the [weak self] capture (the warning the compiler
+            // raised about `self` being unused).
             let mapped = Self.decode(results: Array(results))
             DispatchQueue.main.async { onChange(mapped) }
         }
