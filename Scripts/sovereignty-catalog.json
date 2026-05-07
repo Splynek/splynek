@@ -17,6 +17,14 @@
           "name": "Vivaldi",
           "note": "Vivaldi Technologies (Norway). Freeware, privacy-respecting.",
           "origin": "europe"
+        },
+        {
+          "id": "chrome:brave",
+          "name": "Brave",
+          "origin": "oss",
+          "homepage": "https://brave.com",
+          "downloadURL": "https://referrals.brave.com/latest/Brave-Browser.dmg",
+          "note": "Brave Software (US). Chromium fork with built-in tracker / ad blocking; privacy-respecting defaults."
         }
       ],
       "targetBundleID": "com.google.Chrome",
@@ -39,6 +47,14 @@
           "name": "Vivaldi",
           "note": "Vivaldi Technologies (Norway).",
           "origin": "europe"
+        },
+        {
+          "id": "edge:brave",
+          "name": "Brave",
+          "origin": "oss",
+          "homepage": "https://brave.com",
+          "downloadURL": "https://referrals.brave.com/latest/Brave-Browser.dmg",
+          "note": "Brave Software (US). Chromium-based, strong privacy defaults — drop-in for Edge users."
         }
       ],
       "targetBundleID": "com.microsoft.edgemac",
@@ -96,7 +112,8 @@
           "id": "slack:element",
           "name": "Element",
           "note": "UK-based. Matrix protocol, fully open-source, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -104,6 +121,14 @@
           "name": "Mattermost",
           "note": "MIT-licensed server + clients, team-chat.",
           "origin": "oss"
+        },
+        {
+          "id": "slack:telegram",
+          "name": "Telegram",
+          "origin": "other",
+          "homepage": "https://telegram.org",
+          "downloadURL": "https://telegram.org/dl/desktop/mac",
+          "note": "Telegram FZ-LLC (UAE). Workgroups via supergroups + threads + admin tools."
         }
       ],
       "targetBundleID": "com.tinyspeck.slackmacgap",
@@ -138,7 +163,8 @@
           "id": "teams:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://jitsi.org",
@@ -159,7 +185,8 @@
           "id": "teams2:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://jitsi.org",
@@ -187,7 +214,16 @@
           "id": "discord:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
+        },
+        {
+          "id": "discord:telegram",
+          "name": "Telegram",
+          "origin": "other",
+          "homepage": "https://telegram.org",
+          "downloadURL": "https://telegram.org/dl/desktop/mac",
+          "note": "Telegram FZ-LLC (UAE). Public channels + supergroups cover most Discord-server use cases."
         }
       ],
       "targetBundleID": "com.hnc.Discord",
@@ -209,6 +245,14 @@
           "name": "Threema",
           "note": "Threema GmbH (Switzerland). Paid, no phone-number required.",
           "origin": "europe"
+        },
+        {
+          "id": "whatsapp:telegram",
+          "name": "Telegram",
+          "origin": "other",
+          "homepage": "https://telegram.org",
+          "downloadURL": "https://telegram.org/dl/desktop/mac",
+          "note": "Telegram FZ-LLC (UAE). Cloud-based with optional E2E (Secret Chats); 200k group limits, public channels."
         }
       ],
       "targetBundleID": "com.whatsapp.WhatsApp",
@@ -271,7 +315,8 @@
           "id": "qq:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         }
       ],
       "targetBundleID": "com.tencent.qq",
@@ -285,7 +330,8 @@
           "id": "dingtalk:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -895,7 +941,8 @@
           "id": "1p:bitwarden",
           "name": "Bitwarden",
           "note": "AGPL. Free tier generous, self-hostable via Vaultwarden.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos"
         },
         {
           "homepage": "https://keepassxc.org",
@@ -916,7 +963,8 @@
           "id": "1p7:bitwarden",
           "name": "Bitwarden",
           "note": "AGPL. Self-hostable password manager (free tier generous).",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos"
         },
         {
           "homepage": "https://keepassxc.org",
@@ -937,7 +985,8 @@
           "id": "lp:bitwarden",
           "name": "Bitwarden",
           "note": "AGPL. Self-hostable password manager (free tier generous).",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos"
         },
         {
           "homepage": "https://keepassxc.org",
@@ -958,7 +1007,8 @@
           "id": "dashlane:bitwarden",
           "name": "Bitwarden",
           "note": "AGPL. Self-hostable password manager (free tier generous).",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos"
         },
         {
           "homepage": "https://proton.me/pass",
@@ -986,7 +1036,8 @@
           "id": "chatgpt:ollama",
           "name": "Ollama",
           "note": "MIT. CLI + API for local model inference.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://ollama.com/download/Ollama-darwin.zip"
         },
         {
           "homepage": "https://chat.mistral.ai",
@@ -1098,7 +1149,8 @@
           "id": "tmeet:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         }
       ],
       "targetBundleID": "com.tencent.meeting.mac",
@@ -1126,7 +1178,8 @@
           "id": "aliwork:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://www.onlyoffice.com",
@@ -1156,6 +1209,14 @@
           "name": "Vivaldi",
           "note": "Norway. Workspace-oriented browser.",
           "origin": "europe"
+        },
+        {
+          "id": "arc:brave",
+          "name": "Brave",
+          "origin": "oss",
+          "homepage": "https://brave.com",
+          "downloadURL": "https://referrals.brave.com/latest/Brave-Browser.dmg",
+          "note": "Brave Software (US). Chromium-based with ad / tracker blocking + Tor windows."
         }
       ],
       "targetBundleID": "company.thebrowser.Browser",
@@ -1507,7 +1568,8 @@
           "id": "warp:iterm2",
           "name": "iTerm2",
           "note": "GPL. Long-standing Mac terminal.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://iterm2.com/downloads/stable/latest"
         },
         {
           "homepage": "https://ghostty.org",
@@ -1675,7 +1737,8 @@
           "id": "nord:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). Open-source clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -1696,7 +1759,8 @@
           "id": "evpn:protonvpn",
           "name": "ProtonVPN",
           "note": "Switzerland.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -1717,7 +1781,8 @@
           "id": "istat:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         }
       ],
       "targetBundleID": "com.bjango.istatmenus",
@@ -1920,7 +1985,8 @@
           "id": "gmeet:element",
           "name": "Element",
           "note": "UK. Matrix protocol with video.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         }
       ],
       "targetBundleID": "com.google.Meet",
@@ -1962,7 +2028,8 @@
           "id": "line:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         }
       ],
       "targetBundleID": "jp.naver.line.mac",
@@ -2061,6 +2128,14 @@
           "name": "VirtualBuddy",
           "note": "BSD. Lightweight macOS-on-Apple-Silicon virtualization.",
           "origin": "oss"
+        },
+        {
+          "id": "parallels:docker",
+          "name": "Docker Desktop",
+          "origin": "other",
+          "homepage": "https://www.docker.com",
+          "downloadURL": "https://desktop.docker.com/mac/main/arm64/Docker.dmg",
+          "note": "Docker Inc (US). For container workloads only — not full VMs. Free for personal use; paid for enterprise."
         }
       ],
       "targetBundleID": "com.parallels.desktop.console",
@@ -2082,6 +2157,14 @@
           "name": "VirtualBuddy",
           "note": "BSD. Lightweight macOS-on-Apple-Silicon VM.",
           "origin": "oss"
+        },
+        {
+          "id": "vmwarefusion:docker",
+          "name": "Docker Desktop",
+          "origin": "other",
+          "homepage": "https://www.docker.com",
+          "downloadURL": "https://desktop.docker.com/mac/main/arm64/Docker.dmg",
+          "note": "Docker Inc (US). Container-focused — not a Windows-VM replacement, but covers most dev-environment use cases."
         }
       ],
       "targetBundleID": "com.vmware.fusion",
@@ -2158,7 +2241,8 @@
           "id": "endnote:zotero",
           "name": "Zotero",
           "note": "AGPL. Free reference manager, Mozilla Foundation-adjacent.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://www.zotero.org/download/client/dl?platform=mac&channel=release"
         }
       ],
       "targetBundleID": "com.ThomsonReuters.EndNote",
@@ -2172,7 +2256,8 @@
           "id": "feishu:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -2599,7 +2684,8 @@
           "id": "sogou:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -2627,7 +2713,8 @@
           "id": "baidu-input:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -2818,7 +2905,8 @@
           "id": "lemon-cleaner:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -3015,7 +3103,8 @@
           "id": "wechatwork:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -3043,7 +3132,8 @@
           "id": "appgallery:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -3071,7 +3161,8 @@
           "id": "huawei-pc:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -3190,7 +3281,8 @@
           "id": "mailru-agent:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -3218,7 +3310,8 @@
           "id": "vk-messenger:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -3366,7 +3459,8 @@
           "id": "kpm:bitwarden",
           "name": "Bitwarden",
           "note": "AGPL. Self-hostable via Vaultwarden.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos"
         },
         {
           "homepage": "https://keepassxc.org",
@@ -3394,7 +3488,8 @@
           "id": "ksk:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -3422,7 +3517,8 @@
           "id": "kvpn:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -3675,7 +3771,8 @@
           "id": "mru-calls:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -3731,7 +3828,8 @@
           "id": "huddles:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -3759,7 +3857,8 @@
           "id": "s4b:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -3787,7 +3886,8 @@
           "id": "chime:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -5162,7 +5262,8 @@
           "id": "cf-one:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -5533,7 +5634,8 @@
           "id": "anyconnect:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -5561,7 +5663,8 @@
           "id": "umbrella:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -5589,7 +5692,8 @@
           "id": "cisco-sc:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -5617,7 +5721,8 @@
           "id": "globalprotect:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -7150,7 +7255,8 @@
           "id": "textexpander:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -7647,7 +7753,8 @@
           "id": "razer:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -7675,7 +7782,8 @@
           "id": "icue:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -7703,7 +7811,8 @@
           "id": "endnote2:zotero",
           "name": "Zotero",
           "note": "AGPL. Reference manager.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://www.zotero.org/download/client/dl?platform=mac&channel=release"
         },
         {
           "homepage": "https://www.jabref.org",
@@ -8305,7 +8414,8 @@
           "id": "lemon:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -8361,7 +8471,8 @@
           "id": "epic:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -8389,7 +8500,8 @@
           "id": "battlenet:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -8417,7 +8529,8 @@
           "id": "ea:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -8516,7 +8629,8 @@
           "id": "gotomeeting:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -8572,7 +8686,8 @@
           "id": "gotowebinar:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -9307,7 +9422,8 @@
           "id": "1p7-dup:bitwarden",
           "name": "Bitwarden",
           "note": "AGPL. Self-hostable via Vaultwarden.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos"
         },
         {
           "homepage": "https://keepassxc.org",
@@ -9384,7 +9500,8 @@
           "id": "warp-alt:iterm2",
           "name": "iTerm2",
           "note": "GPL. Long-standing Mac terminal.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://iterm2.com/downloads/stable/latest"
         },
         {
           "homepage": "https://ghostty.org",
@@ -9951,7 +10068,8 @@
           "id": "msauth:bitwarden",
           "name": "Bitwarden",
           "note": "AGPL. Self-hostable via Vaultwarden.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos"
         },
         {
           "homepage": "https://keepassxc.org",
@@ -9979,7 +10097,8 @@
           "id": "swiftkey:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -10063,7 +10182,8 @@
           "id": "yammer:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -10091,7 +10211,8 @@
           "id": "kaizala:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -10420,7 +10541,8 @@
           "id": "gvoice:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -10448,7 +10570,8 @@
           "id": "gduo:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -10490,7 +10613,8 @@
           "id": "ghome:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -10518,7 +10642,8 @@
           "id": "gfi:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -10820,7 +10945,8 @@
           "id": "workplace-chat:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -10855,7 +10981,8 @@
           "id": "fbportal:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -10883,7 +11010,8 @@
           "id": "igdirect:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -10988,7 +11116,8 @@
           "id": "arcade:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -11471,7 +11600,8 @@
           "id": "facetime:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -11499,7 +11629,8 @@
           "id": "imessage:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -11681,7 +11812,8 @@
           "id": "betterhelp:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -11709,7 +11841,8 @@
           "id": "talkspace:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -12451,7 +12584,8 @@
           "id": "twilio:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -13530,7 +13664,8 @@
           "id": "cloudlink:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -13551,7 +13686,8 @@
           "id": "welink:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -14511,7 +14647,8 @@
           "id": "mtslink:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -14812,7 +14949,8 @@
           "id": "rockstar:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -14840,7 +14978,8 @@
           "id": "lol:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -14868,7 +15007,8 @@
           "id": "ow2:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -14896,7 +15036,8 @@
           "id": "dota2:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -14924,7 +15065,8 @@
           "id": "popclip:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -14994,7 +15136,8 @@
           "id": "setapp:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -15148,7 +15291,8 @@
           "id": "seeyon:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -15176,7 +15320,8 @@
           "id": "wework-cn:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -15456,7 +15601,8 @@
           "id": "wos:zotero",
           "name": "Zotero",
           "note": "AGPL. Reference manager.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://www.zotero.org/download/client/dl?platform=mac&channel=release"
         },
         {
           "homepage": "https://www.jabref.org",
@@ -15477,7 +15623,8 @@
           "id": "refworks:zotero",
           "name": "Zotero",
           "note": "AGPL. Reference manager.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://www.zotero.org/download/client/dl?platform=mac&channel=release"
         },
         {
           "homepage": "https://www.jabref.org",
@@ -15526,7 +15673,8 @@
           "id": "km:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -15554,7 +15702,8 @@
           "id": "handmirror:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -15582,7 +15731,8 @@
           "id": "micdrop:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -16171,7 +16321,8 @@
           "id": "zohomeet:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -16248,7 +16399,8 @@
           "id": "enpass:bitwarden",
           "name": "Bitwarden",
           "note": "AGPL. Self-hostable via Vaultwarden.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos"
         },
         {
           "homepage": "https://keepassxc.org",
@@ -16409,7 +16561,8 @@
           "id": "line-alt:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -16437,7 +16590,8 @@
           "id": "viber:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -16507,7 +16661,8 @@
           "id": "chatwork:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://mattermost.com",
@@ -16711,7 +16866,8 @@
           "id": "kddi:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -16746,7 +16902,8 @@
           "id": "kakao:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -16823,7 +16980,8 @@
           "id": "naver-line:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -17412,7 +17570,8 @@
           "id": "truecaller:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -18400,7 +18559,8 @@
           "id": "mail-vpn:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -18428,7 +18588,8 @@
           "id": "planeta-vpn:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -19144,7 +19305,8 @@
           "id": "fig:iterm2",
           "name": "iTerm2",
           "note": "GPL. Long-standing Mac terminal.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://iterm2.com/downloads/stable/latest"
         },
         {
           "homepage": "https://ghostty.org",
@@ -19732,7 +19894,8 @@
           "id": "honey:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -19816,7 +19979,8 @@
           "id": "cap1shop:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -19916,7 +20080,8 @@
           "id": "blink:iterm2",
           "name": "iTerm2",
           "note": "GPL. Long-standing Mac terminal.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://iterm2.com/downloads/stable/latest"
         },
         {
           "homepage": "https://ghostty.org",
@@ -19944,7 +20109,8 @@
           "id": "termius:iterm2",
           "name": "iTerm2",
           "note": "GPL. Long-standing Mac terminal.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://iterm2.com/downloads/stable/latest"
         },
         {
           "homepage": "https://ghostty.org",
@@ -19972,7 +20138,8 @@
           "id": "shuttle:iterm2",
           "name": "iTerm2",
           "note": "GPL. Long-standing Mac terminal.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://iterm2.com/downloads/stable/latest"
         },
         {
           "homepage": "https://ghostty.org",
@@ -20000,7 +20167,8 @@
           "id": "ring:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20028,7 +20196,8 @@
           "id": "nest:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20056,7 +20225,8 @@
           "id": "ecobee:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20084,7 +20254,8 @@
           "id": "arlo:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20112,7 +20283,8 @@
           "id": "wyze:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20651,7 +20823,8 @@
           "id": "meizu:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20679,7 +20852,8 @@
           "id": "oppo:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20707,7 +20881,8 @@
           "id": "vivo:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20735,7 +20910,8 @@
           "id": "honor:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20763,7 +20939,8 @@
           "id": "lenovo:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20791,7 +20968,8 @@
           "id": "lenovo-sc:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20819,7 +20997,8 @@
           "id": "acer:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -20847,7 +21026,8 @@
           "id": "asus:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -21155,7 +21335,8 @@
           "id": "ipvanish:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -21183,7 +21364,8 @@
           "id": "hotspotshield:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -21211,7 +21393,8 @@
           "id": "pia:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -21239,7 +21422,8 @@
           "id": "windscribe:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -21267,7 +21451,8 @@
           "id": "tunnelbear:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -21295,7 +21480,8 @@
           "id": "purevpn:protonvpn",
           "name": "ProtonVPN",
           "note": "Proton AG (Switzerland). OSS clients, WireGuard.",
-          "origin": "europe"
+          "origin": "europe",
+          "downloadURL": "https://protonvpn.com/download/ProtonVPN.dmg"
         },
         {
           "homepage": "https://mullvad.net",
@@ -21764,7 +21950,8 @@
           "id": "roblox:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -21792,7 +21979,8 @@
           "id": "minecraft:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -21820,7 +22008,8 @@
           "id": "mcbedrock:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -21848,7 +22037,8 @@
           "id": "nintendo:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -21967,7 +22157,8 @@
           "id": "onemed:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -21995,7 +22186,8 @@
           "id": "teladoc:element",
           "name": "Element",
           "note": "Element (UK). Matrix protocol, federated chat.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://wire.com",
@@ -22450,7 +22642,8 @@
           "id": "genshin:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22478,7 +22671,8 @@
           "id": "starrail:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22506,7 +22700,8 @@
           "id": "zzz:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22534,7 +22729,8 @@
           "id": "honkai3:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22562,7 +22758,8 @@
           "id": "pubgm:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22590,7 +22787,8 @@
           "id": "codmcn:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22618,7 +22816,8 @@
           "id": "mir:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22646,7 +22845,8 @@
           "id": "arknights:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22674,7 +22874,8 @@
           "id": "onmyoji:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22702,7 +22903,8 @@
           "id": "identityv:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22730,7 +22932,8 @@
           "id": "mc-cn:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22758,7 +22961,8 @@
           "id": "perfectworld:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22786,7 +22990,8 @@
           "id": "shanda:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22814,7 +23019,8 @@
           "id": "jx3:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22842,7 +23048,8 @@
           "id": "hotpot:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -22891,7 +23098,8 @@
           "id": "iflytek-input:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -23178,7 +23386,8 @@
           "id": "miniqq:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -23312,7 +23521,8 @@
           "id": "ksafe:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24040,7 +24250,8 @@
           "id": "se-client:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24068,7 +24279,8 @@
           "id": "ffxiv:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24096,7 +24308,8 @@
           "id": "capcom:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24124,7 +24337,8 @@
           "id": "bandai:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24152,7 +24366,8 @@
           "id": "efootball:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24180,7 +24395,8 @@
           "id": "sega:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24208,7 +24424,8 @@
           "id": "atlus:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24804,7 +25021,8 @@
           "id": "nexon:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24832,7 +25050,8 @@
           "id": "pearlabyss:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24860,7 +25079,8 @@
           "id": "ncsoft:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24888,7 +25108,8 @@
           "id": "krafton:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24916,7 +25137,8 @@
           "id": "kakaogames:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24944,7 +25166,8 @@
           "id": "smilegate:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -24972,7 +25195,8 @@
           "id": "ragnarok:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -25679,7 +25903,8 @@
           "id": "zalo:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -26939,7 +27164,8 @@
           "id": "prodigy:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -27954,7 +28180,8 @@
           "id": "gmessages:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -28003,7 +28230,8 @@
           "id": "gphone:element",
           "name": "Element",
           "note": "UK. Matrix protocol, self-hostable.",
-          "origin": "europeAndOSS"
+          "origin": "europeAndOSS",
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg"
         },
         {
           "homepage": "https://threema.ch",
@@ -28087,7 +28315,8 @@
           "id": "shortcuts:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -28766,7 +28995,8 @@
           "id": "cmd-pro:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -28843,7 +29073,8 @@
           "id": "tesla:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -28871,7 +29102,8 @@
           "id": "spectre:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -28899,7 +29131,8 @@
           "id": "vo-companion:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",
@@ -30412,7 +30645,8 @@
           "id": "arcade-alt:stats",
           "name": "Stats",
           "note": "MIT. System-monitor menu bar.",
-          "origin": "oss"
+          "origin": "oss",
+          "downloadURL": "https://github.com/exelban/stats/releases/latest/download/Stats.dmg"
         },
         {
           "homepage": "https://www.clamxav.com",

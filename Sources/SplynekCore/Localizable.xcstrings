@@ -21301,6 +21301,146 @@
           }
         }
       }
+    },
+    "Get installer": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installer holen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtener instalador"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récupérer l'installateur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ottieni installer"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obter instalador"
+          }
+        }
+      }
+    },
+    "Open \\(alt.name) download page in browser": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(alt.name)-Download-Seite im Browser öffnen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir la página de descarga de \\(alt.name) en el navegador"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir la page de téléchargement de \\(alt.name) dans le navigateur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri la pagina di download di \\(alt.name) nel browser"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir a página de transferência de \\(alt.name) no navegador"
+          }
+        }
+      }
+    },
+    "Splynek doesn't have a direct download URL for \\(alt.name) yet — opens \\(alt.homepage.host ?? alt.name) where you can grab the installer.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek hat noch keine direkte Download-URL für \\(alt.name) — öffnet \\(alt.homepage.host ?? alt.name), wo du den Installer holen kannst."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek aún no tiene una URL de descarga directa para \\(alt.name) — abre \\(alt.homepage.host ?? alt.name) donde puedes coger el instalador."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek n'a pas encore d'URL de téléchargement direct pour \\(alt.name) — ouvre \\(alt.homepage.host ?? alt.name) où tu peux récupérer l'installateur."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek non ha ancora un URL di download diretto per \\(alt.name) — apre \\(alt.homepage.host ?? alt.name) dove puoi prendere l'installer."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek ainda não tem um URL de transferência direta para \\(alt.name) — abre \\(alt.homepage.host ?? alt.name) onde podes obter o instalador."
+          }
+        }
+      }
+    },
+    "Download \\(alt.name) directly via Splynek (multi-interface, verified).": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(alt.name) direkt via Splynek herunterladen (Mehrfach-Interface, verifiziert)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar \\(alt.name) directamente vía Splynek (multi-interfaz, verificado)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger \\(alt.name) directement via Splynek (multi-interface, vérifié)."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarica \\(alt.name) direttamente tramite Splynek (multi-interfaccia, verificato)."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfere \\(alt.name) diretamente via Splynek (multi-interface, verificado)."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
