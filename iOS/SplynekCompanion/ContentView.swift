@@ -12,7 +12,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var selection: Tab = .macs
 
-    enum Tab: Hashable { case macs, submit }
+    enum Tab: Hashable { case macs, submit, settings }
 
     var body: some View {
         TabView(selection: $selection) {
@@ -23,6 +23,10 @@ struct ContentView: View {
             NavigationStack { SubmitURLView() }
                 .tabItem { Label("Submit", systemImage: "arrow.up.doc.on.clipboard") }
                 .tag(Tab.submit)
+
+            NavigationStack { SettingsView() }
+                .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tag(Tab.settings)
         }
     }
 }

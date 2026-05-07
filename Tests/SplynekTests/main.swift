@@ -101,6 +101,9 @@ CompanionPairURLTests.run()
 // exercised on-device only.
 CompanionRelayPolicyTests.run()
 CompanionCloudKitRecordTests.run()
+// S4 polish (2026-05-07): per-Mac health classifier driving the
+// iOS Settings tab's status badges.
+CompanionPairingHealthTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

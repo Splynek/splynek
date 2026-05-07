@@ -65,6 +65,22 @@ enum CompanionStoreTests {
             }
         }
 
+        TestHarness.suite("PairedMacStore — cloudKitRelayEnabled default") {
+
+            TestHarness.test("Fresh in-memory store defaults to true") {
+                let store = PairedMacStore.inMemory()
+                try expect(store.cloudKitRelayEnabled == true)
+            }
+
+            TestHarness.test("Setter persists across reads") {
+                let store = PairedMacStore.inMemory()
+                store.cloudKitRelayEnabled = false
+                try expect(store.cloudKitRelayEnabled == false)
+                store.cloudKitRelayEnabled = true
+                try expect(store.cloudKitRelayEnabled == true)
+            }
+        }
+
         TestHarness.suite("PairedMac.baseURL") {
 
             TestHarness.test("Composes http URL from host + port") {

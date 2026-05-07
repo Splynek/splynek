@@ -1663,10 +1663,83 @@ receiver, schema, entitlements, and tests are mutually-coherent
 — partial commits would leave the Mac compiling but unable to
 read the schema, or vice versa.
 
+### Latest landing (2026-05-07 part 5): S4 polish — Settings tab + diagnostics
+
+After phase 3 landed, the iOS Companion still had a UX gap: the
+`cloudKitRelayEnabled` toggle was stored + read but had no UI
+surface — invisible to the user.  And a freshly-installed
+companion had no way for a user to verify "is my pairing healthy?"
+which would become "why isn't this working?" support tickets the
+moment we hit TestFlight.
+
+#### What landed
+
+A third tab `SettingsView` with three sections:
+
+1. **Paired Macs** — per-Mac status row.  Three health tiers
+   driven by the new `PairingHealthEvaluator`:
+   - `online` (green dot, "On this Wi-Fi") — Mac is in the live
+     Bonjour discovery set right now.
+   - `recent` (blue dot, "Reachable via iCloud") — not on Bonjour
+     but lastSeen ≤ 24h.  CloudKit relay covers this case.
+   - `stale` (grey dot, "Not seen recently") — lastSeen > 24h.
+     Settings UI nudges "Test pairing" to confirm.
+   Each row has a "Test pairing" button that round-trips
+   `/splynek/v1/status` and surfaces latency or failure inline
+   ("OK — 12 ms" / "Token rejected — re-pair this Mac." /
+   "Unreachable — \(reason)").  On success, lastSeen bumps to
+   `Date()` so future health classifications stay fresh.
+
+2. **Relay** — `cloudKitRelayEnabled` toggle + explainer footer
+   that flips between "When the iPhone can't reach the Mac over
+   Wi-Fi, the URL is sent through your private iCloud database…"
+   and "URLs only send over local Wi-Fi. Submissions fail when
+   the Mac is unreachable."  Default-on (matches PairedMacStore's
+   default).
+
+3. **About** — version + build number from Bundle.main, plus a
+   Link to splynek.app.
+
+#### New shared type
+
+`iOS/Shared/PairingHealth.swift` — pure classifier with
+`PairingHealth` enum (online / recent / stale) + `displayLabel`
++ `evaluate(macUUID:lastSeen:bonjourUUIDs:now:recentThreshold:)`.
+Tests use injectable `now` + `recentThreshold` so we never write
+flaky calendar-arithmetic tests.
+
+#### Tests (12 new)
+
+- `CompanionPairingHealthTests` (10 tests) — every health tier
+  decision branch, including boundary case (exactly at threshold
+  is `recent` not `stale`), `recentThreshold` override, display
+  label invariants (non-empty + visually distinct).
+- `CompanionStoreTests` gained 2 tests covering the
+  `cloudKitRelayEnabled` default-on invariant + setter persistence.
+
+After this commit: **642 tests passing** (was 630 — +12; net +90
+over the 552 pre-S4 baseline).  **Build warnings: 0.**
+
+#### Numbers this part
+
+| Metric | Before polish | After polish | Δ |
+|---|---:|---:|---:|
+| Tests | 630 | **642** | +12 |
+| iOS Shared/ files | 12 | **13** | +1 |
+| iOS app files | 8 | **9** | +1 (`SettingsView.swift`) |
+| `ContentView.Tab` cases | 2 (Macs / Submit) | **3** (+ Settings) | +1 |
+
+#### One commit delivers polish
+
+```
+(pending) S4 polish: iOS Settings tab + paired-Mac diagnostics
+```
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
-(pending) S4 phase 3: CloudKit over-cellular relay
+(pending) S4 polish: iOS Settings tab + paired-Mac diagnostics
+2e381f4 S4 phase 3: CloudKit over-cellular relay
 eac2caf S4 phase 2: Live Activity + QR-code pairing
 b509954 S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
 aaddef8 Documentation: 2026-05-06/07 sweep + URL-verification automation
@@ -1764,8 +1837,8 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **628** | ×11.2 |
 | Translations (×5 locales) | 56 | **3,140** | ×56 |
-| Tests | 148 | **630** | ×4.3 |
-| Public-repo Swift files | 49 | **69** (top-level SplynekCore) / 144 (recursive incl. iOS/) | +20 / +95 |
+| Tests | 148 | **642** | ×4.3 |
+| Public-repo Swift files | 49 | **69** (top-level SplynekCore) / 146 (recursive incl. iOS/) | +20 / +97 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
 | Top-level docs | 1 (HANDOFF) | **7** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG + IOS-COMPANION) | +6 |

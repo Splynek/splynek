@@ -1,8 +1,9 @@
 # Splynek iOS Companion — Strategy Bet S4
 
-> Status: **foundation + phase 2 + phase 3 all landed 2026-05-07.**
-> Builds clean, 630 tests green (+78 over the pre-S4 baseline).
-> Not yet TestFlight'd — held behind Apple v1.0 macOS clearance.
+> Status: **foundation + phase 2 + phase 3 + Settings polish all
+> landed 2026-05-07.**  Builds clean, 642 tests green (+90 over the
+> pre-S4 baseline).  Not yet TestFlight'd — held behind Apple v1.0
+> macOS clearance.
 
 A free iPhone app that pairs with Splynek-Mac and submits URLs from
 anywhere — same Wi-Fi or cellular.  Six features now live:
@@ -100,13 +101,15 @@ else (Bonjour, REST endpoints, token storage) was already in place.
 iOS/
 ├── SplynekCompanion/                  main app (UIKit + SwiftUI)
 │   ├── SplynekCompanionApp.swift          @main
-│   ├── ContentView.swift                  Tab root (Macs / Submit)
+│   ├── ContentView.swift                  Tab root (Macs / Submit / Settings)
 │   ├── PairedMacsView.swift               list + Bonjour discoveries
 │   ├── PairingSheet.swift                 add-Mac flow + QR launch
 │   ├── QRScannerView.swift                AVFoundation QR scanner (phase 2)
 │   ├── JobsView.swift                     per-Mac active-jobs list
 │   ├── LiveActivityDriver.swift           ActivityKit lifecycle (phase 2)
 │   ├── SubmitURLView.swift                type-or-paste fallback
+│   ├── SettingsView.swift                 relay toggle + per-Mac health
+│   │                                       + Test-pairing probe (polish)
 │   └── Info.plist                         + NSSupportsLiveActivities
 │                                          + NSCameraUsageDescription
 ├── SplynekShareExtension/             Share Extension target
@@ -134,7 +137,8 @@ iOS/
 │   ├── LiveActivityCoordinator.swift      pure decide/project (p2)
 │   ├── RelayPolicy.swift                  pure LAN/CK fallback decision (p3)
 │   ├── CloudKitRelayRecord.swift          schema + CKRecord round-trip (p3)
-│   └── CloudKitRelaySubmitter.swift       iOS CKContainer writer (p3)
+│   ├── CloudKitRelaySubmitter.swift       iOS CKContainer writer (p3)
+│   └── PairingHealth.swift                online/recent/stale classifier (polish)
 └── Resources/
     ├── SplynekCompanion.entitlements        App Group + keychain + iCloud (p3)
     ├── SplynekShareExtension.entitlements   App Group + keychain + iCloud (p3)
@@ -295,12 +299,7 @@ receiver isn't even started when the user has LAN sharing off.
   v0.1.  Localization-catalog workflow used by Splynek-Mac (5
   locales, audit-script enforced) extends here once the UI
   surface stabilises.
-- [ ] **iOS Settings UI for cloudKitRelayEnabled toggle** — the
-  preference is stored + read; needs a SwiftUI Settings tab to
-  expose the toggle to the user.  Default is on, so most users
-  won't need to touch it.
-
-### Already shipped (phase 1 + phase 2 + phase 3)
+### Already shipped (phase 1 + phase 2 + phase 3 + polish)
 
 - [x] **Foundation skeleton (2026-05-07)** — iOS app + Share
   Extension + shared core + 27 tests.
@@ -319,6 +318,15 @@ receiver isn't even started when the user has LAN sharing off.
   raw `queue(...)` to `submitWithRelay(...)` + iCloud entitlements
   on Mac + iOS apps + Share Extension; 19 unit tests across pure
   encode/decode round-trip + every policy decision branch.
+- [x] **Settings tab + diagnostics (2026-05-07 polish)** — third
+  tab in `ContentView` exposing the `cloudKitRelayEnabled` toggle
+  (was hidden in code), per-Mac health row with three tiers
+  (`online` Bonjour-visible / `recent` ≤24h since last contact /
+  `stale` > 24h), "Test pairing" probe button that round-trips
+  `/splynek/v1/status` and surfaces latency or failure reason
+  inline, About section with version + build + splynek.app link.
+  12 new tests across `PairingHealthEvaluator` + the relay-toggle
+  default-on invariant.
 
 ## Why we shipped phase 2 immediately
 
