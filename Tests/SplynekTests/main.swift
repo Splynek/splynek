@@ -107,6 +107,8 @@ CompanionPairingHealthTests.run()
 // 2026-05-07 product expansion phase 1: deliveryKind classifier
 // driving Sovereignty UI badges.
 DeliveryKindTests.run()
+// Phase 2: AppPricing schema + SavingsSummary computation.
+SavingsTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

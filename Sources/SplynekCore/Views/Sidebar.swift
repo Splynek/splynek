@@ -3,6 +3,7 @@ import SwiftUI
 /// Which top-level section the sidebar is currently displaying.
 enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
     case downloads, live, torrents, concierge, recipes, sovereignty, trust,
+         savings, updates,
          agents,
          queue, fleet, install, benchmark, history, settings, legal, about
 
@@ -17,6 +18,8 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .recipes:     return "Recipes"
         case .sovereignty: return "Sovereignty"
         case .trust:       return "Trust"
+        case .savings:     return "Savings"
+        case .updates:     return "Updates"
         case .agents:      return "Agents"
         case .queue:       return "Queue"
         case .fleet:       return "Fleet"
@@ -38,6 +41,8 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .recipes:     return "list.star"
         case .sovereignty: return "shield.lefthalf.filled"
         case .trust:       return "checkmark.seal"
+        case .savings:     return "dollarsign.circle"
+        case .updates:     return "arrow.triangle.2.circlepath"
         case .agents:      return "antenna.radiowaves.left.and.right"
         case .queue:       return "line.3.horizontal.decrease.circle"
         case .fleet:       return "laptopcomputer.and.arrow.down"
@@ -126,6 +131,29 @@ struct Sidebar: View {
                             systemImage: "checkmark.seal",
                             accessory: AnyView(StatusPill(text: "NEW", style: .info,
                                                           inverted: selection == .trust))
+                        )
+                    }
+                    // 2026-05-07 product expansion: Savings tab.
+                    // Maps installed paid apps to free alternatives,
+                    // shows annualized cost + potential savings.
+                    NavigationLink(value: SidebarSection.savings) {
+                        sidebarRow(
+                            title: "Savings",
+                            systemImage: "dollarsign.circle",
+                            accessory: AnyView(StatusPill(text: "NEW", style: .info,
+                                                          inverted: selection == .savings))
+                        )
+                    }
+                    // 2026-05-07: Updates tab — universal updater.
+                    // Sparkle / GitHub releases / MAS / Homebrew /
+                    // publisher RSS, all in one place, with bonded
+                    // download + receipt-verified install.
+                    NavigationLink(value: SidebarSection.updates) {
+                        sidebarRow(
+                            title: "Updates",
+                            systemImage: "arrow.triangle.2.circlepath",
+                            accessory: AnyView(StatusPill(text: "NEW", style: .info,
+                                                          inverted: selection == .updates))
                         )
                     }
                 } header: {

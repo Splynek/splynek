@@ -92,6 +92,8 @@ struct RootView: View {
         case .recipes:     RecipeView(vm: vm)
         case .sovereignty: SovereigntyView(vm: vm)
         case .trust:       TrustView(vm: vm)
+        case .savings:     SavingsView(vm: vm)
+        case .updates:     UpdatesView(vm: vm)
         case .agents:      AgentsView(vm: vm)
         case .queue:       QueueView(vm: vm)
         case .fleet:       FleetView(vm: vm)
