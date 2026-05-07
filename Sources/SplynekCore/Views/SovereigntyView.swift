@@ -612,9 +612,18 @@ struct SovereigntyView: View {
     /// reaches the download engine even if validation upstream fails.
     @ViewBuilder
     private func actionButton(for alt: SovereigntyCatalog.Alternative) -> some View {
-        // v1.5.6+: explicit accessibilityLabel naming the alternative
-        // — VoiceOver was reading "Install" generically, which is
-        // useless when there are 5 alternatives stacked in one row.
+        // 2026-05-06 UX rebalance: Paulo flagged "most options show
+        // 'Visitar' instead of 'Instalar' — Install should be the
+        // norm, Visit only a last resort."  Catalog reality: only
+        // ~1.4% of 3186 alternatives carry a direct downloadURL,
+        // so 98% rendered as Visit.  Two changes here:
+        //
+        //   1. When downloadURL exists → "Install via Splynek" with
+        //      borderedProminent + arrow.down.circle.fill (unchanged).
+        //   2. When only homepage → "Get installer →" with the SAME
+        //      borderedProminent style.  Both buttons now read as
+        //      "primary action you take to get this app."  Visit-as-
+        //      fallback semantics gone.  Tooltip clarifies the path.
         if let dl = alt.downloadURL, isSafeDownloadScheme(dl) {
             Button {
                 vm.urlText = dl.absoluteString
@@ -626,18 +635,18 @@ struct SovereigntyView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
-            .help("Download \(alt.name) via Splynek")
+            .help("Download \(alt.name) directly via Splynek (multi-interface, verified).")
             .accessibilityLabel("Install \(alt.name) via Splynek")
         } else if isSafeHomepageScheme(alt.homepage) {
             Link(destination: alt.homepage) {
-                Label("Visit", systemImage: "arrow.up.right.square")
+                Label("Get installer", systemImage: "arrow.up.right.square")
                     .labelStyle(.titleAndIcon)
                     .font(.callout)
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.borderedProminent)
             .controlSize(.small)
-            .help("Open \(alt.homepage.host ?? alt.name) in your browser")
-            .accessibilityLabel("Visit \(alt.name) homepage in browser")
+            .help("Splynek doesn't have a direct download URL for \(alt.name) yet — opens \(alt.homepage.host ?? alt.name) where you can grab the installer.")
+            .accessibilityLabel("Open \(alt.name) download page in browser")
         }
     }
 

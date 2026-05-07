@@ -38,7 +38,7 @@ extension View {
     /// invitation" hover state on important CTAs.
     public func splynekHover(
         cornerRadius: CGFloat = 6,
-        tint: Color = .primary.opacity(0.06),
+        tint: Color = .primary.opacity(0.12),
         cursor: NSCursor = .pointingHand
     ) -> some View {
         modifier(SplynekHoverModifier(
@@ -109,8 +109,14 @@ public struct SplynekHoverButtonStyle: ButtonStyle {
 
     public init(
         cornerRadius: CGFloat = 6,
-        tint: Color = .primary.opacity(0.08)
+        tint: Color = .primary.opacity(0.16)
     ) {
+        // 2026-05-06 user-feedback bump: 0.08 was too subtle in
+        // dark mode against the dark window background — Paulo
+        // reported "I see the click state but not the hover".
+        // 0.16 reads clearly in both light + dark without feeling
+        // heavy.  Pressed state intensifies via tint × 1.6 →
+        // 0.26 effective opacity.
         self.cornerRadius = cornerRadius
         self.tint = tint
     }

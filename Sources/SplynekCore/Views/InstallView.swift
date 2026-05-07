@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import UniformTypeIdentifiers
 
 // =====================================================================
@@ -286,7 +287,15 @@ struct InstallView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     ForEach(records) { r in
                         HStack(alignment: .center, spacing: 10) {
-                            Image(systemName: "app").foregroundStyle(.tint)
+                            // 2026-05-06 fix: was `Image(systemName: "app")`
+                            // which renders as an empty rounded square —
+                            // looks identical to an unchecked checkbox,
+                            // so users tried to click it expecting
+                            // selection.  Now show the real app icon
+                            // pulled from the .app bundle, with a
+                            // filled-app SF Symbol fallback so the
+                            // checkbox confusion never happens.
+                            installedAppIcon(for: r)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(r.spec.name).font(.callout.weight(.medium))
                                 if let v = r.installedVersion {
@@ -407,6 +416,32 @@ struct InstallView: View {
             return "Last sweep: \(n) update(s), \(e) error(s) across \(candidates) candidate(s)."
         }
         return "\(candidates) app(s) opted in. No sweep yet — periodic runs every 6 hours."
+    }
+
+    /// Render the app's actual icon from its installed .app bundle when
+    /// possible.  Falls back to an SF Symbol that doesn't look like a
+    /// checkbox (the original `Image(systemName: "app")` was an empty
+    /// rounded square — users mistook it for an unchecked checkbox
+    /// + tried clicking it).
+    @ViewBuilder
+    private func installedAppIcon(for r: InstalledAppRecord) -> some View {
+        if FileManager.default.fileExists(atPath: r.installedAt.path) {
+            let nsImage = NSWorkspace.shared.icon(forFile: r.installedAt.path)
+            Image(nsImage: nsImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 28, height: 28)
+        } else {
+            // Fallback: app.fill is a SOLID rounded square — no
+            // checkbox confusion.  The SF Symbol library also has
+            // `app.badge.checkmark` but that re-introduces the
+            // "is-this-clickable?" question.
+            Image(systemName: "app.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 22, height: 22)
+                .foregroundStyle(.tint.opacity(0.7))
+        }
     }
 
     private func updateIcon(for u: AutoUpdateScheduler.Sweep.Update) -> String {
