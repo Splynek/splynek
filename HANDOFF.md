@@ -22,7 +22,7 @@ xcrun stapler staple build/Splynek.dmg
 **Tests:** `swift run splynek-test` (552 tests, all green) — `swift build` produces **0 warnings on clean rebuild**
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
-**Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-04.**
+**Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-07.**
 **Architectural state on `main`: next-release rollup ready** — single coherent forward release containing Concierge-as-Mac-Assistant, Verified Installer (osascript + SMJobBless paths), Fleet 2.0 LAN peer cache (with warm-cache, auto-join, household swarm token), **Bet S2 Unbreakable Resume** (path-flip pause/resume with sidecar continuity + curated mirror failover for Ubuntu/Debian/Fedora), **Bet S3 yt-dlp swallow** (DMG-only dispatch when user has yt-dlp installed; YouTube/Twitch/Instagram/TikTok/X/Vimeo/Bilibili route through it), **Bet S5 Browser Accelerator** (Chrome + Safari WebExtensions with `declarativeNetRequest` redirect; intercepts ≥50 MB downloads + HLS/DASH manifest URLs; HLSProxyServer rewrites segment URLs through localhost proxy + pre-buffers via BondedFetcher's multi-interface bonded Range fetch + LRU ring buffer), **Bet S6 File Witness** (Ed25519-signed download receipts with standalone verifier), **9 publisher patterns** (Mozilla/Apache/Debian/Ubuntu/Arch/GitHub/kernel.org/PyPI/Hugging Face) for digest auto-extraction, and the localization audit-script + CI guardrails (whole-file scan, scans both public + Pro repos).
 
 **Versioning policy (set 2026-05-05):** stop opening new sub-version branches (no more v1.7.x, v1.8.x, v1.9.x, S2/S3/etc.) — all forward work piles into the single "next-release rollup" until tagged.  Sub-versions were useful as in-flight planning labels but became unmanageable proliferation; consolidate at land time.
@@ -37,10 +37,10 @@ tagging happens after the maintainer picks a cut point.  Holding all
 release gestures (push tag, cut DMG, deploy landing, push cask) until
 Apple v1.0 clears Mac App Store re-review.
 
-Catalog state on `main` (after v1.6.2 rounds 1–8 + v1.7→v1.9.7 i18n adds + audit-extension catch-up):
-- Localizable.xcstrings: **535 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **2,675 translations**.
+Catalog state on `main` (after v1.6.2 rounds 1–8 + v1.7→v1.9.7 i18n adds + audit-extension catch-up + 2026-05-06/07 UI/UX + catalog-coverage sweep):
+- Localizable.xcstrings: **628 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **3,140 translations**.
 - Trust catalog: **151 entries** (was 30 at v1.6.0 start; +121 across the v1.6.x sprint).
-- Sovereignty catalog: 1,155 entries (unchanged since v1.4).
+- Sovereignty catalog: 1,155 entries (unchanged since v1.4); **3,194 alternatives** total of which **223 (7.0%) carry a verified direct `downloadURL`** for one-click install.  Coverage is auto-pruned weekly — the cron strips broken downloadURLs and opens a PR for review (see "URL verification automation" below).
 
 The `main` branch carries v1.5.4 → v1.6.2 commits but **none are tagged or uploaded yet**. They're staged to ship as a single rolled-up `v1.6.2` release once Apple clears v1.0 (we hold the DMG cut so an Apple Reviewer who URL-spelunks doesn't pull in newer behaviour they didn't approve).
 
@@ -372,7 +372,7 @@ commit, every architectural decision, and every open position).
 | **Sovereignty cron trigger** | ⏳ First fire **2026-05-01 09:00 UTC**. Public repo only; drafts up to 20 catalog entries from `Scripts/sources/*.json`, opens PR. | https://claude.ai/code/scheduled/trig_01JEuDpurUC21nHkumwdEfaB |
 | **Trust cron trigger** | ⏳ First fire **2026-05-15 09:00 UTC**. Refreshes catalog entries with `lastReviewed > 90 days`, checks NVD + HIBP for new findings, opens PR. | https://claude.ai/code/scheduled/trig_01VZNTUM4ikbYH5XBtpnn1ER |
 | **Quarterly audit cron** | ⏳ First fire **2026-06-01 09:00 UTC**. Audits a rotating area (Q1=networking, Q2=views, Q3=scripts, Q4=build), opens GitHub issue with `audit` label. | https://claude.ai/code/scheduled/trig_0161CxCRWwnG5F48ynpTaspi |
-| **GitHub Actions weekly** | ✅ Live — runs Sovereignty validator + URL liveness check every Monday. | `.github/workflows/sovereignty-weekly.yml` |
+| **GitHub Actions weekly** | ✅ Live — runs Sovereignty validator + URL liveness check every Monday at 09:00 UTC.  **Plus auto-prune (added 2026-05-07):** Content-Type-aware verification of every `downloadURL` (a 200 OK that returns text/html is treated as broken because it's a landing page, not a binary installer); broken URLs auto-pruned + opened as a labeled PR for human review.  Never auto-merges. | `.github/workflows/sovereignty-weekly.yml` |
 | **Homebrew tap** | ✅ Live at [`Splynek/homebrew-splynek`](https://github.com/Splynek/homebrew-splynek). Install: `brew install --cask Splynek/splynek/splynek`. | Self-hosted |
 | **Upstream homebrew/cask** | ❌ PR #261294 auto-rejected (notability: 0 stars / 0 forks / 0 watchers vs ≥75 / ≥30 / ≥30 needed). Resubmit after Show HN drives stars. | https://github.com/Homebrew/homebrew-cask/pull/261294 |
 | **splynek.app landing** | ⏸️ Still on v1.3 copy. New copy ready in `docs/index.v1.6.2.html.draft` (NOT live). Deploy: `mv docs/index.html docs/index.v1.4.previous.html && mv docs/index.v1.6.2.html.draft docs/index.html && git push` — **only after** v1.0 clears Apple. |
@@ -382,7 +382,7 @@ commit, every architectural decision, and every open position).
 
 | Repo | Branch | Latest commit | Status |
 |---|---|---|---|
-| `Splynek/splynek` (public) | `main` | `e9e7002` (S5 ship: bonded segment fetch + DASH manifest support) — 93 commits ahead of origin | clean working tree |
+| `Splynek/splynek` (public) | `main` | `72e57b9` (Sovereignty: automate URL verification with Content-Type validation + auto-prune) — 99 commits ahead of origin | clean working tree |
 | `Splynek/splynek-pro` (private) | `main` | `803b830` (ConciergeView layout fix — input bar via safeAreaInset) — 3 commits ahead of origin (commits: `c64deb1` PDF drag-to-summarize, `369a69d` MAS build fixes, `803b830` input bar fix) | clean |
 | `Splynek/homebrew-splynek` (tap) | `main` | initial v1.5.3 cask | clean |
 
@@ -712,8 +712,8 @@ release-notes bodies.
   - `Scripts/ai-propose.swift` — drafts alt-sets for each candidate via local LLM (LM Studio, Ollama, OpenAI-compat). System prompt mirrors the FORBIDDEN PATTERNS block in `splynek-pro/AIAssistant.swift` to minimise US-leakage. Output: `Scripts/proposals.json`.
   - `Scripts/merge-proposals.swift` — reviewer-in-the-loop; interactive prompts (a/s/q) or `--auto-accept high` for trusted batches; validates against catalog invariants before merge.
   - `Scripts/validate-catalog.swift` — offline lint: bundle-ID format, dup IDs, short/long notes, non-https homepages, placeholder hosts. Errors are hard-fail; warnings flagged. `--strict` makes warnings fail too.
-  - `Scripts/check-urls.swift` — concurrent online URL checker. Default 20 workers, 15s timeout per URL. `--json` for CI consumption, `--fail-on-rot` for non-zero exit.
-  - `.github/workflows/sovereignty-weekly.yml` — weekly cron: lint + regen-roundtrip + URL health; opens a labeled GitHub issue if URLs rotted.
+  - `Scripts/check-urls.swift` — concurrent online URL checker. Default 20 workers, 15s timeout per URL. `--json` for CI consumption, `--fail-on-rot` for non-zero exit. **Content-Type-aware (v1.5.7, 2026-05-07):** captures `Content-Type` per response; for `kind == "download"`, a 200 OK that returns text/html is flagged as `wrongContentType` rot — catches the GitHub `releases/latest/download/<file>.dmg` failure mode where artifact filenames embed versions and the redirect 404s into a friendly HTML page.  **Auto-prune:** `--prune-broken-downloads` rewrites the catalog in place, removing only the `downloadURL` field on broken alternatives (entry stays; falls back to homepage-only).  True rot only — transient failures are spared.  Idempotent: clean catalog runs as md5-unchanged no-op.
+  - `.github/workflows/sovereignty-weekly.yml` — weekly cron: lint + regen-roundtrip + URL health.  Opens a labeled GitHub issue when URLs rotted, **and** runs `--prune-broken-downloads` in a third job that opens a PR via `peter-evans/create-pull-request@v6` for human review (never auto-merges, never runs on PRs).
 - New `splynek-cli sovereignty-dump` subcommand: reverse-exports the catalog back to JSON (for verifying round-trip, or reseeding the JSON if Swift gets edited directly).
 - The v1.4 bulk-seed itself is in `Scripts/seed-sovereignty-bulk.swift` — category templates × target tuples; idempotent, re-runnable. Useful for future bulk imports from curated external lists (european-alternatives.eu, switching.software, awesome-euro-tech).
 - New `splynek-cli sovereignty-dump` subcommand: reverse-exports the catalog back to JSON (for verifying round-trip, or reseeding the JSON if Swift gets edited directly).

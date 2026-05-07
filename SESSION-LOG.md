@@ -1019,9 +1019,196 @@ a4af998 S5 first half: Chrome Accelerator intercept (off-by-default)
 bf9d3a0 S3 dispatch: yt-dlp wired into Source view + History
 ```
 
+### Latest landing (2026-05-06/07): UI/UX polish + Sovereignty catalog expansion + URL-verification automation
+
+Two-day arc covering everything between the S5 ship and now.  Six
+commits, no version bump (still v1.6.2 in Info.plist; release held
+behind Apple v1.0 re-review).  Three discrete tracks:
+
+#### Track 1 — UI/UX polish (`d26ac6b`, `3687633`, `702fb25`)
+
+User feedback: button hover states were invisible, the Benchmark
+process appeared to hang on tab-switch, and the Install tab's
+filename column had grey "checkbox-looking" glyphs that did nothing.
+
+**Hover affordances** (`d26ac6b`).  New `HoverEffects.swift` exports
+three reusable primitives:
+- `.splynekHover()` — tint-on-hover modifier for any view
+- `.splynekHoverCursor()` — pointer-cursor without tint
+- `.buttonStyle(.splynekHover)` — full ButtonStyle replacement for
+  `.borderless`, with NSCursor.push/.pop for pointer cursor +
+  tint-on-hover
+
+Bulk-replaced `.buttonStyle(.borderless)` → `.buttonStyle(.splynekHover)`
+across 30 buttons in 9 files (DownloadView, HistoryView, AgentsView,
+FleetView, SettingsView, TorrentView, UsageTimelineView, OnboardingSheet,
+LegalView).  In the Pro repo: ConciergeCardView, ConciergeView
+(`suggestionChip(_:)` + `macAssistantChip(_:icon:)`), RecipeView
+(themed-idea card + URL link).
+
+Initial tint of 0.08 was invisible in dark mode; bumped to 0.16
+(button style) and 0.12 (modifier) after second feedback round
+("Vejo o button state on click, não vejo o on hover").
+
+**Benchmark live progress + tab-switch survival** (`3687633`).
+Two bugs:
+1. `executar avaliação` showed only a spinner — no readout — making
+   it look hung even when running.
+2. Switching tabs and coming back showed the runner stopped: the
+   `@StateObject` was view-scoped, so SwiftUI tore it down on tab
+   switch.
+
+Fixes:
+- Hoisted `BenchmarkRunner` ownership from view to `ViewModel`
+  (`@StateObject` → `let benchmarkRunner = BenchmarkRunner()` on VM,
+  `@ObservedObject` in the view).  Survives tab switches because
+  the VM is app-scoped.
+- BenchmarkRunner now publishes `liveBytes`, `liveExpectedBytes`,
+  `liveThroughputBps`.  A 250 ms polling task during `probe(...)`
+  reads `progress.downloaded` / `progress.totalBytes` and surfaces
+  spinner + phase + GradientProgressBar + live bytes/throughput
+  stats in the new `runningProgressBlock` view.
+
+**Install-tab "checkbox" confusion + Sovereignty Visit→Get-installer
+rebalance + hover tint bump** (`702fb25`).  Three fixes in one commit
+because they were all "user looked at the screen and was confused":
+- InstallView's filename column showed `Image(systemName: "app")`
+  glyphs — empty squares that read as broken checkboxes.  Replaced
+  with `installedAppIcon(for:)` using `NSWorkspace.shared.icon(forFile:
+  r.installedAt.path)` (real .app icons), with `app.fill` as the
+  fallback when no `installedAt` URL is present.  Added `import AppKit`.
+- SovereigntyView's `actionButton(for:)`: when only `homepage` exists
+  (no `downloadURL`), the button used to be `.bordered` + "Visit".
+  Rebalanced to `.borderedProminent` + "Get installer" with a tooltip
+  explaining "Splynek doesn't have a direct download URL for X yet —
+  opens its homepage where you can grab the installer."  This makes
+  Install the visual norm + Visit the residual case rather than the
+  reverse.  +4 strings × 5 locales in `Localizable.xcstrings`
+  (`Get installer` + tooltip + alt-tag forms).
+- Hover tint bump 0.08 → 0.16 / 0.06 → 0.12 (described above).
+
+#### Track 2 — Sovereignty catalog expansion (`d22b9ce`)
+
+The "98% of cards say Visit instead of Install" diagnosis was a
+**data** problem (only 1.4% of alternatives had a `downloadURL`),
+not code.  Two-step fix:
+
+**Backfill verified URLs** (within `d22b9ce`).  Tested ~30 candidate
+download URLs with `curl -sI -L`.  78% of the candidates failed —
+mostly GitHub `releases/latest/download/<file>.dmg` patterns where
+the artifact filename embedded a version number, so the redirect
+404'd silently into a friendly HTML 404 page (status 200, body
+text/html — the failure mode that motivated Track 3 below).
+Kept only the 7 verified-binary URLs: Element, Bitwarden, ProtonVPN,
+Stats, Ollama, iTerm2, Zotero.
+
+**8 new alternative rows** (also in `d22b9ce`) — apps with
+publisher-canonical "/latest/" redirects added to existing target
+rows that lacked them: Brave on Chrome / Edge / Arc; Telegram on
+WhatsApp / Discord / Slack; Docker Desktop on Parallels / VMware
+Fusion.  Each was URL-verified before insertion.
+
+Coverage moved 1.4% → 7.0% (45 → 223 alternatives with direct
+`downloadURL` out of 3,194 total).
+
+#### Track 3 — URL-verification automation (`72e57b9`)
+
+Manual verification of the 30 candidate URLs took most of an hour
+and revealed that `Scripts/check-urls.swift` was passing on rotted
+URLs because it didn't validate Content-Type — a 200 OK that
+returned `text/html` slipped through as healthy.  The user's
+follow-up was direct: "Change the routines to do that verification
+automatically."
+
+Three changes that close the loop end-to-end:
+
+**1. Content-Type validation in `check-urls.swift`.**  `checkURL`
+now captures the `Content-Type` header per response.  `classify`
+takes the URL `kind` ("homepage" or "download") and a new
+`isBinaryContentType(_:)` helper.  For `kind == "download"`, a 200
+OK with non-binary Content-Type produces a new `.wrongContentType(Int,
+String)` Status case — counted as **real rot**, not transient.
+Homepages are unaffected (they legitimately return text/html).
+Acceptable binary types: `application/octet-stream`, `application/
+x-apple-diskimage`, `application/x-iso9660-image`, `application/zip`,
+`application/x-xar`, `application/*` minus json/xml/javascript/xhtml/
+ld+json.
+
+**2. New `--prune-broken-downloads` flag.**  Verifies every
+`downloadURL` and rewrites the catalog in place, removing only the
+`downloadURL` field from broken alternatives (the alternative entry
+stays — it just falls back to homepage-only).  True rot only —
+transient failures (429 / 5xx / DNS blips / timeouts) are
+deliberately spared so a flaky network run can't strip working URLs.
+Idempotent: a no-op run on a clean catalog leaves the file
+byte-identical (md5 confirmed).  Implies `--only-download`.  Uses
+`JSONSerialization` with `[.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]`
+to match the canonical catalog format.
+
+**3. Weekly cron auto-PR job.**
+`.github/workflows/sovereignty-weekly.yml` gained a third job
+`prune-broken-downloads` that runs after the existing `urls`
+liveness check.  Calls `--prune-broken-downloads`, re-runs
+`validate-catalog.swift --strict`, regenerates the Swift companion
+via `regenerate-sovereignty-catalog.swift`, and opens a PR via
+`peter-evans/create-pull-request@v6` with the diff for human
+review.  Never auto-merges; never runs on PRs (would create cycles).
+Workflow permissions bumped: `contents: write`, `pull-requests:
+write` (was `contents: read`).
+
+**Side benefit**: normalized catalog key ordering (alphabetical) once
+so the first auto-PR doesn't show a 500-line key-shuffle noise diff —
+without this, `JSONSerialization` would reshuffle every alternative
+because Swift dictionaries don't preserve insertion order.
+
+Verified locally before commit:
+- Bitwarden corrupted to `https://bitwarden.com` (an HTML landing
+  page) → flagged across all 8 password-manager target rows with
+  status `200 html(text/html; charset=utf-8)`.
+- `--prune-broken-downloads` strips the 8 corrupted entries; clean
+  catalog re-runs with md5 unchanged.
+- `validate-catalog.swift --strict` passes (1,155 entries, no findings).
+- `regenerate-sovereignty-catalog.swift` round-trips cleanly.
+
+**Catalog growth this arc**: Sovereignty alternatives with
+`downloadURL`: 45 → 223 (×5).  Localization catalog: 624 → 628
+(+4 strings — Get installer flow).  **Tests**: unchanged (552;
+no new test files this arc).  **Build warnings**: 0.
+
+Six commits delivered:
+
+```
+72e57b9 Sovereignty: automate URL verification with Content-Type validation + auto-prune
+d22b9ce Sovereignty catalog: verified direct download URLs + 8 new alternatives
+702fb25 UI fixes: Instalar checkbox confusion, hover tint contrast, Sovereignty action equality
+3687633 Benchmark: live progress feedback + survives tab switch
+d26ac6b UI/UX: hover affordances + pointer-cursor across all interactive surfaces
+ab31170 Documentation refresh: HANDOFF + SESSION-LOG + L10N + design docs
+```
+
+#### Open positions opened by this arc
+
+- **Sovereignty downloadURL coverage at 7%** — the verifier now
+  catches failures, but the catalog still has 2,971 alternatives
+  without a direct download URL.  Apps that recur 5–24 times across
+  target rows (~80 apps) have the highest leverage; verifying just
+  those could push coverage to ~30%.  Manual + cron-supported.
+- **Trust catalog expansion** — at 151 entries, well below
+  Sovereignty's 1,155.  Multi-day work; no infrastructure
+  investment needed first.
+- **S5 live test on real Vimeo/Twitch** — HLS pre-buffer is
+  shippable but unmeasured against real streams.  Manual,
+  deferred.
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
+72e57b9 Sovereignty: automate URL verification with Content-Type validation + auto-prune
+d22b9ce Sovereignty catalog: verified direct download URLs + 8 new alternatives
+702fb25 UI fixes: Instalar checkbox confusion, hover tint contrast, Sovereignty action equality
+3687633 Benchmark: live progress feedback + survives tab switch
+d26ac6b UI/UX: hover affordances + pointer-cursor across all interactive surfaces
+ab31170 Documentation refresh: HANDOFF + SESSION-LOG + L10N + design docs
 e9e7002 S5 ship: bonded segment fetch + DASH manifest support
 6850e48 S5 ship: Safari xcodegen target + HLS pre-buffer end-to-end
 39e9021 S5 expansion: Safari WebExtension parity + HLS manifest parser scaffolding
@@ -1108,17 +1295,18 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 
 | Metric | Start of arc (v1.5.3) | End of arc (today) | Δ |
 |---|---:|---:|---:|
-| Catalog strings | 56 | **535** | ×9.6 |
-| Translations (×5 locales) | 56 | **2,675** | ×47 |
-| Tests | 148 | **451** | ×3.0 |
-| Public-repo Swift files | 49 | **67** (top-level SplynekCore) / 123 (recursive) | +18 / +74 |
+| Catalog strings | 56 | **628** | ×11.2 |
+| Translations (×5 locales) | 56 | **3,140** | ×56 |
+| Tests | 148 | **552** | ×3.7 |
+| Public-repo Swift files | 49 | **68** (top-level SplynekCore) / 123 (recursive) | +19 / +74 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
 | Top-level docs | 1 (HANDOFF) | **6** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG) | +5 |
 | Architecture invariant comments | ~3 (catalog + sandbox) | **~15** (every AI-touching, code-execution-adjacent file) | +12 |
-| CI guardrails | 1 (sovereignty-weekly) | **2** (+ lint.yml for catalog audit) | +1 |
+| CI guardrails | 1 (sovereignty-weekly: lint+urls) | **3** (+ lint.yml + sovereignty-weekly: prune-broken-downloads auto-PR) | +2 |
 | Trust catalog entries | 30 | 151 | +121 |
 | Sovereignty catalog entries | 1,155 | 1,155 | unchanged |
+| Sovereignty alts with verified `downloadURL` | n/a (no Content-Type check) | **223 of 3,194 (7.0%)** | new metric |
 
 ## What is NOT in this commit arc
 

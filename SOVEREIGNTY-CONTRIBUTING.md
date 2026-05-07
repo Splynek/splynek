@@ -82,14 +82,58 @@ If the generated Swift was hand-edited by accident:
 
 ### Weekly health check (CI)
 
-`.github/workflows/sovereignty-weekly.yml` runs every Monday:
-- Validates the catalog (offline lint).
-- Verifies the regenerator round-trips cleanly.
-- HEAD-checks every homepage + downloadURL; opens a labeled issue if
-  any rotted.
+`.github/workflows/sovereignty-weekly.yml` runs every Monday at
+09:00 UTC.  Three jobs:
+
+1. **`lint`** — Validates the catalog (offline lint, `--strict`)
+   and verifies `regenerate-sovereignty-catalog.swift` round-trips
+   cleanly (Swift companion is in sync with the JSON source).
+
+2. **`urls`** — HEAD-checks every homepage + downloadURL via
+   `check-urls.swift`.  Splits failures into **rot** (real, action
+   needed) and **transient** (429 / 5xx / DNS blips — re-check next
+   run).  When real rot is found, opens / updates a labeled issue
+   `sovereignty-url-rot` with the full report.
+
+3. **`prune-broken-downloads`** — runs `check-urls.swift
+   --prune-broken-downloads`.  This is the **Content-Type-aware**
+   verifier: a 200 OK with non-binary Content-Type on a
+   `downloadURL` is treated as broken (it's an HTML landing page,
+   not a binary installer — the failure mode that catches GitHub
+   `releases/latest/download/<file>.dmg` patterns where the
+   artifact filename embedded a version number and the redirect
+   404'd silently).  Broken `downloadURL` fields are stripped in
+   place (the alternative entry stays; falls back to homepage-only).
+   Transient failures are **never** pruned.  After pruning the
+   catalog is re-validated with `--strict` and regenerated, then a
+   PR is opened via `peter-evans/create-pull-request@v6` with the
+   diff for human review.  Never auto-merges.  Skipped on PR
+   triggers (would create cycles).
+
+The `urls` and `prune-broken-downloads` jobs only run on the
+weekly schedule + manual dispatch — never on PRs (network from
+shared runners is flaky and would pollute review with transient
+noise).
 
 Manual trigger: Actions tab → "Sovereignty catalog — weekly health
 check" → Run workflow.
+
+#### Running the verifier locally
+
+```sh
+# Just check status, don't touch the catalog:
+swift Scripts/check-urls.swift --only-download
+
+# Verify + auto-prune broken downloadURLs in place
+# (review the diff with `git diff` before committing):
+swift Scripts/check-urls.swift --prune-broken-downloads
+
+# JSON output for CI consumption:
+swift Scripts/check-urls.swift --json --concurrency 30 --timeout 20
+
+# Full help:
+swift Scripts/check-urls.swift --help
+```
 
 ## What the Sovereignty tab is, and isn't
 
@@ -144,7 +188,18 @@ Each Entry has:
     (e.g. Mozilla's redirect service `download.mozilla.org/?product=
     firefox-latest…`).  If the URL has a version in it (e.g.
     `…v2.7.9/KeePassXC-2.7.9.dmg`), **leave it nil** — the UI will
-    fall back to a homepage "Visit" button.
+    fall back to a "Get installer" button that opens the homepage.
+    **Verify before adding:** the URL must return a binary
+    Content-Type (`application/octet-stream`, `application/
+    x-apple-diskimage`, `application/zip`, `application/x-xar`, or
+    similar) — *not* `text/html`.  GitHub `releases/latest/download/
+    <file>.dmg` patterns frequently fail this check because the
+    artifact filename embeds a version number.  Test with `curl -sI
+    -L <url>` and confirm the final `Content-Type:` is binary.  The
+    weekly cron's `prune-broken-downloads` job will strip URLs that
+    fail this check, but it's better to catch them at PR time.
+    Coverage as of 2026-05-07: 223 of 3,194 alternatives carry a
+    verified `downloadURL` (7.0%).
 
 ## Design principles for new entries
 
