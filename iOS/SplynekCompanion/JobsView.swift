@@ -16,6 +16,13 @@ struct JobsView: View {
     @State private var lastError: String?
     @State private var pollTimer: Timer?
     @State private var submitURL: String = ""
+    /// Live Activity driver — created on appear, ends all
+    /// activities on disappear so we don't leak a download chip
+    /// onto the lock screen / Mac menu bar after the user has
+    /// stopped looking.
+    #if os(iOS)
+    @State private var liveActivities: LiveActivityDriver?
+    #endif
 
     var body: some View {
         List {
@@ -64,8 +71,18 @@ struct JobsView: View {
         }
         .navigationTitle(mac.displayName)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { startPolling() }
-        .onDisappear { stopPolling() }
+        .onAppear {
+            #if os(iOS)
+            liveActivities = LiveActivityDriver(mac: mac)
+            #endif
+            startPolling()
+        }
+        .onDisappear {
+            stopPolling()
+            #if os(iOS)
+            Task { await liveActivities?.endAll() }
+            #endif
+        }
         .refreshable { await refresh() }
     }
 
@@ -99,6 +116,13 @@ struct JobsView: View {
         do {
             jobs = try await PairedMacClient(mac: mac).jobs()
             lastError = nil
+            #if os(iOS)
+            // Drive Live Activities from each successful poll —
+            // start/update/end the per-job ActivityKit instances so
+            // running downloads show on the lock screen + Dynamic
+            // Island + macOS-26 menu-bar mirror.
+            await liveActivities?.sync(currentJobs: jobs)
+            #endif
         } catch PairedMacClient.ClientError.unauthorised {
             lastError = "Token rejected — re-pair this Mac."
             stopPolling()

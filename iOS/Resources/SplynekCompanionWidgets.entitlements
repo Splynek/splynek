@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+        The widget extension shares the host app's App Group so it
+        can read paired-Mac names from PairedMacStore (via the
+        Activity attributes, which get serialised across the IPC
+        boundary).  Strictly the Activity's own attributes payload
+        is enough — but having the App Group available means future
+        widgets (home-screen recent-downloads, etc.) inherit storage
+        access without needing an entitlement update.
+    -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>group.app.splynek.companion</string>
+    </array>
+</dict>
+</plist>

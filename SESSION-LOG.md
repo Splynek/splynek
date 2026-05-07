@@ -1367,10 +1367,173 @@ One commit delivers the foundation:
 (pending) S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
 ```
 
+### Latest landing (2026-05-07 part 3): S4 phase 2 — Live Activity + QR-code pairing
+
+After landing the foundation, user said "continue" — meaning push
+through phase 2 of S4.  The strategy memo had originally framed
+Live Activity / QR / CloudKit as multi-week each, but the
+foundation's clean shape (pure shared core + iOS-only thin
+wrappers) made Live Activity + QR a one-day addition.  Phase 2
+ships them; phase 3 (CloudKit over-cellular relay + TestFlight)
+remains genuinely multi-day per item.
+
+#### Track 1 — Live Activity (with macOS-26 menu-bar mirror for free)
+
+**The strategic thesis**: per `STRATEGY-2026.md` Bet S4, "macOS 26
+mirrors paired-iOS Live Activities into the Mac menu bar — this
+feature lights up the Mac menu bar for free, no separate Mac
+menu-bar widget to build."  One ActivityKit implementation = both
+surfaces.
+
+**New shared types** (`iOS/Shared/`, gated `#if os(iOS)` because
+ActivityKit imports cleanly on macOS but its protocols are
+`@available(macOS, unavailable)`):
+
+- `DownloadActivityAttributes` — fixed attrs (sourceURL / filename
+  / macName / jobID) + dynamic ContentState (phase / downloaded /
+  total / throughputBps / etaSeconds).  Conforms to
+  `ActivityAttributes` for ActivityKit consumption.
+- `LiveActivityCoordinator` — pure transition layer.
+  `decide(previous:current:)` returns a Plan
+  (toStart/toUpdate/toEnd) by diffing the previous Snapshot
+  against the current `[JobIdent]`; `project(after:from:)` gives
+  the next Snapshot.  Phase filter: `running` + `paused` get
+  Activities; `queued`, `finished`, `failed` don't.
+
+**iOS-only driver** (`iOS/SplynekCompanion/LiveActivityDriver.swift`):
+`@MainActor`-isolated wrapper that takes the pure Plan and applies
+it to ActivityKit (`Activity.request` / `update` / `end`).  Maps
+each `(macUUID, jobID)` to its
+`Activity<DownloadActivityAttributes>` instance for subsequent
+operations.  Stale-date set to 30s out so iOS dims the chip if
+polling stops (e.g. app backgrounded, Mac off LAN).  `endAll()`
+clears every activity on JobsView disappear so the lock screen
+doesn't carry a stale chip after the user navigated away.
+
+**Wired into JobsView's poll loop**: every 2s `refresh()` calls
+`liveActivities?.sync(currentJobs: jobs)` — that takes the diff,
+applies it, advances the snapshot.  `onAppear` creates the
+driver, `onDisappear` settles all activities.
+
+**Widget Extension** (`iOS/SplynekCompanionWidgets/`, new
+`app-extension` target in `project.yml`):
+
+- `SplynekCompanionWidgetBundle.swift` — `@main` WidgetBundle.
+- `DownloadActivityWidget.swift` — `ActivityConfiguration(for:
+  DownloadActivityAttributes.self)` covering all four surfaces:
+  - **Lock screen / banner** — full progress card (icon + filename
+    + Mac name + ProgressView + bytes + throughput).
+  - **Dynamic Island compact** — phase icon + throughput.
+  - **Dynamic Island minimal** — single phase icon.
+  - **Dynamic Island expanded** — leading filename, trailing
+    throughput, bottom progress bar.
+
+**Mac side: zero changes required** — macOS 26's Continuity
+Live-Activity passthrough is OS-level; the iPhone's Activity
+appears in the Mac menu bar automatically when paired.
+
+**Host app Info.plist gained `NSSupportsLiveActivities=YES`** —
+required for ActivityKit to permit Activity creation.
+
+#### Track 2 — QR-code pairing
+
+**Mac side, two changes:**
+
+1. New method `FleetCoordinator.iPhonePairingURLString()` — emits
+   the canonical `splynek://pair?host=…&port=…&token=…&name=<deviceName>`
+   string, or nil when the listener is loopback-only (a phone
+   on a different network can't reach 127.0.0.1).  Implementation
+   builds the string via URLComponents to mirror exactly what
+   `iOS/Shared/SplynekPairURL.swift::encode` produces; the
+   round-trip is verified by 14 unit tests.
+2. SettingsView's "Web dashboard" card gains a second QR card
+   ("Pair Splynek Companion (iPhone)") below the existing
+   browser-dashboard QR.  Same `QRCode.image(for:size:)` helper
+   renders the new QR; copy-pair-URL button next to it.  The
+   pairing card hides itself when LAN sharing is off (Privacy
+   mode → Loopback only) and surfaces an inline hint instead.
+
+**iOS side, two new files:**
+
+1. `iOS/Shared/SplynekPairURL.swift` — pure encode/decode for the
+   `splynek://pair?…` format.  Required fields: host (non-empty),
+   port (positive int), token (non-empty); optional name.  Encode
+   omits empty/nil name.  Decode rejects wrong scheme, wrong
+   host, missing required fields, non-numeric port.  Trims
+   whitespace.  14 unit tests cover round-trip + every rejection
+   path.
+2. `iOS/SplynekCompanion/QRScannerView.swift` —
+   `UIViewControllerRepresentable` wrapping AVCaptureSession +
+   AVCaptureMetadataOutput with `[.qr]` metadata.  Reticle UI +
+   Wallet-style success beep on first valid decode (mismatched QR
+   formats keep scanning rather than emitting).  Camera-permission
+   denial + missing back camera both fall through to `onCancel`
+   gracefully.
+
+**PairingSheet wiring**: `Form` gains a prominent "Scan QR from
+Mac" button at the top.  On scan success, the components pre-fill
+the manual fields and `attempt()` auto-submits — if the Mac is
+unreachable the form re-appears with the values filled in for
+retry.
+
+**Host app Info.plist gained `NSCameraUsageDescription`** — required
+for AVCaptureDevice access.  Privacy nutrition label: camera is
+"used only when scanning a QR code to pair with a Mac running
+Splynek; not used for any other purpose."
+
+#### ActivityKit gotcha — `canImport(ActivityKit)` lies
+
+Initial implementation gated on `#if canImport(ActivityKit)`.  That
+returns true on macOS — the framework is importable — but its
+public protocols are marked `@available(macOS, unavailable)`, so
+any reference to `ActivityAttributes` errors at compile time on
+macOS even when the symbol is in scope.  Fix: gate on
+`#if os(iOS)` instead.  Touched `DownloadActivityAttributes`,
+`LiveActivityDriver`, and the JobsView wiring.
+
+#### Tests
+
+32 new tests across two new suites:
+
+- `CompanionLiveActivityTests` (18 tests) — every `decide(...)`
+  edge case (empty/start/update/end), phase filter (`running` +
+  `paused` deserve Activities; `queued` / `finished` / `failed`
+  don't), multi-step transition chains.
+- `CompanionPairURLTests` (14 tests) — round-trip + every reject
+  path (wrong scheme, wrong host, missing host/port/token,
+  non-numeric port, negative port, empty token, garbage text).
+
+After this commit: **611 tests passing** (was 579 — +32; net +59
+over the 552 baseline before S4).  **Build warnings: 0.**
+
+#### Numbers this part
+
+| Metric | Before phase 2 | After phase 2 | Δ |
+|---|---:|---:|---:|
+| Tests | 579 | **611** | +32 |
+| iOS targets | 2 (app + share-ext) | **3** (+ widgets) | +1 |
+| iOS Swift files | ~12 | **~17** | +5 |
+| Mac-side Swift LOC changed | 0 | **~60** | +60 |
+| Top-level docs | 7 | 7 | 0 (IOS-COMPANION updated in place) |
+
+#### Two commits delivered
+
+```
+(pending) S4 phase 2: Live Activity + QR-code pairing
+b509954 S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
+```
+
+(Phase 2 lands as a single commit because the Live Activity
++ QR pairing pieces are mutually-dependent on the Widget
+Extension target landing — partial commits would leave
+`SplynekCompanion` declaring a dependency on a target that
+doesn't exist yet.)
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
-(pending) S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
+(pending) S4 phase 2: Live Activity + QR-code pairing
+b509954 S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
 aaddef8 Documentation: 2026-05-06/07 sweep + URL-verification automation
 72e57b9 Sovereignty: automate URL verification with Content-Type validation + auto-prune
 d22b9ce Sovereignty catalog: verified direct download URLs + 8 new alternatives
@@ -1466,8 +1629,8 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **628** | ×11.2 |
 | Translations (×5 locales) | 56 | **3,140** | ×56 |
-| Tests | 148 | **579** | ×3.9 |
-| Public-repo Swift files | 49 | **68** (top-level SplynekCore) / 135 (recursive incl. iOS/) | +19 / +86 |
+| Tests | 148 | **611** | ×4.1 |
+| Public-repo Swift files | 49 | **68** (top-level SplynekCore) / 140 (recursive incl. iOS/) | +19 / +91 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
 | Top-level docs | 1 (HANDOFF) | **7** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG + IOS-COMPANION) | +6 |
@@ -1492,12 +1655,14 @@ Worth being explicit about:
   binary uploads.
 - **Native-speaker review not done.**  All translations are
   Claude-generated; `L10N-REVIEW.md` is the onramp for the human pass.
-- **iOS Companion phase 2 not started.**  Foundation skeleton
+- **iOS Companion phase 3 not started.**  Foundation + phase 2 both
   shipped 2026-05-07 (build system + shared core + UI shell + Share
-  Extension + 27 tests).  Phase 2 is Live Activity (ActivityKit
-  with macOS-26 menu-bar mirror), QR-code pairing, and CloudKit
-  relay for over-cellular submission.  Each is multi-day; deferred
-  until Apple v1.0 macOS clears.  See `IOS-COMPANION.md` punch list.
+  Extension + Widget Extension + Live Activity + QR-code pairing +
+  59 tests).  Phase 3 is CloudKit relay for over-cellular
+  submission + TestFlight rollout.  Each is genuinely multi-day;
+  CloudKit needs Mac-side `CKDatabaseSubscription` + idempotency,
+  TestFlight needs Apple Developer Program iOS provisioning.
+  Deferred until Apple v1.0 macOS clears.  See `IOS-COMPANION.md`.
 
 ## When to re-read this doc
 

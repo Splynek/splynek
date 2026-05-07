@@ -47,5 +47,21 @@
         <key>NSAllowsLocalNetworking</key>
         <true/>
     </dict>
+    <!--
+        Live Activity opt-in.  Required for ActivityKit to allow
+        the host app to start Activities; the SplynekCompanionWidgets
+        extension provides the views that ActivityKit renders on
+        the lock screen + Dynamic Island + macOS-26 menu bar.
+    -->
+    <key>NSSupportsLiveActivities</key>
+    <true/>
+    <!--
+        Camera usage description — required for the QR-pairing
+        scanner.  Optional for the user (manual token paste still
+        works), but iOS rejects the privacy nutrition label without
+        a usage string when the app links AVFoundation's camera APIs.
+    -->
+    <key>NSCameraUsageDescription</key>
+    <string>Splynek scans a QR code from your Mac's Settings → Sharing pane to pair instantly.</string>
 </dict>
 </plist>

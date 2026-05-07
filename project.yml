@@ -390,6 +390,9 @@ targets:
       - target: SplynekShareExtension
         embed: true
         codeSign: true
+      - target: SplynekCompanionWidgets
+        embed: true
+        codeSign: true
 
   SplynekShareExtension:
     type: app-extension
@@ -405,6 +408,38 @@ targets:
         PRODUCT_NAME: SplynekShare
         PRODUCT_BUNDLE_IDENTIFIER: app.splynek.companion.ShareExtension
         CODE_SIGN_ENTITLEMENTS: iOS/Resources/SplynekShareExtension.entitlements
+        SKIP_INSTALL: "YES"
+        SWIFT_VERSION: "5.9"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Automatic
+
+  # S4 phase 2 (2026-05-07) — Widget Extension hosting the
+  # DownloadActivityWidget Live Activity views.  Activities are
+  # started by the host SplynekCompanion app's LiveActivityDriver;
+  # WidgetKit renders them via this extension on the lock screen,
+  # Dynamic Island, and (passed-through by macOS 26) the Mac menu
+  # bar.
+  SplynekCompanionWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: iOS/SplynekCompanionWidgets
+      # Pull DownloadActivityAttributes in from Shared so the
+      # widget extension's ActivityConfiguration knows the type.
+      # Other Shared/ files compile fine here too — `os(iOS)`
+      # gates exclude any Activity-related types from non-iOS
+      # builds.
+      - path: iOS/Shared
+    info:
+      path: iOS/SplynekCompanionWidgets/Info.plist
+    settings:
+      base:
+        PRODUCT_NAME: SplynekWidgets
+        PRODUCT_BUNDLE_IDENTIFIER: app.splynek.companion.Widgets
+        CODE_SIGN_ENTITLEMENTS: iOS/Resources/SplynekCompanionWidgets.entitlements
         SKIP_INSTALL: "YES"
         SWIFT_VERSION: "5.9"
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
@@ -434,6 +469,7 @@ schemes:
       targets:
         SplynekCompanion: all
         SplynekShareExtension: all
+        SplynekCompanionWidgets: all
     run:
       config: Debug
     archive:

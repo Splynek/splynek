@@ -23,10 +23,24 @@ struct PairingSheet: View {
     @State private var token: String = ""
     @State private var probing = false
     @State private var lastError: String?
+    @State private var showingScanner = false
 
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Button {
+                        showingScanner = true
+                    } label: {
+                        Label("Scan QR from Mac", systemImage: "qrcode.viewfinder")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .listRowBackground(Color.clear)
+                    Text("Faster — open Splynek on your Mac, go to Settings → Web dashboard, and aim at the iPhone-pair QR.")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+
                 Section("Mac") {
                     TextField("Name (e.g. Paulo's MacBook)", text: $displayName)
                         .textInputAutocapitalization(.words)
@@ -63,6 +77,26 @@ struct PairingSheet: View {
                     Button(probing ? "Pairing…" : "Pair") { Task { await attempt() } }
                         .disabled(!canSubmit || probing)
                 }
+            }
+            .fullScreenCover(isPresented: $showingScanner) {
+                QRScannerView(
+                    onPaired: { components in
+                        // Pre-fill the form from the scanned QR.
+                        host = components.host
+                        port = String(components.port)
+                        token = components.token
+                        if let n = components.name, !n.isEmpty {
+                            displayName = n
+                        }
+                        showingScanner = false
+                        // Auto-submit — the user has already
+                        // expressed intent by scanning.  If the Mac
+                        // is unreachable the form re-appears with
+                        // the fields populated for retry.
+                        Task { await attempt() }
+                    },
+                    onCancel: { showingScanner = false }
+                )
             }
         }
     }

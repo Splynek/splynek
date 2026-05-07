@@ -236,6 +236,71 @@ struct SettingsView: View {
                             .font(.callout).foregroundStyle(.secondary)
                     }
                 }
+
+                // S4 iPhone Companion (2026-05-07): second QR for
+                // pairing the iOS Splynek Companion app.  Distinct
+                // from the dashboard QR — encodes
+                // `splynek://pair?host=...&port=...&token=...&name=...`
+                // which the iOS app's PairingSheet scans + pre-fills.
+                Divider().padding(.vertical, 4)
+                iPhonePairingRow
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var iPhonePairingRow: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "iphone")
+                    .foregroundStyle(.tint)
+                Text("Pair Splynek Companion (iPhone)")
+                    .font(.headline)
+            }
+            Text("Open Splynek Companion on your iPhone, tap +, then Scan QR. Pairing is instant — no token paste.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let pairURL = vm.fleet.iPhonePairingURLString() {
+                HStack(alignment: .top, spacing: 14) {
+                    if let qr = QRCode.image(for: pairURL, size: 110) {
+                        Image(nsImage: qr)
+                            .interpolation(.none)
+                            .resizable()
+                            .frame(width: 110, height: 110)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .strokeBorder(Color.primary.opacity(0.12),
+                                                  lineWidth: 0.5)
+                            )
+                    }
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(pairURL)
+                            .font(.system(.caption, design: .monospaced))
+                            .lineLimit(2).truncationMode(.middle)
+                            .textSelection(.enabled)
+                        Button {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(
+                                pairURL, forType: .string
+                            )
+                        } label: {
+                            Label("Copy pair URL", systemImage: "doc.on.doc")
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    Spacer()
+                }
+            } else {
+                // Loopback-only mode (free tier, default) hides the
+                // pairing row — phones aren't on the same network as
+                // 127.0.0.1, so a QR pointing to loopback would never
+                // pair.  Surface a hint instead.
+                Text("LAN sharing is disabled (Privacy mode → Loopback only). Disable Loopback-only above to pair an iPhone.")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .padding(.vertical, 4)
             }
         }
     }

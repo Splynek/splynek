@@ -90,6 +90,11 @@ DASHManifestTests.run()
 CompanionShareExtractorTests.run()
 CompanionBonjourTests.run()
 CompanionStoreTests.run()
+// S4 phase 2 (2026-05-07): Live Activity coordinator + QR-pair URL.
+// Pure transitions; ActivityKit / AVFoundation lives only in the
+// iOS-only LiveActivityDriver + QRScannerView.
+CompanionLiveActivityTests.run()
+CompanionPairURLTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

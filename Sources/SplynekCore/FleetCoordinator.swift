@@ -306,6 +306,36 @@ public final class FleetCoordinator: ObservableObject {
         return URL(string: "http://\(host):\(port)/splynek/v1/ui?t=\(webToken)")
     }
 
+    /// S4 iPhone Companion (2026-05-07): encodes the pairing details
+    /// in the canonical `splynek://pair?host=...&port=...&token=...`
+    /// form for QR generation.  iOS Splynek Companion's pairing
+    /// scanner decodes this via `SplynekPairURL.decode(from:)` and
+    /// pre-fills the pairing sheet.
+    ///
+    /// Returns nil while the listener hasn't bound yet (port == 0)
+    /// or when `proGateForcesLoopback` keeps us on 127.0.0.1 — a
+    /// loopback URL is useless for a phone that's not running on
+    /// the same machine.
+    public func iPhonePairingURLString() -> String? {
+        guard port > 0 else { return nil }
+        if effectiveLoopbackOnly { return nil }
+        guard let host = Self.firstLANAddress() else { return nil }
+        // Mirrors `iOS/Shared/SplynekPairURL.swift::encode` — kept
+        // string-built here to avoid a cross-target dependency on
+        // SplynekCompanionCore from the macOS app.  Consumers
+        // verify the round-trip via `SplynekPairURLEncodingTests`.
+        var comps = URLComponents()
+        comps.scheme = "splynek"
+        comps.host = "pair"
+        comps.queryItems = [
+            URLQueryItem(name: "host",  value: host),
+            URLQueryItem(name: "port",  value: String(port)),
+            URLQueryItem(name: "token", value: webToken),
+            URLQueryItem(name: "name",  value: deviceName),
+        ]
+        return comps.url?.absoluteString
+    }
+
     /// First non-loopback IPv4 interface address. Enough for the QR code
     /// + AboutView pill — we don't need a full multi-address panel.
     private static func firstLANAddress() -> String? {
