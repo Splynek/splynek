@@ -368,9 +368,41 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: iOS/SplynekCompanion
+        excludes:
+          - "Info.plist"
       - path: iOS/Shared
     info:
+      # xcodegen GENERATES the Info.plist at this path on every run
+      # from `properties:` below — never read it as a source-of-truth
+      # input.  Hand-editing the plist is futile; edit project.yml
+      # and re-run `xcodegen generate`.
       path: iOS/SplynekCompanion/Info.plist
+      properties:
+        CFBundleDisplayName: Splynek
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSRequiresIPhoneOS: true
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        # Bonjour for paired-Mac discovery.  Apple requires both the
+        # purpose string + the service-type allowlist for any iOS
+        # app that browses LAN services.
+        NSLocalNetworkUsageDescription: "Splynek finds Macs running Splynek on your Wi-Fi to send downloads to them."
+        NSBonjourServices:
+          - _splynek-fleet._tcp
+        # ATS exception for cleartext LAN HTTP — Splynek's LAN
+        # server doesn't terminate TLS (always between the iOS
+        # device and a Mac on the same Wi-Fi).
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        # Live Activity opt-in (S4 phase 2) — required for
+        # ActivityKit.  SplynekCompanionWidgets provides the views.
+        NSSupportsLiveActivities: true
+        # QR-pairing camera (S4 phase 2) — AVFoundation scanner.
+        NSCameraUsageDescription: "Splynek scans a QR code from your Mac's Settings → Sharing pane to pair instantly."
     settings:
       base:
         PRODUCT_NAME: Splynek
@@ -400,9 +432,34 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: iOS/SplynekShareExtension
+        excludes:
+          - "Info.plist"
       - path: iOS/Shared
     info:
       path: iOS/SplynekShareExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Send to Splynek
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            # Activation rule — any input item carrying a URL or text
+            # payload activates the extension.  Covers Safari URL
+            # shares + multi-line notes with embedded URLs (NSDataDetector
+            # handles the embedded case).
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsText: true
+        # Same Bonjour + cleartext exceptions as the host app —
+        # the Share Extension makes its own HTTP requests, so it
+        # needs its own ATS dispensation.
+        NSLocalNetworkUsageDescription: "Splynek sends URLs to Macs on your Wi-Fi."
+        NSBonjourServices:
+          - _splynek-fleet._tcp
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
     settings:
       base:
         PRODUCT_NAME: SplynekShare
@@ -427,6 +484,8 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: iOS/SplynekCompanionWidgets
+        excludes:
+          - "Info.plist"
       # Pull DownloadActivityAttributes in from Shared so the
       # widget extension's ActivityConfiguration knows the type.
       # Other Shared/ files compile fine here too — `os(iOS)`
@@ -435,6 +494,12 @@ targets:
       - path: iOS/Shared
     info:
       path: iOS/SplynekCompanionWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Splynek Activities
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
         PRODUCT_NAME: SplynekWidgets

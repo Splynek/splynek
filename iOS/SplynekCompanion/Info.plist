@@ -2,66 +2,48 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleDisplayName</key>
-    <string>Splynek</string>
-    <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-    <key>CFBundlePackageType</key>
-    <string>APPL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>$(MARKETING_VERSION)</string>
-    <key>CFBundleVersion</key>
-    <string>$(CURRENT_PROJECT_VERSION)</string>
-    <key>LSRequiresIPhoneOS</key>
-    <true/>
-    <key>UILaunchScreen</key>
-    <dict/>
-    <key>UISupportedInterfaceOrientations</key>
-    <array>
-        <string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
-        <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
-    <!--
-        Bonjour for paired-Mac discovery.  Apple requires both
-        NSLocalNetworkUsageDescription and NSBonjourServices for
-        any iOS app that browses for services on the LAN.  The
-        purpose string is shown verbatim to the user the first
-        time we start the NWBrowser.
-    -->
-    <key>NSLocalNetworkUsageDescription</key>
-    <string>Splynek finds Macs running Splynek on your Wi-Fi to send downloads to them.</string>
-    <key>NSBonjourServices</key>
-    <array>
-        <string>_splynek-fleet._tcp</string>
-    </array>
-    <!--
-        ATS exception: Splynek's LAN server doesn't terminate TLS
-        (the connection is always between the iOS device and a Mac
-        on the same Wi-Fi), so we permit cleartext for local
-        networking only.  This is exactly the case Apple's
-        NSAllowsLocalNetworking flag was added for.
-    -->
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsLocalNetworking</key>
-        <true/>
-    </dict>
-    <!--
-        Live Activity opt-in.  Required for ActivityKit to allow
-        the host app to start Activities; the SplynekCompanionWidgets
-        extension provides the views that ActivityKit renders on
-        the lock screen + Dynamic Island + macOS-26 menu bar.
-    -->
-    <key>NSSupportsLiveActivities</key>
-    <true/>
-    <!--
-        Camera usage description — required for the QR-pairing
-        scanner.  Optional for the user (manual token paste still
-        works), but iOS rejects the privacy nutrition label without
-        a usage string when the app links AVFoundation's camera APIs.
-    -->
-    <key>NSCameraUsageDescription</key>
-    <string>Splynek scans a QR code from your Mac's Settings → Sharing pane to pair instantly.</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Splynek</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_splynek-fleet._tcp</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Splynek scans a QR code from your Mac's Settings → Sharing pane to pair instantly.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Splynek finds Macs running Splynek on your Wi-Fi to send downloads to them.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 </dict>
 </plist>
