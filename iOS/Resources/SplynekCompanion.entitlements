@@ -20,5 +20,27 @@
     <array>
         <string>$(AppIdentifierPrefix)group.app.splynek.companion</string>
     </array>
+    <!--
+        S4 phase 3 (2026-05-07): CloudKit over-cellular relay.
+        When the iOS Companion can't reach the paired Mac over LAN
+        (phone on cellular / hotel Wi-Fi), the Share Extension
+        writes a SplynekRelayJob CKRecord to the user's private
+        CloudKit database; the Mac polls the same database every
+        60s and ingests pending records targeting its deviceUUID.
+
+        Container `iCloud.app.splynek.companion` must be created in
+        App Store Connect before TestFlight build.  Schema
+        ("SplynekRelayJob" record type) must be published in the
+        CloudKit dashboard for both Development + Production
+        environments.  See IOS-COMPANION.md "Phase 3 provisioning."
+    -->
+    <key>com.apple.developer.icloud-services</key>
+    <array>
+        <string>CloudKit</string>
+    </array>
+    <key>com.apple.developer.icloud-container-identifiers</key>
+    <array>
+        <string>iCloud.app.splynek.companion</string>
+    </array>
 </dict>
 </plist>

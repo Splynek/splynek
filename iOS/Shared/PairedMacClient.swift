@@ -44,6 +44,36 @@ public actor PairedMacClient {
         case unauthorised
         case http(Int)
         case decode
+        /// S4 phase 3 (2026-05-07): the URLSession `data(for:)` call
+        /// timed out before any response.  Distinct from `notReachable`
+        /// (DNS / connect-refused) so the relay-policy layer can
+        /// decide whether to fall back to CloudKit.
+        case timeout
+    }
+
+    /// Map a thrown error from `submit(...)` / `jobs()` into the
+    /// `RelayPolicy.LANOutcome` shape.  Used by CloudKitRelaySubmitter
+    /// callers to drive the LAN-first / CloudKit-fallback policy.
+    public static func relayOutcome(for error: Error?) -> RelayPolicy.LANOutcome {
+        guard let error else { return .success }
+        if let ce = error as? ClientError {
+            switch ce {
+            case .notReachable: return .notReachable
+            case .timeout:      return .timeout
+            case .unauthorised: return .unauthorised
+            case .http(let code): return .other(httpStatus: code)
+            case .decode:       return .other(httpStatus: -2)
+            }
+        }
+        let ns = error as NSError
+        if ns.code == NSURLErrorTimedOut { return .timeout }
+        if ns.code == NSURLErrorCannotConnectToHost
+            || ns.code == NSURLErrorCannotFindHost
+            || ns.code == NSURLErrorNetworkConnectionLost
+            || ns.code == NSURLErrorNotConnectedToInternet {
+            return .notReachable
+        }
+        return .other(httpStatus: -1)
     }
 
     /// `GET /splynek/v1/status` — confirms reachability + auth (the
@@ -120,6 +150,63 @@ public actor PairedMacClient {
         if !(200...299).contains(http.statusCode) {
             throw ClientError.http(http.statusCode)
         }
+    }
+
+    /// S4 phase 3 (2026-05-07): LAN-first submission with optional
+    /// CloudKit-relay fallback.  Used by the Share Extension and
+    /// the main app's SubmitURLView.
+    ///
+    /// Returns the outcome the UI should render — `.lan`, `.relayed`,
+    /// or `.failed`.  The caller doesn't need to know whether the
+    /// path went over LAN or CloudKit; it only cares about the
+    /// user-visible result.
+    public func submitWithRelay(
+        url: URL,
+        senderDevice: String,
+        cloudKitRelayEnabled: Bool
+    ) async -> SubmitResult {
+        do {
+            try await self.queue(url: url)
+            return .lan
+        } catch {
+            let decision = RelayPolicy.decide(
+                lanOutcome: Self.relayOutcome(for: error),
+                cloudKitRelayEnabled: cloudKitRelayEnabled)
+
+            switch decision {
+            case .done:
+                // Unreachable: relayOutcome only returns .success
+                // when error == nil, and we're inside catch.
+                return .lan
+            case .surfaceError(let msg):
+                return .failed(msg)
+            case .fallbackToCloudKit:
+                #if canImport(CloudKit)
+                do {
+                    let submitter = CloudKitRelaySubmitter()
+                    let recordID = try await submitter.submit(
+                        url: url,
+                        senderDevice: senderDevice,
+                        targetMacUUID: mac.uuid)
+                    return .relayed(recordID: recordID)
+                } catch CloudKitRelaySubmitter.SubmitError.noICloudAccount {
+                    return .failed("No iCloud account on this device. Sign in to iCloud in Settings to use over-cellular relay.")
+                } catch CloudKitRelaySubmitter.SubmitError.quotaExceeded {
+                    return .failed("Your iCloud storage is full. Free up space or upgrade in Settings → iCloud.")
+                } catch {
+                    return .failed("CloudKit relay failed: \(error.localizedDescription)")
+                }
+                #else
+                return .failed("CloudKit relay isn't available on this platform.")
+                #endif
+            }
+        }
+    }
+
+    public enum SubmitResult: Equatable {
+        case lan
+        case relayed(recordID: String)
+        case failed(String)
     }
 }
 

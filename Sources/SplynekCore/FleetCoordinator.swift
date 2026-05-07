@@ -418,9 +418,50 @@ public final class FleetCoordinator: ObservableObject {
             }
             listener.start(queue: serverQueue)
             startBrowser()
+            // S4 phase 3 (2026-05-07): CloudKit relay receiver runs
+            // alongside the Bonjour browser.  Idempotent — `start()`
+            // on the receiver no-ops if already running.  Polls every
+            // 60s for SplynekRelayJob records targeting our deviceUUID
+            // submitted from the iOS Splynek Companion when the
+            // phone wasn't on our LAN.
+            startCloudKitRelayReceiverIfNeeded()
         } catch {
             // Fleet failure is silent — the app still works standalone.
             return
+        }
+    }
+
+    // MARK: CloudKit relay receiver (S4 phase 3, 2026-05-07)
+
+    private var cloudKitRelayReceiver: CloudKitRelayReceiver?
+
+    private func startCloudKitRelayReceiverIfNeeded() {
+        // Loopback-only mode disables the relay path — if LAN sharing
+        // is off the user has explicitly opted out of phone-to-Mac
+        // workflows.  Privacy posture wins.
+        if effectiveLoopbackOnly { return }
+        if cloudKitRelayReceiver != nil { return }
+        let uuid = deviceUUID
+        let receiver = CloudKitRelayReceiver(
+            macUUID: uuid,
+            ingest: { [weak self] action, url in
+                guard let self else { return }
+                Task { @MainActor in
+                    self.onWebIngest?(action, url)
+                }
+            }
+        )
+        cloudKitRelayReceiver = receiver
+        Task {
+            await receiver.start()
+        }
+    }
+
+    private func stopCloudKitRelayReceiver() {
+        let receiver = cloudKitRelayReceiver
+        cloudKitRelayReceiver = nil
+        Task {
+            await receiver?.stop()
         }
     }
 
@@ -429,6 +470,7 @@ public final class FleetCoordinator: ObservableObject {
         browser?.cancel(); browser = nil
         port = 0
         peers = []
+        stopCloudKitRelayReceiver()
     }
 
     /// Replace the locally-advertised state. Called from the VM whenever

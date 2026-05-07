@@ -36,6 +36,11 @@ public final class PairedMacStore {
     public static let appGroupID = "group.app.splynek.companion"
     private static let plistKey = "splynek.companion.pairedMacs"
     private static let keychainService = "app.splynek.companion.token"
+    /// S4 phase 3 (2026-05-07): user preference for the over-cellular
+    /// relay path.  Default-on so the Share Extension transparently
+    /// falls back to CloudKit when LAN fails.  User can disable in
+    /// Settings if they want submissions to fail loudly instead.
+    private static let cloudKitRelayKey = "splynek.companion.cloudKitRelayEnabled"
 
     // MARK: Init
 
@@ -110,6 +115,26 @@ public final class PairedMacStore {
         try? savePlist(existing)
         try? deleteToken(uuid: uuid)
     }
+
+    // MARK: User preferences (App Group plist)
+
+    /// Default-on.  iOS Splynek Companion's first-run flow surfaces
+    /// this as a toggle in Settings.
+    public var cloudKitRelayEnabled: Bool {
+        get {
+            if memoryMode { return cloudKitRelayMemory }
+            // `object(forKey:)` returns nil when the key has never
+            // been set — interpret that as "default true" so a
+            // fresh install enables relay.
+            if defaults.object(forKey: Self.cloudKitRelayKey) == nil { return true }
+            return defaults.bool(forKey: Self.cloudKitRelayKey)
+        }
+        set {
+            if memoryMode { cloudKitRelayMemory = newValue; return }
+            defaults.set(newValue, forKey: Self.cloudKitRelayKey)
+        }
+    }
+    private var cloudKitRelayMemory: Bool = true
 
     // MARK: Plist persistence
 

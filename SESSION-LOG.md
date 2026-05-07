@@ -1529,10 +1529,145 @@ Extension target landing — partial commits would leave
 `SplynekCompanion` declaring a dependency on a target that
 doesn't exist yet.)
 
+### Latest landing (2026-05-07 part 4): S4 phase 3 — CloudKit over-cellular relay
+
+User said "continue" again.  Phase 3 was the last functional gap
+in S4: the iPhone Companion only worked on the same Wi-Fi as the
+Mac — useless when on cellular, on a hotel network, or when the
+Mac's at home and the user's at the office.  Phase 3 closes that
+gap with a CloudKit-backed relay path.
+
+#### Architectural choice: poll, don't push
+
+The textbook design uses `CKDatabaseSubscription` + APNs silent
+push to wake the Mac when a relay record arrives.  We rejected
+that for two reasons:
+
+1. **Entitlement complexity.**  APNs silent push requires
+   `aps-environment` + a background-fetch capability + careful
+   delegate wiring on the Mac side that Splynek doesn't have today.
+2. **Sleeping-Mac brittleness.**  iOS coalesces silent pushes when
+   the receiver is asleep; "later" can be hours.  The user
+   experience would be "I submitted from cellular, why isn't it
+   downloading?"
+
+Instead the Mac polls the user's private CloudKit database every
+60s while running.  CloudKit's per-user free tier covers this
+comfortably (~720 queries/day for a typical desk Mac), and "60s
+worst-case latency" matches the "I'm on cellular, not at my desk
+yet" use case fine.
+
+#### Six new files, one schema
+
+**Pure shared core** (`iOS/Shared/`):
+
+- `CloudKitRelayRecord.swift` — `Codable` payload + CKRecord
+  encoder/decoder.  Schema fields: `url`, `submittedAt`,
+  `senderDevice`, `targetMacUUID`, `status`.  Same schema iOS
+  writes and Mac reads — no schema duplication.  Status is
+  `pending` on write, transitions to `consumed` after the Mac
+  ingests it.
+- `RelayPolicy.swift` — pure decision layer.  Given a
+  `LANOutcome` + the user's `cloudKitRelayEnabled` toggle,
+  returns a `Decision` (`.done` / `.fallbackToCloudKit` /
+  `.surfaceError`).  Token-rejection (401) NEVER falls back —
+  re-pair is the only fix; CloudKit relay would just sit pending
+  forever.
+
+**iOS-only writer** (`iOS/Shared/CloudKitRelaySubmitter.swift`):
+actor wrapping `CKContainer(identifier: "iCloud.app.splynek.companion").privateCloudDatabase`.
+`submit(url:senderDevice:targetMacUUID:)` returns the saved
+record's name; throws typed errors (`noICloudAccount`,
+`quotaExceeded`, `network`, `ckError`) the UI maps to user-facing
+messages.  Pre-flight `accountStatus()` check so a user without
+iCloud signed in gets a clear message instead of cryptic CK
+errors.
+
+**Mac-only receiver** (`Sources/SplynekCore/CloudKitRelayReceiver.swift`):
+actor that runs a 60s poll loop.  Each tick queries
+`SplynekRelayJob` records where
+`targetMacUUID == this Mac's deviceUUID AND status == "pending"`,
+hands the URLs to the existing `onWebIngest("queue", url)` callback
+(same path the LAN POST goes through), then transitions each
+record to `consumed`.  Idempotent: re-reading a record after
+crash-during-mark sees status `consumed` and skips.  Public
+`pollOnce()` for diagnostics + tests.
+
+**Mac wiring** (`Sources/SplynekCore/FleetCoordinator.swift`):
+`startCloudKitRelayReceiverIfNeeded()` called from `start()`
+right after `startBrowser()`; receiver shutdown in `stop()`.
+Skipped entirely when `effectiveLoopbackOnly` is true (privacy
+posture wins — if the user opted out of LAN sharing, they
+opted out of phone-to-Mac workflows too).
+
+**iOS Share Extension swap** (`iOS/SplynekShareExtension/ShareViewController.swift`):
+`PairedMacClient.queue(...)` call replaced with
+`submitWithRelay(...)`.  Handles all three result cases:
+`.lan` (silent dismiss), `.relayed` ("Sent via iCloud — will start
+when X checks in" alert), `.failed(message)` (red error alert).
+
+**Cross-target schema sharing**: the Mac's `CloudKitRelayReceiver`
+needs the same `CloudKitRelayRecord` type the iOS Share Extension
+uses.  `Package.swift` now has `SplynekCore` depend on
+`SplynekCompanionCore` so the Mac core sees the iOS-shared schema
+without duplicating it.  Forward-compat: future Mac↔iOS shared
+types live in `iOS/Shared/` by default.
+
+#### Entitlements
+
+iCloud + container ID added to all three:
+
+- `Resources/Splynek.entitlements` (Mac main app)
+- `iOS/Resources/SplynekCompanion.entitlements` (iOS host app)
+- `iOS/Resources/SplynekShareExtension.entitlements` (Share Extension)
+
+Container ID: `iCloud.app.splynek.companion`.  This is a
+maintainer-provisioned identifier in App Store Connect; until
+that's done the receiver runs but quietly returns 0 ingested per
+tick (account-status check returns `.couldNotDetermine`).
+Provisioning runbook documented in IOS-COMPANION.md.
+
+#### Tests (19 new)
+
+- `CompanionRelayPolicyTests` (10 tests) — every input × output
+  combination of `decide(...)`: success/done, unauthorised never
+  falls back, network failure with relay enabled → CloudKit,
+  network failure with relay disabled → surface error with
+  helpful message.
+- `CompanionCloudKitRecordTests` (9 tests) — Codable round-trip,
+  CKRecord round-trip, missing-required-field rejection, unknown
+  status rejection (schema-drift defence), empty URL rejection,
+  Equatable + Hashable correctness.
+
+After this commit: **630 tests passing** (was 611 — +19; net +78
+over the 552 pre-S4 baseline).  **Build warnings: 0** throughout.
+
+#### Numbers this part
+
+| Metric | Before phase 3 | After phase 3 | Δ |
+|---|---:|---:|---:|
+| Tests | 611 | **630** | +19 |
+| iOS Shared/ files | 9 | **12** | +3 |
+| Mac SplynekCore files | unchanged | +1 (`CloudKitRelayReceiver.swift`) | +1 |
+| SwiftPM target dependencies | 3 (test → core+companion) | **4** (+ core → companion) | +1 |
+| Entitlement files touched | 3 (App Group only) | **3** (+ iCloud) | 0 |
+
+#### One commit delivers phase 3
+
+```
+(pending) S4 phase 3: CloudKit over-cellular relay
+```
+
+Phase 3 lands as one commit because the iOS submitter, Mac
+receiver, schema, entitlements, and tests are mutually-coherent
+— partial commits would leave the Mac compiling but unable to
+read the schema, or vice versa.
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
-(pending) S4 phase 2: Live Activity + QR-code pairing
+(pending) S4 phase 3: CloudKit over-cellular relay
+eac2caf S4 phase 2: Live Activity + QR-code pairing
 b509954 S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
 aaddef8 Documentation: 2026-05-06/07 sweep + URL-verification automation
 72e57b9 Sovereignty: automate URL verification with Content-Type validation + auto-prune
@@ -1629,8 +1764,8 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **628** | ×11.2 |
 | Translations (×5 locales) | 56 | **3,140** | ×56 |
-| Tests | 148 | **611** | ×4.1 |
-| Public-repo Swift files | 49 | **68** (top-level SplynekCore) / 140 (recursive incl. iOS/) | +19 / +91 |
+| Tests | 148 | **630** | ×4.3 |
+| Public-repo Swift files | 49 | **69** (top-level SplynekCore) / 144 (recursive incl. iOS/) | +20 / +95 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |
 | Top-level docs | 1 (HANDOFF) | **7** (HANDOFF + STRATEGY-v1.7-v1.9 + MAS-2.5.2-COMPLIANCE + L10N-REVIEW + RELEASE-NOTES draft + SMJOB-BLESS-DESIGN + SESSION-LOG + IOS-COMPANION) | +6 |
@@ -1655,14 +1790,15 @@ Worth being explicit about:
   binary uploads.
 - **Native-speaker review not done.**  All translations are
   Claude-generated; `L10N-REVIEW.md` is the onramp for the human pass.
-- **iOS Companion phase 3 not started.**  Foundation + phase 2 both
-  shipped 2026-05-07 (build system + shared core + UI shell + Share
-  Extension + Widget Extension + Live Activity + QR-code pairing +
-  59 tests).  Phase 3 is CloudKit relay for over-cellular
-  submission + TestFlight rollout.  Each is genuinely multi-day;
-  CloudKit needs Mac-side `CKDatabaseSubscription` + idempotency,
-  TestFlight needs Apple Developer Program iOS provisioning.
-  Deferred until Apple v1.0 macOS clears.  See `IOS-COMPANION.md`.
+- **iOS Companion full functional ship 2026-05-07.**  Foundation
+  + phase 2 + phase 3 all landed same day (build system + shared
+  core + UI shell + Share Extension + Widget Extension + Live
+  Activity + QR-code pairing + CloudKit over-cellular relay + 78
+  tests).  Outstanding maintainer-only work: provision the
+  `iCloud.app.splynek.companion` CKContainer in App Store Connect
+  + publish the SplynekRelayJob schema in CloudKit Dashboard
+  (runbook in IOS-COMPANION.md), and run TestFlight rollout —
+  both gated on Apple v1.0 macOS clearance.
 
 ## When to re-read this doc
 

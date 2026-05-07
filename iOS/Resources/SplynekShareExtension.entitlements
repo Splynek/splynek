@@ -14,5 +14,19 @@
     <array>
         <string>$(AppIdentifierPrefix)group.app.splynek.companion</string>
     </array>
+    <!--
+        S4 phase 3 (2026-05-07): Share Extension needs the same
+        CloudKit container as the host app so its over-cellular
+        relay write goes to the same private database the Mac
+        polls.
+    -->
+    <key>com.apple.developer.icloud-services</key>
+    <array>
+        <string>CloudKit</string>
+    </array>
+    <key>com.apple.developer.icloud-container-identifiers</key>
+    <array>
+        <string>iCloud.app.splynek.companion</string>
+    </array>
 </dict>
 </plist>

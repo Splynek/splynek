@@ -37,6 +37,12 @@ let package = Package(
     targets: [
         .target(
             name: "SplynekCore",
+            // S4 phase 3 (2026-05-07): SplynekCore depends on
+            // SplynekCompanionCore so CloudKitRelayReceiver can use
+            // the same `CloudKitRelayRecord` type the iOS Companion's
+            // Share Extension writes to CloudKit.  Single source of
+            // truth for the schema across iOS + macOS.
+            dependencies: ["SplynekCompanionCore"],
             path: "Sources/SplynekCore",
             resources: [.process("Localizable.xcstrings")]
         ),

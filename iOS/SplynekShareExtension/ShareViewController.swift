@@ -104,17 +104,38 @@ final class ShareViewController: UIViewController {
 
     @MainActor
     private func send(_ url: URL, to mac: PairedMac) async {
-        do {
-            try await PairedMacClient(mac: mac).queue(url: url)
+        // S4 phase 3 (2026-05-07): submitWithRelay tries LAN first
+        // (5s timeout), falls back to CloudKit relay when LAN fails
+        // and the user has the relay toggle on.  Token-rejection
+        // never falls back — re-pair is the only fix.
+        let store = PairedMacStore()
+        let relayEnabled = store?.cloudKitRelayEnabled ?? true
+        let device = await UIDevice.current.name
+        let result = await PairedMacClient(mac: mac).submitWithRelay(
+            url: url,
+            senderDevice: device,
+            cloudKitRelayEnabled: relayEnabled)
+
+        switch result {
+        case .lan:
             extensionContext?.completeRequest(returningItems: nil)
-        } catch {
-            // Surface failures via a quick alert.  More polished UX
-            // (toast / retry on different Mac) lives in phase 2.
+        case .relayed:
+            // Quick toast-equivalent: brief alert with no buttons
+            // that auto-dismisses via completeRequest after the
+            // user reads it.
             let alert = UIAlertController(
-                title: "Couldn't reach \(mac.displayName)",
-                message: error.localizedDescription,
-                preferredStyle: .alert
-            )
+                title: "Sent via iCloud",
+                message: "Will start when \(mac.displayName) checks in.",
+                preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+                self?.extensionContext?.completeRequest(returningItems: nil)
+            })
+            present(alert, animated: true)
+        case .failed(let msg):
+            let alert = UIAlertController(
+                title: "Couldn't send to \(mac.displayName)",
+                message: msg,
+                preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
                 self?.cancelRequest()
             })

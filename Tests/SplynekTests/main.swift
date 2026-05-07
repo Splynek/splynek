@@ -95,6 +95,12 @@ CompanionStoreTests.run()
 // iOS-only LiveActivityDriver + QRScannerView.
 CompanionLiveActivityTests.run()
 CompanionPairURLTests.run()
+// S4 phase 3 (2026-05-07): CloudKit over-cellular relay.  Pure
+// transitions + record encode/decode; CKContainer/database calls
+// live in CloudKitRelaySubmitter / CloudKitRelayReceiver and are
+// exercised on-device only.
+CompanionRelayPolicyTests.run()
+CompanionCloudKitRecordTests.run()
 
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private

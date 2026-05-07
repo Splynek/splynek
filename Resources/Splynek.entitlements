@@ -25,5 +25,26 @@
     <true/>
     <key>com.apple.security.files.downloads.read-write</key>
     <true/>
+    <!--
+      S4 phase 3 (2026-05-07): CloudKit over-cellular relay.
+      Splynek macOS receives SplynekRelayJob CKRecords written by
+      iOS Splynek Companion when the iPhone wasn't on the same Wi-Fi
+      as the Mac.  Same container ID as the iOS app so writes from
+      one land in the database the other polls.
+
+      `iCloud.app.splynek.companion` must be created in App Store
+      Connect, with schema "SplynekRelayJob" published in both
+      Development + Production environments, before the receiver's
+      pollOnce() will return matching records.  Until then the
+      receiver runs but quietly returns 0 ingested per tick.
+    -->
+    <key>com.apple.developer.icloud-services</key>
+    <array>
+        <string>CloudKit</string>
+    </array>
+    <key>com.apple.developer.icloud-container-identifiers</key>
+    <array>
+        <string>iCloud.app.splynek.companion</string>
+    </array>
 </dict>
 </plist>
