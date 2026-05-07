@@ -50,7 +50,16 @@
 // activation runbook.
 
 import Foundation
+// `SplynekCompanionCore` is a separate SwiftPM library target (built
+// only when `swift build` is the toolchain).  Xcode compiles
+// `iOS/Shared/CloudKitRelayRecord.swift` directly into the macOS
+// Splynek module via project.yml, so the type is in the same module
+// without an import.  `SWIFT_PACKAGE` is auto-defined by SPM but not
+// by Xcode — exactly the right gate for "import only if this is an
+// SPM build."
+#if SWIFT_PACKAGE
 import SplynekCompanionCore  // CloudKitRelayRecord, schema constants
+#endif
 #if canImport(CloudKit)
 import CloudKit
 #endif
