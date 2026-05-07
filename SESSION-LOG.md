@@ -1735,10 +1735,153 @@ over the 552 pre-S4 baseline).  **Build warnings: 0.**
 (pending) S4 polish: iOS Settings tab + paired-Mac diagnostics
 ```
 
+### Latest landing (2026-05-07 part 6): Five-track polish sweep
+
+User requested five tracks in one big run: verify iOS Xcode build,
+push Sovereignty coverage toward 100%, scaffold iOS L10n, double
+Trust with audited download buttons, S5 live-test on Vimeo/Twitch.
+
+Up-front honesty on two of them:
+
+- **Sovereignty 100%** isn't achievable on its own merits — most
+  alternatives are SaaS-only / paid sign-up walls / version-embedded
+  URLs that always 404.  Realistic ceiling is ~40-60% over time as
+  publishers publish stable redirects.  Pushed +34 this round to
+  reach 8.0% (was 7.0%).
+- **S5 live test** can't be done end-to-end from a Claude session
+  (no GUI, no buffering to watch).  What shipped instead: live
+  HLSProxyServer telemetry + a token-gated REST endpoint exposing
+  it + a watch script Paulo runs while opening a real video.  The
+  measurement becomes possible; Claude doesn't perform it.
+
+Five commits delivered:
+
+```
+969db71 S5 instrumentation: HLSProxyServer telemetry + /hls/stats + watch script
+e151e16 Trust: inherit 86 fallbackAlternatives from Sovereignty across 41 entries
+74915be iOS Companion L10n scaffolding: 51 strings × 5 locales
+a430675 Sovereignty: +34 verified downloadURLs across 4 high-recurrence apps
+77b04d3 S4 polish: migrate iOS Info.plist content into project.yml
+```
+
+#### Track 1 — iOS Xcode build verification (`77b04d3`)
+
+Real issue surfaced: xcodegen REGENERATES the Info.plist files
+listed in `info: path:` from `info: properties:` on every run.
+With `path:`-only declarations (shipped in the foundation commit),
+xcodegen wrote minimal placeholder plists, silently clobbering my
+hand-crafted keys (NSSupportsLiveActivities, NSCameraUsageDescription,
+NSLocalNetworkUsageDescription, NSBonjourServices, NSAppTransportSecurity,
+NSExtension keys for the Share Extension).
+
+Fix: move every key from the plist files into `info: properties:`
+in project.yml + `excludes: ["Info.plist"]` on the source list so
+xcodegen's regeneration doesn't conflict with the source inclusion.
+Pattern mirrors the existing Splynek-Safari-Extension target.
+
+Verified `xcodebuild -list` parses all seven targets correctly
+(Splynek, Splynek-MAS, Splynek-Safari-Extension, SplynekCompanion,
+SplynekCompanionWidgets, SplynekHelper, SplynekShareExtension).
+Full xcodebuild compile blocked locally on missing iOS 26.4 SDK
+(maintainer-side: Xcode → Settings → Components install).
+
+#### Track 2 — Sovereignty downloadURL push (`a430675`)
+
+Audit identified 195 unique alternative names without a downloadURL.
+Tested ~120 candidate URLs across three batches with curl + Content-
+Type validation; 26 returned binary Content-Type with stable URLs.
+Of those, 4 had non-trivial recurrence in the catalog and weren't
+already covered:
+
+  - Proton Pass     (5 entries)
+  - TeamViewer      (8 entries)
+  - DBeaver         (13 entries)
+  - AnyDesk         (8 entries)
+
+Coverage 7.0% → 8.0% (223 → 257 of 3,194).  The auto-pruner
+re-verified all 257 URLs after the add — 0 broken.
+
+#### Track 3 — iOS Companion L10n scaffolding (`74915be`)
+
+51 user-facing strings extracted from the iOS app + Share Extension,
+translated to 5 locales (de / es / fr / it / pt-PT).  Wired as a
+`resources:` entry on the SplynekCompanion target in project.yml.
+SwiftUI's `Text("…")` initializer takes a LocalizedStringKey
+implicitly when called with a string literal, so the existing 9
+SwiftUI files automatically bind to the catalog with zero code
+changes.  Combined Mac+iOS catalog total: 679 source strings × 5
+= 3,395 translations.
+
+#### Track 4 — Trust catalog fallback inheritance (`e151e16`)
+
+Honest read on "double Trust to ~300 entries": doing that in one
+session means Claude-generated risk assessments per entry —
+exactly the failure mode TRUST-CONTRIBUTING.md prohibits ("AI-
+generated risk assessments — hallucination risk").
+
+The real gap was elsewhere: 149 of 151 Trust entries had ZERO
+fallbackAlternatives — the Trust UI surfaced concerns but offered
+no replacement.  Closed via inheritance from Sovereignty: 41
+Trust entries share a targetBundleID with a Sovereignty entry,
+and Sovereignty's `.europe` / `.oss` / `.europeAndOSS` alternatives
+are valid Trust fallbacks (Sov's contributor rules already require
+factual / non-editorial notes which pass Trust's banned-words
+filter unmodified).
+
+  Trust fallbackAlternatives:    2 → 88 (×44)
+  Trust entries with ≥1 alt:      2 → 43 (1.3% → 28%)
+  Of the 88 alts, with verified downloadURL: 8
+
+Validator: 151 Trust entries, 0 findings.
+
+#### Track 5 — S5 instrumentation (`969db71`)
+
+`HLSProxyServer.Telemetry` Codable struct with sessionsActive (gauge),
+masterFetches / variantFetches / prefetchInsertions / segmentRequests /
+segmentCacheHits / segmentCacheMisses / bytesFromCache / bytesFromOrigin
+(counters) + computed cacheHitRate.  Counters bumped at the existing
+call sites in handleMaster / handleVariant (incl. prefetch fire-and-
+forget Task closure) / handleSegment.  `resetTelemetry()` zeroes
+counters but preserves sessionsActive (re-derived from sessions).
+
+FleetCoordinator: new `GET /splynek/v1/hls/stats?t=<token>` endpoint
+returning the Telemetry as JSON.  Optional `?reset=1` zeroes counters.
+
+Scripts/hls-watch.sh: bash poller, 1s cadence, auto-detects port +
+token from ~/Library/Application Support/Splynek/fleet.json.  Prints
+rolling table:
+
+  Time  Sessions  Segments  CacheHits  FromCache  FromOrigin  HitRate
+
+Demo recipe (per strategy memo "video never buffers"):
+  1. `./Scripts/hls-watch.sh --reset` in one terminal
+  2. Open Vimeo on weak Wi-Fi + 5G tether in browser with
+     Splynek Accelerator extension on
+  3. Watch cacheHitRate flip from ~0% (no extension) to >90%
+     (BondedFetcher pulling segments via parallel byte ranges
+     across both NICs)
+
+#### Numbers this part
+
+| Metric | Before sweep | After sweep | Δ |
+|---|---:|---:|---:|
+| Tests | 642 | **648** | +6 (S5 telemetry) |
+| iOS Localizable.xcstrings | none | **51 × 5 = 255** | +255 translations |
+| Mac+iOS L10n total | 3,140 | **3,395** | +255 |
+| Sovereignty downloadURL coverage | 7.0% | **8.0%** | +1.0 pp / +34 URLs |
+| Trust fallbackAlternatives | 2 | **88** | ×44 |
+| Trust entries with ≥1 fallback | 2 | **43** | +41 |
+| Telemetry surfaces | 0 | **9** counters + 1 gauge | new capability |
+
 ## Commit timeline (latest first, top of `main`)
 
 ```
-(pending) S4 polish: iOS Settings tab + paired-Mac diagnostics
+969db71 S5 instrumentation: HLSProxyServer telemetry + /hls/stats + watch script
+e151e16 Trust: inherit 86 fallbackAlternatives from Sovereignty across 41 entries
+74915be iOS Companion L10n scaffolding: 51 strings × 5 locales
+a430675 Sovereignty: +34 verified downloadURLs across 4 high-recurrence apps
+77b04d3 S4 polish: migrate iOS Info.plist content into project.yml
+4df6d39 S4 polish: iOS Settings tab + paired-Mac diagnostics
 2e381f4 S4 phase 3: CloudKit over-cellular relay
 eac2caf S4 phase 2: Live Activity + QR-code pairing
 b509954 S4 iPhone Companion: foundation skeleton — iOS app + Share Extension + shared core
@@ -1837,7 +1980,7 @@ d15e0d2 ConciergeView: render Mac-Assistant cards inline + new chip surface
 |---|---:|---:|---:|
 | Catalog strings | 56 | **628** | ×11.2 |
 | Translations (×5 locales) | 56 | **3,140** | ×56 |
-| Tests | 148 | **642** | ×4.3 |
+| Tests | 148 | **648** | ×4.4 |
 | Public-repo Swift files | 49 | **69** (top-level SplynekCore) / 146 (recursive incl. iOS/) | +20 / +97 |
 | Public-repo plists | 6 | **8** | +2 (helper + launchd) |
 | Pro-repo Swift files | 8 | **10** | +2 (Mac-Assistant dispatcher + cards) |

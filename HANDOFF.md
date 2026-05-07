@@ -19,7 +19,7 @@ xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
 xcrun stapler staple build/Splynek.dmg
 ```
 **Build (MAS):** `./Scripts/build-mas.sh` → `build/Splynek-MAS.xcarchive` + `build/Splynek-MAS-Export/Splynek.pkg`
-**Tests:** `swift run splynek-test` (642 tests, all green — was 552 before S4; +90 net) — `swift build` produces **0 warnings on clean rebuild**
+**Tests:** `swift run splynek-test` (648 tests, all green — was 552 before S4; +96 net) — `swift build` produces **0 warnings on clean rebuild**
 **CLI:** `swift run splynek-cli version` (plus `sovereignty-dump` for catalog round-trip)
 
 **Current version: v1.6.2 (Info.plist) / v1.5.3 (last pushed tag + uploaded DMG) — 2026-05-07.**
@@ -37,10 +37,11 @@ tagging happens after the maintainer picks a cut point.  Holding all
 release gestures (push tag, cut DMG, deploy landing, push cask) until
 Apple v1.0 clears Mac App Store re-review.
 
-Catalog state on `main` (after v1.6.2 rounds 1–8 + v1.7→v1.9.7 i18n adds + audit-extension catch-up + 2026-05-06/07 UI/UX + catalog-coverage sweep):
-- Localizable.xcstrings: **628 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **3,140 translations**.
-- Trust catalog: **151 entries** (was 30 at v1.6.0 start; +121 across the v1.6.x sprint).
-- Sovereignty catalog: 1,155 entries (unchanged since v1.4); **3,194 alternatives** total of which **223 (7.0%) carry a verified direct `downloadURL`** for one-click install.  Coverage is auto-pruned weekly — the cron strips broken downloadURLs and opens a PR for review (see "URL verification automation" below).
+Catalog state on `main` (after v1.6.2 rounds 1–8 + v1.7→v1.9.7 i18n adds + audit-extension catch-up + 2026-05-06/07 UI/UX + catalog-coverage sweep + five-track polish 2026-05-07):
+- Mac Localizable.xcstrings: **628 strings × 5 locales** (en/pt-PT/es/fr/de/it) = **3,140 translations**.
+- iOS Localizable.xcstrings (NEW 2026-05-07): **51 strings × 5 locales** = **255 translations**.  Combined catalog total = **3,395 translations.**
+- Trust catalog: **151 entries** (was 30 at v1.6.0 start; +121 across the v1.6.x sprint), **88 fallback alternatives** across 43 entries (was 2 across 2 entries; +86 inherited from Sovereignty 2026-05-07; 8 carry verified `downloadURL`).
+- Sovereignty catalog: 1,155 entries (unchanged since v1.4); **3,194 alternatives** total of which **257 (8.0%) carry a verified direct `downloadURL`** for one-click install (was 7.0% / 223 pre-sweep; +34 in 2026-05-07 push across Proton Pass / TeamViewer / DBeaver / AnyDesk).  Coverage is auto-pruned weekly — the cron strips broken downloadURLs and opens a PR for review (see "URL verification automation" below).
 
 The `main` branch carries v1.5.4 → v1.6.2 commits but **none are tagged or uploaded yet**. They're staged to ship as a single rolled-up `v1.6.2` release once Apple clears v1.0 (we hold the DMG cut so an Apple Reviewer who URL-spelunks doesn't pull in newer behaviour they didn't approve).
 
