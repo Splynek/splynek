@@ -50,6 +50,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:acrobat:skim",
+                    name: "Skim",
+                    homepage: URL(string: "https://skim-app.sourceforge.io")!,
+                    note: "BSD. Mac PDF reader + annotator."
+                ),
+                FallbackAlternative(
+                    id: "trust:acrobat:xournalpp",
+                    name: "Xournal++",
+                    homepage: URL(string: "https://xournalpp.github.io")!,
+                    note: "GPL. Note-taking and PDF annotation."
+                ),
             ]),
         Entry(
             targetBundleID: "com.adobe.LightroomCC",
@@ -68,6 +80,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:lr:darktable",
+                    name: "darktable",
+                    homepage: URL(string: "https://www.darktable.org")!,
+                    note: "GPL. RAW photo editor + library."
+                ),
+                FallbackAlternative(
+                    id: "trust:lr:capture-one",
+                    name: "Capture One",
+                    homepage: URL(string: "https://www.captureone.com")!,
+                    note: "Capture One (Denmark). Pro-grade RAW."
+                ),
             ]),
         Entry(
             targetBundleID: "com.adobe.Photoshop",
@@ -86,6 +110,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:ps:gimp",
+                    name: "GIMP",
+                    homepage: URL(string: "https://www.gimp.org")!,
+                    note: "GPL. Open-source image editor."
+                ),
+                FallbackAlternative(
+                    id: "trust:ps:affinity",
+                    name: "Affinity Photo",
+                    homepage: URL(string: "https://affinity.serif.com/photo/")!,
+                    note: "Serif (UK). One-time purchase."
+                ),
             ]),
         Entry(
             targetBundleID: "com.adobe.acc.AdobeCreativeCloud",
@@ -114,6 +150,12 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:cc:affinity-suite",
+                    name: "Affinity Suite (V2)",
+                    homepage: URL(string: "https://affinity.serif.com")!,
+                    note: "Serif (UK). Photo + Designer + Publisher one-time."
+                ),
             ]),
         Entry(
             targetBundleID: "com.adobe.spark",
@@ -168,6 +210,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:airtable:nocodb",
+                    name: "NocoDB",
+                    homepage: URL(string: "https://nocodb.com")!,
+                    note: "AGPL. Open-source Airtable alt."
+                ),
+                FallbackAlternative(
+                    id: "trust:airtable:baserow",
+                    name: "Baserow",
+                    homepage: URL(string: "https://baserow.io")!,
+                    note: "Baserow (Netherlands). MIT."
+                ),
             ]),
         Entry(
             targetBundleID: "com.alibaba.iAliexpress",
@@ -222,6 +276,24 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:kindle:calibre",
+                    name: "Calibre",
+                    homepage: URL(string: "https://calibre-ebook.com")!,
+                    note: "GPL. E-book manager."
+                ),
+                FallbackAlternative(
+                    id: "trust:kindle:foliate",
+                    name: "Foliate",
+                    homepage: URL(string: "https://github.com/johnfactotum/foliate")!,
+                    note: "GPL. E-book reader."
+                ),
+                FallbackAlternative(
+                    id: "trust:kindle:koreader",
+                    name: "KOReader",
+                    homepage: URL(string: "https://koreader.rocks")!,
+                    note: "AGPL. E-book reader."
+                ),
             ]),
         Entry(
             targetBundleID: "com.amazon.music.mac",
@@ -240,6 +312,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:amuz:deezer",
+                    name: "Deezer",
+                    homepage: URL(string: "https://www.deezer.com")!,
+                    note: "Deezer (France). HiFi streaming, 100M+ tracks."
+                ),
+                FallbackAlternative(
+                    id: "trust:amuz:qobuz",
+                    name: "Qobuz",
+                    homepage: URL(string: "https://www.qobuz.com")!,
+                    note: "Qobuz (France). Studio-quality streaming, paid."
+                ),
             ]),
         Entry(
             targetBundleID: "com.apple.FinalCut",
@@ -276,6 +360,24 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:xcode:jetbrains",
+                    name: "JetBrains Toolbox",
+                    homepage: URL(string: "https://www.jetbrains.com/toolbox-app/")!,
+                    note: "JetBrains (Czech Republic). Industry-standard IDE suite."
+                ),
+                FallbackAlternative(
+                    id: "trust:xcode:vscodium",
+                    name: "VSCodium",
+                    homepage: URL(string: "https://vscodium.com")!,
+                    note: "MIT. Telemetry-free VS Code build."
+                ),
+                FallbackAlternative(
+                    id: "trust:xcode:zed",
+                    name: "Zed",
+                    homepage: URL(string: "https://zed.dev")!,
+                    note: "GPL. Native multiplayer code editor."
+                ),
             ]),
         Entry(
             targetBundleID: "com.apple.iWork.Keynote",
@@ -708,6 +810,20 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:dashlane:bitwarden",
+                    name: "Bitwarden",
+                    homepage: URL(string: "https://bitwarden.com")!,
+                    note: "AGPL. Self-hostable password manager (free tier generous).",
+                    downloadURL: URL(string: "https://vault.bitwarden.com/download/?app=desktop&platform=macos")
+                ),
+                FallbackAlternative(
+                    id: "trust:dashlane:proton-pass",
+                    name: "Proton Pass",
+                    homepage: URL(string: "https://proton.me/pass")!,
+                    note: "Switzerland. E2E-encrypted.",
+                    downloadURL: URL(string: "https://proton.me/download/PassDesktop/macos/ProtonPass.dmg")
+                ),
             ]),
         Entry(
             targetBundleID: "com.dd.doordash",
@@ -852,6 +968,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:evernote:joplin",
+                    name: "Joplin",
+                    homepage: URL(string: "https://joplinapp.org")!,
+                    note: "AGPL. E2E-encrypted sync."
+                ),
+                FallbackAlternative(
+                    id: "trust:evernote:obsidian",
+                    name: "Obsidian",
+                    homepage: URL(string: "https://obsidian.md")!,
+                    note: "Local-first markdown."
+                ),
             ]),
         Entry(
             targetBundleID: "com.evernote.iPhone.Evernote",
@@ -962,6 +1090,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:fbm:signal",
+                    name: "Signal",
+                    homepage: URL(string: "https://signal.org")!,
+                    note: "Signal Foundation."
+                ),
+                FallbackAlternative(
+                    id: "trust:fbm:threema",
+                    name: "Threema",
+                    homepage: URL(string: "https://threema.ch")!,
+                    note: "Switzerland."
+                ),
             ]),
         Entry(
             targetBundleID: "com.fitbit.FitbitMobile",
@@ -998,6 +1138,12 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:fantastical:proton-calendar",
+                    name: "Proton Calendar",
+                    homepage: URL(string: "https://proton.me/calendar")!,
+                    note: "Switzerland. E2E-encrypted."
+                ),
             ]),
         Entry(
             targetBundleID: "com.fogcreek.trello",
@@ -1062,6 +1208,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:dropbox:nextcloud",
+                    name: "Nextcloud",
+                    homepage: URL(string: "https://nextcloud.com")!,
+                    note: "Germany. AGPL."
+                ),
+                FallbackAlternative(
+                    id: "trust:dropbox:protondrive",
+                    name: "Proton Drive",
+                    homepage: URL(string: "https://proton.me/drive")!,
+                    note: "Switzerland. E2E-encrypted."
+                ),
             ]),
         Entry(
             targetBundleID: "com.getsomeheadspace.headspaceapp",
@@ -1214,6 +1372,24 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:gtrans:deepl",
+                    name: "DeepL",
+                    homepage: URL(string: "https://www.deepl.com")!,
+                    note: "DeepL SE (Germany). Best-in-class translation."
+                ),
+                FallbackAlternative(
+                    id: "trust:gtrans:mistral",
+                    name: "Mistral Le Chat",
+                    homepage: URL(string: "https://chat.mistral.ai")!,
+                    note: "France. General-purpose LLM does translation well."
+                ),
+                FallbackAlternative(
+                    id: "trust:gtrans:libretranslate",
+                    name: "LibreTranslate",
+                    homepage: URL(string: "https://libretranslate.com")!,
+                    note: "AGPL. Self-hostable translation API."
+                ),
             ]),
         Entry(
             targetBundleID: "com.google.chrome.ios",
@@ -1250,6 +1426,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:gdrive:nextcloud",
+                    name: "Nextcloud",
+                    homepage: URL(string: "https://nextcloud.com")!,
+                    note: "Nextcloud GmbH (Germany). AGPL. Self-hosted or EU providers."
+                ),
+                FallbackAlternative(
+                    id: "trust:gdrive:protondrive",
+                    name: "Proton Drive",
+                    homepage: URL(string: "https://proton.me/drive")!,
+                    note: "Proton AG (Switzerland). E2E-encrypted."
+                ),
             ]),
         Entry(
             targetBundleID: "com.google.ios.youtube",
@@ -1304,6 +1492,12 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:grammarly:languagetool",
+                    name: "LanguageTool",
+                    homepage: URL(string: "https://languagetool.org")!,
+                    note: "LanguageTooler GmbH (Germany). LGPL. Self-hostable."
+                ),
             ]),
         Entry(
             targetBundleID: "com.grindrllc.grindr",
@@ -1394,6 +1588,19 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:discord:revolt",
+                    name: "Revolt",
+                    homepage: URL(string: "https://revolt.chat")!,
+                    note: "AGPL Discord-alike. Self-hostable."
+                ),
+                FallbackAlternative(
+                    id: "trust:discord:element",
+                    name: "Element",
+                    homepage: URL(string: "https://element.io")!,
+                    note: "Element (UK). Matrix protocol, federated chat.",
+                    downloadURL: URL(string: "https://packages.element.io/desktop/install/macos/Element.dmg")
+                ),
             ]),
         Entry(
             targetBundleID: "com.hotels.HotelsNearMeApp",
@@ -1430,6 +1637,24 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:hulu:arte",
+                    name: "Arte.tv",
+                    homepage: URL(string: "https://www.arte.tv")!,
+                    note: "Arte (France/Germany). Free, ad-supported."
+                ),
+                FallbackAlternative(
+                    id: "trust:hulu:mubi",
+                    name: "MUBI",
+                    homepage: URL(string: "https://mubi.com")!,
+                    note: "MUBI (UK). Curated arthouse streaming."
+                ),
+                FallbackAlternative(
+                    id: "trust:hulu:jellyfin",
+                    name: "Jellyfin",
+                    homepage: URL(string: "https://jellyfin.org")!,
+                    note: "GPL. Self-hosted media."
+                ),
             ]),
         Entry(
             targetBundleID: "com.ideashower.ReadItLaterPro",
@@ -1512,6 +1737,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:kas:clamav",
+                    name: "ClamAV",
+                    homepage: URL(string: "https://www.clamav.net")!,
+                    note: "GPL. Open-source anti-malware scanner."
+                ),
+                FallbackAlternative(
+                    id: "trust:kas:f-secure",
+                    name: "F-Secure",
+                    homepage: URL(string: "https://www.f-secure.com")!,
+                    note: "F-Secure (Finland). Commercial AV."
+                ),
             ]),
         Entry(
             targetBundleID: "com.khanacademy.Khan-Academy",
@@ -1576,6 +1813,19 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:lp:bitwarden",
+                    name: "Bitwarden",
+                    homepage: URL(string: "https://bitwarden.com")!,
+                    note: "AGPL. Self-hostable password manager (free tier generous).",
+                    downloadURL: URL(string: "https://vault.bitwarden.com/download/?app=desktop&platform=macos")
+                ),
+                FallbackAlternative(
+                    id: "trust:lp:keepassxc",
+                    name: "KeePassXC",
+                    homepage: URL(string: "https://keepassxc.org")!,
+                    note: "GPL. Local-first .kdbx password manager."
+                ),
             ]),
         Entry(
             targetBundleID: "com.linear",
@@ -1594,6 +1844,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:linear:openproject",
+                    name: "OpenProject",
+                    homepage: URL(string: "https://www.openproject.org")!,
+                    note: "OpenProject GmbH (Germany). GPL. Self-hostable."
+                ),
+                FallbackAlternative(
+                    id: "trust:linear:taiga",
+                    name: "Taiga",
+                    homepage: URL(string: "https://taiga.io")!,
+                    note: "Kaleidos (Spain). Apache. Agile PM."
+                ),
             ]),
         Entry(
             targetBundleID: "com.linkedin.LinkedIn",
@@ -1622,6 +1884,24 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:linkedin:mastodon",
+                    name: "Mastodon",
+                    homepage: URL(string: "https://joinmastodon.org")!,
+                    note: "Mastodon gGmbH (Germany). AGPL."
+                ),
+                FallbackAlternative(
+                    id: "trust:linkedin:pixelfed",
+                    name: "Pixelfed",
+                    homepage: URL(string: "https://pixelfed.org")!,
+                    note: "AGPL. Federated photo-sharing."
+                ),
+                FallbackAlternative(
+                    id: "trust:linkedin:bluesky",
+                    name: "Bluesky",
+                    homepage: URL(string: "https://bsky.app")!,
+                    note: "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
+                ),
             ]),
         Entry(
             targetBundleID: "com.lyft.iphone",
@@ -1694,6 +1974,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:excel:libreoffice",
+                    name: "LibreOffice Calc",
+                    homepage: URL(string: "https://www.libreoffice.org")!,
+                    note: "The Document Foundation (Germany). MPL."
+                ),
+                FallbackAlternative(
+                    id: "trust:excel:onlyoffice",
+                    name: "ONLYOFFICE",
+                    homepage: URL(string: "https://www.onlyoffice.com")!,
+                    note: "Latvia. AGPL community edition."
+                ),
             ]),
         Entry(
             targetBundleID: "com.microsoft.OneDrive",
@@ -1712,6 +2004,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:onedrive:nextcloud",
+                    name: "Nextcloud",
+                    homepage: URL(string: "https://nextcloud.com")!,
+                    note: "Nextcloud GmbH (Germany). AGPL. Self-hosted or EU providers."
+                ),
+                FallbackAlternative(
+                    id: "trust:onedrive:protondrive",
+                    name: "Proton Drive",
+                    homepage: URL(string: "https://proton.me/drive")!,
+                    note: "Switzerland. E2E-encrypted."
+                ),
             ]),
         Entry(
             targetBundleID: "com.microsoft.Outlook",
@@ -1748,6 +2052,12 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:ppt:libreoffice",
+                    name: "LibreOffice Impress",
+                    homepage: URL(string: "https://www.libreoffice.org")!,
+                    note: "The Document Foundation (Germany). MPL."
+                ),
             ]),
         Entry(
             targetBundleID: "com.microsoft.Word",
@@ -1766,6 +2076,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:word:libreoffice",
+                    name: "LibreOffice",
+                    homepage: URL(string: "https://www.libreoffice.org")!,
+                    note: "The Document Foundation (Germany). MPL. Drop-in replacement."
+                ),
+                FallbackAlternative(
+                    id: "trust:word:onlyoffice",
+                    name: "ONLYOFFICE",
+                    homepage: URL(string: "https://www.onlyoffice.com")!,
+                    note: "Ascensio System (Latvia). AGPL community edition."
+                ),
             ]),
         Entry(
             targetBundleID: "com.microsoft.edgemac",
@@ -1808,6 +2130,19 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:teams:element",
+                    name: "Element",
+                    homepage: URL(string: "https://element.io")!,
+                    note: "UK. Matrix protocol, self-hostable.",
+                    downloadURL: URL(string: "https://packages.element.io/desktop/install/macos/Element.dmg")
+                ),
+                FallbackAlternative(
+                    id: "trust:teams:jitsi",
+                    name: "Jitsi Meet",
+                    homepage: URL(string: "https://jitsi.org")!,
+                    note: "Apache-licensed, no account needed."
+                ),
             ]),
         Entry(
             targetBundleID: "com.mindnode.MindNode8",
@@ -1862,6 +2197,24 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:netflix-desktop:arte",
+                    name: "Arte.tv",
+                    homepage: URL(string: "https://www.arte.tv")!,
+                    note: "Arte (France/Germany). Free, ad-supported."
+                ),
+                FallbackAlternative(
+                    id: "trust:netflix-desktop:mubi",
+                    name: "MUBI",
+                    homepage: URL(string: "https://mubi.com")!,
+                    note: "MUBI (UK). Curated arthouse streaming."
+                ),
+                FallbackAlternative(
+                    id: "trust:netflix-desktop:jellyfin",
+                    name: "Jellyfin",
+                    homepage: URL(string: "https://jellyfin.org")!,
+                    note: "GPL. Self-hosted media."
+                ),
             ]),
         Entry(
             targetBundleID: "com.nike.nikeplus-gps",
@@ -1898,6 +2251,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:notion:obsidian",
+                    name: "Obsidian",
+                    homepage: URL(string: "https://obsidian.md")!,
+                    note: "Local-first markdown, free for personal use."
+                ),
+                FallbackAlternative(
+                    id: "trust:notion:logseq",
+                    name: "Logseq",
+                    homepage: URL(string: "https://logseq.com")!,
+                    note: "AGPL. Local-first outliner."
+                ),
             ]),
         Entry(
             targetBundleID: "com.number26.iphone",
@@ -1980,6 +2345,25 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:chatgpt:lmstudio",
+                    name: "LM Studio",
+                    homepage: URL(string: "https://lmstudio.ai")!,
+                    note: "Run open-weight models (Llama, Mistral, Qwen) fully local."
+                ),
+                FallbackAlternative(
+                    id: "trust:chatgpt:ollama",
+                    name: "Ollama",
+                    homepage: URL(string: "https://ollama.com")!,
+                    note: "MIT. CLI + API for local model inference.",
+                    downloadURL: URL(string: "https://ollama.com/download/Ollama-darwin.zip")
+                ),
+                FallbackAlternative(
+                    id: "trust:chatgpt:mistral",
+                    name: "Mistral Le Chat",
+                    homepage: URL(string: "https://chat.mistral.ai")!,
+                    note: "Mistral AI (France). EU-hosted chat."
+                ),
             ]),
         Entry(
             targetBundleID: "com.operasoftware.OperaMini",
@@ -2052,6 +2436,24 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:pinterest:mastodon",
+                    name: "Mastodon",
+                    homepage: URL(string: "https://joinmastodon.org")!,
+                    note: "Mastodon gGmbH (Germany). AGPL."
+                ),
+                FallbackAlternative(
+                    id: "trust:pinterest:pixelfed",
+                    name: "Pixelfed",
+                    homepage: URL(string: "https://pixelfed.org")!,
+                    note: "AGPL. Federated photo-sharing."
+                ),
+                FallbackAlternative(
+                    id: "trust:pinterest:bluesky",
+                    name: "Bluesky",
+                    homepage: URL(string: "https://bsky.app")!,
+                    note: "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
+                ),
             ]),
         Entry(
             targetBundleID: "com.pixelmatorteam.pixelmator.x",
@@ -2232,6 +2634,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:skype:jitsi",
+                    name: "Jitsi Meet",
+                    homepage: URL(string: "https://jitsi.org")!,
+                    note: "Apache. Browser-based video calls, no account."
+                ),
+                FallbackAlternative(
+                    id: "trust:skype:signal",
+                    name: "Signal",
+                    homepage: URL(string: "https://signal.org")!,
+                    note: "Signal Foundation. E2E-encrypted calls."
+                ),
             ]),
         Entry(
             targetBundleID: "com.snowmanlabs.alto.odyssey",
@@ -2340,6 +2754,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:wechat:signal",
+                    name: "Signal",
+                    homepage: URL(string: "https://signal.org")!,
+                    note: "Signal Foundation."
+                ),
+                FallbackAlternative(
+                    id: "trust:wechat:threema",
+                    name: "Threema",
+                    homepage: URL(string: "https://threema.ch")!,
+                    note: "Switzerland."
+                ),
             ]),
         Entry(
             targetBundleID: "com.tidal.iPhone",
@@ -2404,6 +2830,19 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:slack:element",
+                    name: "Element",
+                    homepage: URL(string: "https://element.io")!,
+                    note: "UK-based. Matrix protocol, fully open-source, self-hostable.",
+                    downloadURL: URL(string: "https://packages.element.io/desktop/install/macos/Element.dmg")
+                ),
+                FallbackAlternative(
+                    id: "trust:slack:mattermost",
+                    name: "Mattermost",
+                    homepage: URL(string: "https://mattermost.com")!,
+                    note: "MIT-licensed server + clients, team-chat."
+                ),
             ]),
         Entry(
             targetBundleID: "com.todesktop.230313mzl4w4u92",
@@ -2422,6 +2861,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:cursor:zed",
+                    name: "Zed",
+                    homepage: URL(string: "https://zed.dev")!,
+                    note: "GPL. Native editor with AI integration."
+                ),
+                FallbackAlternative(
+                    id: "trust:cursor:vscodium",
+                    name: "VSCodium",
+                    homepage: URL(string: "https://vscodium.com")!,
+                    note: "MIT. Plus Continue.dev for AI."
+                ),
             ]),
         Entry(
             targetBundleID: "com.toyopagroup.picaboo",
@@ -2440,6 +2891,24 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:snapchat:mastodon",
+                    name: "Mastodon",
+                    homepage: URL(string: "https://joinmastodon.org")!,
+                    note: "Mastodon gGmbH (Germany). AGPL."
+                ),
+                FallbackAlternative(
+                    id: "trust:snapchat:pixelfed",
+                    name: "Pixelfed",
+                    homepage: URL(string: "https://pixelfed.org")!,
+                    note: "AGPL. Federated photo-sharing."
+                ),
+                FallbackAlternative(
+                    id: "trust:snapchat:bluesky",
+                    name: "Bluesky",
+                    homepage: URL(string: "https://bsky.app")!,
+                    note: "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
+                ),
             ]),
         Entry(
             targetBundleID: "com.transferwise.TransferWise",
@@ -2548,6 +3017,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:steam:heroic",
+                    name: "Heroic Games Launcher",
+                    homepage: URL(string: "https://heroicgameslauncher.com")!,
+                    note: "GPL. Epic + GOG launcher."
+                ),
+                FallbackAlternative(
+                    id: "trust:steam:gog",
+                    name: "GOG Galaxy",
+                    homepage: URL(string: "https://www.gog.com/galaxy")!,
+                    note: "CD Projekt (Poland). DRM-free PC games."
+                ),
             ]),
         Entry(
             targetBundleID: "com.venmo.Venmo",
@@ -2666,6 +3147,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:wa:signal",
+                    name: "Signal",
+                    homepage: URL(string: "https://signal.org")!,
+                    note: "Signal Foundation. Gold-standard E2E."
+                ),
+                FallbackAlternative(
+                    id: "trust:wa:threema",
+                    name: "Threema",
+                    homepage: URL(string: "https://threema.ch")!,
+                    note: "Threema GmbH (Switzerland). Paid, no phone-number required."
+                ),
             ]),
         Entry(
             targetBundleID: "com.zhiliaoapp.musically",
@@ -2704,6 +3197,12 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:tiktok:peertube",
+                    name: "PeerTube",
+                    homepage: URL(string: "https://joinpeertube.org")!,
+                    note: "Framasoft (France). AGPL. Federated video."
+                ),
             ]),
         Entry(
             targetBundleID: "net.whatsapp.WhatsAppSMB",
@@ -2812,6 +3311,19 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:yandex:firefox",
+                    name: "Firefox",
+                    homepage: URL(string: "https://www.mozilla.org/firefox")!,
+                    note: "Mozilla Foundation (MPL).",
+                    downloadURL: URL(string: "https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US")
+                ),
+                FallbackAlternative(
+                    id: "trust:yandex:vivaldi",
+                    name: "Vivaldi",
+                    homepage: URL(string: "https://vivaldi.com")!,
+                    note: "Norway. Freeware."
+                ),
             ]),
         Entry(
             targetBundleID: "tv.twitch",
@@ -2894,6 +3406,18 @@ extension TrustCatalog {
                 ),
             ],
             fallbackAlternatives: [
+                FallbackAlternative(
+                    id: "trust:zoom:jitsi",
+                    name: "Jitsi Meet",
+                    homepage: URL(string: "https://jitsi.org")!,
+                    note: "Apache-licensed. Browser-based, no account needed."
+                ),
+                FallbackAlternative(
+                    id: "trust:zoom:signal",
+                    name: "Signal",
+                    homepage: URL(string: "https://signal.org")!,
+                    note: "Signal Foundation. E2E-encrypted video calls."
+                ),
             ]),
     ]
 }

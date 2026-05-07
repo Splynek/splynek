@@ -2,22 +2,22 @@
   "comment": "Splynek Trust catalog. Every concern MUST cite a primary source: Apple App Store privacy label, EU DPA / FTC / SEC ruling, NVD CVE, HIBP breach, or vendor security advisory. NEVER editorial. NEVER tech press. NEVER community ratings. Run 'swift Scripts/regenerate-trust-catalog.swift' to refresh the generated Swift. See TRUST-CONTRIBUTING.md for the source allowlist.",
   "entries": [
     {
-      "targetBundleID": "co.mona.app",
-      "targetDisplayName": "Crypto.com",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1262148500",
           "id": "crypto-com:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, Sensitive Info, precise Location, Contacts.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1262148500",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, Sensitive Info, precise Location, Contacts."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "co.mona.app",
+      "targetDisplayName": "Crypto.com"
     },
     {
       "concerns": [
@@ -32,46 +32,85 @@
           "summary": "Adobe issued multiple Acrobat security bulletins in 2024 patching critical RCE CVEs (e.g. APSB24-29, APSB24-86)."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://skim-app.sourceforge.io",
+          "id": "trust:acrobat:skim",
+          "name": "Skim",
+          "note": "BSD. Mac PDF reader + annotator."
+        },
+        {
+          "homepage": "https://xournalpp.github.io",
+          "id": "trust:acrobat:xournalpp",
+          "name": "Xournal++",
+          "note": "GPL. Note-taking and PDF annotation."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.adobe.Acrobat.Pro",
       "targetDisplayName": "Adobe Acrobat Pro"
     },
     {
-      "targetBundleID": "com.adobe.LightroomCC",
-      "targetDisplayName": "Adobe Lightroom",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id878783582",
           "id": "adobe-lightroom:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including Contacts, Sensitive Info, User Content.",
-          "evidenceURL": "https://apps.apple.com/us/app/id878783582",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including Contacts, Sensitive Info, User Content."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.darktable.org",
+          "id": "trust:lr:darktable",
+          "name": "darktable",
+          "note": "GPL. RAW photo editor + library."
+        },
+        {
+          "homepage": "https://www.captureone.com",
+          "id": "trust:lr:capture-one",
+          "name": "Capture One",
+          "note": "Capture One (Denmark). Pro-grade RAW."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.adobe.LightroomCC",
+      "targetDisplayName": "Adobe Lightroom"
     },
     {
-      "targetBundleID": "com.adobe.Photoshop",
-      "targetDisplayName": "Adobe Photoshop",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1457771281",
           "id": "adobe-photoshop:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 7 categories including User Content, Identifiers, and Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1457771281",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 7 categories including User Content, Identifiers, and Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.gimp.org",
+          "id": "trust:ps:gimp",
+          "name": "GIMP",
+          "note": "GPL. Open-source image editor."
+        },
+        {
+          "homepage": "https://affinity.serif.com/photo/",
+          "id": "trust:ps:affinity",
+          "name": "Affinity Photo",
+          "note": "Serif (UK). One-time purchase."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.adobe.Photoshop",
+      "targetDisplayName": "Adobe Photoshop"
     },
     {
       "concerns": [
@@ -96,46 +135,53 @@
           "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, purchases, diagnostics."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://affinity.serif.com",
+          "id": "trust:cc:affinity-suite",
+          "name": "Affinity Suite (V2)",
+          "note": "Serif (UK). Photo + Designer + Publisher one-time."
+        }
+      ],
       "lastReviewed": "2026-04-26",
       "targetBundleID": "com.adobe.acc.AdobeCreativeCloud",
       "targetDisplayName": "Adobe Creative Cloud"
     },
     {
-      "targetBundleID": "com.adobe.spark",
-      "targetDisplayName": "Adobe Express",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1051937863",
           "id": "adobe-express:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 7 categories including User Content, Photos, Identifiers, Contact Info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1051937863",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 7 categories including User Content, Photos, Identifiers, Contact Info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.adobe.spark",
+      "targetDisplayName": "Adobe Express"
     },
     {
-      "targetBundleID": "com.airbnb.app",
-      "targetDisplayName": "Airbnb",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id401626263",
           "id": "airbnb:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, advertising data, usage data, location, contact info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id401626263",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, advertising data, usage data, location, contact info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.airbnb.app",
+      "targetDisplayName": "Airbnb"
     },
     {
       "concerns": [
@@ -150,46 +196,59 @@
           "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, contacts, user content, diagnostics."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://nocodb.com",
+          "id": "trust:airtable:nocodb",
+          "name": "NocoDB",
+          "note": "AGPL. Open-source Airtable alt."
+        },
+        {
+          "homepage": "https://baserow.io",
+          "id": "trust:airtable:baserow",
+          "name": "Baserow",
+          "note": "Baserow (Netherlands). MIT."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.airtable.airtable",
       "targetDisplayName": "Airtable"
     },
     {
-      "targetBundleID": "com.alibaba.iAliexpress",
-      "targetDisplayName": "AliExpress",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id436672029",
           "id": "aliexpress:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, Contact Info, precise Location, Health & Fitness.",
-          "evidenceURL": "https://apps.apple.com/us/app/id436672029",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, Contact Info, precise Location, Health & Fitness."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.alibaba.iAliexpress",
+      "targetDisplayName": "AliExpress"
     },
     {
-      "targetBundleID": "com.amazon.Amazon",
-      "targetDisplayName": "Amazon Shopping",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id297606951",
           "id": "amazon-shopping:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, purchase history, advertising data, usage data, search history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id297606951",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, purchase history, advertising data, usage data, search history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.amazon.Amazon",
+      "targetDisplayName": "Amazon Shopping"
     },
     {
       "concerns": [
@@ -204,7 +263,26 @@
           "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, browsing history, purchases, search history, diagnostics."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://calibre-ebook.com",
+          "id": "trust:kindle:calibre",
+          "name": "Calibre",
+          "note": "GPL. E-book manager."
+        },
+        {
+          "homepage": "https://github.com/johnfactotum/foliate",
+          "id": "trust:kindle:foliate",
+          "name": "Foliate",
+          "note": "GPL. E-book reader."
+        },
+        {
+          "homepage": "https://koreader.rocks",
+          "id": "trust:kindle:koreader",
+          "name": "KOReader",
+          "note": "AGPL. E-book reader."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.amazon.Kindle",
       "targetDisplayName": "Amazon Kindle"
@@ -222,460 +300,492 @@
           "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, purchases, diagnostics, audio data."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.deezer.com",
+          "id": "trust:amuz:deezer",
+          "name": "Deezer",
+          "note": "Deezer (France). HiFi streaming, 100M+ tracks."
+        },
+        {
+          "homepage": "https://www.qobuz.com",
+          "id": "trust:amuz:qobuz",
+          "name": "Qobuz",
+          "note": "Qobuz (France). Studio-quality streaming, paid."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.amazon.music.mac",
       "targetDisplayName": "Amazon Music"
     },
     {
-      "targetBundleID": "com.apple.FinalCut",
-      "targetDisplayName": "Final Cut Pro",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id424389933",
           "id": "apple-finalcut:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics. No Linked Data, no tracking.",
-          "evidenceURL": "https://apps.apple.com/us/app/id424389933",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics. No Linked Data, no tracking."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.apple.FinalCut",
+      "targetDisplayName": "Final Cut Pro"
     },
     {
-      "targetBundleID": "com.apple.dt.Xcode",
-      "targetDisplayName": "Xcode",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id497799835",
           "id": "apple-xcode:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics, Usage Data. Minimal collection consistent with Apple's first-party data policy.",
-          "evidenceURL": "https://apps.apple.com/us/app/id497799835",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics, Usage Data. Minimal collection consistent with Apple's first-party data policy."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.jetbrains.com/toolbox-app/",
+          "id": "trust:xcode:jetbrains",
+          "name": "JetBrains Toolbox",
+          "note": "JetBrains (Czech Republic). Industry-standard IDE suite."
+        },
+        {
+          "homepage": "https://vscodium.com",
+          "id": "trust:xcode:vscodium",
+          "name": "VSCodium",
+          "note": "MIT. Telemetry-free VS Code build."
+        },
+        {
+          "homepage": "https://zed.dev",
+          "id": "trust:xcode:zed",
+          "name": "Zed",
+          "note": "GPL. Native multiplayer code editor."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.apple.dt.Xcode",
+      "targetDisplayName": "Xcode"
     },
     {
-      "targetBundleID": "com.apple.iWork.Keynote",
-      "targetDisplayName": "Apple Keynote",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id409183694",
           "id": "apple-keynote:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking.",
-          "evidenceURL": "https://apps.apple.com/us/app/id409183694",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.apple.iWork.Keynote",
+      "targetDisplayName": "Apple Keynote"
     },
     {
-      "targetBundleID": "com.apple.iWork.Numbers",
-      "targetDisplayName": "Apple Numbers",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id409203825",
           "id": "apple-numbers:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking.",
-          "evidenceURL": "https://apps.apple.com/us/app/id409203825",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.apple.iWork.Numbers",
+      "targetDisplayName": "Apple Numbers"
     },
     {
-      "targetBundleID": "com.apple.iWork.Pages",
-      "targetDisplayName": "Apple Pages",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id409201541",
           "id": "apple-pages:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking — Apple's typical first-party posture.",
-          "evidenceURL": "https://apps.apple.com/us/app/id409201541",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data, Diagnostics. No Linked Data, no tracking — Apple's typical first-party posture."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.apple.iWork.Pages",
+      "targetDisplayName": "Apple Pages"
     },
     {
-      "targetBundleID": "com.apple.logic10",
-      "targetDisplayName": "Logic Pro",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id634148309",
           "id": "apple-logicpro:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics. No Linked Data, no tracking.",
-          "evidenceURL": "https://apps.apple.com/us/app/id634148309",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics. No Linked Data, no tracking."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.apple.logic10",
+      "targetDisplayName": "Logic Pro"
     },
     {
-      "targetBundleID": "com.apple.mobilegarageband",
-      "targetDisplayName": "GarageBand",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id408709785",
           "id": "garageband:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics, Identifiers. Apple first-party posture.",
-          "evidenceURL": "https://apps.apple.com/us/app/id408709785",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics, Identifiers. Apple first-party posture."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.apple.mobilegarageband",
+      "targetDisplayName": "GarageBand"
     },
     {
-      "targetBundleID": "com.asana.iPhone",
-      "targetDisplayName": "Asana",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id489969512",
           "id": "asana:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 7 categories including Contact Info, User Content, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id489969512",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 7 categories including Contact Info, User Content, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.asana.iPhone",
+      "targetDisplayName": "Asana"
     },
     {
-      "targetBundleID": "com.atebits.Tweetie2",
-      "targetDisplayName": "X (Twitter)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id333903271",
           "id": "twitter-x:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, location, search history, usage data, browsing history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id333903271",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, location, search history, usage data, browsing history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.atebits.Tweetie2",
+      "targetDisplayName": "X (Twitter)"
     },
     {
-      "targetBundleID": "com.bofa.bofa",
-      "targetDisplayName": "Bank of America Mobile",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id284847138",
           "id": "bofa:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 11 categories including Financial Info, Sensitive Info, Health & Fitness, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id284847138",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 11 categories including Financial Info, Sensitive Info, Health & Fitness, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.bofa.bofa",
+      "targetDisplayName": "Bank of America Mobile"
     },
     {
-      "targetBundleID": "com.booking.bookingapp",
-      "targetDisplayName": "Booking.com",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id367003839",
           "id": "booking:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Financial Info, Contact Info, precise Location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id367003839",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Financial Info, Contact Info, precise Location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.booking.bookingapp",
+      "targetDisplayName": "Booking.com"
     },
     {
-      "targetBundleID": "com.box.iosapp",
-      "targetDisplayName": "Box",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id290853822",
           "id": "box-ios:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 7 categories including User Content, Identifiers, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id290853822",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 7 categories including User Content, Identifiers, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.box.iosapp",
+      "targetDisplayName": "Box"
     },
     {
-      "targetBundleID": "com.brave.ios.browser",
-      "targetDisplayName": "Brave Browser (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1052879175",
           "id": "brave-ios:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics — privacy-first browser brand reflected in minimal data collection.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1052879175",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics — privacy-first browser brand reflected in minimal data collection."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.brave.ios.browser",
+      "targetDisplayName": "Brave Browser (iOS)"
     },
     {
-      "targetBundleID": "com.bumble.app",
-      "targetDisplayName": "Bumble",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id930441707",
           "id": "bumble:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including precise Location, Sensitive Info, Health & Fitness, Photos.",
-          "evidenceURL": "https://apps.apple.com/us/app/id930441707",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including precise Location, Sensitive Info, Health & Fitness, Photos."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.bumble.app",
+      "targetDisplayName": "Bumble"
     },
     {
-      "targetBundleID": "com.bunq.bunqapp",
-      "targetDisplayName": "bunq",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id567067561",
           "id": "bunq:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Contact Info, Identifiers — Dutch challenger bank under DNB supervision.",
-          "evidenceURL": "https://apps.apple.com/us/app/id567067561",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Contact Info, Identifiers — Dutch challenger bank under DNB supervision."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.bunq.bunqapp",
+      "targetDisplayName": "bunq"
     },
     {
-      "targetBundleID": "com.burbn.barcelona",
-      "targetDisplayName": "Threads",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id6446901002",
           "id": "threads:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses extensive tracking, mirroring Instagram's profile across identifiers, browsing history, location, and purchase history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id6446901002",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses extensive tracking, mirroring Instagram's profile across identifiers, browsing history, location, and purchase history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.burbn.barcelona",
+      "targetDisplayName": "Threads"
     },
     {
-      "targetBundleID": "com.burbn.instagram",
-      "targetDisplayName": "Instagram",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id389801252",
           "id": "instagram:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses extensive tracking: identifiers, location, contacts, browsing history, advertising data, search history, purchase history. Linked Data across 19 categories — Health & Fitness, Sensitive Info, Financial Info included.",
-          "evidenceURL": "https://apps.apple.com/us/app/id389801252",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses extensive tracking: identifiers, location, contacts, browsing history, advertising data, search history, purchase history. Linked Data across 19 categories — Health & Fitness, Sensitive Info, Financial Info included."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.burbn.instagram",
+      "targetDisplayName": "Instagram"
     },
     {
-      "targetBundleID": "com.calm.calmapp",
-      "targetDisplayName": "Calm",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id571800810",
           "id": "calm:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 10 categories including Health & Fitness, Audio Data, Financial Info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id571800810",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 10 categories including Health & Fitness, Audio Data, Financial Info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.calm.calmapp",
+      "targetDisplayName": "Calm"
     },
     {
-      "targetBundleID": "com.cardify.tinder",
-      "targetDisplayName": "Tinder",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id547702041",
           "id": "tinder:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 13 categories including precise Location, Sensitive Info, Health & Fitness, Photos, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id547702041",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 13 categories including precise Location, Sensitive Info, Health & Fitness, Photos, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.cardify.tinder",
+      "targetDisplayName": "Tinder"
     },
     {
-      "targetBundleID": "com.chase.sig.Chase",
-      "targetDisplayName": "Chase Mobile",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id298867247",
           "id": "chase:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 12 categories including Financial Info, Sensitive Info, Identifiers, Contact Info, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id298867247",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 12 categories including Financial Info, Sensitive Info, Identifiers, Contact Info, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.chase.sig.Chase",
+      "targetDisplayName": "Chase Mobile"
     },
     {
-      "targetBundleID": "com.citymapper.CityMapper",
-      "targetDisplayName": "Citymapper",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id469463298",
           "id": "citymapper:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 7 categories including precise Location, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id469463298",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 7 categories including precise Location, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.citymapper.CityMapper",
+      "targetDisplayName": "Citymapper"
     },
     {
-      "targetBundleID": "com.contextlogic.wishweb",
-      "targetDisplayName": "Wish",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id510016022",
           "id": "wish:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 10 categories including Financial Info, precise Location, Contacts.",
-          "evidenceURL": "https://apps.apple.com/us/app/id510016022",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 10 categories including Financial Info, precise Location, Contacts."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.contextlogic.wishweb",
+      "targetDisplayName": "Wish"
     },
     {
-      "targetBundleID": "com.crunchyroll.iphone",
-      "targetDisplayName": "Crunchyroll",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id329913454",
           "id": "crunchyroll:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, advertising data, usage data, purchase history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id329913454",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, advertising data, usage data, purchase history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.crunchyroll.iphone",
+      "targetDisplayName": "Crunchyroll"
     },
     {
-      "targetBundleID": "com.culturedcode.ThingsMac",
-      "targetDisplayName": "Things 3",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id904280696",
           "id": "things3:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics — minimal collection consistent with the indie productivity ethos.",
-          "evidenceURL": "https://apps.apple.com/us/app/id904280696",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics — minimal collection consistent with the indie productivity ethos."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.culturedcode.ThingsMac",
+      "targetDisplayName": "Things 3"
     },
     {
-      "targetBundleID": "com.czzhao.binance",
-      "targetDisplayName": "Binance",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1436799971",
           "id": "binance:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, Sensitive Info, precise Location, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1436799971",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, Sensitive Info, precise Location, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.czzhao.binance",
+      "targetDisplayName": "Binance"
     },
     {
       "concerns": [
@@ -690,136 +800,151 @@
           "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, financial info, search history, diagnostics."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos",
+          "homepage": "https://bitwarden.com",
+          "id": "trust:dashlane:bitwarden",
+          "name": "Bitwarden",
+          "note": "AGPL. Self-hostable password manager (free tier generous)."
+        },
+        {
+          "downloadURL": "https://proton.me/download/PassDesktop/macos/ProtonPass.dmg",
+          "homepage": "https://proton.me/pass",
+          "id": "trust:dashlane:proton-pass",
+          "name": "Proton Pass",
+          "note": "Switzerland. E2E-encrypted."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.dashlane.dashlanephonefinal",
       "targetDisplayName": "Dashlane"
     },
     {
-      "targetBundleID": "com.dd.doordash",
-      "targetDisplayName": "DoorDash",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id719972451",
           "id": "doordash:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, precise Location, Contacts.",
-          "evidenceURL": "https://apps.apple.com/us/app/id719972451",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Financial Info, precise Location, Contacts."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.dd.doordash",
+      "targetDisplayName": "DoorDash"
     },
     {
-      "targetBundleID": "com.disney.disneyplus",
-      "targetDisplayName": "Disney+",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1446075923",
           "id": "disney-plus:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Purchase History, Search History, and Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1446075923",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Purchase History, Search History, and Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.disney.disneyplus",
+      "targetDisplayName": "Disney+"
     },
     {
-      "targetBundleID": "com.duckduckgo.mobile.ios",
-      "targetDisplayName": "DuckDuckGo",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id663592361",
           "id": "duckduckgo:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics — DuckDuckGo's privacy-first stance reflected in its self-disclosed minimum.",
-          "evidenceURL": "https://apps.apple.com/us/app/id663592361",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics — DuckDuckGo's privacy-first stance reflected in its self-disclosed minimum."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.duckduckgo.mobile.ios",
+      "targetDisplayName": "DuckDuckGo"
     },
     {
-      "targetBundleID": "com.duolingo.DuolingoMobile",
-      "targetDisplayName": "Duolingo",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id570060128",
           "id": "duolingo:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking: identifiers, advertising data, usage data, purchase history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id570060128",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking: identifiers, advertising data, usage data, purchase history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.duolingo.DuolingoMobile",
+      "targetDisplayName": "Duolingo"
     },
     {
-      "targetBundleID": "com.ebay.iphone",
-      "targetDisplayName": "eBay",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id282614216",
           "id": "ebay:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, contact info, search history, usage data, advertising data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id282614216",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, contact info, search history, usage data, advertising data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.ebay.iphone",
+      "targetDisplayName": "eBay"
     },
     {
-      "targetBundleID": "com.einnovation.temu",
-      "targetDisplayName": "Temu",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1641486558",
           "id": "temu:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 13 categories including Financial Info, Contact Info, Photos, Contacts, precise Location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1641486558",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 13 categories including Financial Info, Contact Info, Photos, Contacts, precise Location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.einnovation.temu",
+      "targetDisplayName": "Temu"
     },
     {
-      "targetBundleID": "com.etsy.etsyforiphone",
-      "targetDisplayName": "Etsy",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id477128284",
           "id": "etsy:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Financial Info, Contact Info, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id477128284",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Financial Info, Contact Info, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.etsy.etsyforiphone",
+      "targetDisplayName": "Etsy"
     },
     {
       "concerns": [
@@ -834,82 +959,95 @@
           "summary": "Confirmed 2013 breach: usernames, hashed passwords, email addresses for 50M users exposed. Indexed by HIBP."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://joplinapp.org",
+          "id": "trust:evernote:joplin",
+          "name": "Joplin",
+          "note": "AGPL. E2E-encrypted sync."
+        },
+        {
+          "homepage": "https://obsidian.md",
+          "id": "trust:evernote:obsidian",
+          "name": "Obsidian",
+          "note": "Local-first markdown."
+        }
+      ],
       "lastReviewed": "2026-04-26",
       "targetBundleID": "com.evernote.Evernote",
       "targetDisplayName": "Evernote"
     },
     {
-      "targetBundleID": "com.evernote.iPhone.Evernote",
-      "targetDisplayName": "Evernote (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id281796108",
           "id": "evernote-ios:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including User Content, Contact Info, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id281796108",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including User Content, Contact Info, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.evernote.iPhone.Evernote",
+      "targetDisplayName": "Evernote (iOS)"
     },
     {
-      "targetBundleID": "com.expedia.bookings",
-      "targetDisplayName": "Expedia",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id427916203",
           "id": "expedia:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 10 categories including Financial Info, Contact Info, Location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id427916203",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 10 categories including Financial Info, Contact Info, Location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.expedia.bookings",
+      "targetDisplayName": "Expedia"
     },
     {
-      "targetBundleID": "com.facebook.Facebook",
-      "targetDisplayName": "Facebook",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id284882215",
           "id": "facebook:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 18 categories including Health & Fitness, Sensitive Info, precise Location, Financial Info, Photos.",
-          "evidenceURL": "https://apps.apple.com/us/app/id284882215",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 18 categories including Health & Fitness, Sensitive Info, precise Location, Financial Info, Photos."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.facebook.Facebook",
+      "targetDisplayName": "Facebook"
     },
     {
-      "targetBundleID": "com.facebook.Messenger",
-      "targetDisplayName": "Messenger (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id454638411",
           "id": "messenger-ios:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 18 categories — Meta apps consistently disclose extensive cross-product data collection.",
-          "evidenceURL": "https://apps.apple.com/us/app/id454638411",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 18 categories — Meta apps consistently disclose extensive cross-product data collection."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.facebook.Messenger",
+      "targetDisplayName": "Messenger (iOS)"
     },
     {
       "concerns": [
@@ -944,82 +1082,102 @@
           "summary": "FTC imposed a $5B fine on Facebook (now Meta) in 2019 over privacy violations including Cambridge Analytica."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://signal.org",
+          "id": "trust:fbm:signal",
+          "name": "Signal",
+          "note": "Signal Foundation."
+        },
+        {
+          "homepage": "https://threema.ch",
+          "id": "trust:fbm:threema",
+          "name": "Threema",
+          "note": "Switzerland."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.facebook.archon.developerID",
       "targetDisplayName": "Messenger"
     },
     {
-      "targetBundleID": "com.fitbit.FitbitMobile",
-      "targetDisplayName": "Fitbit",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id462638897",
           "id": "fitbit:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 12 categories including Health & Fitness, Sensitive Info, precise Location, Identifiers, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id462638897",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 12 categories including Health & Fitness, Sensitive Info, precise Location, Identifiers, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.fitbit.FitbitMobile",
+      "targetDisplayName": "Fitbit"
     },
     {
-      "targetBundleID": "com.flexibits.fantastical2.mac",
-      "targetDisplayName": "Fantastical",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id975937182",
           "id": "fantastical:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 4 categories including Contact Info, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id975937182",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 4 categories including Contact Info, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://proton.me/calendar",
+          "id": "trust:fantastical:proton-calendar",
+          "name": "Proton Calendar",
+          "note": "Switzerland. E2E-encrypted."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.flexibits.fantastical2.mac",
+      "targetDisplayName": "Fantastical"
     },
     {
-      "targetBundleID": "com.fogcreek.trello",
-      "targetDisplayName": "Trello",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id461504587",
           "id": "trello:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including Contact Info, User Content, Identifiers, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id461504587",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including Contact Info, User Content, Identifiers, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.fogcreek.trello",
+      "targetDisplayName": "Trello"
     },
     {
-      "targetBundleID": "com.getdropbox.Dropbox",
-      "targetDisplayName": "Dropbox (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id327630330",
           "id": "dropbox-ios:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including User Content, Contact Info, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id327630330",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including User Content, Contact Info, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.getdropbox.Dropbox",
+      "targetDisplayName": "Dropbox (iOS)"
     },
     {
       "concerns": [
@@ -1044,46 +1202,59 @@
           "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, financial info, contacts, location."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://nextcloud.com",
+          "id": "trust:dropbox:nextcloud",
+          "name": "Nextcloud",
+          "note": "Germany. AGPL."
+        },
+        {
+          "homepage": "https://proton.me/drive",
+          "id": "trust:dropbox:protondrive",
+          "name": "Proton Drive",
+          "note": "Switzerland. E2E-encrypted."
+        }
+      ],
       "lastReviewed": "2026-04-26",
       "targetBundleID": "com.getdropbox.dropbox",
       "targetDisplayName": "Dropbox"
     },
     {
-      "targetBundleID": "com.getsomeheadspace.headspaceapp",
-      "targetDisplayName": "Headspace",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id493145008",
           "id": "headspace:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 11 categories including Health & Fitness, Sensitive Info, Audio Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id493145008",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 11 categories including Health & Fitness, Sensitive Info, Audio Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.getsomeheadspace.headspaceapp",
+      "targetDisplayName": "Headspace"
     },
     {
-      "targetBundleID": "com.goodreads.goodreadsapp",
-      "targetDisplayName": "Goodreads",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id355833469",
           "id": "goodreads:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 10 categories including Contacts, Identifiers, Search History, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id355833469",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 10 categories including Contacts, Identifiers, Search History, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.goodreads.goodreadsapp",
+      "targetDisplayName": "Goodreads"
     },
     {
       "concerns": [
@@ -1131,94 +1302,113 @@
       "targetDisplayName": "Google Chrome"
     },
     {
-      "targetBundleID": "com.google.Docs",
-      "targetDisplayName": "Google Docs",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id842842640",
           "id": "google-docs:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 7 categories including Contacts, User Content, Identifiers, Usage Data, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id842842640",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 7 categories including Contacts, User Content, Identifiers, Usage Data, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.google.Docs",
+      "targetDisplayName": "Google Docs"
     },
     {
-      "targetBundleID": "com.google.Maps",
-      "targetDisplayName": "Google Maps",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id585027354",
           "id": "google-maps:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, location, search history, browsing history, advertising data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id585027354",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, location, search history, browsing history, advertising data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.google.Maps",
+      "targetDisplayName": "Google Maps"
     },
     {
-      "targetBundleID": "com.google.Sheets",
-      "targetDisplayName": "Google Sheets",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id842849113",
           "id": "google-sheets:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 7 categories including Contacts, User Content, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id842849113",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 7 categories including Contacts, User Content, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.google.Sheets",
+      "targetDisplayName": "Google Sheets"
     },
     {
-      "targetBundleID": "com.google.Translate",
-      "targetDisplayName": "Google Translate",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id414706506",
           "id": "google-translate:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 6 categories including User Content, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id414706506",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 6 categories including User Content, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.deepl.com",
+          "id": "trust:gtrans:deepl",
+          "name": "DeepL",
+          "note": "DeepL SE (Germany). Best-in-class translation."
+        },
+        {
+          "homepage": "https://chat.mistral.ai",
+          "id": "trust:gtrans:mistral",
+          "name": "Mistral Le Chat",
+          "note": "France. General-purpose LLM does translation well."
+        },
+        {
+          "homepage": "https://libretranslate.com",
+          "id": "trust:gtrans:libretranslate",
+          "name": "LibreTranslate",
+          "note": "AGPL. Self-hostable translation API."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.google.Translate",
+      "targetDisplayName": "Google Translate"
     },
     {
-      "targetBundleID": "com.google.chrome.ios",
-      "targetDisplayName": "Chrome (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id535886823",
           "id": "chrome-ios:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking: identifiers, advertising data, search history, browsing history, usage data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id535886823",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking: identifiers, advertising data, search history, browsing history, usage data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.google.chrome.ios",
+      "targetDisplayName": "Chrome (iOS)"
     },
     {
       "concerns": [
@@ -1233,46 +1423,59 @@
           "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, usage data, search history, user content."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://nextcloud.com",
+          "id": "trust:gdrive:nextcloud",
+          "name": "Nextcloud",
+          "note": "Nextcloud GmbH (Germany). AGPL. Self-hosted or EU providers."
+        },
+        {
+          "homepage": "https://proton.me/drive",
+          "id": "trust:gdrive:protondrive",
+          "name": "Proton Drive",
+          "note": "Proton AG (Switzerland). E2E-encrypted."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.google.drivefs",
       "targetDisplayName": "Google Drive"
     },
     {
-      "targetBundleID": "com.google.ios.youtube",
-      "targetDisplayName": "YouTube",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id544007664",
           "id": "youtube:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking: identifiers, location, contacts, search history, advertising data, browsing history, purchase history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id544007664",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking: identifiers, location, contacts, search history, advertising data, browsing history, purchase history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.google.ios.youtube",
+      "targetDisplayName": "YouTube"
     },
     {
-      "targetBundleID": "com.google.ios.youtubemusic",
-      "targetDisplayName": "YouTube Music",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1017492454",
           "id": "youtube-music:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking: identifiers, location, search history, advertising data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1017492454",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking: identifiers, location, search history, advertising data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.google.ios.youtubemusic",
+      "targetDisplayName": "YouTube Music"
     },
     {
       "concerns": [
@@ -1287,82 +1490,89 @@
           "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, user content, diagnostics, search history."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://languagetool.org",
+          "id": "trust:grammarly:languagetool",
+          "name": "LanguageTool",
+          "note": "LanguageTooler GmbH (Germany). LGPL. Self-hostable."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.grammarly.ProjectLlama",
       "targetDisplayName": "Grammarly"
     },
     {
-      "targetBundleID": "com.grindrllc.grindr",
-      "targetDisplayName": "Grindr",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id319881193",
           "id": "grindr:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 13 categories including precise Location, Sensitive Info (sexual orientation), Health & Fitness, Photos.",
-          "evidenceURL": "https://apps.apple.com/us/app/id319881193",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 13 categories including precise Location, Sensitive Info (sexual orientation), Health & Fitness, Photos."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.grindrllc.grindr",
+      "targetDisplayName": "Grindr"
     },
     {
-      "targetBundleID": "com.hammerandchisel.discord",
-      "targetDisplayName": "Discord (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id985746746",
           "id": "discord-ios:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including User Content, Identifiers, Usage Data, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id985746746",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including User Content, Identifiers, Usage Data, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.hammerandchisel.discord",
+      "targetDisplayName": "Discord (iOS)"
     },
     {
-      "targetBundleID": "com.hbo.hbonow",
-      "targetDisplayName": "Max (formerly HBO Max)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id971265416",
           "id": "hbo-max:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 11 categories including Health & Fitness, Sensitive Info, and Browsing History.",
-          "evidenceURL": "https://apps.apple.com/us/app/id971265416",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 11 categories including Health & Fitness, Sensitive Info, and Browsing History."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.hbo.hbonow",
+      "targetDisplayName": "Max (formerly HBO Max)"
     },
     {
-      "targetBundleID": "com.hinge.app",
-      "targetDisplayName": "Hinge",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id595287172",
           "id": "hinge:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including precise Location, Sensitive Info, Photos, Audio Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id595287172",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including precise Location, Sensitive Info, Photos, Audio Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.hinge.app",
+      "targetDisplayName": "Hinge"
     },
     {
       "concerns": [
@@ -1377,100 +1587,133 @@
           "summary": "App Store privacy label discloses tracking data: identifiers and usage data used to track across other companies' apps and websites."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://revolt.chat",
+          "id": "trust:discord:revolt",
+          "name": "Revolt",
+          "note": "AGPL Discord-alike. Self-hostable."
+        },
+        {
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg",
+          "homepage": "https://element.io",
+          "id": "trust:discord:element",
+          "name": "Element",
+          "note": "Element (UK). Matrix protocol, federated chat."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.hnc.Discord",
       "targetDisplayName": "Discord"
     },
     {
-      "targetBundleID": "com.hotels.HotelsNearMeApp",
-      "targetDisplayName": "Hotels.com",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id314005278",
           "id": "hotels-com:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Financial Info, Contact Info, Location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id314005278",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Financial Info, Contact Info, Location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.hotels.HotelsNearMeApp",
+      "targetDisplayName": "Hotels.com"
     },
     {
-      "targetBundleID": "com.hulu.plus",
-      "targetDisplayName": "Hulu",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id376510438",
           "id": "hulu:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, advertising data, usage data, location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id376510438",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, advertising data, usage data, location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.arte.tv",
+          "id": "trust:hulu:arte",
+          "name": "Arte.tv",
+          "note": "Arte (France/Germany). Free, ad-supported."
+        },
+        {
+          "homepage": "https://mubi.com",
+          "id": "trust:hulu:mubi",
+          "name": "MUBI",
+          "note": "MUBI (UK). Curated arthouse streaming."
+        },
+        {
+          "homepage": "https://jellyfin.org",
+          "id": "trust:hulu:jellyfin",
+          "name": "Jellyfin",
+          "note": "GPL. Self-hosted media."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.hulu.plus",
+      "targetDisplayName": "Hulu"
     },
     {
-      "targetBundleID": "com.ideashower.ReadItLaterPro",
-      "targetDisplayName": "Pocket",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id309601447",
           "id": "pocket:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 6 categories including Browsing History, Usage Data, Identifiers, Contact Info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id309601447",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 6 categories including Browsing History, Usage Data, Identifiers, Contact Info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.ideashower.ReadItLaterPro",
+      "targetDisplayName": "Pocket"
     },
     {
-      "targetBundleID": "com.ing.diba.ingdibaapp",
-      "targetDisplayName": "ING",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id467082749",
           "id": "ing:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id467082749",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.ing.diba.ingdibaapp",
+      "targetDisplayName": "ING"
     },
     {
-      "targetBundleID": "com.instacart.InstacartShopper",
-      "targetDisplayName": "Instacart",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id545599256",
           "id": "instacart:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Financial Info, precise Location, Contacts.",
-          "evidenceURL": "https://apps.apple.com/us/app/id545599256",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Financial Info, precise Location, Contacts."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.instacart.InstacartShopper",
+      "targetDisplayName": "Instacart"
     },
     {
       "concerns": [
@@ -1495,46 +1738,59 @@
           "summary": "Federal Register Final Determination 2024-13869 (BIS): prohibits Kaspersky software sales in the US effective September 29, 2024."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.clamav.net",
+          "id": "trust:kas:clamav",
+          "name": "ClamAV",
+          "note": "GPL. Open-source anti-malware scanner."
+        },
+        {
+          "homepage": "https://www.f-secure.com",
+          "id": "trust:kas:f-secure",
+          "name": "F-Secure",
+          "note": "F-Secure (Finland). Commercial AV."
+        }
+      ],
       "lastReviewed": "2026-04-26",
       "targetBundleID": "com.kaspersky.kes",
       "targetDisplayName": "Kaspersky Endpoint Security"
     },
     {
-      "targetBundleID": "com.khanacademy.Khan-Academy",
-      "targetDisplayName": "Khan Academy",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id469863705",
           "id": "khan-academy:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 7 categories including User Content, Identifiers, Usage Data, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id469863705",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 7 categories including User Content, Identifiers, Usage Data, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.khanacademy.Khan-Academy",
+      "targetDisplayName": "Khan Academy"
     },
     {
-      "targetBundleID": "com.kraken.kraken",
-      "targetDisplayName": "Kraken Crypto",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1481947260",
           "id": "kraken:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Contact Info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1481947260",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Contact Info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.kraken.kraken",
+      "targetDisplayName": "Kraken Crypto"
     },
     {
       "concerns": [
@@ -1559,7 +1815,21 @@
           "summary": "HIBP indexed multiple LastPass-related breaches involving customer-vault metadata and source-code access."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "downloadURL": "https://vault.bitwarden.com/download/?app=desktop&platform=macos",
+          "homepage": "https://bitwarden.com",
+          "id": "trust:lp:bitwarden",
+          "name": "Bitwarden",
+          "note": "AGPL. Self-hostable password manager (free tier generous)."
+        },
+        {
+          "homepage": "https://keepassxc.org",
+          "id": "trust:lp:keepassxc",
+          "name": "KeePassXC",
+          "note": "GPL. Local-first .kdbx password manager."
+        }
+      ],
       "lastReviewed": "2026-04-26",
       "targetBundleID": "com.lastpass.LastPass",
       "targetDisplayName": "LastPass"
@@ -1577,110 +1847,155 @@
           "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, user content."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.openproject.org",
+          "id": "trust:linear:openproject",
+          "name": "OpenProject",
+          "note": "OpenProject GmbH (Germany). GPL. Self-hostable."
+        },
+        {
+          "homepage": "https://taiga.io",
+          "id": "trust:linear:taiga",
+          "name": "Taiga",
+          "note": "Kaleidos (Spain). Apache. Agile PM."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.linear",
       "targetDisplayName": "Linear"
     },
     {
-      "targetBundleID": "com.linkedin.LinkedIn",
-      "targetDisplayName": "LinkedIn",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id288429040",
           "id": "linkedin:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking across other apps and websites: identifiers, contact info, usage data, browsing history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id288429040",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking across other apps and websites: identifiers, contact info, usage data, browsing history."
         },
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id288429040",
           "id": "linkedin:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares 'Data Linked to You' across 13 categories including Contacts, Financial Info, and Sensitive Info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id288429040",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares 'Data Linked to You' across 13 categories including Contacts, Financial Info, and Sensitive Info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://joinmastodon.org",
+          "id": "trust:linkedin:mastodon",
+          "name": "Mastodon",
+          "note": "Mastodon gGmbH (Germany). AGPL."
+        },
+        {
+          "homepage": "https://pixelfed.org",
+          "id": "trust:linkedin:pixelfed",
+          "name": "Pixelfed",
+          "note": "AGPL. Federated photo-sharing."
+        },
+        {
+          "homepage": "https://bsky.app",
+          "id": "trust:linkedin:bluesky",
+          "name": "Bluesky",
+          "note": "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.linkedin.LinkedIn",
+      "targetDisplayName": "LinkedIn"
     },
     {
-      "targetBundleID": "com.lyft.iphone",
-      "targetDisplayName": "Lyft",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id529379082",
           "id": "lyft:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 12 categories including Sensitive Info, Health & Fitness, Financial Info, precise Location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id529379082",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 12 categories including Sensitive Info, Health & Fitness, Financial Info, precise Location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.lyft.iphone",
+      "targetDisplayName": "Lyft"
     },
     {
-      "targetBundleID": "com.medium.reader",
-      "targetDisplayName": "Medium",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id828256236",
           "id": "medium:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 7 categories including Identifiers, Usage Data, Search History.",
-          "evidenceURL": "https://apps.apple.com/us/app/id828256236",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 7 categories including Identifiers, Usage Data, Search History."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.medium.reader",
+      "targetDisplayName": "Medium"
     },
     {
-      "targetBundleID": "com.miHoYo.GenshinImpact",
-      "targetDisplayName": "Genshin Impact",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1517783697",
           "id": "genshin-impact:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including Identifiers, Purchase History, User Content, Usage Data — Chinese-developed; data may transit infrastructure outside the EU.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1517783697",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including Identifiers, Purchase History, User Content, Usage Data — Chinese-developed; data may transit infrastructure outside the EU."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.miHoYo.GenshinImpact",
+      "targetDisplayName": "Genshin Impact"
     },
     {
-      "targetBundleID": "com.microsoft.Excel",
-      "targetDisplayName": "Microsoft Excel",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id586683407",
           "id": "ms-excel:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 13 categories including Contacts, User Content, and Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id586683407",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 13 categories including Contacts, User Content, and Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.libreoffice.org",
+          "id": "trust:excel:libreoffice",
+          "name": "LibreOffice Calc",
+          "note": "The Document Foundation (Germany). MPL."
+        },
+        {
+          "homepage": "https://www.onlyoffice.com",
+          "id": "trust:excel:onlyoffice",
+          "name": "ONLYOFFICE",
+          "note": "Latvia. AGPL community edition."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.microsoft.Excel",
+      "targetDisplayName": "Microsoft Excel"
     },
     {
       "concerns": [
@@ -1695,64 +2010,97 @@
           "summary": "App Store privacy label discloses linked data: identifiers, location, contact info, contacts, user content, diagnostics."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://nextcloud.com",
+          "id": "trust:onedrive:nextcloud",
+          "name": "Nextcloud",
+          "note": "Nextcloud GmbH (Germany). AGPL. Self-hosted or EU providers."
+        },
+        {
+          "homepage": "https://proton.me/drive",
+          "id": "trust:onedrive:protondrive",
+          "name": "Proton Drive",
+          "note": "Switzerland. E2E-encrypted."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.microsoft.OneDrive",
       "targetDisplayName": "Microsoft OneDrive"
     },
     {
-      "targetBundleID": "com.microsoft.Outlook",
-      "targetDisplayName": "Microsoft Outlook",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id951937596",
           "id": "ms-outlook:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 13 categories including Contacts, Email Address, Search History, and Sensitive Info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id951937596",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 13 categories including Contacts, Email Address, Search History, and Sensitive Info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.microsoft.Outlook",
+      "targetDisplayName": "Microsoft Outlook"
     },
     {
-      "targetBundleID": "com.microsoft.Powerpoint",
-      "targetDisplayName": "Microsoft PowerPoint",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id586449534",
           "id": "ms-powerpoint:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 13 categories including Contacts, User Content, and Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id586449534",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 13 categories including Contacts, User Content, and Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.libreoffice.org",
+          "id": "trust:ppt:libreoffice",
+          "name": "LibreOffice Impress",
+          "note": "The Document Foundation (Germany). MPL."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.microsoft.Powerpoint",
+      "targetDisplayName": "Microsoft PowerPoint"
     },
     {
-      "targetBundleID": "com.microsoft.Word",
-      "targetDisplayName": "Microsoft Word",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id586447913",
           "id": "ms-word:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 13 categories including Contacts, User Content, and Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id586447913",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 13 categories including Contacts, User Content, and Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.libreoffice.org",
+          "id": "trust:word:libreoffice",
+          "name": "LibreOffice",
+          "note": "The Document Foundation (Germany). MPL. Drop-in replacement."
+        },
+        {
+          "homepage": "https://www.onlyoffice.com",
+          "id": "trust:word:onlyoffice",
+          "name": "ONLYOFFICE",
+          "note": "Ascensio System (Latvia). AGPL community edition."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.microsoft.Word",
+      "targetDisplayName": "Microsoft Word"
     },
     {
       "concerns": [
@@ -1792,46 +2140,60 @@
           "summary": "App Store privacy label discloses linked data: identifiers, contact info, contacts, usage data, diagnostics, audio data."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg",
+          "homepage": "https://element.io",
+          "id": "trust:teams:element",
+          "name": "Element",
+          "note": "UK. Matrix protocol, self-hostable."
+        },
+        {
+          "homepage": "https://jitsi.org",
+          "id": "trust:teams:jitsi",
+          "name": "Jitsi Meet",
+          "note": "Apache-licensed, no account needed."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.microsoft.teams",
       "targetDisplayName": "Microsoft Teams"
     },
     {
-      "targetBundleID": "com.mindnode.MindNode8",
-      "targetDisplayName": "MindNode",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1289197285",
           "id": "mindnode:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data including Contact Info, User Content, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1289197285",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data including Contact Info, User Content, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.mindnode.MindNode8",
+      "targetDisplayName": "MindNode"
     },
     {
-      "targetBundleID": "com.myfitnesspal.MyFitnessPal-tablet",
-      "targetDisplayName": "MyFitnessPal",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id341232718",
           "id": "myfitnesspal:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Health & Fitness, Sensitive Info, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id341232718",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Health & Fitness, Sensitive Info, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.myfitnesspal.MyFitnessPal-tablet",
+      "targetDisplayName": "MyFitnessPal"
     },
     {
       "concerns": [
@@ -1846,28 +2208,47 @@
           "summary": "App Store privacy label discloses linked data: identifiers, usage data, financial info, contact info, diagnostics."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://www.arte.tv",
+          "id": "trust:netflix-desktop:arte",
+          "name": "Arte.tv",
+          "note": "Arte (France/Germany). Free, ad-supported."
+        },
+        {
+          "homepage": "https://mubi.com",
+          "id": "trust:netflix-desktop:mubi",
+          "name": "MUBI",
+          "note": "MUBI (UK). Curated arthouse streaming."
+        },
+        {
+          "homepage": "https://jellyfin.org",
+          "id": "trust:netflix-desktop:jellyfin",
+          "name": "Jellyfin",
+          "note": "GPL. Self-hosted media."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.netflix.Netflix",
       "targetDisplayName": "Netflix"
     },
     {
-      "targetBundleID": "com.nike.nikeplus-gps",
-      "targetDisplayName": "Nike Run Club",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id387771637",
           "id": "nike-run-club:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Health & Fitness, precise Location, Sensitive Info, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id387771637",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Health & Fitness, precise Location, Sensitive Info, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.nike.nikeplus-gps",
+      "targetDisplayName": "Nike Run Club"
     },
     {
       "concerns": [
@@ -1882,64 +2263,77 @@
           "summary": "App Store privacy label discloses linked data: identifiers, usage data, contact info, diagnostics, user content."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://obsidian.md",
+          "id": "trust:notion:obsidian",
+          "name": "Obsidian",
+          "note": "Local-first markdown, free for personal use."
+        },
+        {
+          "homepage": "https://logseq.com",
+          "id": "trust:notion:logseq",
+          "name": "Logseq",
+          "note": "AGPL. Local-first outliner."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.notion.id",
       "targetDisplayName": "Notion"
     },
     {
-      "targetBundleID": "com.number26.iphone",
-      "targetDisplayName": "N26",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id956428662",
           "id": "n26:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Contact Info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id956428662",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers, Contact Info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.number26.iphone",
+      "targetDisplayName": "N26"
     },
     {
-      "targetBundleID": "com.nytimes.NYTimes",
-      "targetDisplayName": "The New York Times",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id284862083",
           "id": "nyt:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Identifiers, Usage Data, Search History, Advertising Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id284862083",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Identifiers, Usage Data, Search History, Advertising Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.nytimes.NYTimes",
+      "targetDisplayName": "The New York Times"
     },
     {
-      "targetBundleID": "com.onepeloton.peloton",
-      "targetDisplayName": "Peloton",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id792750948",
           "id": "peloton:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Health & Fitness, Financial Info, Sensitive Info, Photos, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id792750948",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including Health & Fitness, Financial Info, Sensitive Info, Photos, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.onepeloton.peloton",
+      "targetDisplayName": "Peloton"
     },
     {
       "concerns": [
@@ -1964,280 +2358,332 @@
           "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, user content."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://lmstudio.ai",
+          "id": "trust:chatgpt:lmstudio",
+          "name": "LM Studio",
+          "note": "Run open-weight models (Llama, Mistral, Qwen) fully local."
+        },
+        {
+          "downloadURL": "https://ollama.com/download/Ollama-darwin.zip",
+          "homepage": "https://ollama.com",
+          "id": "trust:chatgpt:ollama",
+          "name": "Ollama",
+          "note": "MIT. CLI + API for local model inference."
+        },
+        {
+          "homepage": "https://chat.mistral.ai",
+          "id": "trust:chatgpt:mistral",
+          "name": "Mistral Le Chat",
+          "note": "Mistral AI (France). EU-hosted chat."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.openai.chat",
       "targetDisplayName": "ChatGPT Desktop"
     },
     {
-      "targetBundleID": "com.operasoftware.OperaMini",
-      "targetDisplayName": "Opera",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id363729560",
           "id": "opera-mini:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking: identifiers, advertising data, usage data, search history, browsing history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id363729560",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking: identifiers, advertising data, usage data, search history, browsing history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.operasoftware.OperaMini",
+      "targetDisplayName": "Opera"
     },
     {
-      "targetBundleID": "com.pandora",
-      "targetDisplayName": "Pandora",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id284035177",
           "id": "pandora:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, location, advertising data, usage data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id284035177",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, location, advertising data, usage data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.pandora",
+      "targetDisplayName": "Pandora"
     },
     {
-      "targetBundleID": "com.paypal.PPClient",
-      "targetDisplayName": "PayPal",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id283646709",
           "id": "paypal:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Contacts, and Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id283646709",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Contacts, and Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.paypal.PPClient",
+      "targetDisplayName": "PayPal"
     },
     {
-      "targetBundleID": "com.pinterest.pinterest",
-      "targetDisplayName": "Pinterest",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id429047995",
           "id": "pinterest:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking: identifiers, contacts, location, usage data, search history, browsing history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id429047995",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking: identifiers, contacts, location, usage data, search history, browsing history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://joinmastodon.org",
+          "id": "trust:pinterest:mastodon",
+          "name": "Mastodon",
+          "note": "Mastodon gGmbH (Germany). AGPL."
+        },
+        {
+          "homepage": "https://pixelfed.org",
+          "id": "trust:pinterest:pixelfed",
+          "name": "Pixelfed",
+          "note": "AGPL. Federated photo-sharing."
+        },
+        {
+          "homepage": "https://bsky.app",
+          "id": "trust:pinterest:bluesky",
+          "name": "Bluesky",
+          "note": "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.pinterest.pinterest",
+      "targetDisplayName": "Pinterest"
     },
     {
-      "targetBundleID": "com.pixelmatorteam.pixelmator.x",
-      "targetDisplayName": "Pixelmator Pro",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1289583905",
           "id": "pixelmator-pro:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data — typical for paid creative-tool apps.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1289583905",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Identifiers, Usage Data — typical for paid creative-tool apps."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.pixelmatorteam.pixelmator.x",
+      "targetDisplayName": "Pixelmator Pro"
     },
     {
-      "targetBundleID": "com.plexapp.plex",
-      "targetDisplayName": "Plex",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id383457673",
           "id": "plex:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including Search History, Identifiers, and Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id383457673",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including Search History, Identifiers, and Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.plexapp.plex",
+      "targetDisplayName": "Plex"
     },
     {
-      "targetBundleID": "com.quizlet.quizletapp",
-      "targetDisplayName": "Quizlet",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id360452360",
           "id": "quizlet:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including Contact Info, User Content, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id360452360",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including Contact Info, User Content, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.quizlet.quizletapp",
+      "targetDisplayName": "Quizlet"
     },
     {
-      "targetBundleID": "com.reddit.Reddit",
-      "targetDisplayName": "Reddit",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1064216828",
           "id": "reddit:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, location, usage data, advertising data, browsing history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1064216828",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, location, usage data, advertising data, browsing history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.reddit.Reddit",
+      "targetDisplayName": "Reddit"
     },
     {
-      "targetBundleID": "com.revolut.RevolutApp",
-      "targetDisplayName": "Revolut",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id932493382",
           "id": "revolut:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 11 categories including Financial Info, Sensitive Info, precise Location, Identifiers, Contacts.",
-          "evidenceURL": "https://apps.apple.com/us/app/id932493382",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 11 categories including Financial Info, Sensitive Info, precise Location, Identifiers, Contacts."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.revolut.RevolutApp",
+      "targetDisplayName": "Revolut"
     },
     {
-      "targetBundleID": "com.robinhood.release.Robinhood",
-      "targetDisplayName": "Robinhood",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id938003185",
           "id": "robinhood:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id938003185",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Sensitive Info, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.robinhood.release.Robinhood",
+      "targetDisplayName": "Robinhood"
     },
     {
-      "targetBundleID": "com.roblox.robloxmobile",
-      "targetDisplayName": "Roblox",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id431946152",
           "id": "roblox:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Contacts, Identifiers, Audio Data, Photos, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id431946152",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Contacts, Identifiers, Audio Data, Photos, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.roblox.robloxmobile",
+      "targetDisplayName": "Roblox"
     },
     {
-      "targetBundleID": "com.savage.Procreate-Pocket",
-      "targetDisplayName": "Procreate Pocket",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1037778262",
           "id": "procreate-pocket:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics, Identifiers — minimal collection from a paid creative-tool indie.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1037778262",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics, Identifiers — minimal collection from a paid creative-tool indie."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.savage.Procreate-Pocket",
+      "targetDisplayName": "Procreate Pocket"
     },
     {
-      "targetBundleID": "com.shein.app",
-      "targetDisplayName": "SHEIN",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id878577184",
           "id": "shein:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Financial Info, Contact Info, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id878577184",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Financial Info, Contact Info, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.shein.app",
+      "targetDisplayName": "SHEIN"
     },
     {
-      "targetBundleID": "com.skype.skype",
-      "targetDisplayName": "Skype",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id304878510",
           "id": "skype:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 11 categories including Contacts, Health & Fitness, and Sensitive Info.",
-          "evidenceURL": "https://apps.apple.com/us/app/id304878510",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 11 categories including Contacts, Health & Fitness, and Sensitive Info."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://jitsi.org",
+          "id": "trust:skype:jitsi",
+          "name": "Jitsi Meet",
+          "note": "Apache. Browser-based video calls, no account."
+        },
+        {
+          "homepage": "https://signal.org",
+          "id": "trust:skype:signal",
+          "name": "Signal",
+          "note": "Signal Foundation. E2E-encrypted calls."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.skype.skype",
+      "targetDisplayName": "Skype"
     },
     {
-      "targetBundleID": "com.snowmanlabs.alto.odyssey",
-      "targetDisplayName": "Alto's Odyssey",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1182456409",
           "id": "alto-odyssey:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data: Identifiers, Purchase History, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1182456409",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data: Identifiers, Purchase History, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.snowmanlabs.alto.odyssey",
+      "targetDisplayName": "Alto's Odyssey"
     },
     {
       "concerns": [
@@ -2258,58 +2704,58 @@
       "targetDisplayName": "Spotify"
     },
     {
-      "targetBundleID": "com.squareup.cash",
-      "targetDisplayName": "Cash App",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id711923939",
           "id": "cashapp:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including Financial Info, Contacts, Sensitive Info, Location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id711923939",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including Financial Info, Contacts, Sensitive Info, Location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.squareup.cash",
+      "targetDisplayName": "Cash App"
     },
     {
-      "targetBundleID": "com.strava.stravaride",
-      "targetDisplayName": "Strava",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id426826309",
           "id": "strava:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including precise Location, Health & Fitness, Sensitive Info, Contacts.",
-          "evidenceURL": "https://apps.apple.com/us/app/id426826309",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 12 categories including precise Location, Health & Fitness, Sensitive Info, Contacts."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.strava.stravaride",
+      "targetDisplayName": "Strava"
     },
     {
-      "targetBundleID": "com.substack.app",
-      "targetDisplayName": "Substack",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1574515480",
           "id": "substack:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including Contact Info, Financial Info, User Content, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1574515480",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including Contact Info, Financial Info, User Content, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.substack.app",
+      "targetDisplayName": "Substack"
     },
     {
       "concerns": [
@@ -2324,46 +2770,59 @@
           "summary": "App Store privacy label discloses tracking and linked data: identifiers, contact info, usage data, contacts."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://signal.org",
+          "id": "trust:wechat:signal",
+          "name": "Signal",
+          "note": "Signal Foundation."
+        },
+        {
+          "homepage": "https://threema.ch",
+          "id": "trust:wechat:threema",
+          "name": "Threema",
+          "note": "Switzerland."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.tencent.xinWeChat",
       "targetDisplayName": "WeChat"
     },
     {
-      "targetBundleID": "com.tidal.iPhone",
-      "targetDisplayName": "Tidal",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id913943275",
           "id": "tidal:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Contact Info, Audio Data, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id913943275",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Financial Info, Contact Info, Audio Data, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.tidal.iPhone",
+      "targetDisplayName": "Tidal"
     },
     {
-      "targetBundleID": "com.tinyspeck.chatlyio",
-      "targetDisplayName": "Slack (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id618783545",
           "id": "slack-ios:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 11 categories including Contacts, User Content, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id618783545",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 11 categories including Contacts, User Content, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.tinyspeck.chatlyio",
+      "targetDisplayName": "Slack (iOS)"
     },
     {
       "concerns": [
@@ -2388,7 +2847,21 @@
           "summary": "Confirmed breach in 2022: source-code repository access via stolen employee tokens. No customer data accessed per Slack's disclosure."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "downloadURL": "https://packages.element.io/desktop/install/macos/Element.dmg",
+          "homepage": "https://element.io",
+          "id": "trust:slack:element",
+          "name": "Element",
+          "note": "UK-based. Matrix protocol, fully open-source, self-hostable."
+        },
+        {
+          "homepage": "https://mattermost.com",
+          "id": "trust:slack:mattermost",
+          "name": "Mattermost",
+          "note": "MIT-licensed server + clients, team-chat."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.tinyspeck.slackmacgap",
       "targetDisplayName": "Slack"
@@ -2406,226 +2879,271 @@
           "summary": "Cursor's privacy policy discloses default-on telemetry; Privacy Mode toggle exists but is opt-in."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://zed.dev",
+          "id": "trust:cursor:zed",
+          "name": "Zed",
+          "note": "GPL. Native editor with AI integration."
+        },
+        {
+          "homepage": "https://vscodium.com",
+          "id": "trust:cursor:vscodium",
+          "name": "VSCodium",
+          "note": "MIT. Plus Continue.dev for AI."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.todesktop.230313mzl4w4u92",
       "targetDisplayName": "Cursor"
     },
     {
-      "targetBundleID": "com.toyopagroup.picaboo",
-      "targetDisplayName": "Snapchat",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id447188370",
           "id": "snapchat:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, usage data, advertising data, search history, location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id447188370",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, usage data, advertising data, search history, location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://joinmastodon.org",
+          "id": "trust:snapchat:mastodon",
+          "name": "Mastodon",
+          "note": "Mastodon gGmbH (Germany). AGPL."
+        },
+        {
+          "homepage": "https://pixelfed.org",
+          "id": "trust:snapchat:pixelfed",
+          "name": "Pixelfed",
+          "note": "AGPL. Federated photo-sharing."
+        },
+        {
+          "homepage": "https://bsky.app",
+          "id": "trust:snapchat:bluesky",
+          "name": "Bluesky",
+          "note": "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.toyopagroup.picaboo",
+      "targetDisplayName": "Snapchat"
     },
     {
-      "targetBundleID": "com.transferwise.TransferWise",
-      "targetDisplayName": "Wise",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id612261027",
           "id": "wise:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Contact Info, Identifiers, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id612261027",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Contact Info, Identifiers, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.transferwise.TransferWise",
+      "targetDisplayName": "Wise"
     },
     {
-      "targetBundleID": "com.ubercab.UberClient",
-      "targetDisplayName": "Uber",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id368677368",
           "id": "uber:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 12 categories including Health & Fitness, Sensitive Info, Financial Info, and precise Location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id368677368",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 12 categories including Health & Fitness, Sensitive Info, Financial Info, and precise Location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.ubercab.UberClient",
+      "targetDisplayName": "Uber"
     },
     {
-      "targetBundleID": "com.ubercab.UberEats",
-      "targetDisplayName": "Uber Eats",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1058959277",
           "id": "uber-eats:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Financial Info, precise Location, Contacts, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1058959277",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 11 categories including Financial Info, precise Location, Contacts, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.ubercab.UberEats",
+      "targetDisplayName": "Uber Eats"
     },
     {
-      "targetBundleID": "com.udemy.UdemyiOS",
-      "targetDisplayName": "Udemy",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id562413829",
           "id": "udemy:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Identifiers, Usage Data, Advertising Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id562413829",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Identifiers, Usage Data, Advertising Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.udemy.UdemyiOS",
+      "targetDisplayName": "Udemy"
     },
     {
-      "targetBundleID": "com.ustwo.monumentvalley",
-      "targetDisplayName": "Monument Valley",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id728293409",
           "id": "monument-valley:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics — paid indie game with minimal collection.",
-          "evidenceURL": "https://apps.apple.com/us/app/id728293409",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares only Unlinked Data: Diagnostics — paid indie game with minimal collection."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.ustwo.monumentvalley",
+      "targetDisplayName": "Monument Valley"
     },
     {
-      "targetBundleID": "com.valvesoftware.steam",
-      "targetDisplayName": "Steam",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id495369748",
           "id": "steam:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label (Steam Mobile) declares Linked Data across 4 categories including Identifiers, Purchase History, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id495369748",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label (Steam Mobile) declares Linked Data across 4 categories including Identifiers, Purchase History, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://heroicgameslauncher.com",
+          "id": "trust:steam:heroic",
+          "name": "Heroic Games Launcher",
+          "note": "GPL. Epic + GOG launcher."
+        },
+        {
+          "homepage": "https://www.gog.com/galaxy",
+          "id": "trust:steam:gog",
+          "name": "GOG Galaxy",
+          "note": "CD Projekt (Poland). DRM-free PC games."
+        }
+      ],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.valvesoftware.steam",
+      "targetDisplayName": "Steam"
     },
     {
-      "targetBundleID": "com.venmo.Venmo",
-      "targetDisplayName": "Venmo",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id351727428",
           "id": "venmo:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking and Linked Data across categories including Financial Info, Identifiers, Purchase History, Location.",
-          "evidenceURL": "https://apps.apple.com/us/app/id351727428",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking and Linked Data across categories including Financial Info, Identifiers, Purchase History, Location."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.venmo.Venmo",
+      "targetDisplayName": "Venmo"
     },
     {
-      "targetBundleID": "com.vilcsak.bitcoins2",
-      "targetDisplayName": "Coinbase",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id886427730",
           "id": "coinbase:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Identifiers, Contact Info, Health & Fitness.",
-          "evidenceURL": "https://apps.apple.com/us/app/id886427730",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 10 categories including Financial Info, Sensitive Info, Identifiers, Contact Info, Health & Fitness."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.vilcsak.bitcoins2",
+      "targetDisplayName": "Coinbase"
     },
     {
-      "targetBundleID": "com.visualsupply.cam",
-      "targetDisplayName": "VSCO",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id588013838",
           "id": "vsco:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Photos, Identifiers, Contact Info, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id588013838",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 9 categories including Photos, Identifiers, Contact Info, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.visualsupply.cam",
+      "targetDisplayName": "VSCO"
     },
     {
-      "targetBundleID": "com.waze.iphone",
-      "targetDisplayName": "Waze",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id323229106",
           "id": "waze:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking + Linked Data across 10 categories including precise Location, Contact Info, Audio Data — Google-owned navigation app.",
-          "evidenceURL": "https://apps.apple.com/us/app/id323229106",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking + Linked Data across 10 categories including precise Location, Contact Info, Audio Data — Google-owned navigation app."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.waze.iphone",
+      "targetDisplayName": "Waze"
     },
     {
-      "targetBundleID": "com.wf.WellsFargoMobile",
-      "targetDisplayName": "Wells Fargo Mobile",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id311548709",
           "id": "wellsfargo:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 11 categories including Financial Info, Sensitive Info, Identifiers.",
-          "evidenceURL": "https://apps.apple.com/us/app/id311548709",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 11 categories including Financial Info, Sensitive Info, Identifiers."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "com.wf.WellsFargoMobile",
+      "targetDisplayName": "Wells Fargo Mobile"
     },
     {
       "concerns": [
@@ -2650,7 +3168,20 @@
           "summary": "Ireland's DPC fined WhatsApp €225M in 2021 for transparency failures under GDPR Article 13 and 14."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://signal.org",
+          "id": "trust:wa:signal",
+          "name": "Signal",
+          "note": "Signal Foundation. Gold-standard E2E."
+        },
+        {
+          "homepage": "https://threema.ch",
+          "id": "trust:wa:threema",
+          "name": "Threema",
+          "note": "Threema GmbH (Switzerland). Paid, no phone-number required."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.whatsapp.WhatsApp",
       "targetDisplayName": "WhatsApp"
@@ -2688,100 +3219,107 @@
           "summary": "App Store privacy label discloses tracking data: identifiers, location, browsing history, purchases used to track across apps and websites."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://joinpeertube.org",
+          "id": "trust:tiktok:peertube",
+          "name": "PeerTube",
+          "note": "Framasoft (France). AGPL. Federated video."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "com.zhiliaoapp.musically",
       "targetDisplayName": "TikTok"
     },
     {
-      "targetBundleID": "net.whatsapp.WhatsAppSMB",
-      "targetDisplayName": "WhatsApp Business",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id1386412985",
           "id": "whatsapp-business:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Contact Info, Contacts, Financial Info, Identifiers — Meta-owned, business-tier disclosures.",
-          "evidenceURL": "https://apps.apple.com/us/app/id1386412985",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Contact Info, Contacts, Financial Info, Identifiers — Meta-owned, business-tier disclosures."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "net.whatsapp.WhatsAppSMB",
+      "targetDisplayName": "WhatsApp Business"
     },
     {
-      "targetBundleID": "org.coursera.coursera",
-      "targetDisplayName": "Coursera",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id736535961",
           "id": "coursera:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 8 categories including Contact Info, User Content, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id736535961",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 8 categories including Contact Info, User Content, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "org.coursera.coursera",
+      "targetDisplayName": "Coursera"
     },
     {
-      "targetBundleID": "org.mozilla.ios.Firefox",
-      "targetDisplayName": "Firefox (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id989804926",
           "id": "firefox-ios:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data: Identifiers, Usage Data, Diagnostics — moderate collection for a browser.",
-          "evidenceURL": "https://apps.apple.com/us/app/id989804926",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data: Identifiers, Usage Data, Diagnostics — moderate collection for a browser."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "org.mozilla.ios.Firefox",
+      "targetDisplayName": "Firefox (iOS)"
     },
     {
-      "targetBundleID": "org.whispersystems.signal",
-      "targetDisplayName": "Signal (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id874139669",
           "id": "signal-ios:appstore-unlinked",
           "kind": "appStoreUnlinkedData",
-          "axis": "privacy",
           "severity": "low",
-          "summary": "App Store privacy label declares ONLY Unlinked Data: Contact Info — Signal's privacy posture is famously minimal; the only data collected is the phone number used to register, not linked to user identity.",
-          "evidenceURL": "https://apps.apple.com/us/app/id874139669",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares ONLY Unlinked Data: Contact Info — Signal's privacy posture is famously minimal; the only data collected is the phone number used to register, not linked to user identity."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "org.whispersystems.signal",
+      "targetDisplayName": "Signal (iOS)"
     },
     {
-      "targetBundleID": "ph.telegra.Telegraph",
-      "targetDisplayName": "Telegram",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id686449807",
           "id": "telegram:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 4 categories: Contact Info, Contacts, Identifiers, User Content.",
-          "evidenceURL": "https://apps.apple.com/us/app/id686449807",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 4 categories: Contact Info, Contacts, Identifiers, User Content."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "ph.telegra.Telegraph",
+      "targetDisplayName": "Telegram"
     },
     {
       "concerns": [
@@ -2796,64 +3334,78 @@
           "summary": "US OFAC has sanctioned multiple Russian-affiliated entities since 2022; Yandex was split in 2024 with Russian operations under sanctions risk."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "downloadURL": "https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US",
+          "homepage": "https://www.mozilla.org/firefox",
+          "id": "trust:yandex:firefox",
+          "name": "Firefox",
+          "note": "Mozilla Foundation (MPL)."
+        },
+        {
+          "homepage": "https://vivaldi.com",
+          "id": "trust:yandex:vivaldi",
+          "name": "Vivaldi",
+          "note": "Norway. Freeware."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "ru.yandex.desktop.yandex-browser",
       "targetDisplayName": "Yandex Browser"
     },
     {
-      "targetBundleID": "tv.twitch",
-      "targetDisplayName": "Twitch",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id460177396",
           "id": "twitch:appstore-tracking",
           "kind": "appStoreTrackingData",
-          "axis": "privacy",
           "severity": "high",
-          "summary": "App Store privacy label discloses tracking data: identifiers, advertising data, usage data, location, search history.",
-          "evidenceURL": "https://apps.apple.com/us/app/id460177396",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label discloses tracking data: identifiers, advertising data, usage data, location, search history."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "tv.twitch",
+      "targetDisplayName": "Twitch"
     },
     {
-      "targetBundleID": "uk.co.bbc.news",
-      "targetDisplayName": "BBC News",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id377382937",
           "id": "bbc-news:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 6 categories including Identifiers, Usage Data, Diagnostics.",
-          "evidenceURL": "https://apps.apple.com/us/app/id377382937",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 6 categories including Identifiers, Usage Data, Diagnostics."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "uk.co.bbc.news",
+      "targetDisplayName": "BBC News"
     },
     {
-      "targetBundleID": "us.zoom.videomeetings",
-      "targetDisplayName": "Zoom (iOS)",
-      "lastReviewed": "2026-04-30",
       "concerns": [
         {
+          "axis": "privacy",
+          "evidenceDate": "2026-04-30",
+          "evidenceURL": "https://apps.apple.com/us/app/id546505307",
           "id": "zoom-ios:appstore-linked",
           "kind": "appStoreLinkedData",
-          "axis": "privacy",
           "severity": "moderate",
-          "summary": "App Store privacy label declares Linked Data across 9 categories including Contact Info, User Content, Identifiers, Usage Data.",
-          "evidenceURL": "https://apps.apple.com/us/app/id546505307",
-          "evidenceDate": "2026-04-30",
-          "sourceName": "Apple App Store"
+          "sourceName": "Apple App Store",
+          "summary": "App Store privacy label declares Linked Data across 9 categories including Contact Info, User Content, Identifiers, Usage Data."
         }
       ],
-      "fallbackAlternatives": []
+      "fallbackAlternatives": [],
+      "lastReviewed": "2026-04-30",
+      "targetBundleID": "us.zoom.videomeetings",
+      "targetDisplayName": "Zoom (iOS)"
     },
     {
       "concerns": [
@@ -2878,7 +3430,20 @@
           "summary": "App Store privacy label discloses linked data: identifiers, contact info, usage data, audio data, financial info."
         }
       ],
-      "fallbackAlternatives": [],
+      "fallbackAlternatives": [
+        {
+          "homepage": "https://jitsi.org",
+          "id": "trust:zoom:jitsi",
+          "name": "Jitsi Meet",
+          "note": "Apache-licensed. Browser-based, no account needed."
+        },
+        {
+          "homepage": "https://signal.org",
+          "id": "trust:zoom:signal",
+          "name": "Signal",
+          "note": "Signal Foundation. E2E-encrypted video calls."
+        }
+      ],
       "lastReviewed": "2026-04-25",
       "targetBundleID": "us.zoom.xos",
       "targetDisplayName": "Zoom"
