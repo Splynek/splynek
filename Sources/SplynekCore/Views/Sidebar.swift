@@ -1,11 +1,19 @@
 import SwiftUI
 
 /// Which top-level section the sidebar is currently displaying.
+///
+/// 2026-05-07 sidebar consolidation: `install` + `updates` collapsed
+/// into a single `apps` row backed by `AppsView`'s segmented control.
+/// `agents` moved into the Library section (was the only resident of
+/// a "Connect" section, which felt orphaned).  `settings` / `legal` /
+/// `about` are still here as routing destinations even though they're
+/// no longer in the sidebar — they're driven from the macOS menu bar
+/// via Notifications (see RootView.onReceive).
 enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
     case downloads, live, torrents, concierge, recipes, sovereignty, trust,
-         savings, updates,
-         agents,
-         queue, fleet, install, benchmark, history, settings, legal, about
+         savings,
+         queue, fleet, apps, agents, benchmark, history,
+         settings, legal, about
 
     var id: String { rawValue }
 
@@ -19,11 +27,10 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .sovereignty: return "Sovereignty"
         case .trust:       return "Trust"
         case .savings:     return "Savings"
-        case .updates:     return "Updates"
         case .agents:      return "Agents"
         case .queue:       return "Queue"
         case .fleet:       return "Fleet"
-        case .install:     return "Install"
+        case .apps:        return "Apps"
         case .benchmark:   return "Benchmark"
         case .history:     return "History"
         case .settings:    return "Settings"
@@ -42,11 +49,10 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .sovereignty: return "shield.lefthalf.filled"
         case .trust:       return "checkmark.seal"
         case .savings:     return "dollarsign.circle"
-        case .updates:     return "arrow.triangle.2.circlepath"
         case .agents:      return "antenna.radiowaves.left.and.right"
         case .queue:       return "line.3.horizontal.decrease.circle"
         case .fleet:       return "laptopcomputer.and.arrow.down"
-        case .install:     return "shippingbox.fill"
+        case .apps:        return "shippingbox.fill"
         case .benchmark:   return "bolt.fill"
         case .history:     return "clock.arrow.circlepath"
         case .settings:    return "gearshape"
@@ -144,18 +150,6 @@ struct Sidebar: View {
                                                           inverted: selection == .savings))
                         )
                     }
-                    // 2026-05-07: Updates tab — universal updater.
-                    // Sparkle / GitHub releases / MAS / Homebrew /
-                    // publisher RSS, all in one place, with bonded
-                    // download + receipt-verified install.
-                    NavigationLink(value: SidebarSection.updates) {
-                        sidebarRow(
-                            title: "Updates",
-                            systemImage: "arrow.triangle.2.circlepath",
-                            accessory: AnyView(StatusPill(text: "NEW", style: .info,
-                                                          inverted: selection == .updates))
-                        )
-                    }
                 } header: {
                     Text("Ask")
                 } footer: {
@@ -246,9 +240,15 @@ struct Sidebar: View {
                             }()
                         )
                     }
-                    NavigationLink(value: SidebarSection.install) {
+                    // 2026-05-07: Apps — Install + Updates merged.
+                    // The badge counts installed apps that have a
+                    // resolvable updater attached; the segmented
+                    // control inside `AppsView` handles the
+                    // Install↔Updates switch without burning a
+                    // second sidebar row.
+                    NavigationLink(value: SidebarSection.apps) {
                         sidebarRow(
-                            title: "Install",
+                            title: "Apps",
                             systemImage: "shippingbox.fill",
                             accessory: {
                                 let n = InstalledAppRegistry.load().count
@@ -259,6 +259,22 @@ struct Sidebar: View {
                                         .foregroundStyle(.secondary)
                                         .monospacedDigit())
                             }()
+                        )
+                    }
+                    // 2026-05-07: Agents folded into Library (was its
+                    // own one-item "Connect" section, which felt
+                    // orphaned).  Pairs naturally with Fleet — both
+                    // are connectivity / sharing surfaces.  MCP is
+                    // still the primary tenant; the door's still open
+                    // for future agents (Spotlight bridge, IPC API).
+                    NavigationLink(value: SidebarSection.agents) {
+                        sidebarRow(
+                            title: "Agents",
+                            systemImage: "antenna.radiowaves.left.and.right",
+                            accessory: vm.mcpEnabled
+                                ? AnyView(StatusPill(text: "ON", style: .success,
+                                                     inverted: selection == .agents))
+                                : nil
                         )
                     }
                     NavigationLink(value: SidebarSection.benchmark) {
@@ -279,117 +295,18 @@ struct Sidebar: View {
                 } header: {
                     Text("Library")
                 }
-
-                // MARK: CONNECT — programmable surfaces (v1.6.1).
-                // MCP started life as a single Settings card.  It's a
-                // big surface — 8 tools, live status, per-client setup
-                // snippets, recent-calls log — and its own tab makes
-                // it findable.  Group name "Connect" keeps the door
-                // open for future agents (Spotlight bridge, IPC API,
-                // etc.) without renaming.
-                Section {
-                    NavigationLink(value: SidebarSection.agents) {
-                        sidebarRow(
-                            title: "Agents",
-                            systemImage: "antenna.radiowaves.left.and.right",
-                            accessory: vm.mcpEnabled
-                                ? AnyView(StatusPill(text: "ON", style: .success,
-                                                     inverted: selection == .agents))
-                                : nil
-                        )
-                    }
-                } header: {
-                    Text("Connect")
-                }
             }
             .listStyle(.sidebar)
 
-            // v0.49 compact brand footer — lives at the bottom of
-            // the sidebar so it's always visible but never in the way.
-            // Replaces the "Welcome to Splynek" brand strip that used
-            // to squat at the top of the Downloads tab, stealing the
-            // real estate that should be the user's own content.
-            brandFooter
+            // 2026-05-07: brand footer removed.  The 28pt logo +
+            // version + Settings gear used to live here; in practice
+            // it ate a sidebar row at every window height and Settings
+            // is already in the macOS menu bar (Cmd+,) per the v0.49
+            // layout note.  About is also reachable from the Apple
+            // menu.  The footer added zero navigation value.
         }
         .navigationTitle("Splynek")
     }
-
-    /// Small 32 pt logo + version at the foot of the sidebar, with
-    /// a Settings gear on the trailing edge (v1.5.1).  The brand
-    /// area opens About; the gear opens Settings.  Both still
-    /// available from the macOS menu bar — this is just a more
-    /// discoverable click target since most users never look in
-    /// the menu bar for app-internal settings.
-    private var brandFooter: some View {
-        HStack(spacing: 0) {
-            Button {
-                NotificationCenter.default.post(
-                    name: .splynekShowAbout, object: nil
-                )
-            } label: {
-                HStack(spacing: 10) {
-                    Group {
-                        if let url = Bundle.main.url(forResource: "Splynek", withExtension: "icns"),
-                           let nsImage = NSImage(contentsOf: url) {
-                            Image(nsImage: nsImage)
-                                .resizable()
-                                .interpolation(.high)
-                        } else if let nsImage = NSApp.applicationIconImage {
-                            Image(nsImage: nsImage).resizable().interpolation(.high)
-                        } else {
-                            Image(systemName: "arrow.down.circle.fill")
-                        }
-                    }
-                    .frame(width: 28, height: 28)
-
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text("Splynek")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.primary)
-                        Text("v\(appVersion())")
-                            .font(.system(size: 10, design: .monospaced))
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                }
-                .padding(.leading, 12)
-                .padding(.vertical, 10)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .help("About Splynek")
-
-            // v1.5.1: Settings gear on the trailing edge.  Reuses the
-            // existing notification that the menu bar's "Settings…"
-            // item already posts — RootView routes both to the same
-            // SidebarSection.settings destination.  Adding the icon
-            // doesn't change behaviour; it only adds a second, more
-            // discoverable click target.
-            Button {
-                NotificationCenter.default.post(
-                    name: .splynekShowSettings, object: nil
-                )
-            } label: {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.secondary)
-                    .frame(width: 32, height: 32)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .padding(.trailing, 8)
-            .help("Settings")
-            .accessibilityLabel("Settings")
-        }
-        .background(
-            Divider()
-                .frame(maxWidth: .infinity, alignment: .top)
-                .opacity(0.5),
-            alignment: .top
-        )
-    }
-
-    private func appVersion() -> String { SplynekVersion.current }
 
     @ViewBuilder
     private func sidebarRow(title: String, systemImage: String, accessory: AnyView? = nil) -> some View {
