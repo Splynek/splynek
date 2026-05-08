@@ -73,7 +73,7 @@ final class LaneConnection {
     private func effectiveHeaders(hostHeader: String, range: String) -> [(String, String)] {
         var out: [(String, String)] = [
             ("Host", hostHeader),
-            ("User-Agent", "Splynek/0.1 (macOS)"),
+            ("User-Agent", "Splynek/\(SplynekVersion.current) (macOS)"),
             ("Accept", "*/*"),
             ("Accept-Encoding", "identity"),
             ("Range", range),

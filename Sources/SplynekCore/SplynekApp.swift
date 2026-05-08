@@ -54,6 +54,13 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
             // Apply background-mode preferences AFTER session restore so
             // any window brought up during restore can be ordered out.
             self?.state?.background.apply()
+            // 2026-05-08: warm the Apps-row badge so the user sees an
+            // accurate "↑ N" count without ever opening the Updates
+            // tab.  Fires ~3 s after launch (1.5 s after restore) so
+            // the boot path stays fast — the network fan-out happens
+            // off the main thread via UpdateSweep.run.
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            self?.state?.vm.warmUpdateCount()
         }
     }
 

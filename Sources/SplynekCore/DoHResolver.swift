@@ -55,7 +55,7 @@ enum DoHResolver {
         let req =
             "GET \(path) HTTP/1.1\r\n" +
             "Host: 1.1.1.1\r\n" +
-            "User-Agent: Splynek/0.1 (macOS)\r\n" +
+            "User-Agent: Splynek/\(SplynekVersion.current) (macOS)\r\n" +
             "Accept: application/dns-json\r\n" +
             "Connection: close\r\n" +
             "\r\n"

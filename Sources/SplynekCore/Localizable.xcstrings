@@ -22666,7 +22666,301 @@
           }
         }
       }
-    }
+    },
+    "ACTIVE": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "AKTIV" } },
+      "es": { "stringUnit": { "state": "translated", "value": "ACTIVO" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "ACTIF" } },
+      "it": { "stringUnit": { "state": "translated", "value": "ATTIVO" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "ATIVO" } }
+    } },
+    "All checked apps are up to date": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Alle geprüften Apps sind aktuell" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Todas las apps comprobadas están al día" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Toutes les apps vérifiées sont à jour" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Tutte le app verificate sono aggiornate" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Todas as apps verificadas estão atualizadas" } }
+    } },
+    "Bond a second network for 2–3× faster downloads": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Verbinde ein zweites Netzwerk für 2–3× schnellere Downloads" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Conecta una segunda red para descargas 2–3× más rápidas" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Associe un deuxième réseau pour des téléchargements 2–3× plus rapides" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Aggiungi una seconda rete per download 2–3× più veloci" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Liga uma segunda rede para downloads 2–3× mais rápidos" } }
+    } },
+    "COULD RECOVER": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "KÖNNTEST ZURÜCKHOLEN" } },
+      "es": { "stringUnit": { "state": "translated", "value": "PODRÍAS RECUPERAR" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "TU POURRAIS RÉCUPÉRER" } },
+      "it": { "stringUnit": { "state": "translated", "value": "POTRESTI RECUPERARE" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "PODES RECUPERAR" } }
+    } },
+    "Clear all download history?": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Gesamten Download-Verlauf löschen?" } },
+      "es": { "stringUnit": { "state": "translated", "value": "¿Borrar todo el historial de descargas?" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Effacer tout l’historique de téléchargement ?" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Cancellare tutta la cronologia dei download?" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Limpar todo o histórico de transferências?" } }
+    } },
+    "Clear all history": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Gesamten Verlauf löschen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Borrar todo el historial" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Effacer tout l’historique" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Cancella tutta la cronologia" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Limpar histórico" } }
+    } },
+    "Disable auto-update": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Auto-Update deaktivieren" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Desactivar actualización automática" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Désactiver la mise à jour automatique" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Disattiva aggiornamento automatico" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Desativar atualização automática" } }
+    } },
+    "Downloading…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Wird heruntergeladen…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Descargando…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Téléchargement…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Download…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "A descarregar…" } }
+    } },
+    "Enable auto-update": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Auto-Update aktivieren" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Activar actualización automática" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Activer la mise à jour automatique" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Attiva aggiornamento automatico" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Ativar atualização automática" } }
+    } },
+    "FREE": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "KOSTENLOS" } },
+      "es": { "stringUnit": { "state": "translated", "value": "GRATIS" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "GRATUIT" } },
+      "it": { "stringUnit": { "state": "translated", "value": "GRATIS" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "GRÁTIS" } }
+    } },
+    "Forget entry": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Eintrag vergessen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Olvidar entrada" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Oublier l’entrée" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Dimentica voce" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Esquecer entrada" } }
+    } },
+    "Forget this app": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Diese App vergessen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Olvidar esta app" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Oublier cette app" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Dimentica questa app" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Esquecer esta app" } }
+    } },
+    "I’ve already switched away from this app": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Ich bin von dieser App schon umgestiegen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Ya he cambiado de esta app" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "J’ai déjà quitté cette app" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Ho già cambiato da questa app" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Já troquei desta app" } }
+    } },
+    "Installed": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Installiert" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Instalado" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Installé" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Installato" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Instalado" } }
+    } },
+    "Installed via Splynek": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Über Splynek installiert" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Instalado vía Splynek" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Installé via Splynek" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Installato tramite Splynek" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Instalado via Splynek" } }
+    } },
+    "Installing…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Wird installiert…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Instalando…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Installation…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Installazione…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "A instalar…" } }
+    } },
+    "Looking for more?": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Suchst du mehr?" } },
+      "es": { "stringUnit": { "state": "translated", "value": "¿Buscas más?" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Tu en cherches plus ?" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Cerchi di più?" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "À procura de mais?" } }
+    } },
+    "MISSING": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "FEHLT" } },
+      "es": { "stringUnit": { "state": "translated", "value": "NO ENCONTRADA" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "INTROUVABLE" } },
+      "it": { "stringUnit": { "state": "translated", "value": "MANCANTE" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "EM FALTA" } }
+    } },
+    "Move to Trash": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "In den Papierkorb legen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Mover a la papelera" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Mettre à la corbeille" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Sposta nel cestino" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Mover para o Lixo" } }
+    } },
+    "Open page": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Seite öffnen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Abrir página" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Ouvrir la page" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Apri pagina" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Abrir página" } }
+    } },
+    "Open Sovereignty": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Souveränität öffnen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Abrir Soberanía" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Ouvrir Souveraineté" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Apri Sovranità" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Abrir Soberania" } }
+    } },
+    "Pending check": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Prüfung ausstehend" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Comprobación pendiente" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Vérification en attente" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Verifica in sospeso" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Por verificar" } }
+    } },
+    "RECOVERED": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "ZURÜCKGEHOLT" } },
+      "es": { "stringUnit": { "state": "translated", "value": "RECUPERADO" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "RÉCUPÉRÉ" } },
+      "it": { "stringUnit": { "state": "translated", "value": "RECUPERATO" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "RECUPERADO" } }
+    } },
+    "RISK": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "RISIKO" } },
+      "es": { "stringUnit": { "state": "translated", "value": "RIESGO" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "RISQUE" } },
+      "it": { "stringUnit": { "state": "translated", "value": "RISCHIO" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "RISCO" } }
+    } },
+    "Recent": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Aktuell" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Recientes" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Récents" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Recenti" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Recentes" } }
+    } },
+    "Recording install…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Installation wird aufgezeichnet…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Registrando instalación…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Enregistrement de l’installation…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Registrazione installazione…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "A registar instalação…" } }
+    } },
+    "Resolving…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Auflösen…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Resolviendo…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Résolution…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Risoluzione…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "A resolver…" } }
+    } },
+    "Results": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Ergebnisse" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Resultados" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Résultats" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Risultati" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Resultados" } }
+    } },
+    "Retry": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Wiederholen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Reintentar" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Réessayer" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Riprova" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Tentar novamente" } }
+    } },
+    "Reveal in Finder": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Im Finder anzeigen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Mostrar en Finder" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Afficher dans le Finder" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Mostra nel Finder" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Mostrar no Finder" } }
+    } },
+    "Sovereignty check…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Souveränitätsprüfung…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Comprobación de Soberanía…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Vérification de Souveraineté…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Verifica di Sovranità…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Verificação de Soberania…" } }
+    } },
+    "Stop sharing on the LAN": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Im LAN nicht mehr teilen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Dejar de compartir en la LAN" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Arrêter le partage sur le LAN" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Smetti di condividere sulla LAN" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Parar de partilhar na rede" } }
+    } },
+    "Trust check…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Vertrauensprüfung…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Comprobación de Confianza…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Vérification de Confiance…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Verifica di Affidabilità…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Verificação de Confiança…" } }
+    } },
+    "UPDATE BLOCKED": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "UPDATE BLOCKIERT" } },
+      "es": { "stringUnit": { "state": "translated", "value": "ACTUALIZACIÓN BLOQUEADA" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "MISE À JOUR BLOQUÉE" } },
+      "it": { "stringUnit": { "state": "translated", "value": "AGGIORNAMENTO BLOCCATO" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "ATUALIZAÇÃO BLOQUEADA" } }
+    } },
+    "Update": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Aktualisieren" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Actualizar" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Mettre à jour" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Aggiorna" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Atualizar" } }
+    } },
+    "Update all": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Alle aktualisieren" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Actualizar todo" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Tout mettre à jour" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Aggiorna tutto" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Atualizar tudo" } }
+    } },
+    "Updates available": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Updates verfügbar" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Actualizaciones disponibles" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Mises à jour disponibles" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Aggiornamenti disponibili" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Atualizações disponíveis" } }
+    } },
+    "Verifying signature…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Signatur wird überprüft…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Verificando firma…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Vérification de la signature…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Verifica firma…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "A verificar assinatura…" } }
+    } },
+    "YOUR PLAN": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "DEIN PLAN" } },
+      "es": { "stringUnit": { "state": "translated", "value": "TU PLAN" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "TON PLAN" } },
+      "it": { "stringUnit": { "state": "translated", "value": "IL TUO PIANO" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "O TEU PLANO" } }
+    } },
+    "Your Mac is running lean.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Dein Mac kommt mit wenig aus." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Tu Mac va ligero." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Ton Mac fonctionne sobrement." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Il tuo Mac viaggia leggero." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "O teu Mac está leve." } }
+    } },
+    "can be replaced by": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "kann ersetzt werden durch" } },
+      "es": { "stringUnit": { "state": "translated", "value": "puede ser reemplazado por" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "peut être remplacé par" } },
+      "it": { "stringUnit": { "state": "translated", "value": "può essere sostituito da" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "pode ser substituída por" } }
+    } },
+    "can become": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "kann werden" } },
+      "es": { "stringUnit": { "state": "translated", "value": "puede convertirse en" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "peut devenir" } },
+      "it": { "stringUnit": { "state": "translated", "value": "può diventare" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "pode tornar-se" } }
+    } }
   },
   "version": "1.0"
 }

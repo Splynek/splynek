@@ -513,8 +513,31 @@ final class SplynekViewModel: ObservableObject {
     /// Drives the sidebar's Apps-row badge so the user sees a count
     /// instead of a generic "NEW" pill (2026-05-08).  UpdatesView
     /// writes this whenever it finishes a sweep — see
-    /// `Views/UpdatesView.swift::checkAll`.
+    /// `Views/UpdatesView.swift::checkAll` — and `warmUpdateCount`
+    /// below writes it once after launch so the badge is correct
+    /// even when the user never opens the Updates tab.
     @Published var availableUpdateCount: Int = 0
+
+    /// Run a full Updates sweep in the background and write the
+    /// resulting count to `availableUpdateCount`.  Called by the app
+    /// delegate ~3 s after launch (after `restoreSession`) so the
+    /// boot path stays fast but the sidebar badge becomes accurate
+    /// before the user has any reason to look at it.
+    ///
+    /// Idempotent: cheap to call multiple times — each invocation
+    /// hits the publishers' upstream feeds in parallel and writes a
+    /// fresh count.  No persistence (the count is recomputed each
+    /// run), so out-of-date data can't be served stale.
+    func warmUpdateCount() {
+        Task.detached(priority: .background) { [weak self] in
+            let installed = SovereigntyScanner.enumerateApplications()
+            let rows = await UpdateSweep.run(installedApps: installed)
+            let n = UpdateSweep.actionableCount(rows)
+            await MainActor.run { [weak self] in
+                self?.availableUpdateCount = n
+            }
+        }
+    }
 
     /// Toggle a completed file's fleet-sharing status. Does NOT
     /// delete the file or remove the history entry — just changes

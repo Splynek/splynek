@@ -68,7 +68,7 @@ enum Probe {
 
         var head = URLRequest(url: url)
         head.httpMethod = "HEAD"
-        head.setValue("Splynek/0.1 (macOS)", forHTTPHeaderField: "User-Agent")
+        head.setValue("Splynek/\(SplynekVersion.current) (macOS)", forHTTPHeaderField: "User-Agent")
         Self.applyAuth(from: url, to: &head, extras: extraHeaders)
         if let (_, headResp) = try? await session.data(for: head),
            let http = headResp as? HTTPURLResponse,
@@ -89,7 +89,7 @@ enum Probe {
         var ranged = URLRequest(url: url)
         ranged.httpMethod = "GET"
         ranged.setValue("bytes=0-0", forHTTPHeaderField: "Range")
-        ranged.setValue("Splynek/0.1 (macOS)", forHTTPHeaderField: "User-Agent")
+        ranged.setValue("Splynek/\(SplynekVersion.current) (macOS)", forHTTPHeaderField: "User-Agent")
         Self.applyAuth(from: url, to: &ranged, extras: extraHeaders)
         let (_, resp) = try await session.data(for: ranged)
         guard let http = resp as? HTTPURLResponse else {

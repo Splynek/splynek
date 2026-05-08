@@ -25,7 +25,11 @@ public enum UpdateSourceResolver {
     /// app's Info.plist is read at the path the
     /// SovereigntyScanner/InstalledAppRegistry recorded; consult
     /// `wellKnownSources` second.
-    @MainActor
+    ///
+    /// 2026-05-08: dropped `@MainActor` — this method is pure
+    /// synchronous filesystem I/O with no UI access, and the
+    /// launch-time warm-up needs to call it from a detached
+    /// background Task to keep the boot path fast.
     public static func resolve(
         bundleID: String,
         bundleURL: URL,
@@ -52,7 +56,6 @@ public enum UpdateSourceResolver {
     /// Read the app's Info.plist from `<bundleURL>/Contents/Info.plist`.
     /// Returns nil on read failure (sandbox restriction, malformed
     /// plist, etc.) — caller treats nil as "no Sparkle feed found".
-    @MainActor
     static func readInfoPlist(at bundleURL: URL) -> [String: Any]? {
         let plistURL = bundleURL.appendingPathComponent("Contents/Info.plist")
         guard let data = try? Data(contentsOf: plistURL),

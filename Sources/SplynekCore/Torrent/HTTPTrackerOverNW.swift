@@ -35,7 +35,7 @@ enum HTTPTrackerOverNW {
         let req =
             "GET \(path) HTTP/1.1\r\n" +
             "Host: \(hostHeader)\r\n" +
-            "User-Agent: Splynek/0.1 (macOS)\r\n" +
+            "User-Agent: Splynek/\(SplynekVersion.current) (macOS)\r\n" +
             "Accept: */*\r\n" +
             "Accept-Encoding: identity\r\n" +
             "Connection: close\r\n" +

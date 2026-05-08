@@ -256,7 +256,6 @@ struct UpdatesView: View {
     @MainActor
     private func checkAll(force: Bool) async {
         if !force && !resolved.isEmpty && resolved.contains(where: { $0.lastChecked.timeIntervalSinceNow > -300 }) {
-            // Fresh-enough cache; skip silent re-fetch.
             return
         }
         isResolving = true
@@ -264,150 +263,13 @@ struct UpdatesView: View {
             isResolving = false
             vm.availableUpdateCount = updatesAvailable.count
         }
+        // 2026-05-08: resolver dispatch + URL pre-flight extracted
+        // to `UpdateSweep` so the launch-time warm-up in the VM can
+        // share the same code path — no duplicated logic.
         await refreshScanner()
-        var updated = resolved
-        await withTaskGroup(of: (Int, ResolvedUpdate?).self) { group in
-            for (i, info) in updated.enumerated() {
-                switch info.updateSource {
-                case .sparkle(let feedURL):
-                    group.addTask {
-                        return (i, await Self.resolveSparkle(feedURL: feedURL))
-                    }
-                case .githubReleases(let owner, let repo):
-                    group.addTask {
-                        return (i, await Self.resolveGitHub(owner: owner, repo: repo))
-                    }
-                case .homebrew(let formula):
-                    let _ = formula
-                    continue
-                case .publisherRSS(let feedURL):
-                    group.addTask {
-                        return (i, await Self.resolvePublisherRSS(feedURL: feedURL))
-                    }
-                case .macAppStore, .unknown:
-                    continue
-                }
-            }
-            for await (i, result) in group {
-                guard let result else { continue }
-                updated[i].availableVersion = result.version
-                updated[i].availableSizeBytes = result.sizeBytes
-                updated[i].availableDownloadURL = result.downloadURL
-                updated[i].availableSHA256 = result.sha256
-                updated[i].releaseNotes = result.releaseNotes
-                updated[i].lastChecked = Date()
-            }
-        }
-        // 2026-05-08: pre-flight pass.  For every actionable update,
-        // probe the resolved download URL to filter out broken links
-        // (4xx, HTML pages, stub files) BEFORE the user clicks Update.
-        // Failures downgrade the row to a "Manual" affordance with a
-        // human-readable reason instead of letting the install
-        // pipeline burn the user's time on a fetch that won't install.
-        await withTaskGroup(of: (Int, InstallPreflight.URLPreview).self) { group in
-            for (i, info) in updated.enumerated() where info.hasUpdate {
-                guard let dl = info.availableDownloadURL else { continue }
-                let kind = Self.kindFor(downloadURL: dl)
-                group.addTask {
-                    let preview = await InstallPreflight.previewURL(dl, expectedKind: kind)
-                    return (i, preview)
-                }
-            }
-            for await (i, preview) in group {
-                switch preview.verdict {
-                case .ok:
-                    updated[i].preflight = nil
-                case .warning(let reason):
-                    updated[i].preflight = .warning(reason)
-                case .fatal(let reason):
-                    updated[i].preflight = .fatal(reason)
-                }
-            }
-        }
-        resolved = updated
-    }
-
-    /// Map a download URL's path extension to an InstallSpec.Kind so
-    /// the preflight knows what magic bytes to expect.  Falls back
-    /// to `.appArchive` (zip) for unrecognised extensions — generous
-    /// default that won't reject too aggressively.
-    nonisolated private static func kindFor(downloadURL: URL) -> InstallSpec.Kind {
-        let ext = downloadURL.pathExtension.lowercased()
-        switch ext {
-        case "dmg":          return .dmg
-        case "pkg":          return .pkg
-        case "app":          return .appBundle
-        case "zip", "tar", "gz", "tgz", "xz", "bz2":
-            return .appArchive
-        default:             return .appArchive
-        }
-    }
-
-    private struct ResolvedUpdate: Sendable {
-        let version: String
-        let downloadURL: URL?
-        let sizeBytes: Int64?
-        let sha256: String?
-        let releaseNotes: String?
-    }
-
-    nonisolated private static func resolveSparkle(feedURL: URL) async -> ResolvedUpdate? {
-        var req = URLRequest(url: feedURL)
-        req.timeoutInterval = 15
-        guard let (data, _) = try? await URLSession.shared.data(for: req),
-              let item = SparkleAppcast.parseLatest(data),
-              let version = item.shortVersion ?? item.version
-        else { return nil }
-        return ResolvedUpdate(
-            version: version,
-            downloadURL: item.enclosureURL,
-            sizeBytes: item.sizeBytes,
-            sha256: item.sha256,
-            releaseNotes: item.releaseNotesText
-        )
-    }
-
-    nonisolated private static func resolveGitHub(owner: String, repo: String) async -> ResolvedUpdate? {
-        guard let url = GitHubReleasesResolver.latestReleaseURL(owner: owner, repo: repo) else {
-            return nil
-        }
-        var req = URLRequest(url: url)
-        req.timeoutInterval = 15
-        req.setValue("Splynek/1.0 (+https://splynek.app)",
-                     forHTTPHeaderField: "User-Agent")
-        req.setValue("application/vnd.github+json",
-                     forHTTPHeaderField: "Accept")
-        guard let (data, _) = try? await URLSession.shared.data(for: req),
-              let release = GitHubReleasesResolver.parseLatest(data)
-        else { return nil }
-        var version = release.tagName
-        if version.hasPrefix("v") || version.hasPrefix("V") {
-            version.removeFirst()
-        }
-        let asset = GitHubReleasesResolver.pickAsset(release)
-        return ResolvedUpdate(
-            version: version,
-            downloadURL: asset?.browserDownloadURL,
-            sizeBytes: asset?.size,
-            sha256: nil,
-            releaseNotes: release.body
-        )
-    }
-
-    nonisolated private static func resolvePublisherRSS(feedURL: URL) async -> ResolvedUpdate? {
-        var req = URLRequest(url: feedURL)
-        req.timeoutInterval = 15
-        guard let (data, _) = try? await URLSession.shared.data(for: req),
-              let item = PublisherRSSResolver.parseLatest(data),
-              let version = item.version
-        else { return nil }
-        return ResolvedUpdate(
-            version: version,
-            downloadURL: nil,
-            sizeBytes: nil,
-            sha256: nil,
-            releaseNotes: item.title
-        )
+        let installed = scanner.apps
+        let swept = await UpdateSweep.run(installedApps: installed)
+        resolved = swept
     }
 
     @MainActor
