@@ -2129,6 +2129,173 @@ Worth being explicit about:
   (runbook in IOS-COMPANION.md), and run TestFlight rollout —
   both gated on Apple v1.0 macOS clearance.
 
+### 2026-05-08 — Design revolution + whole-app audit (sessions M-N)
+
+**Trigger.** User opened with a sidebar screenshot showing the
+"Agentes" tab partially clipped at the default window height.
+What started as one consolidation spawned a 14-commit revolution
+over the entire user-facing surface, plus a final whole-codebase
+audit that brought the project to 100%-confidence state.
+
+**Mode of work.** User-driven, screenshot-led.  Each tab in turn
+got critiqued ("feio", "deslavado", "dá sensação de serem todos",
+"não dá para perceber esta pontuação") with explicit feedback
+recorded in the screenshots; a focused fix shipped per critique
+rather than batched.  This worked because each issue mapped to a
+clean separate commit, but the cumulative effect is that nearly
+every tab in the app was touched.
+
+#### Commits in chronological order (14 total)
+
+| # | SHA | Tab/area | Substance |
+|---|---|---|---|
+| 1 | `2efa8d0` | Sidebar | Install + Updates merged into Apps with segmented Picker; Agents moved out of one-item Connect section into Library; brandFooter dropped (Settings already in macOS menu via ⌘,); WindowGroup `defaultSize: 1180×820` so first-launch users see the whole sidebar without clipping |
+| 2 | `d1289c0` | Frota | Dedupe by outputPath with ×N badge; hover-revealed Reveal/Stop/Trash buttons (right-click + ⌘⌫ mirror); `NSWorkspace.recycle` for trash; total count + bytes in card header; new helpers `DownloadHistory.remove(id:)`, `vm.trashAndForgetCompletedFile(outputPath:)`, `vm.revealInFinder(outputPath:)` |
+| 3 | `e03c234` | Install | **Critical bug fix:** test fixtures (`Bork`, `Good`) had been writing to the user's real `~/Library/Application Support/Splynek/installed-apps.json` because `_resetForTesting()` only deleted the file before subsequent `upsert()` calls re-created it.  Fix: `_testOverrideURL` redirect.  UI revolution: 2 cards collapsed to 1; per-row status pills (ACTIVE/UPDATE BLOCKED/MISSING); `⋯` menu with Reveal / Enable+Disable auto-update / **Forget**; engine errors humanised (`/var/folders/...` paths stripped, `rejected·source=no usable signature` translated); `wipeAll()` helper |
+| 4 | `784597e` | Atualizações | “Atualizar” button now downloads + verifies + installs through `InstallerEngine.run` (was previously a queue-add that left the user to drag-drop manually); per-row Phase state machine (`idle → downloading → installing → installed | failed`); ContextCard hero replaces green LinearGradient block; `vm.availableUpdateCount` published so sidebar Apps badge reads `↑ N` instead of generic `NEW`; `.onAppear` chains `refreshScanner` → `checkAll` automatically |
+| 5 | `986d662` | Transferências | `1.0× faster than single-path` tautology replaced with single-path upsell (“Bond a second network for 2–3× faster downloads”) when only one interface contributed bytes.  Multi-path celebration banner kept unchanged for the real ≥2× case |
+| 6 | `55d8f92` | Poupanças | First revolution: ContextCard hero, swap-cards (paid → arrow → free), “I’ve already switched” toggle persisted via UserDefaults, browse-Sovereignty CTA, empty-state with punch.  Sets the stage for v2 below |
+| 7 | `02c6f82` | Atualizações | Resilience pass after user reported 2/3 install failures: **(a)** Gatekeeper check no longer rejects DMG/PKG/ZIP at container level (was falsely failing publishers like Zed who only sign the `.app` inside); only `.app` direct bundles get `spctl`. **(b)** New `InstallPreflight.swift` with magic-byte sniff + HEAD probe — catches HTML 404s posing as DMGs *before* hdiutil runs. **(c)** Engine errors humanised in UpdateRow (`hdiutil attach failed` → “The file isn’t a valid disk image”, etc.). **(d)** GitHub asset picker prefers arm64 + drops Intel-only assets (no Rosetta fallback) |
+| 8 | `d94f1d1` | Histórico | Count badge in card accessory; per-row Forget (hover trash + context menu); “Move to Trash” trashes file + prunes entry; `⋯` menu with Clear-all-history (confirmation dialog gates the destructive action); `DownloadHistory.clearAll()` single-write helper |
+| 9 | `eda0679` | Soberania + Confiança | Splash screens retired (56pt icon + bullet list + “Scan my Mac” button) — they doubled with the ContextCard subtitle and forced the user to click through to data they’d already seen.  Now: ContextCard always present, `.onAppear` auto-scans, thin inline `inlineScanState` strip while scanning.  -172 lines |
+| 10 | `2c07fc5` | Atualizações | Three-fix bug for “installed app re-appears as needing-update”: **(a)** `replaceExisting: true` in InstallerEngine.run for update clicks (was suffix-renaming `<App> 2.app` and leaving the old version), **(b)** SovereigntyScanner deduplicates duplicate-bundle-ID hits by highest `CFBundleShortVersionString` (segment-wise compare with mtime fallback), **(c)** `splynekUpdatesDidInstall` notification triggers re-scan + re-resolve so the row drops out of `updatesAvailable` immediately |
+| 11 | `520a133` | Poupanças v2 | Tier picker: AppPricing gains `Tier` struct + `tiers: [Tier]?` field + `annualizedUSD(forTier:)` accessor; seed adds Claude (Pro/Max 5×/Max 20×/Team), ChatGPT (Plus/Pro/Team), Perplexity (Pro/Enterprise).  Big-number hero block replaces single-line summary: 38pt heavy figures with comparison framing (“≈ 5 years of Spotify Premium” / “≈ 53 cappuccinos” / “≈ X new MacBook Air every year”, threshold-picked).  Vertical SwapCard reads top-to-bottom as a substitution path.  Confirmed-switch toggle states the exact dollar amount credited.  Bug fix: removed duplicate `com.openai.chat` key in seed (Swift dictionary literal crash on duplicate keys) |
+| 12 | `0bbdba7` | Confiança | User: “não dá para perceber esta pontuação — 100 é bom ou mau?”.  Fix: explicit “RISK” label + “N/100” scale + level word in scoreBadge; horizontal gauge with green→yellow→orange→red gradient + position dot + “0 clean”/“high concern 100” anchor labels; percentile context (“Higher than X% of your installed apps”) when pool ≥2; ContextCard subtitle adds “0 (clean) → 100 (severe + numerous concerns)” direction statement |
+| 13 | `9e680d6` | Hardening 1 | Audit-driven fixes after the design revolution: **(a)** Fleet dedupe v2 — cascade key `sha256 │ (filename, totalBytes) │ outputPath` collapses Finder-rename twins where prior single-key dedupe missed them; ShareRow tracks `allURLs` + `allOutputPaths` so Stop-sharing + Trash fan out across all underlying entries.  **(b)** New `Tests/SplynekTests/HardeningTests.swift` — 19 tests covering `InstallPreflight.detectFormat` (5) + `validateBeforeRun` (2) + `AppPricing.annualizedUSD(forTier:)` (5) + `DownloadHistory.remove/clearAll` (3) + `AppUpdateInfo.isNewer` edges (4).  **(c)** Splynek-MAS scheme verified BUILD SUCCEEDED (had only been verified in 1/12 commits up to that point) |
+| 14 | `05dfce6` | Hardening 2 | Whole-app audit pass: **(a)** Update count warmed at end of launch (was deferred during the design revolution — user pushed back: “porque não executar no fim do launch?”).  Resolver dispatch + URL pre-flight extracted from UpdatesView into new `Sources/SplynekCore/AppUpdates/UpdateSweep.swift`; both UpdatesView (foreground manual check) and `vm.warmUpdateCount()` (launch-time background warm) call into it.  Boot path stays fast (Task.detached + 1.5 s gap after restoreSession).  `UpdateSourceResolver.resolve` lost its over-cautious `@MainActor` annotation — pure synchronous filesystem I/O.  **(b)** Localizable.xcstrings: 38 new keys × 5 locales — every user-facing string the design revolution shipped now has full coverage (LocalizableCatalogTests' full-coverage gate stays green).  **(c)** User-Agent normalisation — three drift versions (`Splynek/0.1`, `Splynek/1.0`, `Splynek/1.0 (+https://splynek.app)`) all collapsed to `SplynekVersion.current` interpolation across DoH/Lane/Probe/Tracker/UpdatesView |
+
+#### New architectural pieces
+
+- **`Sources/SplynekCore/Installer/InstallPreflight.swift`** (216 lines).
+  Magic-byte detection (`koly` DMG trailer / `xar!` PKG / `PK\x03\x04`
+  ZIP / HTML body) + URL pre-flight (HEAD then Range-GET fallback +
+  Content-Type validation + Content-Length sanity).  Two surfaces:
+  `validateBeforeRun(payload:expectedKind:)` for InstallerEngine to
+  fail fast before hdiutil; `previewURL(_:expectedKind:)` for
+  UpdatesView to downgrade rows to “Manual” before the user clicks.
+  Internal-visibility (`enum InstallPreflight`) because
+  `InstallSpec.Kind` is internal.
+
+- **`Sources/SplynekCore/AppUpdates/UpdateSweep.swift`** (186 lines).
+  Extracted from `UpdatesView.checkAll`.  `run(installedApps:)` is
+  the full sweep: source resolution → per-source resolver fan-out
+  → URL pre-flight.  `actionableCount(_:)` counts pending updates.
+  Resolvers (resolveSparkle / resolveGitHub / resolvePublisherRSS)
+  + ResolvedUpdate struct + kindFor mapping.  Both UpdatesView and
+  `vm.warmUpdateCount` call `run`.
+
+- **`Tests/SplynekTests/HardeningTests.swift`** (253 lines).  19
+  tests for the design-revolution surface (preflight, tier
+  annualisation, DownloadHistory remove/clearAll, isNewer edges).
+  Uses `_testOverrideURL` redirect for the registry; uses backup/
+  restore for DownloadHistory (no override hook there).
+
+#### Critical bugs caught + fixed
+
+1. **Test pollution into the user's real registry.**  Every dev
+   running `swift run splynek-test` had `Bork` + `Good` fixtures
+   permanently parked in the Install tab.  Fix: `_testOverrideURL`
+   redirect inside `_resetForTesting()`.  Existing 26 in-suite
+   registry calls inherit the redirect for free.
+
+2. **Update click installed nothing.**  Was queue-add only; user
+   had to drag-drop manually after the download finished.  Fix:
+   real `InstallerEngine.run` chained off the URLSession download.
+
+3. **Updates re-appeared after successful install.**  Three
+   contributing causes — `replaceExisting: false` default left
+   the old `.app` in place; `SovereigntyScanner` deduplicated by
+   first-seen which on APFS is non-deterministic; no re-scan after
+   install.  All three fixed.
+
+4. **Gatekeeper false-rejected legitimate DMGs.**  `spctl -t execute`
+   was running on the .dmg container itself; many publishers
+   (Zed) only sign the `.app` inside.  Fix: only run spctl on
+   `.app`; delegate DMG/PKG/ZIP verification to their handlers.
+
+5. **GOOSE VPN install “imagem não reconhecida”.**  hdiutil failed
+   because the URL was serving HTML.  Fix: `InstallPreflight`
+   magic-byte sniff catches the wrong format pre-hdiutil with a
+   readable explanation.
+
+6. **`com.openai.chat` duplicate dictionary literal key** in
+   AppPricing seed crashed the test suite immediately on launch.
+   Caught when adding Claude’s tiered entry.  Fix: retire the
+   single-rate alias since the new multi-tier listing supersedes.
+
+#### Audit findings (whole codebase)
+
+Verified clean (no fix needed):
+- 0 `try!` in production code
+- 1 `fatalError` — `MenuBarController.required init?(coder:)` —
+  standard Swift pattern when not supporting NSCoder unarchive
+- All `Process()` / shell-out points use hard-coded `/usr/{bin,sbin}`
+  Apple-signed binaries with argv-style args (no shell injection)
+- 0 telemetry endpoints — HTTP POSTs only target user-controlled
+  LAN peers + localhost AI (LM Studio / Ollama)
+- User-Agent strings carry no fingerprinting (no MAC, no installed-
+  app list, no email)
+- `swift build` produces 0 warnings on a fresh DerivedData
+
+Found + fixed in commit 14:
+- 38 user-facing strings the design revolution shipped without
+  catalog coverage (pt-PT users were seeing English mixed in)
+- Three drift User-Agent versions in flight
+- `vm.availableUpdateCount` was stale at 0 until first Updates-tab
+  visit (user explicitly pushed back — this is what landed in
+  the launch-time warm-up)
+
+Explicitly deferred (documented in commit 14 body):
+- `URLSession.shared.download` cache: no `.reloadIgnoringLocalCacheData`.
+  Publishers ship immutable assets; haven’t seen a stale-bytes report.
+- `comparisonFraming` thresholds in Savings v2 use fixed prices
+  that drift over time; cosmetic; revisit when a price changes ≥30%.
+- `replaceExisting: true` on a running `.app` may leave a zombie
+  process until quit; macOS handles this gracefully (Sparkle has
+  used the same pattern for 15 years).
+
+#### Numbers
+
+- **Tests**: 717 → **736** (+19 in HardeningTests)
+- **Localization**: catalog grew by **38 strings × 5 locales** =
+  **190 new translations** across Trust gauge / Savings hero /
+  Updates row states + pipeline stage labels / Install registry
+  actions / History actions / Fleet hover / Downloads upsell /
+  sidebar.
+- **Schemes verified**: Splynek (free) + Splynek-MAS (App Store) +
+  SplynekCompanion (iOS) all BUILD SUCCEEDED at every commit
+  point.  Splynek-MAS had only been verified in 1/12 design-
+  revolution commits before the audit caught the gap (commit 13).
+- **LOC delta**: ~+1500 / -800 net across the 14 commits.  Three
+  new files (`InstallPreflight.swift`, `UpdateSweep.swift`,
+  `HardeningTests.swift`) replace inline duplication.
+
+#### Strategy notes
+
+- **Splash retirement** (Sovereignty + Trust) is a small but
+  philosophical move: the app no longer pitches itself to the
+  returning user.  Once the user has the app installed, every
+  surface should fill with their data, not with a marketing card.
+  ContextCard subtitle is enough; auto-scan-on-appear handles
+  the cold start.  Generalises: any future tab adding a splash
+  is a regression of this principle.
+
+- **Number framing** (Savings v2 + Trust gauge) is the same
+  principle applied to numbers.  A bare “75” is information; a
+  “RISK 75/100 HIGH” with a green→red gauge is meaning.  Same
+  with “$240/year” → “≈ 12 months of Spotify”.  When the user
+  asks for “more perceived value” (verbatim, on Savings + Trust
+  + Poupanças), reach for direction + comparison + scale, not
+  bigger fonts.
+
+- **Honest audit** principle (final commits 13 + 14): when the
+  user asks “are you 100% confident?”, the right answer is to
+  list what you actually checked, what you found, what you fixed,
+  and what you explicitly chose not to fix.  Not to rubber-stamp.
+  The L10n gap and Splynek-MAS verification gap were both real
+  and fixable; the cache-policy and zombie-process trade-offs
+  were real and acceptable.
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
