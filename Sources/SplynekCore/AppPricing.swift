@@ -67,6 +67,35 @@ public enum AppPricing {
         }
     }
 
+    /// 2026-05-08: a single billing tier within a multi-tier app.
+    /// AI tools, design suites, and most modern subscription apps
+    /// publish two or three tiers (Pro / Max / Team).  The original
+    /// schema only carried the landing rate, which under-counted
+    /// users on higher tiers — e.g. Claude Pro is $20/mo, but Claude
+    /// Max 5× is $100/mo.  Surfacing tiers lets the Savings tab
+    /// honour the user's actual subscription cost.
+    public struct Tier: Codable, Hashable, Sendable, Identifiable {
+        public let label: String           // "Pro", "Max 5×", "Team"
+        public let approxUSD: Double
+        public let billingCycle: BillingCycle
+
+        public var id: String { label }
+
+        public init(label: String, approxUSD: Double, billingCycle: BillingCycle) {
+            self.label = label
+            self.approxUSD = approxUSD
+            self.billingCycle = billingCycle
+        }
+
+        public var annualizedUSD: Double {
+            switch billingCycle {
+            case .oneTime: return approxUSD / 5.0
+            case .monthly: return approxUSD * 12
+            case .annual:  return approxUSD
+            }
+        }
+    }
+
     public struct Pricing: Codable, Hashable, Sendable {
         public let model: Model
         /// True when there's a usable free tier (covers most
@@ -84,16 +113,25 @@ public enum AppPricing {
         /// can be verified.  Required for paid models so the
         /// Savings tab can link to it.
         public let sourceURL: URL?
+        /// Optional named tiers for multi-tier subscriptions (Claude
+        /// Pro / Max / Team, JetBrains All-Products / Per-product,
+        /// Adobe Single-app / All-Apps).  When present, the Savings
+        /// tab renders a tier picker and the user's selection drives
+        /// the annualised cost calculation.  Absent for apps with a
+        /// single canonical paid tier (1Password, Alfred Powerpack).
+        public let tiers: [Tier]?
 
         public init(model: Model, freeTier: Bool = false,
                     approxUSD: Double? = nil,
                     billingCycle: BillingCycle? = nil,
-                    sourceURL: URL? = nil) {
+                    sourceURL: URL? = nil,
+                    tiers: [Tier]? = nil) {
             self.model = model
             self.freeTier = freeTier
             self.approxUSD = approxUSD
             self.billingCycle = billingCycle
             self.sourceURL = sourceURL
+            self.tiers = tiers
         }
 
         /// Cost normalized to USD/year.  One-time purchases are
@@ -110,6 +148,17 @@ public enum AppPricing {
             case nil:      return nil
             }
         }
+
+        /// Annualised cost when a specific tier is selected.  Used
+        /// by the Savings tab when the user has picked their tier
+        /// from the segmented control.  Falls back to the legacy
+        /// `annualizedUSD` when `tier` is nil or doesn't match.
+        public func annualizedUSD(forTier tierLabel: String?) -> Double? {
+            guard let tierLabel,
+                  let tier = tiers?.first(where: { $0.label == tierLabel })
+            else { return annualizedUSD }
+            return tier.annualizedUSD
+        }
     }
 
     /// Seed dataset.  Bundle ID → pricing.  This is the starting
@@ -122,6 +171,51 @@ public enum AppPricing {
     /// then freemium tiers.  Cost values are publisher-published
     /// monthly/annual rates rounded to whole dollars where possible.
     public static let seedPrices: [String: Pricing] = [
+        // === AI assistants (multi-tier) ===
+        // 2026-05-08: Anthropic Claude desktop has Free / Pro /
+        // Max 5× / Max 20× / Team.  Default landing tier is Pro;
+        // higher tiers (Max especially) are common with power users
+        // and were previously under-counted by Splynek's single-rate
+        // schema.  Bundle ID covers both the official desktop app
+        // and a couple of common aliases distributed by Anthropic.
+        "com.anthropic.claudefordesktop": .init(
+            model: .freemium, freeTier: true,
+            approxUSD: 20.0, billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.anthropic.com/pricing"),
+            tiers: [
+                .init(label: "Pro",      approxUSD: 20.0,  billingCycle: .monthly),
+                .init(label: "Max 5×",   approxUSD: 100.0, billingCycle: .monthly),
+                .init(label: "Max 20×",  approxUSD: 200.0, billingCycle: .monthly),
+                .init(label: "Team",     approxUSD: 30.0,  billingCycle: .monthly),
+            ]),
+        "com.anthropic.Claude": .init(
+            model: .freemium, freeTier: true,
+            approxUSD: 20.0, billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.anthropic.com/pricing"),
+            tiers: [
+                .init(label: "Pro",      approxUSD: 20.0,  billingCycle: .monthly),
+                .init(label: "Max 5×",   approxUSD: 100.0, billingCycle: .monthly),
+                .init(label: "Max 20×",  approxUSD: 200.0, billingCycle: .monthly),
+                .init(label: "Team",     approxUSD: 30.0,  billingCycle: .monthly),
+            ]),
+        "com.openai.chat": .init(
+            model: .freemium, freeTier: true,
+            approxUSD: 20.0, billingCycle: .monthly,
+            sourceURL: URL(string: "https://openai.com/chatgpt/pricing"),
+            tiers: [
+                .init(label: "Plus",   approxUSD: 20.0,  billingCycle: .monthly),
+                .init(label: "Pro",    approxUSD: 200.0, billingCycle: .monthly),
+                .init(label: "Team",   approxUSD: 25.0,  billingCycle: .monthly),
+            ]),
+        "ai.perplexity.mac": .init(
+            model: .freemium, freeTier: true,
+            approxUSD: 20.0, billingCycle: .monthly,
+            sourceURL: URL(string: "https://www.perplexity.ai/pro"),
+            tiers: [
+                .init(label: "Pro",        approxUSD: 20.0,  billingCycle: .monthly),
+                .init(label: "Enterprise", approxUSD: 40.0,  billingCycle: .monthly),
+            ]),
+
         // === Adobe Creative Cloud (subscription) ===
         // All Adobe macOS apps share the same CC subscription model.
         // We cite the "All Apps" plan as the typical landing rate.
@@ -617,16 +711,14 @@ public enum AppPricing {
             sourceURL: URL(string: "https://www.expressvpn.com/order")),
 
         // === AI / ML ===
-        "com.openai.chat": .init(
-            model: .freemium, freeTier: true, approxUSD: 20.0,
-            billingCycle: .monthly,
-            sourceURL: URL(string: "https://openai.com/chatgpt/pricing/")),
-        "com.anthropic.claudefordesktop": .init(
-            model: .freemium, freeTier: true, approxUSD: 20.0,
-            billingCycle: .monthly,
-            sourceURL: URL(string: "https://claude.com/pricing")),
+        // 2026-05-08: ChatGPT + Claude desktop moved to the top of
+        // the file as multi-tier listings.  The single-rate aliases
+        // that lived here have been retired so the dictionary stays
+        // single-source-of-truth (and avoids the runtime crash from
+        // duplicate keys in a Swift dictionary literal).
 
         // === Games / streaming ===
+
         "com.valvesoftware.steam": .init(
             // Free client, individual games priced separately
             model: .free, freeTier: true,
