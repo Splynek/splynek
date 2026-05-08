@@ -1242,10 +1242,27 @@ private struct JobCard: View {
         }
     }
 
-    /// The "screenshot moment": multi-path vs single-path speedup,
-    /// breakdown of bytes per interface.
+    /// The "screenshot moment" when bonding actually happened.  When
+    /// only a single interface was used (typical: Wi-Fi only on a
+    /// laptop), the "1.0× faster than single-path" line was a tautology
+    /// and read as if the app was useless.  2026-05-08: split into two
+    /// banners — celebration when bonding earned its keep, soft
+    /// upsell when it didn't.
     @ViewBuilder
     private func reportBanner(_ r: DownloadReport) -> some View {
+        let pathCount = r.bytesPerInterface.values.filter { $0 > 0 }.count
+        let isSinglePath = pathCount <= 1 || r.speedupFactor < 1.05
+        if isSinglePath {
+            singlePathUpsellBanner(r)
+        } else {
+            multiPathCelebrationBanner(r)
+        }
+    }
+
+    /// Multi-path success: real speedup occurred — show the headline
+    /// number + per-interface contribution breakdown.
+    @ViewBuilder
+    private func multiPathCelebrationBanner(_ r: DownloadReport) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
                 Image(systemName: "bolt.fill")
@@ -1283,6 +1300,40 @@ private struct JobCard: View {
         .overlay(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .strokeBorder(Color.yellow.opacity(0.35), lineWidth: 0.5)
+        )
+    }
+
+    /// Single-path: we ran on one interface, so there's no "speedup"
+    /// to celebrate.  Don't show a 1.0× headline (tautology) — show
+    /// what the app *could* do instead.  This is the highest-conversion
+    /// surface for "add a second interface" because the user is
+    /// looking right at a finished download and can imagine it being
+    /// faster.
+    @ViewBuilder
+    private func singlePathUpsellBanner(_ r: DownloadReport) -> some View {
+        let pathName = r.bytesPerInterface.first(where: { $0.value > 0 })?.key
+            ?? r.bytesPerInterface.keys.first ?? "this interface"
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 8) {
+                Image(systemName: "bolt.badge.automatic")
+                    .foregroundStyle(.tint)
+                Text("Bond a second network for 2–3× faster downloads")
+                    .font(.headline)
+                Spacer()
+            }
+            Text("This download used **\(pathName)** alone. Splynek can stripe simultaneous byte-range requests across every interface you have — Ethernet + Wi-Fi, USB-C tether, iPhone hotspot, Tailscale. Add another and the next download finishes in a fraction of the time.")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(Color.accentColor.opacity(0.08))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .strokeBorder(Color.accentColor.opacity(0.30), lineWidth: 0.5)
         )
     }
 
