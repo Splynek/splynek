@@ -80,15 +80,41 @@ enum UpdateSweep {
             }
         }
 
+        // 2026-05-08: hard-reject unsupported archive formats BEFORE
+        // a network round-trip.  Splynek's installer pipeline only
+        // handles .dmg / .pkg / .zip / .app; if a Sparkle appcast or
+        // GitHub Releases entry advertises a `.tar.gz` / `.tgz` /
+        // `.xz` / `.bz2` enclosure (e.g. GOOSE VPN), the user would
+        // hit a downstream "imagem não reconhecida" or "couldn't
+        // unzip" error.  Mark fatal upfront with a clear message so
+        // the row downgrades to "Open page" without the user wasting
+        // a download.
+        let unsupportedExtensions: Set<String> = ["tar", "tgz", "xz", "bz2"]
+        for (i, info) in rows.enumerated() where info.hasUpdate {
+            guard let dl = info.availableDownloadURL else { continue }
+            let lastComp = dl.lastPathComponent.lowercased()
+            let ext = dl.pathExtension.lowercased()
+            let isTarGz = lastComp.hasSuffix(".tar.gz")
+            if isTarGz || unsupportedExtensions.contains(ext) || ext == "gz" {
+                rows[i].preflight = .fatal(
+                    "Splynek doesn't support this archive format yet. Update manually from the publisher's site."
+                )
+            }
+        }
+
         // URL pre-flight per actionable update (HEAD probe).  When
         // `.fatal`, the row gets a manual-only affordance in the UI.
+        // Skipped for rows already marked fatal above.
         await withTaskGroup(of: (Int, InstallPreflight.URLPreview).self) { group in
             for (i, info) in rows.enumerated() where info.hasUpdate {
                 guard let dl = info.availableDownloadURL else { continue }
+                if case .fatal = info.preflight { continue }
                 let kind = kindFor(downloadURL: dl)
                 group.addTask { (i, await InstallPreflight.previewURL(dl, expectedKind: kind)) }
             }
             for await (i, preview) in group {
+                // Don't downgrade an already-fatal verdict to warning.
+                if case .fatal = rows[i].preflight { continue }
                 switch preview.verdict {
                 case .ok:
                     rows[i].preflight = nil

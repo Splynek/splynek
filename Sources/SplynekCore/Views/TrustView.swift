@@ -62,9 +62,15 @@ struct TrustView: View {
                 // retired — see SovereigntyView for the same change.
                 // Auto-scan on appear means scan results appear
                 // directly without a click on the splash button.
+                // 2026-05-08: subtitle reverted to the catalog-
+                // translated short version.  The scale-direction
+                // info that briefly lived here ("0 (clean) → 100
+                // (severe + numerous concerns)") is redundant with
+                // the per-row gauge labels below, which carry it
+                // visually + textually right next to every score.
                 ContextCard(
                     systemImage: "checkmark.seal",
-                    subtitle: "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Each app's risk score runs **0 (clean) → 100 (severe + numerous concerns)**, with a level word and gauge for quick reading. Every claim cites its primary source. Everything stays local.",
+                    subtitle: "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Every claim cites its primary source. Everything stays local.",
                     tint: .orange
                 )
                 .padding(.horizontal, 16)
@@ -641,36 +647,32 @@ struct TrustView: View {
 
     // MARK: - Visual atoms
 
-    /// 2026-05-08: badge rebuilt for legibility.  The prior layout
-    /// showed a bare `75` over `ALTA` — ambiguous ("75 of what?",
-    /// "is high good or bad?").  Now: explicit `RISK` framing word
-    /// on top, the number rendered as `N/100` so the scale is
-    /// self-evident, and the level word in plain language.  A
-    /// horizontal gauge with green→red gradient + position dot
-    /// renders below the badge in the row body so the user can read
-    /// the direction at a glance even without the explanatory copy
-    /// in the ContextCard.
+    /// 2026-05-08 v2: badge rebuilt to merge "risk + level" into a
+    /// single grammatically-correct phrase.  Was three lines (RISK
+    /// / 75/100 / HIGH) which read awkward in pt-PT ("RISCO 75/100
+    /// ALTA" — noun-adjective gender mismatch since "risco" is
+    /// masculine and "alta" is feminine).  Now two lines: the
+    /// 22pt number with `/100` scale, then a single compound
+    /// `Risk: <Level>` localised key ("Low risk", "Moderate risk",
+    /// "High risk", "Severe risk") which catalogues into a noun
+    /// phrase per locale ("Risco alto", "Hohes Risiko", etc.).
     @ViewBuilder
     private func scoreBadge(_ score: TrustScorer.Score) -> some View {
         let color = scoreColor(score)
-        VStack(alignment: .trailing, spacing: 1) {
-            Text("RISK")
-                .font(.system(size: 9, weight: .bold))
-                .tracking(0.8)
-                .foregroundStyle(.secondary)
+        VStack(alignment: .trailing, spacing: 2) {
             HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Text("\(score.value)")
-                    .font(.system(size: 22, weight: .heavy, design: .rounded))
+                    .font(.system(size: 24, weight: .heavy, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(color)
                     .contentTransition(.numericText())
                 Text("/100")
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundStyle(.secondary)
             }
-            Text(levelLabel(score.level))
-                .font(.system(size: 9, weight: .semibold))
-                .tracking(0.4)
+            Text(riskLevelLabel(score.level))
+                .font(.system(size: 10, weight: .bold))
+                .tracking(0.3)
                 .textCase(.uppercase)
                 .foregroundStyle(color)
         }
@@ -727,8 +729,16 @@ struct TrustView: View {
                         )
                         .shadow(color: scoreColor(score).opacity(0.4),
                                 radius: 3, y: 1)
+                        // 2026-05-08 fix: was `y: 3` which placed the
+                        // dot above the bar (bar centre is at
+                        // geo.size.height / 2 = 6 — the GeometryReader's
+                        // ZStack vertical default is .center, and the
+                        // 6pt-tall bar sits at y=3–9, centre y=6).
+                        // Use the geometry's centre so the dot stays
+                        // perfectly aligned regardless of any future
+                        // height tweaks.
                         .position(x: max(6, min(dotX, geo.size.width - 6)),
-                                  y: 3)
+                                  y: geo.size.height / 2)
                 }
             }
             .frame(height: 12)
@@ -770,6 +780,20 @@ struct TrustView: View {
         }
     }
 
+    /// 2026-05-08: compound noun-phrase key for the score-badge label.
+    /// Returns "Low risk" / "Moderate risk" / "High risk" / "Severe
+    /// risk" — each catalogued as a single phrase per locale so the
+    /// noun-adjective agreement falls out naturally (pt-PT "Risco
+    /// alto" instead of the broken "RISCO + High → Alta" composition).
+    private func riskLevelLabel(_ level: TrustScorer.Level) -> LocalizedStringKey {
+        switch level {
+        case .low:       return "Low risk"
+        case .moderate:  return "Moderate risk"
+        case .high:      return "High risk"
+        case .severe:    return "Severe risk"
+        }
+    }
+
     /// v1.5.6+: combined-utterance row header for VoiceOver.  Reads
     /// as one sentence, e.g. "TikTok version 28.4.0, trust score 85
     /// out of 100, severe risk, 7 concerns".  Matches the visual
@@ -799,7 +823,7 @@ struct TrustView: View {
         let color = severityColor(c.severity)
         HStack(spacing: 4) {
             axisIcon(c.axis).font(.caption2)
-            Text(concernShortLabel(c))
+            Text(LocalizedStringKey(concernShortLabel(c)))
                 .font(.caption.weight(.medium))
         }
         .padding(.horizontal, 8).padding(.vertical, 3)

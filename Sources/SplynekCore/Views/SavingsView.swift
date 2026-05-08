@@ -441,6 +441,13 @@ private struct SwapCard: View {
                 tierPicker(tiers: tiers)
             }
             if let alt = row.freeAlternatives.first {
+                // 2026-05-08 visual: thin separator between the paid
+                // block (with optional tier picker) and the
+                // alternative block.  The "↓ pode ser substituída por"
+                // arrow alone wasn't enough visual punctuation; the
+                // hairline divider makes the substitution feel like
+                // a real boundary, not a shared list.
+                Divider().opacity(0.4)
                 substitutionArrow
                 freeBlock(alt: alt)
                 if let extra = row.freeAlternatives.dropFirst().first {

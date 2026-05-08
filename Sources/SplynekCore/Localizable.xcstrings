@@ -22960,6 +22960,209 @@
       "fr": { "stringUnit": { "state": "translated", "value": "peut devenir" } },
       "it": { "stringUnit": { "state": "translated", "value": "può diventare" } },
       "pt-PT": { "stringUnit": { "state": "translated", "value": "pode tornar-se" } }
+    } },
+    "Low risk": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Geringes Risiko" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Riesgo bajo" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Risque faible" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Rischio basso" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Risco baixo" } }
+    } },
+    "Moderate risk": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Moderates Risiko" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Riesgo moderado" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Risque modéré" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Rischio moderato" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Risco moderado" } }
+    } },
+    "High risk": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Hohes Risiko" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Riesgo alto" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Risque élevé" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Rischio alto" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Risco alto" } }
+    } },
+    "Severe risk": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Kritisches Risiko" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Riesgo severo" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Risque sévère" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Rischio grave" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Risco severo" } }
+    } },
+    "Tracks across apps": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "App-übergreifendes Tracking" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Rastrea entre apps" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Suivi inter-apps" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Tracciamento tra app" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Rastreia entre apps" } }
+    } },
+    "Linked data": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Verknüpfte Daten" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Datos vinculados" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Données liées" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Dati collegati" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Dados ligados" } }
+    } },
+    "Unlinked data": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Nicht verknüpfte Daten" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Datos no vinculados" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Données non liées" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Dati non collegati" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Dados não ligados" } }
+    } },
+    "GDPR fine": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "DSGVO-Bußgeld" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Multa RGPD" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Amende RGPD" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Multa GDPR" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Multa RGPD" } }
+    } },
+    "FTC action": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "FTC-Verfahren" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Acción de la FTC" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Action FTC" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Azione FTC" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Ação da FTC" } }
+    } },
+    "Regulator fine": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Regulator-Bußgeld" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Multa regulatoria" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Amende réglementaire" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Multa del regolatore" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Multa regulatória" } }
+    } },
+    "Court ruling": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Gerichtsurteil" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Sentencia" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Décision de justice" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Sentenza" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Decisão judicial" } }
+    } },
+    "Sanctioned": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Sanktioniert" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Sancionado" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Sous sanction" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Sanzionato" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Sancionado" } }
+    } },
+    "Known CVE": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Bekannte CVE" } },
+      "es": { "stringUnit": { "state": "translated", "value": "CVE conocida" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "CVE connue" } },
+      "it": { "stringUnit": { "state": "translated", "value": "CVE nota" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "CVE conhecida" } }
+    } },
+    "Security advisory": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Sicherheitswarnung" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Aviso de seguridad" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Avis de sécurité" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Avviso di sicurezza" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Aviso de segurança" } }
+    } },
+    "Confirmed breach": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Bestätigte Datenpanne" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Brecha confirmada" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Fuite confirmée" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Violazione confermata" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Violação confirmada" } }
+    } },
+    "Ad-supported": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Werbefinanziert" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Financiada por anuncios" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Financée par la publicité" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Sostenuta da pubblicità" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Suportada por publicidade" } }
+    } },
+    "Default-on telemetry": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Standardmäßige Telemetrie" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Telemetría activa por defecto" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Télémétrie active par défaut" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Telemetria attiva di default" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Telemetria ativa por omissão" } }
+    } },
+    "ToS data-sharing": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "AGB-Datenweitergabe" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Compartición de datos en Términos" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Partage de données CGU" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Condivisione dati nei ToS" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Partilha de dados nos T&C" } }
+    } },
+    "/year": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "/Jahr" } },
+      "es": { "stringUnit": { "state": "translated", "value": "/año" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "/an" } },
+      "it": { "stringUnit": { "state": "translated", "value": "/anno" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "/ano" } }
+    } },
+    "per year": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "pro Jahr" } },
+      "es": { "stringUnit": { "state": "translated", "value": "por año" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "par an" } },
+      "it": { "stringUnit": { "state": "translated", "value": "all’anno" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "por ano" } }
+    } },
+    "Paid apps · free alternatives": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Bezahlte Apps · kostenlose Alternativen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Apps de pago · alternativas gratuitas" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Apps payantes · alternatives gratuites" } },
+      "it": { "stringUnit": { "state": "translated", "value": "App a pagamento · alternative gratuite" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Apps pagas · alternativas grátis" } }
+    } },
+    "installed paid app": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "installierte bezahlte App" } },
+      "es": { "stringUnit": { "state": "translated", "value": "app de pago instalada" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "app payante installée" } },
+      "it": { "stringUnit": { "state": "translated", "value": "app a pagamento installata" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "app paga instalada" } }
+    } },
+    "Tick “I’ve already switched” on a row to start counting.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Hak setze „Bereits gewechselt“ in einer Zeile, um zu zählen." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Marca «Ya cambié» en una fila para empezar a contar." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Coche « Déjà migré » sur une ligne pour commencer à compter." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Spunta «Ho già cambiato» su una riga per iniziare a contare." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Marca “Já troquei” numa linha para começar a contar." } }
+    } },
+    "Splynek tracks the paid apps on this Mac and lights a path to free, tested replacements. One click installs the alternative; we never touch the paid app.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Splynek verfolgt die bezahlten Apps auf diesem Mac und zeigt den Weg zu kostenlosen, getesteten Alternativen. Ein Klick installiert die Alternative; die bezahlte App bleibt unangetastet." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Splynek rastrea las apps de pago en este Mac e ilumina el camino hacia alternativas gratuitas y probadas. Un clic instala la alternativa; nunca tocamos la app de pago." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Splynek suit les apps payantes de ce Mac et ouvre une voie vers des alternatives gratuites et testées. Un clic installe l’alternative ; nous ne touchons jamais à l’app payante." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Splynek tiene traccia delle app a pagamento su questo Mac e indica un percorso verso alternative gratuite e testate. Un clic installa l’alternativa; l’app a pagamento non viene mai toccata." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "O Splynek acompanha as apps pagas neste Mac e mostra um caminho para alternativas grátis e testadas. Um clique instala a alternativa; nunca tocamos na app paga." } }
+    } },
+    "Updates download via Splynek’s bonded multi-interface fetch and verify with an Ed25519 receipt before installing. Click Update on a row to start.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Updates werden über Splyneks gebündelten Multi-Interface-Download geladen und vor der Installation mit einer Ed25519-Quittung verifiziert. Klicke in einer Zeile auf Aktualisieren, um zu starten." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Las actualizaciones se descargan mediante la descarga multi-interfaz combinada de Splynek y se verifican con un recibo Ed25519 antes de instalar. Haz clic en Actualizar en una fila para empezar." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Les mises à jour se téléchargent via le fetch multi-interfaces combiné de Splynek et sont vérifiées par un reçu Ed25519 avant l’installation. Clique sur Mettre à jour sur une ligne pour commencer." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Gli aggiornamenti si scaricano tramite il fetch multi-interfaccia bonded di Splynek e vengono verificati con una ricevuta Ed25519 prima dell’installazione. Clicca su Aggiorna su una riga per iniziare." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "As atualizações descarregam via fetch multi-interface bonded do Splynek e são verificadas com um recibo Ed25519 antes de instalar. Clica em Atualizar numa linha para começar." } }
+    } },
+    "Splynek found update sources for these apps but hasn't fetched their latest versions yet.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Splynek hat Update-Quellen für diese Apps gefunden, aber die neuesten Versionen noch nicht abgerufen." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Splynek encontró fuentes de actualización para estas apps pero aún no ha obtenido las últimas versiones." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Splynek a trouvé des sources de mise à jour pour ces apps mais n’a pas encore récupéré les dernières versions." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Splynek ha trovato fonti di aggiornamento per queste app ma non ha ancora recuperato le versioni più recenti." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "O Splynek encontrou fontes de atualização para estas apps mas ainda não obteve as versões mais recentes." } }
+    } },
+    "Checking…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Wird geprüft…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Comprobando…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Vérification…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Verifica in corso…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "A verificar…" } }
+    } },
+    "Splynek doesn't support this archive format yet. Update manually from the publisher's site.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Splynek unterstützt dieses Archivformat noch nicht. Aktualisiere manuell auf der Website des Herausgebers." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Splynek aún no admite este formato de archivo. Actualiza manualmente desde el sitio del editor." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Splynek ne prend pas encore en charge ce format d’archive. Mets à jour manuellement depuis le site de l’éditeur." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Splynek non supporta ancora questo formato di archivio. Aggiorna manualmente dal sito del produttore." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "O Splynek ainda não suporta este formato de arquivo. Atualiza manualmente no site do publicador." } }
+    } },
+    "Manual": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Manuell" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Manual" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Manuelle" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Manuale" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Manual" } }
     } }
   },
   "version": "1.0"
