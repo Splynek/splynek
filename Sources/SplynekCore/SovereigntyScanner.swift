@@ -48,6 +48,23 @@ final class SovereigntyScanner: ObservableObject {
         let name: String        // display name (as Finder shows it)
         let bundleURL: URL      // /Applications/Foo.app, ~/Applications/Foo.app, …
         let version: String?    // CFBundleShortVersionString
+        /// 2026-05-08: LSApplicationCategoryType from Info.plist.
+        /// Drives the categorical-fallback chain in
+        /// `SovereigntyCatalog.alternatives(for:installedApp:)` —
+        /// when a specific entry doesn't exist, we route to the
+        /// category's free-software champions (LibreOffice for
+        /// .productivity, GIMP for .graphics-design, etc.).  Lets
+        /// us cover the long tail of installed apps without
+        /// hand-curating every bundleID.  Empty for apps whose
+        /// Info.plist omits the key (rare on modern apps).
+        let lsCategory: String?
+
+        public init(id: String, name: String, bundleURL: URL,
+                    version: String?, lsCategory: String? = nil) {
+            self.id = id; self.name = name
+            self.bundleURL = bundleURL; self.version = version
+            self.lsCategory = lsCategory
+        }
     }
 
     @Published private(set) var apps: [InstalledApp] = []
@@ -133,9 +150,11 @@ final class SovereigntyScanner: ObservableObject {
                     ?? (bundle.infoDictionary?["CFBundleName"] as? String)
                     ?? url.deletingPathExtension().lastPathComponent
                 let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String
+                let category = bundle.infoDictionary?["LSApplicationCategoryType"] as? String
 
                 let candidate = InstalledApp(
-                    id: bid, name: name, bundleURL: url, version: version
+                    id: bid, name: name, bundleURL: url,
+                    version: version, lsCategory: category
                 )
                 if let existing = bestByBID[bid] {
                     if Self.isCandidateBetter(candidate, than: existing) {

@@ -243,6 +243,28 @@ struct SovereigntyView: View {
                     if matchedRows.isEmpty && !scanner.isScanning {
                         noMatchesFooter
                     }
+                    // 2026-05-08: categorical fallback — apps not in
+                    // the hand-curated catalog but whose
+                    // LSApplicationCategoryType matches a known
+                    // free-software champion category (productivity
+                    // → LibreOffice, graphics-design → GIMP, etc.).
+                    // Closes the long-tail coverage gap without
+                    // hand-curating every bundleID.  Lives in
+                    // `SovereigntyCategoryChampions.swift`.
+                    if !categoricalRows.isEmpty {
+                        categoricalFallbackSection
+                            .padding(.top, 8)
+                    }
+                    // 2026-05-08: "we don't know yet" graceful state.
+                    // Apps with no specific entry AND no category
+                    // match get listed with a Contribute CTA so the
+                    // gap is visible AND actionable.  Hidden behind
+                    // a DisclosureGroup so it doesn't overwhelm the
+                    // primary list.
+                    if !unknownApps.isEmpty {
+                        unknownAppsSection
+                            .padding(.top, 8)
+                    }
                     // v1.4: AI fallback is Pro-only.  The implementation
                     // lives in splynek-pro; the free build's
                     // ProStubs.sovereigntyAlternatives() throws
@@ -260,6 +282,225 @@ struct SovereigntyView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+    }
+
+    // MARK: - Categorical fallback (#1 + #8 from the 2026-05-08 strategy)
+
+    /// One row in the categorical-fallback section.  Carries the
+    /// installed app + the champions resolved from its
+    /// LSApplicationCategoryType.  Distinct from `Row` (which carries
+    /// a real `Entry` from the curated catalog) so the UI can clearly
+    /// label these as "based on category" rather than "specific match".
+    struct CategoricalRow: Identifiable {
+        let app: SovereigntyScanner.InstalledApp
+        let champions: [SovereigntyCatalog.Alternative]
+        var id: String { app.id }
+    }
+
+    /// Apps with no specific catalog entry but whose
+    /// LSApplicationCategoryType maps to a known champions set.
+    /// Filtered through the same origin filter as `matchedRows` so
+    /// e.g. "European only" hides champions whose origin doesn't
+    /// match.
+    private var categoricalRows: [CategoricalRow] {
+        scanner.apps.compactMap { app -> CategoricalRow? in
+            // Skip apps that already have a specific entry — they're
+            // covered by `matchedRows`.
+            guard SovereigntyCatalog.alternatives(for: app.id) == nil else {
+                return nil
+            }
+            let raw = SovereigntyCategoryChampions.championsForCategory(app.lsCategory)
+            let filtered = raw.filter(matchesFilter)
+            guard !filtered.isEmpty else { return nil }
+            return CategoricalRow(app: app, champions: filtered)
+        }
+    }
+
+    /// Apps with no specific entry AND no category fallback.  These
+    /// are the genuine gaps the contribute flow is for.
+    private var unknownApps: [SovereigntyScanner.InstalledApp] {
+        scanner.apps.filter { app in
+            guard SovereigntyCatalog.alternatives(for: app.id) == nil else {
+                return false
+            }
+            return SovereigntyCategoryChampions
+                .championsForCategory(app.lsCategory).isEmpty
+        }
+    }
+
+    @ViewBuilder
+    private var categoricalFallbackSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "square.grid.2x2")
+                    .foregroundStyle(.tint)
+                Text("Free champions, by category")
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Text("\(categoricalRows.count)")
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+            Text("Suggested matches based on the app's macOS category. We don't have a specific catalog entry for these — these are the free / open-source champions Splynek recommends for the category.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            ForEach(categoricalRows) { row in
+                categoricalRowView(row)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func categoricalRowView(_ row: CategoricalRow) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: "app.dashed")
+                    .foregroundStyle(.secondary)
+                Text(row.app.name)
+                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                if let v = row.app.version {
+                    Text("v\(v)")
+                        .font(.caption2.monospaced())
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                if let category = row.app.lsCategory?.replacingOccurrences(
+                    of: "public.app-category.", with: ""
+                ) {
+                    Text(category)
+                        .font(.caption2.weight(.medium))
+                        .padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(Capsule().fill(Color.accentColor.opacity(0.15)))
+                        .foregroundStyle(.tint)
+                }
+            }
+            VStack(spacing: 6) {
+                ForEach(row.champions.prefix(3)) { alt in
+                    alternativeRow(alt)
+                }
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.primary.opacity(0.03))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .strokeBorder(Color.accentColor.opacity(0.15), lineWidth: 0.5)
+        )
+    }
+
+    @State private var unknownAppsExpanded = false
+
+    @ViewBuilder
+    private var unknownAppsSection: some View {
+        DisclosureGroup(isExpanded: $unknownAppsExpanded) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("These apps aren't in our catalog yet AND don't declare a category we cover. The fastest way to get coverage: open a one-click GitHub issue with the app's metadata pre-filled.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                ForEach(unknownApps.prefix(50)) { app in
+                    unknownAppRow(app)
+                }
+                if unknownApps.count > 50 {
+                    Text("…and \(unknownApps.count - 50) more.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.top, 10)
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "questionmark.circle")
+                    .foregroundStyle(.orange)
+                Text("Apps we don't know yet")
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Text("\(unknownApps.count)")
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 6).padding(.vertical, 1)
+                    .background(Capsule().fill(Color.orange.opacity(0.18)))
+                    .foregroundStyle(.orange)
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.orange.opacity(0.04))
+        )
+    }
+
+    @ViewBuilder
+    private func unknownAppRow(_ app: SovereigntyScanner.InstalledApp) -> some View {
+        HStack(spacing: 8) {
+            let nsIcon = NSWorkspace.shared.icon(forFile: app.bundleURL.path)
+            Image(nsImage: nsIcon)
+                .resizable()
+                .frame(width: 20, height: 20)
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+            VStack(alignment: .leading, spacing: 1) {
+                Text(app.name)
+                    .font(.callout.weight(.medium))
+                Text(app.id)
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1).truncationMode(.middle)
+            }
+            Spacer()
+            Link(destination: contributeURL(for: app)) {
+                Label("Contribute", systemImage: "arrow.up.right.square")
+                    .font(.caption)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .help("Open a GitHub issue with this app's metadata pre-filled. Helps the next Splynek user too.")
+        }
+        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .fill(Color.primary.opacity(0.03))
+        )
+    }
+
+    /// Builds a GitHub-issue URL pre-filled with the app's metadata
+    /// so a contributor can open + edit + submit in one click.  Falls
+    /// back to a generic "/issues/new" when URL encoding fails (very
+    /// unusual — only if the bundleID has invalid UTF-8).
+    private func contributeURL(for app: SovereigntyScanner.InstalledApp) -> URL {
+        let title = "Catalog entry: \(app.id)"
+        let body = """
+        **App**: \(app.name)
+        **Bundle ID**: `\(app.id)`
+        **Version**: \(app.version ?? "unknown")
+        **Category**: \(app.lsCategory ?? "(not declared)")
+        **Homepage**: <add publisher URL>
+
+        Splynek doesn't have a catalog entry for this app yet. Adding to:
+
+        - [ ] Sovereignty (country of origin + free / open-source alternatives)
+        - [ ] Trust (privacy + regulatory concerns from public records)
+        - [ ] Savings (pricing tier breakdown if paid)
+
+        ### Proposed alternatives
+
+        <list here>
+
+        ---
+
+        Generated by Splynek's "Contribute this app" flow.
+        """
+        var components = URLComponents(string: "https://github.com/Splynek/splynek/issues/new")!
+        components.queryItems = [
+            URLQueryItem(name: "title", value: title),
+            URLQueryItem(name: "body", value: body),
+            URLQueryItem(name: "labels", value: "catalog,sovereignty"),
+        ]
+        return components.url ?? URL(string: "https://github.com/Splynek/splynek/issues/new")!
     }
 
     /// v1.3 uncataloged-apps disclosure.  Apps that aren't in the
