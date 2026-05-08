@@ -29,6 +29,13 @@ struct SavingsView: View {
     @ObservedObject var vm: SplynekViewModel
     @StateObject private var scanner = SovereigntyScanner()
 
+    /// Bundle IDs the user has confirmed they already switched away
+    /// from.  Persisted to UserDefaults; drives the cumulative
+    /// savings counter at the top.
+    @State private var confirmedSwitches: Set<String> = Set(
+        UserDefaults.standard.stringArray(forKey: "savingsConfirmedSwitches") ?? []
+    )
+
     init(vm: SplynekViewModel) { self.vm = vm }
 
     private var summary: SavingsSummary {
@@ -37,14 +44,24 @@ struct SavingsView: View {
     private var rows: [SavingsRow] {
         SavingsRow.compute(installedApps: scanner.apps)
     }
+    /// Cumulative recovered annual spend across confirmed switches.
+    private var recoveredAnnualUSD: Double {
+        rows
+            .filter { confirmedSwitches.contains($0.bundleID) }
+            .compactMap { $0.pricing.annualizedUSD }
+            .reduce(0, +)
+    }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                heroSection
+            VStack(alignment: .leading, spacing: 16) {
+                heroCard
+                summaryStrip
                 if !rows.isEmpty {
-                    breakdownSection
                     paidAppsSection
+                    catalogCallout
+                } else {
+                    emptyState
                 }
             }
             .padding(20)
@@ -68,100 +85,141 @@ struct SavingsView: View {
     // MARK: Hero
 
     @ViewBuilder
-    private var heroSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Your Mac costs ~\(summary.formattedAnnualUSD)/year")
-                .font(.system(.title, design: .rounded, weight: .semibold))
-                .foregroundStyle(.primary)
-            if summary.replaceableAnnualUSD > 0 {
-                Text("Up to \(summary.formattedReplaceableUSD)/year is replaceable with free alternatives.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-            } else if summary.totalPaidCount == 0 {
-                if scanner.isScanning {
-                    Label("Scanning installed apps…", systemImage: "magnifyingglass")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("No installed paid apps detected. Splynek covers ~\(AppPricing.supportedBundleIDs.count) common paid Mac apps in this seed dataset.")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
+    private var heroCard: some View {
+        ContextCard(
+            systemImage: "dollarsign.circle.fill",
+            subtitle: heroCopy,
+            tint: .green
+        )
+    }
+
+    private var heroCopy: LocalizedStringKey {
+        if scanner.isScanning {
+            return "Scanning installed apps to find paid software with free alternatives…"
+        }
+        if rows.isEmpty {
+            return "Your Mac has no paid software Splynek can map to free alternatives. The seed catalog covers ~\(AppPricing.supportedBundleIDs.count) common paid apps and grows each release."
+        }
+        let replaceable = summary.replaceableAnnualUSD
+        if replaceable > 0 {
+            return "About **\(summary.formattedReplaceableUSD)/year** of your installed paid apps have a tested free alternative. One click installs the replacement; we don't touch the paid app."
+        }
+        return "\(summary.totalPaidCount) paid \(summary.totalPaidCount == 1 ? "app" : "apps") installed. No free alternative in the catalog yet — we'll keep watching."
+    }
+
+    /// Compact 1-line summary beneath the hero.  Replaces the prior
+    /// 3-pill breakdown (Subscription/One-time/Freemium with $0/$0/$X)
+    /// — which was meaningless when most users have only one paid app.
+    @ViewBuilder
+    private var summaryStrip: some View {
+        if !rows.isEmpty {
+            HStack(spacing: 10) {
+                if recoveredAnnualUSD > 0 {
+                    HStack(spacing: 6) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .foregroundStyle(.green)
+                        Text("Recovered ~$\(Int(recoveredAnnualUSD))/yr · \(confirmedSwitches.count) confirmed")
+                            .font(.callout.weight(.semibold))
+                            .foregroundStyle(.green)
+                            .monospacedDigit()
+                    }
                 }
-            } else {
-                Text("\(summary.totalPaidCount) paid \(summary.totalPaidCount == 1 ? "app" : "apps") installed — no free alternatives in catalog yet.")
-                    .font(.callout)
+                Spacer()
+                let replaceableCount = rows.filter { !$0.freeAlternatives.isEmpty }.count
+                Text("\(rows.count) paid · \(replaceableCount) with free alternative · ~\(summary.formattedReplaceableUSD)/yr recoverable")
+                    .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
             }
+            .padding(.horizontal, 4)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(LinearGradient(
-                    colors: [Color.accentColor.opacity(0.18), Color.accentColor.opacity(0.04)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ))
-        )
-    }
-
-    // MARK: Breakdown
-
-    @ViewBuilder
-    private var breakdownSection: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Breakdown")
-                .font(.headline)
-            HStack(spacing: 12) {
-                breakdownPill(
-                    label: "Subscription",
-                    count: summary.subscriptionCount,
-                    annualUSD: summary.subscriptionAnnualUSD,
-                    tint: .red.opacity(0.7))
-                breakdownPill(
-                    label: "One-time",
-                    count: summary.oneTimeCount,
-                    annualUSD: summary.oneTimeAnnualUSD,
-                    tint: .orange.opacity(0.7))
-                breakdownPill(
-                    label: "Freemium",
-                    count: summary.freemiumCount,
-                    annualUSD: summary.freemiumAnnualUSD,
-                    tint: .blue.opacity(0.7))
-                Spacer()
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func breakdownPill(label: String, count: Int, annualUSD: Double, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Text("\(count) · ~$\(Int(annualUSD))/yr")
-                .font(.system(.subheadline, weight: .semibold))
-                .monospacedDigit()
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(tint.opacity(0.18))
-        )
     }
 
     // MARK: Paid-apps list
 
     @ViewBuilder
     private var paidAppsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Paid apps")
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Paid apps · free alternatives")
                 .font(.headline)
             ForEach(rows, id: \.bundleID) { row in
-                PaidAppRow(row: row, vm: vm)
+                SwapCard(
+                    row: row,
+                    vm: vm,
+                    isConfirmed: confirmedSwitches.contains(row.bundleID),
+                    onToggleConfirmed: { newVal in
+                        if newVal {
+                            confirmedSwitches.insert(row.bundleID)
+                        } else {
+                            confirmedSwitches.remove(row.bundleID)
+                        }
+                        UserDefaults.standard.set(
+                            Array(confirmedSwitches),
+                            forKey: "savingsConfirmedSwitches"
+                        )
+                    }
+                )
             }
         }
+    }
+
+    @ViewBuilder
+    private var emptyState: some View {
+        if !scanner.isScanning {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.shield.fill")
+                        .foregroundStyle(.green)
+                    Text("Your Mac is running lean.")
+                        .font(.headline)
+                }
+                Text("No paid apps from Splynek's seed catalog detected on this Mac. The average Mac has ~$540/year in paid software, mostly subscriptions — you're keeping that money.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.green.opacity(0.06))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(Color.green.opacity(0.18), lineWidth: 0.5)
+            )
+        }
+    }
+
+    /// Bottom CTA — links to Sovereignty for the full catalog browse.
+    /// Splynek already has the data; this surfaces the bridge so a
+    /// user finishing Savings has a next step instead of a dead end.
+    @ViewBuilder
+    private var catalogCallout: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "shield.lefthalf.filled")
+                .foregroundStyle(.tint)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Looking for more?")
+                    .font(.callout.weight(.semibold))
+                Text("Splynek's Sovereignty catalog covers \(AppPricing.supportedBundleIDs.count) paid apps and \(SovereigntyCatalog.entries.count) alternatives.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button {
+                NotificationCenter.default.post(
+                    name: .splynekShowSovereignty, object: nil
+                )
+            } label: {
+                Label("Open Sovereignty", systemImage: "arrow.right")
+                    .font(.caption)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.primary.opacity(0.03))
+        )
     }
 }
 
@@ -278,61 +336,170 @@ struct SavingsRow {
     }
 }
 
-// MARK: - PaidAppRow
+// MARK: - SwapCard
+//
+// 2026-05-08 revolution.  Was `PaidAppRow` — a tall stacked layout
+// where the paid app and the alternatives were typographic siblings,
+// hard to read as "this becomes that".  Now a horizontal swap-card:
+//
+//   ┌─[icon] Paid · €240/yr   →   [icon] Alternative · Free [Install]┐
+//   │                                                                │
+//   │ Subscription · IA                  Open-source · IA local       │
+//   │                                                                │
+//   │ ☐ I've already switched                                         │
+//   └────────────────────────────────────────────────────────────────┘
+//
+// The swap reads left-to-right; the green arrow + "→" label make
+// the substitution explicit.  An "I've already switched" toggle
+// per row drives the cumulative-savings counter at the top of the
+// view, persisted via UserDefaults.
 
 @MainActor
-private struct PaidAppRow: View {
+private struct SwapCard: View {
     let row: SavingsRow
     let vm: SplynekViewModel
+    let isConfirmed: Bool
+    let onToggleConfirmed: (Bool) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 10) {
+        VStack(alignment: .leading, spacing: 10) {
+            if let alt = row.freeAlternatives.first {
+                swapHeader(alt: alt)
+                if let extra = row.freeAlternatives.dropFirst().first {
+                    Divider().opacity(0.3)
+                    altSuggestion(alt: extra,
+                                  savingsUSD: row.pricing.annualizedUSD ?? 0,
+                                  compact: true)
+                }
+            } else {
+                paidOnlyHeader
+            }
+            if !row.freeAlternatives.isEmpty {
+                Divider().opacity(0.3)
+                Toggle(isOn: Binding(
+                    get: { isConfirmed },
+                    set: { onToggleConfirmed($0) }
+                )) {
+                    Text(isConfirmed
+                         ? "Switched · counted in savings"
+                         : "I've already switched")
+                        .font(.caption)
+                        .foregroundStyle(isConfirmed ? .green : .secondary)
+                }
+                .toggleStyle(.checkbox)
+                .controlSize(.small)
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(isConfirmed
+                      ? Color.green.opacity(0.08)
+                      : Color.primary.opacity(0.03))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .strokeBorder(isConfirmed
+                              ? Color.green.opacity(0.30)
+                              : Color.clear, lineWidth: 0.5)
+        )
+        .opacity(isConfirmed ? 0.85 : 1.0)
+    }
+
+    /// The big swap row: paid app on the left, arrow in the middle,
+    /// alternative on the right with a one-click Install button.
+    @ViewBuilder
+    private func swapHeader(alt: SovereigntyCatalog.Alternative) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            // Left side: paid app
+            HStack(spacing: 8) {
                 if let icon = row.icon {
                     Image(nsImage: icon)
                         .resizable()
-                        .frame(width: 28, height: 28)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .frame(width: 32, height: 32)
+                        .clipShape(RoundedRectangle(cornerRadius: 7))
+                        .opacity(isConfirmed ? 0.5 : 1.0)
                 }
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: 6) {
+                VStack(alignment: .leading, spacing: 1) {
+                    HStack(spacing: 4) {
                         Text(row.displayName)
                             .font(.subheadline.weight(.semibold))
+                            .strikethrough(isConfirmed, color: .secondary)
                         modelBadge
                     }
-                    Text("~$\(Int(row.pricing.approxUSD ?? 0))/\(row.pricing.billingCycle?.displayLabel ?? "?") · ~$\(Int(row.pricing.annualizedUSD ?? 0))/yr")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                }
-                Spacer()
-                if let src = row.pricing.sourceURL {
-                    Link(destination: src) {
-                        Image(systemName: "arrow.up.right.square")
-                            .font(.caption)
-                    }
-                    .help("View pricing on the publisher's site")
+                    Text("~$\(Int(row.pricing.annualizedUSD ?? 0))/yr")
+                        .font(.caption.monospacedDigit().weight(.semibold))
+                        .foregroundStyle(.red.opacity(0.85))
                 }
             }
-            if !row.freeAlternatives.isEmpty {
-                Divider().padding(.vertical, 2)
-                ForEach(row.freeAlternatives, id: \.id) { alt in
-                    altSuggestion(alt: alt, savingsUSD: row.pricing.annualizedUSD ?? 0)
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Arrow with label
+            VStack(spacing: 1) {
+                Image(systemName: "arrow.right")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(.green)
+                Text("can become")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            // Right side: alternative
+            HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 1) {
+                    HStack(spacing: 4) {
+                        Text(alt.name)
+                            .font(.subheadline.weight(.semibold))
+                        StatusPill(text: "FREE", style: .success)
+                    }
+                    Text(originLabel(alt.origin))
+                        .font(.caption.monospacedDigit().weight(.semibold))
+                        .foregroundStyle(.green)
                 }
+                Spacer(minLength: 0)
+                installOrVisitButton(for: alt)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    /// When there are no free alternatives in the catalog, just show
+    /// the paid app row.  Future commits may surface "watch for
+    /// alternatives" subscriptions here.
+    @ViewBuilder
+    private var paidOnlyHeader: some View {
+        HStack(spacing: 10) {
+            if let icon = row.icon {
+                Image(nsImage: icon)
+                    .resizable()
+                    .frame(width: 32, height: 32)
+                    .clipShape(RoundedRectangle(cornerRadius: 7))
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text(row.displayName).font(.subheadline.weight(.semibold))
+                    modelBadge
+                }
+                Text("~$\(Int(row.pricing.annualizedUSD ?? 0))/yr · no free alternative in catalog yet")
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            if let src = row.pricing.sourceURL {
+                Link(destination: src) {
+                    Image(systemName: "arrow.up.right.square")
+                        .font(.caption)
+                }
+                .help("View pricing on the publisher's site")
             }
         }
-        .padding(10)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.primary.opacity(0.03))
-        )
     }
 
     @ViewBuilder
     private var modelBadge: some View {
         Text(row.pricing.model.displayLabel)
             .font(.caption2.weight(.medium))
-            .padding(.horizontal, 6)
+            .padding(.horizontal, 5)
             .padding(.vertical, 1)
             .background(Capsule().fill(modelBadgeColor.opacity(0.18)))
             .foregroundStyle(modelBadgeColor)
@@ -347,48 +514,64 @@ private struct PaidAppRow: View {
         }
     }
 
+    private func originLabel(_ origin: SovereigntyCatalog.Origin) -> String {
+        switch origin {
+        case .oss:           return "Open source"
+        case .europeAndOSS:  return "EU · open source"
+        case .europe:        return "EU"
+        case .unitedStates:  return "Free"
+        case .china:         return "Free"
+        case .russia:        return "Free"
+        case .other:         return "Free"
+        }
+    }
+
+    /// Compact secondary-alternative line.  Same copy shape as before
+    /// when there's a second free option.
     @ViewBuilder
-    private func altSuggestion(alt: SovereigntyCatalog.Alternative, savingsUSD: Double) -> some View {
+    private func altSuggestion(alt: SovereigntyCatalog.Alternative, savingsUSD: Double, compact: Bool) -> some View {
         HStack(spacing: 8) {
-            Image(systemName: "arrow.right.circle")
-                .foregroundStyle(.green)
+            Image(systemName: "plus.circle")
+                .foregroundStyle(.green.opacity(0.7))
             VStack(alignment: .leading, spacing: 1) {
-                HStack(spacing: 4) {
-                    Text(alt.name)
-                        .font(.subheadline.weight(.medium))
-                    Text("·").font(.caption).foregroundStyle(.tertiary)
-                    Text("Save ~$\(Int(savingsUSD))/yr")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.green)
-                        .monospacedDigit()
-                }
+                Text(alt.name)
+                    .font(.caption.weight(.semibold))
                 Text(alt.note)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                    .lineLimit(2)
+                    .lineLimit(1)
             }
             Spacer()
-            if let dl = alt.downloadURL,
-               (dl.scheme ?? "").lowercased() == "https" {
-                Button {
-                    vm.urlText = dl.absoluteString
-                    vm.start()
-                } label: {
-                    Label("Install", systemImage: "arrow.down.circle.fill")
-                        .font(.caption)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
-            } else {
-                Link(destination: alt.homepage) {
-                    Label("Visit", systemImage: "arrow.up.right.square")
-                        .font(.caption)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-            }
+            installOrVisitButton(for: alt)
         }
-        .padding(.vertical, 2)
+    }
+
+    /// One unified affordance — pipeline-install when we have a real
+    /// HTTPS download URL; otherwise a plain Visit link to the
+    /// homepage.  No mystery green arrows.
+    @ViewBuilder
+    private func installOrVisitButton(for alt: SovereigntyCatalog.Alternative) -> some View {
+        if let dl = alt.downloadURL,
+           (dl.scheme ?? "").lowercased() == "https" {
+            Button {
+                vm.urlText = dl.absoluteString
+                vm.start()
+            } label: {
+                Label("Install", systemImage: "arrow.down.circle.fill")
+                    .font(.caption)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
+            .help("Splynek downloads + verifies + installs the alternative. The paid app stays on this Mac.")
+        } else {
+            Link(destination: alt.homepage) {
+                Label("Visit", systemImage: "arrow.up.right.square")
+                    .font(.caption)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .help("Open the publisher's site — no automatic install for this alternative.")
+        }
     }
 }
 #endif
