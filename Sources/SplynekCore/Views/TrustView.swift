@@ -64,7 +64,7 @@ struct TrustView: View {
                 // directly without a click on the splash button.
                 ContextCard(
                     systemImage: "checkmark.seal",
-                    subtitle: "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Every claim cites its primary source. Everything stays local.",
+                    subtitle: "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Each app's risk score runs **0 (clean) → 100 (severe + numerous concerns)**, with a level word and gauge for quick reading. Every claim cites its primary source. Everything stays local.",
                     tint: .orange
                 )
                 .padding(.horizontal, 16)
@@ -341,6 +341,16 @@ struct TrustView: View {
             }
             .accessibilityElement(children: .combine)
             .accessibilityLabel(rowHeaderAccessibilityLabel(row))
+
+            // 2026-05-08: gauge bar with percentile context.  The
+            // bar is a green→yellow→orange→red horizontal gradient
+            // with a position dot at the app's score, so the
+            // direction (left = clean, right = high concern) reads
+            // at a glance.  The percentile line says how this app
+            // compares with the rest of the user's installed apps
+            // — "higher than X% of your apps" is more actionable
+            // than a bare number.
+            riskGauge(score: row.score, percentile: percentileFor(row))
 
             // Concern labels — top 3 visible inline; full list inside
             // the disclosure below so the row stays compact.
@@ -631,19 +641,39 @@ struct TrustView: View {
 
     // MARK: - Visual atoms
 
+    /// 2026-05-08: badge rebuilt for legibility.  The prior layout
+    /// showed a bare `75` over `ALTA` — ambiguous ("75 of what?",
+    /// "is high good or bad?").  Now: explicit `RISK` framing word
+    /// on top, the number rendered as `N/100` so the scale is
+    /// self-evident, and the level word in plain language.  A
+    /// horizontal gauge with green→red gradient + position dot
+    /// renders below the badge in the row body so the user can read
+    /// the direction at a glance even without the explanatory copy
+    /// in the ContextCard.
     @ViewBuilder
     private func scoreBadge(_ score: TrustScorer.Score) -> some View {
         let color = scoreColor(score)
-        VStack(spacing: 0) {
-            Text("\(score.value)")
-                .font(.system(size: 18, weight: .bold, design: .rounded))
-                .monospacedDigit()
+        VStack(alignment: .trailing, spacing: 1) {
+            Text("RISK")
+                .font(.system(size: 9, weight: .bold))
+                .tracking(0.8)
+                .foregroundStyle(.secondary)
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text("\(score.value)")
+                    .font(.system(size: 22, weight: .heavy, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(color)
+                    .contentTransition(.numericText())
+                Text("/100")
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
             Text(levelLabel(score.level))
                 .font(.system(size: 9, weight: .semibold))
-                .tracking(0.5)
+                .tracking(0.4)
                 .textCase(.uppercase)
+                .foregroundStyle(color)
         }
-        .foregroundStyle(color)
         .padding(.horizontal, 10).padding(.vertical, 5)
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -664,6 +694,71 @@ struct TrustView: View {
         case .high:      return .orange
         case .severe:    return .red
         }
+    }
+
+    /// Horizontal gauge: green → yellow → orange → red gradient with
+    /// a position dot at this app's score and an inline percentile
+    /// caption underneath.  The gauge spans the full row width so
+    /// the eye reads "left = clean, right = lots of concerns"
+    /// without any explanatory text.
+    @ViewBuilder
+    private func riskGauge(score: TrustScorer.Score, percentile: Int?) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        .fill(LinearGradient(
+                            colors: [
+                                Color.green.opacity(0.55),
+                                Color.yellow.opacity(0.55),
+                                Color.orange.opacity(0.55),
+                                Color.red.opacity(0.55),
+                            ],
+                            startPoint: .leading, endPoint: .trailing
+                        ))
+                        .frame(height: 6)
+                    let pct = max(0, min(100, score.value))
+                    let dotX = geo.size.width * (CGFloat(pct) / 100.0)
+                    Circle()
+                        .fill(scoreColor(score))
+                        .frame(width: 12, height: 12)
+                        .overlay(
+                            Circle().strokeBorder(Color.white, lineWidth: 2)
+                        )
+                        .shadow(color: scoreColor(score).opacity(0.4),
+                                radius: 3, y: 1)
+                        .position(x: max(6, min(dotX, geo.size.width - 6)),
+                                  y: 3)
+                }
+            }
+            .frame(height: 12)
+            HStack(spacing: 4) {
+                Text("0 clean")
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.green)
+                Spacer()
+                if let p = percentile {
+                    Text("Higher than \(p)% of your installed apps")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text("high concern 100")
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
+    /// What % of the user's matched-rows have a STRICTLY LOWER score
+    /// than this row.  Returns nil when the row pool is too small
+    /// for a meaningful comparison (≤1 entry).
+    private func percentileFor(_ row: Row) -> Int? {
+        let pool = matchedRows
+        guard pool.count > 1 else { return nil }
+        let lower = pool.filter { $0.score.value < row.score.value }.count
+        let pct = Int((Double(lower) / Double(pool.count - 1)) * 100.0)
+        return max(0, min(100, pct))
     }
 
     private func levelLabel(_ level: TrustScorer.Level) -> LocalizedStringKey {
