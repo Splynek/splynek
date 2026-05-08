@@ -75,22 +75,23 @@ struct SovereigntyView: View {
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0) {
-                // v1.5.3: ContextCard only on the scan-results path so
-                // it doesn't double-up with the centred empty-state
-                // hero (which has its own dedicated icon + heading).
-                if !scanner.apps.isEmpty {
-                    ContextCard(
-                        systemImage: "shield.lefthalf.filled",
-                        subtitle: "See where your Mac's software comes from, and which apps have European or open-source alternatives. Everything stays local — no account, no telemetry, no app list leaving your device.",
-                        tint: .blue
-                    )
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-                    .padding(.bottom, 4)
-                }
+                // 2026-05-08: ContextCard always present, regardless
+                // of scan state.  Was previously hidden during the
+                // pre-scan splash, which doubled up with the splash's
+                // own icon + bullet list.  Now the splash is gone
+                // (scan auto-runs on appear) and the ContextCard
+                // serves as the canonical "what is this tab" header.
+                ContextCard(
+                    systemImage: "shield.lefthalf.filled",
+                    subtitle: "See where your Mac's software comes from, and which apps have European or open-source alternatives. Everything stays local — no account, no telemetry, no app list leaving your device.",
+                    tint: .blue
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 4)
 
-                if scanner.apps.isEmpty && !scanner.isScanning {
-                    emptyState
+                if scanner.apps.isEmpty {
+                    inlineScanState
                 } else {
                     scanResults
                 }
@@ -99,6 +100,15 @@ struct SovereigntyView: View {
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .navigationTitle("Sovereignty")
+        .onAppear {
+            // 2026-05-08: auto-scan on first entry instead of asking
+            // the user to click "Scan my Mac" on a splash screen.
+            // Idempotent — scanner.scan() is a no-op when a scan is
+            // already in flight.
+            if scanner.apps.isEmpty && !scanner.isScanning {
+                scanner.scan()
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -183,81 +193,39 @@ struct SovereigntyView: View {
     // v1.5.3: PageHeader retired — see ContextCard above (rendered
     // inline in body so the empty-state branch doesn't show it).
 
-    // v1.6.1: empty state rewritten to match the Concierge / Recipes
-    // splash rhythm exactly — 56pt icon, .title.rounded.bold,
-    // .title3.secondary subtitle, maxWidth 440 bullets, padding(24)
-    // outer.  All four Ask-group tabs now share the same vertical
-    // cadence so flipping between them feels coherent instead of
-    // jittery.
+    // 2026-05-08: splash retired in favour of auto-scan + inline
+    // status.  The pre-scan icon + bullet hero added zero navigation
+    // value once the user has been in the app once — each tab
+    // re-entry forced a click before showing real data.  Now we
+    // auto-trigger `scanner.scan()` on `.onAppear` and render this
+    // small inline strip while the scan is in flight (or surfaces
+    // the lastError when it failed).
     @ViewBuilder
-    private var emptyState: some View {
-        ScrollView {
-            VStack(spacing: 18) {
-                Image(systemName: "shield.lefthalf.filled")
-                    .font(.system(size: 56, weight: .semibold))
-                    .foregroundStyle(
-                        LinearGradient(colors: [.blue, .purple],
-                                       startPoint: .top, endPoint: .bottom)
-                    )
-                    .padding(.top, 20)
-
-                VStack(spacing: 6) {
-                    Text("Your software supply chain")
-                        .font(.system(.title, design: .rounded, weight: .bold))
-                    Text("See where your Mac's apps come from, and which have European or open-source alternatives.")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-
-                VStack(alignment: .leading, spacing: 10) {
-                    privacyRow("Enumeration only — never reads app contents")
-                    privacyRow("Stays on-device — no network calls, ever")
-                    privacyRow("Opt-in — you click Scan, nothing runs in the background")
-                    privacyRow("Open-source scanner in the public repo")
-                }
-                .frame(maxWidth: 440)
-                .padding(.top, 4)
-
-                Button {
-                    scanner.scan()
-                } label: {
-                    Label("Scan my Mac", systemImage: "magnifyingglass")
-                        .frame(minWidth: 220)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .padding(.top, 8)
-                .disabled(scanner.isScanning)
-
-                if let err = scanner.lastError {
-                    Text(err)
-                        .font(.caption).foregroundStyle(.red)
-                        .padding(.bottom, 24)
-                } else {
-                    Text("Catalog covers 1,100+ apps. Community PRs at github.com/Splynek/splynek expand it.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: 440)
-                        .padding(.bottom, 24)
-                }
+    private var inlineScanState: some View {
+        VStack(spacing: 12) {
+            if scanner.isScanning {
+                ProgressView()
+                Text("Scanning installed apps…")
+                    .font(.callout).foregroundStyle(.secondary)
+            } else if let err = scanner.lastError {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+                    .font(.title2)
+                Text(err)
+                    .font(.caption).foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                Button("Try again") { scanner.scan() }
+                    .controlSize(.small)
+            } else {
+                Image(systemName: "tray")
+                    .foregroundStyle(.secondary)
+                    .font(.title2)
+                Text("No installed apps detected. Use Rescan in the toolbar.")
+                    .font(.callout).foregroundStyle(.secondary)
             }
-            .frame(maxWidth: .infinity)
-            .padding(24)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    @ViewBuilder
-    private func privacyRow(_ text: String) -> some View {
-        // v1.6.2: route through LocalizedStringKey so catalog can localize.
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: "lock.shield")
-                .foregroundStyle(.blue)
-            Text(LocalizedStringKey(text)).font(.callout).foregroundStyle(.primary)
-            Spacer()
-        }
+        .padding(40)
     }
 
     @ViewBuilder

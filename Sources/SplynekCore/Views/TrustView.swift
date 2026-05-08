@@ -58,24 +58,21 @@ struct TrustView: View {
     var body: some View {
         GeometryReader { geo in
             VStack(spacing: 0) {
-                // v1.5.1: in scan-results mode the context card sits at
-                // the top of the pane (NOT inside the ScrollView), so
-                // it stays visible no matter how far the user scrolls.
-                // The empty-state branch has its own centred layout,
-                // so the card is only rendered when we have results.
-                if !scanner.apps.isEmpty {
-                    ContextCard(
-                        systemImage: "checkmark.seal",
-                        subtitle: "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Every claim cites its primary source. Everything stays local.",
-                        tint: .orange
-                    )
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-                    .padding(.bottom, 4)
-                }
+                // 2026-05-08: ContextCard always present.  Splash
+                // retired — see SovereigntyView for the same change.
+                // Auto-scan on appear means scan results appear
+                // directly without a click on the splash button.
+                ContextCard(
+                    systemImage: "checkmark.seal",
+                    subtitle: "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Every claim cites its primary source. Everything stays local.",
+                    tint: .orange
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 4)
 
-                if scanner.apps.isEmpty && !scanner.isScanning {
-                    emptyState
+                if scanner.apps.isEmpty {
+                    inlineScanState
                 } else {
                     scanResults
                 }
@@ -84,6 +81,14 @@ struct TrustView: View {
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .navigationTitle("Trust")
+        .onAppear {
+            // 2026-05-08: auto-scan replaces the pre-scan splash.
+            // Idempotent — re-entries while a scan is in flight
+            // become no-ops via SovereigntyScanner.scan()'s guard.
+            if scanner.apps.isEmpty && !scanner.isScanning {
+                scanner.scan()
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -184,79 +189,36 @@ struct TrustView: View {
 
     // v1.5.3: contextCard moved to shared `ContextCard` in Components.swift
 
-    // v1.6.1: empty state rewritten to match the Concierge / Recipes
-    // splash rhythm exactly — 56pt icon, .title.rounded.bold,
-    // .title3.secondary subtitle, maxWidth 440 bullets, padding(24)
-    // outer, ScrollView-friendly so it survives narrow windows.  All
-    // four Ask-group tabs now share the same vertical cadence.
+    // 2026-05-08: pre-scan splash retired.  See SovereigntyView for
+    // the matching change.  Replaced with this small inline strip
+    // that shows during the auto-scan or surfaces lastError when
+    // the scanner couldn't enumerate anything.
     @ViewBuilder
-    private var emptyState: some View {
-        ScrollView {
-            VStack(spacing: 18) {
-                Image(systemName: "checkmark.seal")
-                    .font(.system(size: 56, weight: .semibold))
-                    .foregroundStyle(
-                        LinearGradient(colors: [.orange, .pink],
-                                       startPoint: .top, endPoint: .bottom)
-                    )
-                    .padding(.top, 20)
-
-                VStack(spacing: 6) {
-                    Text("Public-record audit of your apps")
-                        .font(.system(.title, design: .rounded, weight: .bold))
-                    Text("See what regulators, app stores, and breach databases say about the software on your Mac.")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-
-                VStack(alignment: .leading, spacing: 10) {
-                    privacyRow("Enumeration only — never reads app contents")
-                    privacyRow("Stays on-device — no network calls, ever")
-                    privacyRow("Opt-in — you click Scan, nothing runs in the background")
-                    privacyRow("Every concern cites a primary source you can open")
-                }
-                .frame(maxWidth: 440)
-                .padding(.top, 4)
-
-                Button {
-                    scanner.scan()
-                } label: {
-                    Label("Scan my Mac", systemImage: "magnifyingglass")
-                        .frame(minWidth: 220)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .padding(.top, 8)
-                .disabled(scanner.isScanning)
-
-                if let err = scanner.lastError {
-                    Text(err)
-                        .font(.caption).foregroundStyle(.red)
-                        .padding(.bottom, 24)
-                } else {
-                    Text("Sources: Apple App Store, EU and US regulators, NVD CVE database, HIBP, vendor advisories.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: 440)
-                        .padding(.bottom, 24)
-                }
+    private var inlineScanState: some View {
+        VStack(spacing: 12) {
+            if scanner.isScanning {
+                ProgressView()
+                Text("Scanning installed apps…")
+                    .font(.callout).foregroundStyle(.secondary)
+            } else if let err = scanner.lastError {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.orange)
+                    .font(.title2)
+                Text(err)
+                    .font(.caption).foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                Button("Try again") { scanner.scan() }
+                    .controlSize(.small)
+            } else {
+                Image(systemName: "tray")
+                    .foregroundStyle(.secondary)
+                    .font(.title2)
+                Text("No installed apps detected. Use Rescan in the toolbar.")
+                    .font(.callout).foregroundStyle(.secondary)
             }
-            .frame(maxWidth: .infinity)
-            .padding(24)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    @ViewBuilder
-    private func privacyRow(_ text: LocalizedStringKey) -> some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: "lock.shield")
-                .foregroundStyle(.orange)
-            Text(text).font(.callout).foregroundStyle(.primary)
-            Spacer()
-        }
+        .padding(40)
     }
 
     @ViewBuilder
