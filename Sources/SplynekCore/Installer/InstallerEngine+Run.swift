@@ -76,6 +76,21 @@ extension InstallerEngine {
 
         // Stage 5 — Verify (HARD: failure aborts).
         onStage(.verifying)
+
+        // 2026-05-08: format pre-flight.  Sniff the magic bytes
+        // before the SHA-256 / Gatekeeper checks so a downloaded
+        // HTML 404 page or a misnamed delta-update artefact fails
+        // with a clean explanation instead of a downstream
+        // "hdiutil: attach failed - imagem não reconhecida".
+        switch InstallPreflight.validateBeforeRun(payload: downloadedPayload, expectedKind: spec.kind) {
+        case .ok, .warning:
+            break  // .warning is advisory — logged but not blocking.
+        case .fatal(let reason):
+            let f = Failure.verificationFailed(reason)
+            onStage(.failed(f))
+            return .failure(f)
+        }
+
         let verdict = await InstallVerification.verify(
             payload: downloadedPayload,
             expectedDigest: spec.expectedDigest

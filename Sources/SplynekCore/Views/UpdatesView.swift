@@ -286,7 +286,49 @@ struct UpdatesView: View {
                 updated[i].lastChecked = Date()
             }
         }
+        // 2026-05-08: pre-flight pass.  For every actionable update,
+        // probe the resolved download URL to filter out broken links
+        // (4xx, HTML pages, stub files) BEFORE the user clicks Update.
+        // Failures downgrade the row to a "Manual" affordance with a
+        // human-readable reason instead of letting the install
+        // pipeline burn the user's time on a fetch that won't install.
+        await withTaskGroup(of: (Int, InstallPreflight.URLPreview).self) { group in
+            for (i, info) in updated.enumerated() where info.hasUpdate {
+                guard let dl = info.availableDownloadURL else { continue }
+                let kind = Self.kindFor(downloadURL: dl)
+                group.addTask {
+                    let preview = await InstallPreflight.previewURL(dl, expectedKind: kind)
+                    return (i, preview)
+                }
+            }
+            for await (i, preview) in group {
+                switch preview.verdict {
+                case .ok:
+                    updated[i].preflight = nil
+                case .warning(let reason):
+                    updated[i].preflight = .warning(reason)
+                case .fatal(let reason):
+                    updated[i].preflight = .fatal(reason)
+                }
+            }
+        }
         resolved = updated
+    }
+
+    /// Map a download URL's path extension to an InstallSpec.Kind so
+    /// the preflight knows what magic bytes to expect.  Falls back
+    /// to `.appArchive` (zip) for unrecognised extensions — generous
+    /// default that won't reject too aggressively.
+    nonisolated private static func kindFor(downloadURL: URL) -> InstallSpec.Kind {
+        let ext = downloadURL.pathExtension.lowercased()
+        switch ext {
+        case "dmg":          return .dmg
+        case "pkg":          return .pkg
+        case "app":          return .appBundle
+        case "zip", "tar", "gz", "tgz", "xz", "bz2":
+            return .appArchive
+        default:             return .appArchive
+        }
     }
 
     private struct ResolvedUpdate: Sendable {
@@ -476,7 +518,27 @@ private struct UpdateRow: View {
     @ViewBuilder
     private var inlineStatus: some View {
         switch phase {
-        case .idle, .installed:
+        case .idle:
+            // 2026-05-08: surface the pre-flight warning inline, so
+            // the user sees the reason BEFORE clicking Update.  When
+            // fatal, the row's affordance also downgrades to "Open
+            // page" — see actionAffordance.
+            if let pre = info.preflight {
+                HStack(spacing: 4) {
+                    Image(systemName: pre.isFatal
+                          ? "exclamationmark.triangle.fill"
+                          : "exclamationmark.circle")
+                        .foregroundStyle(pre.isFatal ? .orange : .yellow)
+                        .font(.caption2)
+                    Text(pre.message)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+            } else {
+                EmptyView()
+            }
+        case .installed:
             EmptyView()
         case .downloading(let p):
             HStack(spacing: 6) {
@@ -498,7 +560,7 @@ private struct UpdateRow: View {
             Text(reason)
                 .font(.caption2)
                 .foregroundStyle(.red)
-                .lineLimit(2)
+                .lineLimit(3)
         }
     }
 
@@ -506,7 +568,20 @@ private struct UpdateRow: View {
     private var actionAffordance: some View {
         switch phase {
         case .idle:
-            if info.hasUpdate, info.availableDownloadURL != nil {
+            // 2026-05-08: when pre-flight flagged the URL fatal, we
+            // already KNOW Update will fail.  Don't pretend.  Show
+            // an Open-page link so the user can complete the update
+            // manually via the publisher.
+            if info.preflight?.isFatal == true,
+               let dl = info.availableDownloadURL {
+                Link(destination: dl) {
+                    Label("Open page", systemImage: "safari")
+                        .font(.caption)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .help("Manual update via the publisher's site (Splynek's pre-flight detected this URL won't auto-install).")
+            } else if info.hasUpdate, info.availableDownloadURL != nil {
                 Button {
                     Task { await performUpdate() }
                 } label: {
@@ -605,8 +680,44 @@ private struct UpdateRow: View {
         case .success:
             phase = .installed
         case .failure(let err):
-            phase = .failed(reason: err.errorDescription ?? "Install failed.")
+            phase = .failed(reason: Self.humanise(err.errorDescription ?? "Install failed."))
         }
+    }
+
+    /// Translate raw installer-engine error text into something a
+    /// user can act on.  Strips internal `/var/folders/...` paths
+    /// and pattern-matches the common engine outputs (hdiutil,
+    /// spctl, codesign, SHA-256).  Fallback returns the cleaned-up
+    /// raw — at least without the path noise.
+    nonisolated private static func humanise(_ raw: String) -> String {
+        var s = raw
+        s = s.replacingOccurrences(
+            of: #"(?:/private)?/var/folders/[^\s:]+"#,
+            with: "the downloaded file",
+            options: .regularExpression
+        )
+        let lower = s.lowercased()
+        if lower.contains("imagem n\u{00E3}o reconhecida")
+            || lower.contains("not recognized")
+            || lower.contains("hdiutil") && lower.contains("attach failed") {
+            return "The file isn't a valid disk image. The publisher's URL probably served a different format — try Open page to download it manually."
+        }
+        if lower.contains("rejected") && lower.contains("the code is") {
+            return "macOS Gatekeeper refused this binary. The publisher may not have notarised the new version yet — try again later or download manually."
+        }
+        if lower.contains("rejected") && lower.contains("no usable signature") {
+            return "The downloaded binary has no signature Splynek can verify. Update manually from the publisher's site."
+        }
+        if lower.contains("sha-256 mismatch") || lower.contains("digest mismatch") {
+            return "The downloaded file's hash doesn't match what the publisher advertised — the source mirror may be stale."
+        }
+        if lower.contains("no .app") || lower.contains("no app bundle") {
+            return "The downloaded archive didn't contain a Mac app. The publisher's link may have moved."
+        }
+        if lower.contains("timed out") || lower.contains("timeout") {
+            return "The download timed out. Check your connection and try again."
+        }
+        return s
     }
 
     /// One-line description for the current pipeline stage, shown

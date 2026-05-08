@@ -56,7 +56,20 @@ enum GatekeeperVerify {
 
     static func evaluate(_ url: URL) async -> GatekeeperVerdict {
         let ext = url.pathExtension.lowercased()
-        guard ["app", "pkg", "dmg", "mpkg"].contains(ext) else {
+        // 2026-05-08: only `.app` is meaningfully checkable here.
+        // For .dmg/.pkg/.zip the bytes aren't a runnable bundle yet —
+        // the installer-engine pipeline mounts/extracts/installs them
+        // and the kind-specific handler (hdiutil's block-checksum,
+        // installer(8) for .pkg, post-extract AppMover for .zip)
+        // does its own signature verification.  Running `spctl -t
+        // execute` against a .dmg / .pkg falsely rejects publishers
+        // who only sign the .app inside, which is the common case
+        // for GitHub Releases / Sparkle distributions.
+        //
+        // The pre-launch quarantine xattr that macOS attaches to
+        // downloads still triggers a Gatekeeper prompt on first
+        // launch, so the user retains the OS-level safety net.
+        guard ext == "app" else {
             return .notApplicable
         }
 

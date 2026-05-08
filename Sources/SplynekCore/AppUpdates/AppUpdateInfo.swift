@@ -96,6 +96,30 @@ public struct AppUpdateInfo: Hashable, Sendable, Identifiable, Codable {
     /// "stale" badge for sources that haven't responded in 7d+.
     public var lastChecked: Date
 
+    /// 2026-05-08: pre-flight warning surfaced in the Updates tab.
+    /// Set by `UpdatesView.checkAll` after a HEAD probe of the
+    /// resolved download URL.  When `.fatal`, the row downgrades to
+    /// a "Manual" affordance with the message as explanation — the
+    /// user is told WHY before they click, instead of the install
+    /// pipeline failing late.  Single-field design (vs separate
+    /// message+flag) so old persisted JSON decodes cleanly.
+    public var preflight: Preflight?
+
+    public enum Preflight: Hashable, Sendable, Codable {
+        case warning(String)
+        case fatal(String)
+
+        public var message: String {
+            switch self {
+            case .warning(let s), .fatal(let s): return s
+            }
+        }
+        public var isFatal: Bool {
+            if case .fatal = self { return true }
+            return false
+        }
+    }
+
     public enum UpdatePolicy: String, Codable, Hashable, Sendable, CaseIterable {
         /// Quietly install during quiet hours (default 3am).
         case automatic
@@ -129,7 +153,8 @@ public struct AppUpdateInfo: Hashable, Sendable, Identifiable, Codable {
                 availableSHA256: String? = nil,
                 releaseNotes: String? = nil,
                 lastChecked: Date = Date(),
-                updatePolicy: UpdatePolicy = .notify) {
+                updatePolicy: UpdatePolicy = .notify,
+                preflight: Preflight? = nil) {
         self.bundleID = bundleID
         self.displayName = displayName
         self.installedVersion = installedVersion
@@ -142,6 +167,7 @@ public struct AppUpdateInfo: Hashable, Sendable, Identifiable, Codable {
         self.releaseNotes = releaseNotes
         self.lastChecked = lastChecked
         self.updatePolicy = updatePolicy
+        self.preflight = preflight
     }
 
     /// Pure semver-ish comparison: returns true when

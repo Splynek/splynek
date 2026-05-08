@@ -65,9 +65,27 @@ public enum GitHubReleasesResolver {
 
     /// Hints favoured during arch selection.  When multiple Mac
     /// assets are published, pick the first whose filename matches
-    /// any of these in order.  A stable arm64/universal preference
-    /// covers the post-2021 Mac fleet.
-    static let archHints = ["arm64", "aarch64", "universal", "macos", "darwin", "osx"]
+    /// any of these in order.  arm64 / aarch64 lead because the
+    /// post-2021 Mac fleet is overwhelmingly Apple Silicon, and an
+    /// x86_64 binary would run via Rosetta 2 (slower + a translation
+    /// hop).  `universal` follows because a fat binary is correct
+    /// for both arches.  Generic `macos` / `darwin` only land last
+    /// because publishers sometimes ship `Foo-x86_64.dmg` AND
+    /// `Foo-macos.dmg` in the same release — we want the explicit
+    /// arch label to win.
+    static let archHints = [
+        "arm64", "aarch64", "apple-silicon",
+        "universal",
+        "macos", "darwin", "osx"
+    ]
+
+    /// Hints that mark an asset as DEFINITELY wrong for an Apple
+    /// Silicon Mac.  Filtered out before arch selection so an x86
+    /// asset can't win even if no arm64 asset is present — a
+    /// Rosetta-only fallback is worse than a clear "no asset".
+    static let nonAppleSiliconHints = [
+        "x86_64", "x86-64", "intel", "amd64"
+    ]
 
     /// Decode JSON bytes from `/releases/latest` into a Release.
     /// Returns nil on parse failure (rate limit text, schema drift,
@@ -88,16 +106,28 @@ public enum GitHubReleasesResolver {
         }
         guard !macAssets.isEmpty else { return nil }
 
-        // Step 2: arch preference.  First arch hint that matches.
+        // Step 2: drop assets explicitly tagged as Intel/x86 — we
+        // refuse Rosetta fallbacks rather than install a slow binary
+        // when a publisher just hasn't shipped arm64 yet.  The user
+        // can still grab the Intel asset manually via the GitHub
+        // release page.
+        let archEligible = macAssets.filter { asset in
+            let lower = asset.name.lowercased()
+            return !nonAppleSiliconHints.contains(where: { lower.contains($0) })
+        }
+        let pool = archEligible.isEmpty ? macAssets : archEligible
+
+        // Step 3: arch preference within the eligible pool.  First
+        // hint that matches wins.
         for hint in archHints {
-            if let m = macAssets.first(where: { $0.name.lowercased().contains(hint) }) {
+            if let m = pool.first(where: { $0.name.lowercased().contains(hint) }) {
                 return m
             }
         }
 
-        // Step 3: fallback — largest by size (assumed to be the main
-        // installer, not a sidecar artifact).
-        return macAssets.max(by: { $0.size < $1.size })
+        // Step 4: fallback — largest in the pool (assumed to be the
+        // main installer, not a sidecar artifact like a dSYM).
+        return pool.max(by: { $0.size < $1.size })
     }
 
     /// Construct the API URL for a given owner/repo.  Public so
