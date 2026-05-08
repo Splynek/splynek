@@ -29,6 +29,10 @@ enum UpdateSweep {
         let sizeBytes: Int64?
         let sha256: String?
         let releaseNotes: String?
+        /// 2026-05-08: alternate download URLs ranked by preference.
+        /// Populated for GitHub Releases (multiple matching assets);
+        /// empty for Sparkle / RSS (single enclosure per item).
+        var alternateURLs: [URL] = []
     }
 
     /// Run the full sweep against an enumerated installed-app list.
@@ -77,6 +81,9 @@ enum UpdateSweep {
                 rows[i].availableSHA256 = result.sha256
                 rows[i].releaseNotes = result.releaseNotes
                 rows[i].lastChecked = Date()
+                if !result.alternateURLs.isEmpty {
+                    rows[i].availableAlternateURLs = result.alternateURLs
+                }
             }
         }
 
@@ -104,18 +111,56 @@ enum UpdateSweep {
 
         // URL pre-flight per actionable update (HEAD probe).  When
         // `.fatal`, the row gets a manual-only affordance in the UI.
-        // Skipped for rows already marked fatal above.
-        await withTaskGroup(of: (Int, InstallPreflight.URLPreview).self) { group in
+        // Skipped for rows already marked fatal above (e.g. tar.gz).
+        //
+        // 2026-05-08 retry-on-fatal: when the primary download URL
+        // preflights fatal AND the row carries `availableAlternateURLs`
+        // (GitHub Releases with multiple matching assets), step
+        // through the alternates in order and pick the first whose
+        // preflight is `.ok` or `.warning`.  Preserves the legacy
+        // single-shot behaviour for Sparkle / RSS / Homebrew where
+        // there is only one enclosure per update.
+        struct PreflightResult: Sendable {
+            let chosenURL: URL
+            let verdict: InstallPreflight.Verdict
+        }
+        await withTaskGroup(of: (Int, PreflightResult?).self) { group in
             for (i, info) in rows.enumerated() where info.hasUpdate {
-                guard let dl = info.availableDownloadURL else { continue }
+                guard let primary = info.availableDownloadURL else { continue }
                 if case .fatal = info.preflight { continue }
-                let kind = kindFor(downloadURL: dl)
-                group.addTask { (i, await InstallPreflight.previewURL(dl, expectedKind: kind)) }
+                let alternates = info.availableAlternateURLs ?? []
+                let candidates = [primary] + alternates
+                group.addTask {
+                    for url in candidates {
+                        let kind = kindFor(downloadURL: url)
+                        let preview = await InstallPreflight.previewURL(url, expectedKind: kind)
+                        switch preview.verdict {
+                        case .ok, .warning:
+                            return (i, PreflightResult(chosenURL: url, verdict: preview.verdict))
+                        case .fatal:
+                            continue
+                        }
+                    }
+                    // Every candidate fatal — return the LAST verdict
+                    // so the user sees a real explanation.  Synthesise
+                    // a fallback message when there were no candidates.
+                    let lastURL = candidates.last ?? primary
+                    let kind = kindFor(downloadURL: lastURL)
+                    let preview = await InstallPreflight.previewURL(lastURL, expectedKind: kind)
+                    return (i, PreflightResult(chosenURL: lastURL, verdict: preview.verdict))
+                }
             }
-            for await (i, preview) in group {
-                // Don't downgrade an already-fatal verdict to warning.
+            for await (i, result) in group {
+                guard let result else { continue }
                 if case .fatal = rows[i].preflight { continue }
-                switch preview.verdict {
+                // Promote the chosen URL to the primary slot if the
+                // retry picked an alternate — it's the URL that will
+                // actually drive the install when the user clicks
+                // Update.
+                if rows[i].availableDownloadURL != result.chosenURL {
+                    rows[i].availableDownloadURL = result.chosenURL
+                }
+                switch result.verdict {
                 case .ok:
                     rows[i].preflight = nil
                 case .warning(let reason):
@@ -169,13 +214,21 @@ enum UpdateSweep {
         if version.hasPrefix("v") || version.hasPrefix("V") {
             version.removeFirst()
         }
-        let asset = GitHubReleasesResolver.pickAsset(release)
+        let assets = GitHubReleasesResolver.pickAssets(release)
+        let primary = assets.first
+        // Skip the primary in the alternates list — the caller falls
+        // back through these in order when preflight rejects the
+        // primary.  Cap at 4 alternates: more than that is mostly
+        // dSYMs / signature bundles / source.zip noise that won't
+        // install regardless.
+        let alternates = Array(assets.dropFirst().prefix(4)).map { $0.browserDownloadURL }
         return Resolved(
             version: version,
-            downloadURL: asset?.browserDownloadURL,
-            sizeBytes: asset?.size,
+            downloadURL: primary?.browserDownloadURL,
+            sizeBytes: primary?.size,
             sha256: nil,
-            releaseNotes: release.body
+            releaseNotes: release.body,
+            alternateURLs: alternates
         )
     }
 

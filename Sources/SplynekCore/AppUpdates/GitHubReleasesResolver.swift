@@ -99,12 +99,22 @@ public enum GitHubReleasesResolver {
     /// Pick the Mac asset out of a Release.  Returns nil when no
     /// asset matches (Linux-only release, source-only, etc.).
     public static func pickAsset(_ release: Release) -> Asset? {
+        pickAssets(release).first
+    }
+
+    /// 2026-05-08: ranked list of Mac assets (top choice first).
+    /// Used by `UpdateSweep` so when the primary asset's URL fails
+    /// the pre-flight HEAD probe (4xx, HTML, weird MIME), the
+    /// download flow can retry with the next-best ranked asset
+    /// before downgrading the row to manual.  `pickAsset(_:)`
+    /// remains available for callers that only want the first.
+    public static func pickAssets(_ release: Release) -> [Asset] {
         // Step 1: filter to mac-shaped extensions.
         let macAssets = release.assets.filter { asset in
             let lower = asset.name.lowercased()
             return macSuffixes.contains { lower.hasSuffix($0) }
         }
-        guard !macAssets.isEmpty else { return nil }
+        guard !macAssets.isEmpty else { return [] }
 
         // Step 2: drop assets explicitly tagged as Intel/x86 — we
         // refuse Rosetta fallbacks rather than install a slow binary
@@ -117,17 +127,29 @@ public enum GitHubReleasesResolver {
         }
         let pool = archEligible.isEmpty ? macAssets : archEligible
 
-        // Step 3: arch preference within the eligible pool.  First
-        // hint that matches wins.
+        // Step 3: rank by arch preference.  Each hint produces a
+        // batch in source order; later batches catch leftovers.
+        // Within a batch, ties are broken by descending size so the
+        // installer (typically larger) wins over sidecar artefacts
+        // (dSYM, sigstore bundles, source.zip).
+        var ranked: [Asset] = []
+        var seen = Set<String>()
         for hint in archHints {
-            if let m = pool.first(where: { $0.name.lowercased().contains(hint) }) {
-                return m
+            let batch = pool
+                .filter { $0.name.lowercased().contains(hint) }
+                .sorted { $0.size > $1.size }
+            for asset in batch where !seen.contains(asset.name) {
+                ranked.append(asset)
+                seen.insert(asset.name)
             }
         }
-
-        // Step 4: fallback — largest in the pool (assumed to be the
-        // main installer, not a sidecar artifact like a dSYM).
-        return pool.max(by: { $0.size < $1.size })
+        // Fallback batch: anything left in the pool not yet ranked,
+        // by descending size.
+        let leftovers = pool
+            .filter { !seen.contains($0.name) }
+            .sorted { $0.size > $1.size }
+        ranked.append(contentsOf: leftovers)
+        return ranked
     }
 
     /// Construct the API URL for a given owner/repo.  Public so

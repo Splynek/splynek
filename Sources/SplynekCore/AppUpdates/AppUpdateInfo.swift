@@ -96,6 +96,16 @@ public struct AppUpdateInfo: Hashable, Sendable, Identifiable, Codable {
     /// "stale" badge for sources that haven't responded in 7d+.
     public var lastChecked: Date
 
+    /// 2026-05-08: alternate download URLs ranked by preference.
+    /// When the primary `availableDownloadURL` fails the pre-flight
+    /// HEAD probe (4xx, HTML, weird MIME) or the magic-byte sniff
+    /// catches an unsupported format, `UpdateSweep.run` retries
+    /// with each entry in this list before marking the row fatal.
+    /// Empty / nil means "no alternates" (Sparkle / RSS / Homebrew —
+    /// single-source) so the existing fail-on-primary behaviour
+    /// stays the default.
+    public var availableAlternateURLs: [URL]?
+
     /// 2026-05-08: pre-flight warning surfaced in the Updates tab.
     /// Set by `UpdatesView.checkAll` after a HEAD probe of the
     /// resolved download URL.  When `.fatal`, the row downgrades to
@@ -154,7 +164,8 @@ public struct AppUpdateInfo: Hashable, Sendable, Identifiable, Codable {
                 releaseNotes: String? = nil,
                 lastChecked: Date = Date(),
                 updatePolicy: UpdatePolicy = .notify,
-                preflight: Preflight? = nil) {
+                preflight: Preflight? = nil,
+                availableAlternateURLs: [URL]? = nil) {
         self.bundleID = bundleID
         self.displayName = displayName
         self.installedVersion = installedVersion
@@ -168,6 +179,7 @@ public struct AppUpdateInfo: Hashable, Sendable, Identifiable, Codable {
         self.lastChecked = lastChecked
         self.updatePolicy = updatePolicy
         self.preflight = preflight
+        self.availableAlternateURLs = availableAlternateURLs
     }
 
     /// Pure semver-ish comparison: returns true when

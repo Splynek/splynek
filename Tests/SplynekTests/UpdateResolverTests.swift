@@ -131,6 +131,68 @@ enum UpdateResolverTests {
                            == "https://api.github.com/repos/exelban/stats/releases/latest")
             }
         }
+
+        // 2026-05-08: ranked-list helper used by UpdateSweep to retry
+        // when the primary asset's URL fails the pre-flight HEAD probe.
+        TestHarness.suite("GitHubReleasesResolver — pickAssets (ranked retry list)") {
+
+            TestHarness.test("First entry equals pickAsset(_:) for arch-tagged release") {
+                let release = GitHubReleasesResolver.Release(
+                    tagName: "v1.2.3", name: nil, body: nil, publishedAt: nil,
+                    assets: [
+                        .init(name: "App-x86_64.dmg", size: 100,
+                              browserDownloadURL: URL(string: "https://example.com/x86.dmg")!),
+                        .init(name: "App-arm64.dmg", size: 200,
+                              browserDownloadURL: URL(string: "https://example.com/arm64.dmg")!),
+                    ])
+                let single = GitHubReleasesResolver.pickAsset(release)
+                let ranked = GitHubReleasesResolver.pickAssets(release)
+                try expect(ranked.first == single)
+            }
+
+            TestHarness.test("Drops Intel-only when arm64 alternative exists") {
+                let release = GitHubReleasesResolver.Release(
+                    tagName: "v1.0", name: nil, body: nil, publishedAt: nil,
+                    assets: [
+                        .init(name: "X-x86_64.dmg", size: 100,
+                              browserDownloadURL: URL(string: "https://x.com/intel.dmg")!),
+                        .init(name: "X-arm64.dmg", size: 200,
+                              browserDownloadURL: URL(string: "https://x.com/arm.dmg")!),
+                    ])
+                let ranked = GitHubReleasesResolver.pickAssets(release)
+                try expect(ranked.count == 1, "expected 1 (intel filtered), got \(ranked.count)")
+                try expect(ranked.first?.name == "X-arm64.dmg")
+            }
+
+            TestHarness.test("Returns multiple alternatives ranked by arch hint then size") {
+                let release = GitHubReleasesResolver.Release(
+                    tagName: "v1.0", name: nil, body: nil, publishedAt: nil,
+                    assets: [
+                        // Universal - lower-priority hint
+                        .init(name: "App-universal.dmg", size: 500,
+                              browserDownloadURL: URL(string: "https://x.com/u.dmg")!),
+                        // arm64 small
+                        .init(name: "App-arm64-small.dmg", size: 50,
+                              browserDownloadURL: URL(string: "https://x.com/a-small.dmg")!),
+                        // arm64 big
+                        .init(name: "App-arm64-big.dmg", size: 200,
+                              browserDownloadURL: URL(string: "https://x.com/a-big.dmg")!),
+                    ])
+                let ranked = GitHubReleasesResolver.pickAssets(release)
+                try expect(ranked.count == 3, "got \(ranked.count)")
+                // arm64 batch first; within batch larger wins.
+                try expect(ranked[0].name == "App-arm64-big.dmg")
+                try expect(ranked[1].name == "App-arm64-small.dmg")
+                try expect(ranked[2].name == "App-universal.dmg")
+            }
+
+            TestHarness.test("Empty for source-only release") {
+                let release = GitHubReleasesResolver.Release(
+                    tagName: "v1.0", name: nil, body: nil, publishedAt: nil,
+                    assets: [])
+                try expect(GitHubReleasesResolver.pickAssets(release).isEmpty)
+            }
+        }
     }
 
     // MARK: - HomebrewResolver
