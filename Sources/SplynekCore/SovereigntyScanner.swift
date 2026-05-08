@@ -106,8 +106,15 @@ final class SovereigntyScanner: ObservableObject {
             searchRoots.append(home.appendingPathComponent("Applications"))
         }
 
-        var seenBundleIDs = Set<String>()
-        var collected: [InstalledApp] = []
+        // 2026-05-08: collect ALL bundle hits first, then dedupe by
+        // selecting the highest-version candidate per bundle ID.
+        // Was: first-seen wins (in `contentsOfDirectory` order, which
+        // on APFS is non-deterministic), so when an update had been
+        // installed alongside the previous version (`<App> 2.app`)
+        // the scanner could pick the OLDER copy and the Updates tab
+        // would re-flag the row as needing an update.  Picking by
+        // version makes the dedup deterministic and correct.
+        var bestByBID: [String: InstalledApp] = [:]
 
         for root in searchRoots {
             guard let contents = try? fm.contentsOfDirectory(
@@ -119,26 +126,77 @@ final class SovereigntyScanner: ObservableObject {
             for url in contents where url.pathExtension.lowercased() == "app" {
                 guard let bundle = Bundle(url: url),
                       let bid = bundle.bundleIdentifier,
-                      !Self.shouldSkip(bundleID: bid, url: url),
-                      !seenBundleIDs.contains(bid)
+                      !Self.shouldSkip(bundleID: bid, url: url)
                 else { continue }
-                seenBundleIDs.insert(bid)
 
                 let name = (bundle.infoDictionary?["CFBundleDisplayName"] as? String)
                     ?? (bundle.infoDictionary?["CFBundleName"] as? String)
                     ?? url.deletingPathExtension().lastPathComponent
                 let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String
 
-                collected.append(.init(
+                let candidate = InstalledApp(
                     id: bid, name: name, bundleURL: url, version: version
-                ))
+                )
+                if let existing = bestByBID[bid] {
+                    if Self.isCandidateBetter(candidate, than: existing) {
+                        bestByBID[bid] = candidate
+                    }
+                } else {
+                    bestByBID[bid] = candidate
+                }
             }
         }
 
+        var collected = Array(bestByBID.values)
         collected.sort {
             $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
         }
         return collected
+    }
+
+    /// Pick the newer of two installs of the same app.  Compares by
+    /// `CFBundleShortVersionString` numerically segment-by-segment
+    /// when both sides have one; falls back to file modification time
+    /// otherwise.  Used to deterministically resolve duplicate-bundle-
+    /// ID hits (e.g. `<App>.app` + `<App> 2.app` after an update).
+    nonisolated private static func isCandidateBetter(_ candidate: InstalledApp,
+                                                       than existing: InstalledApp) -> Bool {
+        if let cv = candidate.version, let ev = existing.version,
+           cv != ev,
+           let cmp = compareVersions(cv, ev) {
+            return cmp == .orderedDescending
+        }
+        let fm = FileManager.default
+        let cMtime = (try? fm.attributesOfItem(atPath: candidate.bundleURL.path)[.modificationDate]) as? Date
+        let eMtime = (try? fm.attributesOfItem(atPath: existing.bundleURL.path)[.modificationDate]) as? Date
+        if let cT = cMtime, let eT = eMtime {
+            return cT > eT
+        }
+        return false
+    }
+
+    /// Lexicographic-by-segment numeric compare for typical Mac
+    /// version strings ("1.2.3", "v1.2.3", "1.2.3-beta").  Returns
+    /// nil when either side can't be parsed at all (purely date-shaped
+    /// or hash-shaped versions) so the caller can fall back to mtime.
+    nonisolated private static func compareVersions(_ a: String, _ b: String) -> ComparisonResult? {
+        func normalise(_ v: String) -> [Int]? {
+            var s = v
+            if s.hasPrefix("v") || s.hasPrefix("V") { s.removeFirst() }
+            if let dash = s.firstIndex(of: "-") { s = String(s[..<dash]) }
+            if let plus = s.firstIndex(of: "+") { s = String(s[..<plus]) }
+            let parts = s.split(separator: ".").map(String.init)
+            let ints = parts.compactMap(Int.init)
+            return ints.count == parts.count && !ints.isEmpty ? ints : nil
+        }
+        guard let aN = normalise(a), let bN = normalise(b) else { return nil }
+        for k in 0..<max(aN.count, bN.count) {
+            let ai = k < aN.count ? aN[k] : 0
+            let bi = k < bN.count ? bN[k] : 0
+            if ai < bi { return .orderedAscending }
+            if ai > bi { return .orderedDescending }
+        }
+        return .orderedSame
     }
 
     /// Reasons we exclude an app from the Sovereignty list:

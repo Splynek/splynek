@@ -92,6 +92,18 @@ struct UpdatesView: View {
         .onAppear {
             Task { await autoRefreshIfNeeded() }
         }
+        // 2026-05-08: re-resolve on successful install so the row
+        // disappears immediately.  Force=true bypasses the 5-min
+        // freshness cache because the on-disk state just changed.
+        .onReceive(NotificationCenter.default
+            .publisher(for: .splynekUpdatesDidInstall)
+        ) { _ in
+            Task {
+                scanner.scan()
+                try? await Task.sleep(nanoseconds: 400_000_000)
+                await checkAll(force: true)
+            }
+        }
     }
 
     // MARK: Hero
@@ -663,9 +675,17 @@ private struct UpdateRow: View {
             expectedDigest: info.availableSHA256,
             source: .directURL
         )
+        // 2026-05-08: replaceExisting=true is critical for updates.
+        // The default false suffix-renames the new bundle to
+        // `<App> 2.app` and leaves the old version in place — result:
+        // /Applications has BOTH versions, the next scanner sweep
+        // can pick either, and the row reads "needs update" again
+        // after a tab switch.  For an explicit update click the
+        // user's intent is clearly "replace", so we pass true.
         let result = await InstallerEngine.run(
             spec: spec,
             downloadedPayload: dest,
+            replaceExisting: true,
             onStage: { stage in
                 Task { @MainActor in
                     self.phase = .installing(label: Self.label(for: stage))
@@ -679,6 +699,14 @@ private struct UpdateRow: View {
         switch result {
         case .success:
             phase = .installed
+            // 2026-05-08: re-scan so the row vanishes without waiting
+            // for a tab switch.  Posts a notification UpdatesView
+            // catches; that triggers refreshScanner + checkAll, which
+            // sees the new on-disk version and drops this row from
+            // `updatesAvailable`.
+            NotificationCenter.default.post(
+                name: .splynekUpdatesDidInstall, object: nil
+            )
         case .failure(let err):
             phase = .failed(reason: Self.humanise(err.errorDescription ?? "Install failed."))
         }
@@ -768,6 +796,12 @@ extension Notification.Name {
     /// own performUpdate() flow without the parent view needing to
     /// observe per-row state.
     static let splynekUpdateAllRequested = Notification.Name("splynek.updateAllRequested")
+
+    /// Posted by UpdateRow after a successful install.  UpdatesView
+    /// listens and re-runs the scanner + resolver so the just-updated
+    /// row drops out of `updatesAvailable` without needing the user
+    /// to manually trigger a re-scan.
+    static let splynekUpdatesDidInstall = Notification.Name("splynek.updatesDidInstall")
 }
 
 #endif
