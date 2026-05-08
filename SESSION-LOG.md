@@ -2296,6 +2296,99 @@ Explicitly deferred (documented in commit 14 body):
   and fixable; the cache-policy and zombie-process trade-offs
   were real and acceptable.
 
+### 2026-05-08 end-of-session — smoke-test plan + backup state
+
+After the 17-commit design revolution + audit hardening + 2 follow-up
+polish commits + audit-driven catalog batch, the work needed a
+backup + a structured validation plan before clocking off.
+
+**Backup state (2026-05-08 19:49).**
+
+- 137 commits ahead of `origin/main` (the `next-release rollup`
+  per the 2026-05-05 versioning policy).  Without a remote backup
+  this was a single-disk-failure away from gone.
+- Pushed to `origin/rollup/2026-05-08` so the work survives
+  outside this Mac without polluting the public `main` branch
+  before the eventual Apple-cleared cut.  GitHub now carries the
+  full arc as a ref.
+- Plus belt-and-suspenders `git bundle create
+  ~/splynek-backup-2026-05-08.bundle main` — 12 MB self-contained
+  pack file that can be restored on any other host with
+  `git clone <bundle>`.
+
+**End-to-end smoke test (TODO — maintainer-only, requires live
+network + an installed app).**
+
+The unit tests cover the pure-logic layer (740 green).  What
+they CAN'T cover is the install pipeline against real publisher
+URLs.  Walk through this checklist on an actual launch before
+cutting a DMG:
+
+- [ ] Launch the app on a fresh boot.  Confirm the Apps row in
+      the sidebar shows `↑ N` within ~3 s without manually
+      visiting the Updates segment (the
+      `vm.warmUpdateCount` background warm-up should fire 1.5 s
+      after `restoreSession`).
+- [ ] Open Atualizações.  Confirm the ContextCard reads in
+      pt-PT.  Confirm the per-app rows show source pills
+      (Sparkle / GitHub / Manual) + version pair (X.Y → A.B).
+- [ ] Pick a Sparkle-sourced row (Bear / Things / OmniFocus / a
+      similar Sparkle publisher you have installed) and click
+      Atualizar.  Watch:
+  - [ ] Phase transitions render inline: Downloading… →
+        Verifying signature… → Installing… → Recording install…
+        → Done. (or per-stage failures with humanised text)
+  - [ ] On success: row flips to "Instalado" with green seal
+        icon; row drops out of Atualizações disponíveis on next
+        sweep
+  - [ ] /Applications/<App>.app's CFBundleShortVersionString
+        actually changed to the new version (no `<App> 2.app`
+        suffix-rename — `replaceExisting: true` is meant to
+        trash the old)
+- [ ] Pick a GitHub-sourced row (Zed / Stats / etc.) and click
+      Atualizar.  Same checklist.  Bonus: confirm the picker
+      chose an arm64 asset (no Intel fallback).
+- [ ] Force a known-bad URL: edit a Sparkle appcast or test
+      against an app whose enclosure URL serves HTML (or use
+      GOOSE VPN's tar.gz).  Click Atualizar.  Confirm:
+  - [ ] Row downgrades to "Open page" affordance with humanised
+        reason (NOT a raw `hdiutil: attach failed - imagem não
+        reconhecida`)
+  - [ ] tar.gz / tgz / xz / bz2 URLs are flagged fatal at
+        preflight before any download
+- [ ] In Frota's "What this Mac is sharing" card, hover a row.
+      Confirm Reveal · Stop sharing · Trash buttons appear.  Pick
+      a non-critical row, click Trash, confirm the file lands in
+      the macOS Trash and the row disappears.
+- [ ] In Histórico, click `⋯` → Limpar histórico.  Confirm the
+      confirmation dialog fires and "Downloaded files on disk are
+      NOT deleted" copy reads correctly.  Don't click destructive
+      yet — just verify the dialog body.
+- [ ] In Poupanças, pick the Claude row's tier picker.  Walk
+      Pro → Max 5× → Max 20× → Team.  Confirm the COULD RECOVER
+      number animates with `.contentTransition(.numericText())`
+      between values.
+- [ ] In Confiança, pick an app with score > 0.  Confirm the
+      gauge dot is centred vertically on the bar (not floating
+      above), the badge reads "RISCO ALTO" / "RISCO MODERADO"
+      etc. (not the broken "RISCO + Alta" composition), and the
+      percentile line reads correctly.
+- [ ] In Soberania, confirm scan auto-fires on tab-open (no
+      manual click on a splash CTA).  ContextCard always visible
+      at top.
+
+**Tabs not touched today** (Concierge / Receitas / Ao Vivo /
+Torrents / Fila / Avaliação / Agentes / Settings) had a static
+catalog audit via `Scripts/find-missing-translations.py` —
+results landed in `25c8e7d` + this commit's batch.  No live UI
+walkthrough yet; flag any in-the-flesh issues to a follow-up.
+
+**Apple gate.**  Tag push + DMG cut + cask + landing deploy +
+MAS resubmit are still gated on `v1.0` clearing the in-flight
+re-review (day 8+ as of 2026-05-08).  Until then `main` =
+local-only `next-release rollup`; remote is `origin/rollup/
+2026-05-08`.
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:

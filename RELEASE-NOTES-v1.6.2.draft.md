@@ -147,6 +147,172 @@ section.
 
 ---
 
-*Generated 2026-04-30 from `git log v1.5.3~..HEAD` and the catalog
-regenerator.  Refresh the metrics row before publishing if more rounds
-land between now and ship.*
+## 2026-05-08 addendum — design revolution + audit hardening
+
+The 137-commit rollup grew an explicit design arc on 2026-05-08.
+This section appends the user-facing changes that landed that day
+(SHA range `2efa8d0..ce63709`, plus the catalog top-up `25c8e7d` and
+the GitHub asset retry `ce63709`).  Sources: `SESSION-LOG.md` —
+"2026-05-08 — Design revolution + whole-app audit".
+
+### Sidebar consolidation
+
+- **Apps row** merges what used to be Install + Updates into a
+  segmented surface; saves a row at every window height.  The
+  badge prefers pending update count (`↑ N`) when there's work
+  to do, otherwise shows installed count.
+- **Agents** moved into Library next to Fleet (was alone in a
+  one-item "Connect" section that read as orphaned).
+- Brand footer (logo + version + Settings gear) retired — Settings
+  is already in the macOS menu bar (⌘,) per v0.49 layout, and the
+  About card is in the Apple menu.
+- WindowGroup `defaultSize: 1180×820` so first-launch users land
+  on a window tall enough for the whole sidebar without clipping.
+
+### Per-tab revolutions
+
+- **Frota.**  Hover-revealed action group (Reveal · Stop sharing ·
+  Trash) replaces the mute eye-slash icon; right-click + ⌘⌫
+  mirror.  Trash uses `NSWorkspace.recycle` + prunes the matching
+  history entries.  Dedupe by SHA-256 → (filename, size) →
+  outputPath cascade catches Finder-rename twins; row-level
+  Stop-sharing fans out across all underlying URLs.  Card header
+  shows total count + bytes shared.
+- **Instalar.**  Two cards merged into one; per-row status pill
+  (ACTIVE / UPDATE BLOCKED / MISSING) + `⋯` menu (Reveal · Toggle
+  auto-update · Forget); engine errors humanised in plain language
+  with `/var/folders` paths stripped.  Critical bug fix: the test
+  fixtures `Bork` and `Good` had been writing to the real
+  `~/Library/Application Support/Splynek/installed-apps.json` for
+  every dev who ran the suite — now the test harness redirects
+  via `_testOverrideURL`.
+- **Atualizações.**  The Update button now does what it says —
+  download + verify + install (`replaceExisting: true`) via the
+  full `InstallerEngine.run` pipeline, with per-row Phase state
+  machine + "Installed!" completion state.  ContextCard hero
+  replaces the bespoke green block.  Sidebar shows the live
+  pending-update count (`↑ N`) instead of `NEW`.  Auto-refreshes
+  on tab open + at end of launch via `vm.warmUpdateCount`.
+- **Transferências.**  `1.0× faster than single-path` tautology
+  retired; when only one interface contributed bytes the banner
+  now reads "Bond a second network for 2–3× faster downloads"
+  with concrete examples (Ethernet, USB-C tether, iPhone hotspot,
+  Tailscale).  Multi-path celebration banner unchanged for the
+  real ≥2× case.
+- **Soberania + Confiança.**  Splash screens retired (56pt icon +
+  bullet hero + Scan-my-Mac CTA).  ContextCard always renders;
+  scan auto-fires on `.onAppear`.  Net −172 lines.
+- **Confiança risk score.**  Was a bare `75` over a `ALTA` word
+  (ambiguous + gender-mismatched in pt-PT).  Now: `RISK` framing
+  word, big `75/100` figure with explicit scale, and a single
+  noun-phrase per locale (`Risco alto` / `Hohes Risiko` / etc.).
+  New horizontal gauge with green→red gradient + position dot +
+  inline anchor labels (`0 clean` / `high concern 100`) makes
+  the direction self-evident.  Percentile context line ("Higher
+  than X% of your installed apps") when ≥2 apps in pool.
+- **Histórico.**  Count badge in card accessory; per-row Forget
+  (hover trash) + right-click context menu with Forget / Move-to-
+  Trash; `⋯` menu adds Clear-all-history with confirmation
+  dialog.  `DownloadHistory.clearAll()` single-write helper.
+- **Poupanças (revolution v2).**  Per-app tier picker — Claude
+  (Pro / Max 5× / Max 20× / Team), ChatGPT (Plus / Pro / Team),
+  Perplexity (Pro / Enterprise) — drives a recompute of the
+  big-number hero in real time with `.contentTransition(.numericText())`.
+  Big-number hero: dual stat blocks (Recovered / Could recover)
+  with comparison framing ("≈ 5 years of Spotify Premium",
+  "≈ 53 cappuccinos", "≈ X new MacBook Air every year").
+  Vertical SwapCard reads top-to-bottom as substitution + thin
+  hairline divider between paid block and alternative block.
+  Confirmed-switch toggle states the exact dollar amount credited.
+
+### Updates resilience
+
+- **Magic-byte preflight** in `InstallerEngine.run` catches HTML
+  404 pages posing as DMGs (GOOSE VPN case) before hdiutil runs
+  — clean message instead of `imagem não reconhecida`.
+- **HEAD probe + Range-GET fallback** in `UpdateSweep` validates
+  status + Content-Type + length per actionable update; rows
+  with a fatal verdict downgrade to "Open page" with explanation.
+- **Hard-reject unsupported archives** (.tar / .gz / .tgz / .xz /
+  .bz2) at preflight — Splynek's pipeline only handles
+  .dmg / .pkg / .zip / .app and won't pretend otherwise.
+- **GitHub asset retry**: `pickAssets(_:)` returns a ranked
+  `[Asset]` list; when the primary URL preflights fatal,
+  `UpdateSweep.run` walks the alternates in order and picks the
+  first that passes.  Sparkle / RSS / Homebrew rows with single
+  enclosures fall through to legacy single-shot behaviour.
+- **Gatekeeper check no longer rejects DMG/PKG/ZIP at the
+  container level** — `spctl -t execute` now only runs on
+  `.app` direct bundles (DMGs route through hdiutil's own
+  block-checksum verify + the `.app` inside gets standard
+  quarantine + Gatekeeper at first launch).  Was false-rejecting
+  publishers like Zed who only sign the `.app` inside.
+- **GitHub asset picker prefers arm64 + drops Intel-only assets**
+  unless no arm64 alternative exists.  Refuses Rosetta fallbacks.
+- **Auto-rescan after successful install** fires
+  `splynekUpdatesDidInstall` so the row drops out of the pending
+  list immediately without a tab switch.  Plus
+  `replaceExisting: true` in the update click means the old
+  `<App>.app` actually goes to Trash instead of suffix-renaming
+  to `<App> 2.app`.
+
+### Localization
+
+- **Catalog: 666 strings × 5 locales = 3,330 translations** (was
+  628 × 5).  +38 strings covering the design revolution surface:
+  - Trust gauge labels (RISK, ACTIVE / UPDATE BLOCKED / MISSING,
+    Low/Moderate/High/Severe risk noun-phrases)
+  - 14 concern short labels (Tracks across apps, Linked data,
+    GDPR fine, FTC action, Regulator fine, Court ruling,
+    Sanctioned, Known CVE, Security advisory, Confirmed breach,
+    Ad-supported, Default-on telemetry, ToS data-sharing, etc.)
+  - Savings hero (RECOVERED, COULD RECOVER, YOUR PLAN, can be
+    replaced by, can become, /year, per year, "I've already
+    switched", "Tick on a row to start counting", long copy)
+  - Updates row states (Update, Update all, Updates available,
+    Pending check, Open page, Retry, Installed, etc.) + 7
+    pipeline-stage labels (Resolving… / Trust check… /
+    Sovereignty check… / Downloading… / Verifying signature… /
+    Installing… / Recording install…)
+  - Install registry actions (Forget this app, Enable / Disable
+    auto-update, Installed via Splynek)
+  - History actions (Forget entry, Clear all history, Clear all
+    download history?, plus the explanatory help text)
+  - Fleet hover labels (Reveal in Finder, Stop sharing on the
+    LAN, Move to Trash, plus help text)
+  - Downloads (FREE pill, Bond a second network for 2–3× faster
+    downloads)
+  - Sovereignty + Trust (No installed apps detected. Use Rescan
+    in the toolbar., Try again, Scanning installed apps…)
+  - "Splynek doesn't support this archive format yet" tar.gz
+    fatal preflight message
+
+### Numbers
+
+- Tests: 717 → **740** (+23 — 19 in `HardeningTests.swift` for
+  preflight / tier annualisation / DownloadHistory remove+clear /
+  isNewer edges; 4 in `UpdateResolverTests.swift` for the new
+  ranked `pickAssets`)
+- Fresh-DerivedData clean build: **0 warnings** (verified
+  2026-05-08)
+- xcodebuild schemes verified at every commit: Splynek (free) +
+  Splynek-MAS (App Store) + SplynekCompanion (iOS) — all
+  BUILD SUCCEEDED
+
+### New architectural pieces
+
+- `Sources/SplynekCore/Installer/InstallPreflight.swift` (216
+  lines) — magic-byte detection + URL HEAD probe.  Two surfaces:
+  `validateBeforeRun` (post-download) + `previewURL` (pre-click).
+- `Sources/SplynekCore/AppUpdates/UpdateSweep.swift` (186 lines)
+  — extracted resolver fan-out + URL preflight + retry-on-fatal
+  loop.  Single code path shared by foreground UpdatesView checks
+  and the background `vm.warmUpdateCount` warm-up.
+- `Tests/SplynekTests/HardeningTests.swift` (253 lines) — pure-
+  logic coverage for the design-revolution surface.
+
+---
+
+*Last updated 2026-05-08 with the 17-commit design-revolution arc.
+Refresh metrics + commit ranges before publishing if additional
+rounds land between now and ship.*

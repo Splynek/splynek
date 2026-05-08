@@ -23150,6 +23150,132 @@
       "it": { "stringUnit": { "state": "translated", "value": "Verifica in corso…" } },
       "pt-PT": { "stringUnit": { "state": "translated", "value": "A verificar…" } }
     } },
+    "0 clean": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "0 sauber" } },
+      "es": { "stringUnit": { "state": "translated", "value": "0 limpio" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "0 propre" } },
+      "it": { "stringUnit": { "state": "translated", "value": "0 pulito" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "0 limpo" } }
+    } },
+    "high concern 100": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "hohes Bedenken 100" } },
+      "es": { "stringUnit": { "state": "translated", "value": "preocupación alta 100" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "préoccupation élevée 100" } },
+      "it": { "stringUnit": { "state": "translated", "value": "preoccupazione alta 100" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "preocupação alta 100" } }
+    } },
+    "Scanning installed apps…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Installierte Apps werden gescannt…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Analizando apps instaladas…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Analyse des apps installées…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Scansione delle app installate…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "A analisar apps instaladas…" } }
+    } },
+    "Try again": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Erneut versuchen" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Reintentar" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Réessayer" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Riprova" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Tentar novamente" } }
+    } },
+    "No installed apps detected. Use Rescan in the toolbar.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Keine installierten Apps erkannt. Verwende „Erneut scannen“ in der Symbolleiste." } },
+      "es": { "stringUnit": { "state": "translated", "value": "No se detectaron apps instaladas. Usa Reanalizar en la barra de herramientas." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Aucune app installée détectée. Utilise « Réanalyser » dans la barre d’outils." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Nessuna app installata rilevata. Usa «Riscansiona» nella barra degli strumenti." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Nenhuma app instalada detetada. Usa Re-analisar na toolbar." } }
+    } },
+    "Move the file to the Trash and remove it from Splynek's history.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Datei in den Papierkorb legen und aus dem Splynek-Verlauf entfernen." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Mover el archivo a la papelera y eliminarlo del historial de Splynek." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Mettre le fichier à la corbeille et le retirer de l’historique Splynek." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Sposta il file nel cestino e rimuovilo dalla cronologia di Splynek." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Mover o ficheiro para o Lixo e remover da história do Splynek." } }
+    } },
+    "Stop sharing this file with other Splyneks on the LAN.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Diese Datei nicht mehr mit anderen Splyneks im LAN teilen." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Dejar de compartir este archivo con otros Splyneks en la LAN." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Cesser de partager ce fichier avec d’autres Splyneks sur le LAN." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Smetti di condividere questo file con altri Splyneks sulla LAN." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Parar de partilhar este ficheiro com outros Splyneks na rede." } }
+    } },
+    "Forget this entry. Does NOT delete the downloaded file.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Diesen Eintrag vergessen. Die heruntergeladene Datei wird NICHT gelöscht." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Olvidar esta entrada. NO elimina el archivo descargado." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Oublier cette entrée. NE supprime PAS le fichier téléchargé." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Dimentica questa voce. NON elimina il file scaricato." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Esquecer esta entrada. NÃO elimina o ficheiro descarregado." } }
+    } },
+    "Remove this row from history. The downloaded file stays on disk.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Diese Zeile aus dem Verlauf entfernen. Die heruntergeladene Datei bleibt auf der Festplatte." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Eliminar esta fila del historial. El archivo descargado queda en disco." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Supprimer cette ligne de l’historique. Le fichier téléchargé reste sur le disque." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Rimuovi questa riga dalla cronologia. Il file scaricato resta sul disco." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Remover esta linha do histórico. O ficheiro descarregado fica no disco." } }
+    } },
+    "Send the downloaded file to the macOS Trash AND forget the entry.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Heruntergeladene Datei in den macOS-Papierkorb verschieben UND den Eintrag vergessen." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Enviar el archivo descargado a la papelera de macOS Y olvidar la entrada." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Envoyer le fichier téléchargé à la corbeille macOS ET oublier l’entrée." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Sposta il file scaricato nel cestino di macOS E dimentica la voce." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Enviar o ficheiro descarregado para o Lixo do macOS E esquecer a entrada." } }
+    } },
+    "This removes every entry from the history log. Downloaded files on disk are NOT deleted.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Dies entfernt jeden Eintrag aus dem Verlaufsprotokoll. Heruntergeladene Dateien auf der Festplatte werden NICHT gelöscht." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Esto elimina todas las entradas del registro de historial. Los archivos descargados en disco NO se eliminan." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Cela retire toutes les entrées de l’historique. Les fichiers téléchargés sur le disque ne sont PAS supprimés." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Questa azione rimuove tutte le voci dal registro della cronologia. I file scaricati sul disco NON vengono eliminati." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Isto remove todas as entradas do histórico. Os ficheiros descarregados em disco NÃO são eliminados." } }
+    } },
+    "Removes every entry from the history log. Does NOT delete any downloaded files — only the log.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Entfernt jeden Eintrag aus dem Verlaufsprotokoll. Löscht KEINE heruntergeladenen Dateien — nur das Protokoll." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Elimina todas las entradas del registro de historial. NO elimina archivos descargados — solo el registro." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Retire toutes les entrées de l’historique. Ne supprime AUCUN fichier téléchargé — uniquement le journal." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Rimuove tutte le voci dal registro della cronologia. NON elimina alcun file scaricato — solo il registro." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Remove todas as entradas do histórico. NÃO elimina ficheiros descarregados — apenas o registo." } }
+    } },
+    "Check every auto-updating app for new versions now.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Jetzt jede Auto-Update-App auf neue Versionen prüfen." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Comprobar nuevas versiones de cada app con auto-actualización ahora." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Vérifier maintenant toutes les apps en mise à jour automatique pour de nouvelles versions." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Verifica ora ogni app con aggiornamento automatico per nuove versioni." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Verificar cada app com atualização automática por novas versões agora." } }
+    } },
+    "Nothing tracked yet. Drop a .dmg, .zip, or .app above and Splynek will keep the install record here.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Noch nichts erfasst. Lege oben eine .dmg, .zip oder .app ab und Splynek hält die Installations-Aufzeichnung hier fest." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Aún no se ha registrado nada. Suelta un .dmg, .zip o .app arriba y Splynek guardará el registro de instalación aquí." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Rien de suivi pour l’instant. Dépose un .dmg, .zip ou .app au-dessus et Splynek conservera le registre d’installation ici." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Niente tracciato finora. Trascina un .dmg, .zip o .app sopra e Splynek manterrà qui il registro di installazione." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Nada registado ainda. Larga um .dmg, .zip ou .app em cima e o Splynek mantém aqui o registo de instalação." } }
+    } },
+    "Removes the entry from Splynek's registry. Does NOT uninstall the .app — drag it to the Trash separately.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Entfernt den Eintrag aus dem Splynek-Register. Deinstalliert die .app NICHT — ziehe sie separat in den Papierkorb." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Elimina la entrada del registro de Splynek. NO desinstala la .app — arrástrala a la papelera por separado." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Retire l’entrée du registre Splynek. NE désinstalle PAS l’app — fais-la glisser séparément à la corbeille." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Rimuove la voce dal registro di Splynek. NON disinstalla la .app — trascinala nel cestino separatamente." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Remove a entrada do registo do Splynek. NÃO desinstala a .app — arrasta-a separadamente para o Lixo." } }
+    } },
+    "Matching installed apps with the pricing catalog…": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Installierte Apps werden mit dem Preiskatalog abgeglichen…" } },
+      "es": { "stringUnit": { "state": "translated", "value": "Cruzando apps instaladas con el catálogo de precios…" } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Mise en correspondance des apps installées avec le catalogue de prix…" } },
+      "it": { "stringUnit": { "state": "translated", "value": "Confronto tra app installate e catalogo prezzi…" } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "A cruzar apps instaladas com o catálogo de preços…" } }
+    } },
+    "Re-scan every installed app and re-query each upstream source.": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Jede installierte App erneut scannen und jede Update-Quelle neu abfragen." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Reanalizar cada app instalada y volver a consultar cada fuente." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Réanalyser chaque app installée et réinterroger chaque source." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Riscansiona ogni app installata e ri-interroga ogni fonte." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Re-analisar cada app instalada e re-interrogar cada fonte." } }
+    } },
+    "Manual update via the publisher's site (Splynek's pre-flight detected this URL won't auto-install).": { "localizations": {
+      "de": { "stringUnit": { "state": "translated", "value": "Manuelles Update über die Website des Herausgebers (Splyneks Vorprüfung hat erkannt, dass diese URL nicht auto-installierbar ist)." } },
+      "es": { "stringUnit": { "state": "translated", "value": "Actualización manual desde el sitio del editor (la pre-comprobación de Splynek detectó que esta URL no se auto-instalará)." } },
+      "fr": { "stringUnit": { "state": "translated", "value": "Mise à jour manuelle via le site de l’éditeur (la pré-vérification Splynek a détecté que cette URL ne s’installe pas automatiquement)." } },
+      "it": { "stringUnit": { "state": "translated", "value": "Aggiornamento manuale tramite il sito del produttore (il preflight di Splynek ha rilevato che questo URL non si auto-installerà)." } },
+      "pt-PT": { "stringUnit": { "state": "translated", "value": "Atualização manual via o site do publicador (o preflight do Splynek detetou que este URL não vai auto-instalar)." } }
+    } },
     "Splynek doesn't support this archive format yet. Update manually from the publisher's site.": { "localizations": {
       "de": { "stringUnit": { "state": "translated", "value": "Splynek unterstützt dieses Archivformat noch nicht. Aktualisiere manuell auf der Website des Herausgebers." } },
       "es": { "stringUnit": { "state": "translated", "value": "Splynek aún no admite este formato de archivo. Actualiza manualmente desde el sitio del editor." } },

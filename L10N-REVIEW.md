@@ -249,3 +249,153 @@ review of a non-English locale will be the FIRST line item.
 
 `info@splynek.app` or open an issue at
 `github.com/Splynek/splynek/issues` with the label `l10n`.
+
+---
+
+## 2026-05-08 batch — pt-PT review checklist
+
+**Context.**  The 2026-05-08 design-revolution arc shipped 38 new
+catalog keys × 5 locales (190 fresh translations).  All five
+locales were Claude-generated.  Paulo (pt-PT native, project
+maintainer) should walk this list with fresh eyes — five minutes
+of nitpick now beats a public release with awkward phrasings.
+
+If a translation lands wrong, change it directly in
+`Localizable.xcstrings` at the matching key.  No build step
+required — Xcode normalises on next save; the catalog-test gate
+just checks coverage, not phrasing.
+
+### Trust gauge / score
+
+- [ ] `RISK` → `RISCO` (uppercase pill above the number)
+- [ ] `Low risk` → `Risco baixo`
+- [ ] `Moderate risk` → `Risco moderado`
+- [ ] `High risk` → `Risco alto`
+- [ ] `Severe risk` → `Risco severo`
+- [ ] `0 clean` → `0 limpo`
+- [ ] `high concern 100` → `preocupação alta 100`
+- [ ] `Higher than %lld%% of your installed apps` — _(format
+      string; not yet in catalog, deferred to a future commit)_
+
+### Concern pills (Trust)
+
+- [ ] `Tracks across apps` → `Rastreia entre apps`
+- [ ] `Linked data` → `Dados ligados`
+- [ ] `Unlinked data` → `Dados não ligados`
+- [ ] `GDPR fine` → `Multa RGPD`
+- [ ] `FTC action` → `Ação da FTC`
+- [ ] `Regulator fine` → `Multa regulatória`
+- [ ] `Court ruling` → `Decisão judicial`
+- [ ] `Sanctioned` → `Sancionado`
+- [ ] `Known CVE` → `CVE conhecida`
+- [ ] `Security advisory` → `Aviso de segurança`
+- [ ] `Confirmed breach` → `Violação confirmada`
+- [ ] `Ad-supported` → `Suportada por publicidade`
+- [ ] `Default-on telemetry` → `Telemetria ativa por omissão`
+- [ ] `ToS data-sharing` → `Partilha de dados nos T&C`
+
+### Savings hero + SwapCard
+
+- [ ] `RECOVERED` → `RECUPERADO` (uppercase column header)
+- [ ] `COULD RECOVER` → `PODES RECUPERAR`
+- [ ] `YOUR PLAN` → `O TEU PLANO`
+- [ ] `/year` → `/ano`
+- [ ] `per year` → `por ano`
+- [ ] `Paid apps · free alternatives` → `Apps pagas · alternativas grátis`
+- [ ] `installed paid app` → `app paga instalada`
+- [ ] `can be replaced by` → `pode ser substituída por`
+- [ ] `can become` → `pode tornar-se`
+- [ ] `I’ve already switched away from this app` → `Já troquei desta app`
+- [ ] `Tick "I've already switched" on a row to start counting.` →
+      `Marca "Já troquei" numa linha para começar a contar.`
+- [ ] `Your Mac is running lean.` → `O teu Mac está leve.`
+- [ ] `Looking for more?` → `À procura de mais?`
+- [ ] `Open Sovereignty` → `Abrir Soberania`
+- [ ] (long hero) `Splynek tracks the paid apps on this Mac and
+      lights a path to free, tested replacements...` →
+      `O Splynek acompanha as apps pagas neste Mac e mostra um
+      caminho para alternativas grátis e testadas...`
+
+### Updates pipeline + row states
+
+- [ ] `Update` → `Atualizar`
+- [ ] `Update all` → `Atualizar tudo`
+- [ ] `Updates available` → `Atualizações disponíveis`
+- [ ] `Pending check` → `Por verificar`
+- [ ] `All checked apps are up to date` → `Todas as apps verificadas estão atualizadas`
+- [ ] `Open page` → `Abrir página`
+- [ ] `Retry` → `Tentar novamente`
+- [ ] `Installed` → `Instalado`
+- [ ] `Manual` → `Manual` (pill)
+- [ ] `Checking…` → `A verificar…`
+- [ ] `Resolving…` → `A resolver…`
+- [ ] `Trust check…` → `Verificação de Confiança…`
+- [ ] `Sovereignty check…` → `Verificação de Soberania…`
+- [ ] `Downloading…` → `A descarregar…`
+- [ ] `Verifying signature…` → `A verificar assinatura…`
+- [ ] `Installing…` → `A instalar…`
+- [ ] `Recording install…` → `A registar instalação…`
+- [ ] `Splynek doesn't support this archive format yet. Update
+      manually from the publisher's site.` → `O Splynek ainda não
+      suporta este formato de arquivo. Atualiza manualmente no
+      site do publicador.`
+
+### Install registry
+
+- [ ] `ACTIVE` → `ATIVO`
+- [ ] `UPDATE BLOCKED` → `ATUALIZAÇÃO BLOQUEADA`
+- [ ] `MISSING` → `EM FALTA`
+- [ ] `Installed via Splynek` → `Instalado via Splynek`
+- [ ] `Forget this app` → `Esquecer esta app`
+- [ ] `Enable auto-update` → `Ativar atualização automática`
+- [ ] `Disable auto-update` → `Desativar atualização automática`
+
+### History
+
+- [ ] `Forget entry` → `Esquecer entrada`
+- [ ] `Clear all history` → `Limpar histórico`
+- [ ] `Clear all download history?` → `Limpar todo o histórico de transferências?`
+- [ ] `Recent` → `Recentes`
+- [ ] `Results` → `Resultados`
+
+### Fleet hover
+
+- [ ] `Reveal in Finder` → `Mostrar no Finder`
+- [ ] `Stop sharing on the LAN` → `Parar de partilhar na rede`
+- [ ] `Move to Trash` → `Mover para o Lixo`
+
+### Downloads single-path upsell
+
+- [ ] `Bond a second network for 2–3× faster downloads` →
+      `Liga uma segunda rede para downloads 2–3× mais rápidos`
+
+### Misc
+
+- [ ] `FREE` → `GRÁTIS` (pill)
+- [ ] `Apps` → `Aplicações` (sidebar)
+- [ ] `No installed apps detected. Use Rescan in the toolbar.` →
+      `Nenhuma app instalada detetada. Usa Re-analisar na toolbar.`
+- [ ] `Try again` → `Tentar novamente`
+- [ ] `Scanning installed apps…` → `A analisar apps instaladas…`
+
+### How to do the review
+
+1. Walk the app tab-by-tab in pt-PT (System Settings → Language &
+   Region → pt-PT).  No need to relaunch — Xcode-built debug
+   reads the catalog live.
+2. For each visible string, decide: (a) good, (b) good-but-
+   awkward, (c) wrong.
+3. For (b) + (c): edit `Sources/SplynekCore/Localizable.xcstrings`
+   directly at the matching key.  Save.  Rebuild → re-test.
+4. Tick the box above when you've reviewed the row.  Don't tick
+   for "untouched, looks fine" — only after eyes-on.
+
+The catalog gate test (`LocalizableCatalogTests` →
+"Every key has all required locales filled") protects coverage.
+Phrasing is on you.
+
+### Other locales (de / es / fr / it)
+
+Same 38 keys, same Claude-generated translations.  These DO need
+native-speaker review — open an issue with `l10n` label or PR
+with corrections.
