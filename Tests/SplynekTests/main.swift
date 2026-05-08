@@ -116,6 +116,12 @@ AppUpdateTests.run()
 // for GitHub Releases / Homebrew / publisher RSS.
 UpdateResolverTests.run()
 
+// 2026-05-08 audit pass: pure-logic coverage for the changes shipped
+// during the design/UX revolution session — InstallPreflight,
+// AppPricing tier annualisation, DownloadHistory remove/clearAll, and
+// the dedupe-relevant edge cases of AppUpdateInfo.isNewer.
+HardeningTests.run()
+
 // v0.44: ConciergeTests, DownloadScheduleTests, LicenseValidatorTests,
 // RecipeParserTests moved with their sources to the private
 // Splynek/splynek-pro repo.

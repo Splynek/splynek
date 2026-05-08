@@ -194,45 +194,74 @@ struct FleetView: View {
     //     matching history entry so the row disappears.
 
     /// One displayable row in the "What this Mac is sharing" list.
-    /// Dedupes the underlying `fleet.local.completed` by outputPath,
-    /// counts collisions, sums total bytes, and stores the youngest
-    /// finishedAt for "saved at" display.
+    /// 2026-05-08 dedupe v2: groups by `sha256` when present ("same
+    /// content under different paths" — e.g. same URL downloaded
+    /// twice with Finder rename), falling back to `(filename,
+    /// totalBytes)` for legacy entries without SHA, falling back to
+    /// outputPath when even the size is missing.  Each row tracks
+    /// every URL + outputPath that mapped to it so Stop-sharing /
+    /// Trash actions can fan out across all underlying entries.
     fileprivate struct ShareRow: Identifiable {
-        let id: String              // outputPath — stable across renames
+        let id: String              // dedup key (sha256 │ filename|size │ outputPath)
         let filename: String
-        let outputPath: String
-        let url: String             // a representative URL (any one)
+        let outputPath: String      // representative path (the first that exists on disk)
+        let allURLs: [String]       // every URL pointed at this content
+        let allOutputPaths: [String]
         let totalBytes: Int64
         let copies: Int
         let mostRecent: Date
     }
 
     private var dedupedCompleted: [ShareRow] {
-        var byPath: [String: ShareRow] = [:]
+        // Build the dedup key.  SHA-256 is the strongest signal
+        // (content-addressed); fall back to (filename, totalBytes)
+        // which catches Finder-rename twins; final fallback is
+        // outputPath when neither is available.
+        func keyFor(_ done: FleetCoordinator.LocalState.CompletedFile) -> String {
+            if let sha = done.sha256, !sha.isEmpty {
+                return "sha:\(sha.lowercased())"
+            }
+            if done.totalBytes > 0 && !done.filename.isEmpty {
+                return "name:\(done.filename)|\(done.totalBytes)"
+            }
+            return "path:\(done.outputPath)"
+        }
+
+        let fm = FileManager.default
+        var byKey: [String: ShareRow] = [:]
         for done in fleet.local.completed {
-            if let existing = byPath[done.outputPath] {
-                byPath[done.outputPath] = ShareRow(
-                    id: existing.id,
+            let key = keyFor(done)
+            if let existing = byKey[key] {
+                var paths = existing.allOutputPaths
+                if !paths.contains(done.outputPath) { paths.append(done.outputPath) }
+                var urls = existing.allURLs
+                if !urls.contains(done.url) { urls.append(done.url) }
+                let representative = paths.first(where: { fm.fileExists(atPath: $0) })
+                    ?? existing.outputPath
+                byKey[key] = ShareRow(
+                    id: key,
                     filename: existing.filename,
-                    outputPath: existing.outputPath,
-                    url: existing.url,
+                    outputPath: representative,
+                    allURLs: urls,
+                    allOutputPaths: paths,
                     totalBytes: existing.totalBytes,
                     copies: existing.copies + 1,
                     mostRecent: max(existing.mostRecent, done.finishedAt)
                 )
             } else {
-                byPath[done.outputPath] = ShareRow(
-                    id: done.outputPath,
+                byKey[key] = ShareRow(
+                    id: key,
                     filename: done.filename,
                     outputPath: done.outputPath,
-                    url: done.url,
+                    allURLs: [done.url],
+                    allOutputPaths: [done.outputPath],
                     totalBytes: done.totalBytes,
                     copies: 1,
                     mostRecent: done.finishedAt
                 )
             }
         }
-        return byPath.values.sorted { $0.totalBytes > $1.totalBytes }
+        return byKey.values.sorted { $0.totalBytes > $1.totalBytes }
     }
 
     private var localActivityCard: some View {
@@ -354,7 +383,14 @@ private struct ShareableRowView: View {
                     .help("Reveal in Finder")
 
                     Button {
-                        vm.toggleFleetSharing(url: row.url)
+                        // 2026-05-08: fan out across every URL that
+                        // mapped to this dedup’d row.  The previous
+                        // single-URL toggle only excluded one of the
+                        // underlying entries, so the row stayed in
+                        // the share pool via its peers.
+                        for url in row.allURLs {
+                            vm.toggleFleetSharing(url: url)
+                        }
                     } label: {
                         Image(systemName: "eye.slash")
                     }
@@ -362,7 +398,13 @@ private struct ShareableRowView: View {
                     .help("Stop sharing this file with other Splyneks on the LAN.")
 
                     Button(role: .destructive) {
-                        vm.trashAndForgetCompletedFile(outputPath: row.outputPath)
+                        // Trash the representative path (file is the
+                        // same content under every dedup’d entry);
+                        // history rows under any of the alt paths
+                        // get pruned by trashAndForgetCompletedFile.
+                        for path in row.allOutputPaths {
+                            vm.trashAndForgetCompletedFile(outputPath: path)
+                        }
                     } label: {
                         Image(systemName: "trash")
                             .foregroundStyle(.red.opacity(0.85))
@@ -385,11 +427,15 @@ private struct ShareableRowView: View {
                 vm.revealInFinder(outputPath: row.outputPath)
             }
             Button("Stop sharing on the LAN") {
-                vm.toggleFleetSharing(url: row.url)
+                for url in row.allURLs {
+                    vm.toggleFleetSharing(url: url)
+                }
             }
             Divider()
             Button("Move to Trash", role: .destructive) {
-                vm.trashAndForgetCompletedFile(outputPath: row.outputPath)
+                for path in row.allOutputPaths {
+                    vm.trashAndForgetCompletedFile(outputPath: path)
+                }
             }
         }
     }
