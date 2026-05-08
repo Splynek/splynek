@@ -201,10 +201,113 @@ extended to cover the census.
 | # | Tactic | Status |
 |---|---|---|
 | #1 | Categorical fallback | ✅ |
-| #2 | Homebrew Cask import | 📅 |
+| #2 | Homebrew Cask import | ✅ (4,088 hints live as JSON resource since 2026-05-08 evening) |
 | #3 | AI-suggested entries | 🚧 |
 | #4 | App Store privacy labels | 📅 |
 | #5 | Contribute button | ✅ |
 | #6 | Federated popularity census | 🚧 |
 | #7 | Wikidata SPARQL | 📅 |
 | #8 | "We don't know yet" graceful state | ✅ |
+
+## Picking up this work in a future session
+
+Read `SESSION-LOG.md → 2026-05-08 evening` first — it's the
+narrative companion to this strategic doc.  Then walk this list,
+top to bottom:
+
+### Quick wins (≤ 1 hour each)
+
+1. **Refresh the cask snapshot.**  Homebrew Cask gets ~50
+   PRs / week.  Re-run the pipeline to pick up new apps:
+
+       cd "/Users/pcgm/Claude Code"
+       cd /tmp/cask && git pull --depth 1 origin master && cd -
+       python3 Scripts/import-from-homebrew-cask.py /tmp/cask
+       python3 Scripts/emit-cask-swift.py
+       swift build && swift run splynek-test
+
+   Expect `Sources/SplynekCore/Resources/cask-hints.json` to
+   grow by ~50-100 entries per refresh.
+
+2. **Promote OSS-confirmed cask entries to first-class
+   Sovereignty.**  Filter `cask-hints.json` to entries whose
+   `cask_token` matches a known-OSS allowlist (extracted from
+   the `license:` field in the original cask Ruby — needs an
+   import-script extension to capture it; currently dropped).
+   Then emit a `SovereigntyCatalog+CaskOSS.swift` that registers
+   those entries as real `SovereigntyCatalog.Entry` instances
+   with `targetOrigin = .oss`.
+
+3. **Run #4 (privacy labels) against installed apps.**  The
+   skeleton in `Scripts/scrape-app-store-privacy-labels.py`
+   needs the network calls fleshed out.  Input list = the union
+   of:
+
+   - `cask-hints.json` entries with adamID-resolvable bundle IDs
+   - Apps from a typical Mac scan (Settings → Sovereignty →
+     Export CSV)
+
+   First batch: 500 apps × ~3 sec/lookup × retries = ~30 min
+   wall time.  Output: a TrustCatalog augmentation JSON; merge
+   manually after spot-checking.
+
+4. **Run #7 (Wikidata) against the same set.**  Network-bound,
+   ~30 min for 500 apps.  Output: origin/license enrichment.
+
+### Bigger pieces (≥ 1 day each)
+
+5. **AI-suggested entries with persistence + PR flow** (#3).
+   The `SovereigntyView.uncatalogedSection` already pipes
+   uncatalogued bundleIDs through the local LLM.  Next:
+
+   - Cache LLM responses to `~/Library/Application Support/Splynek/
+     ai-catalog-suggestions.json` so re-launches don't re-prompt.
+   - Add `Confirm + open PR` button on each suggestion that
+     opens a GitHub PR with the AI-drafted catalog entry.
+   - Render an `AI · not yet verified` pill so users can
+     distinguish hand-curated from AI-drafted at a glance.
+
+   Lives in `splynek-pro` (the live LLM call requires the Pro
+   build).  Free-tier sees the foundation but not the LLM
+   round-trip.
+
+6. **Fleet popularity announcement protocol** (#6).
+   `PopularityCensus.swift` captures the local snapshot.  Next:
+
+   - Settings → Fleet → "Share popularity census with LAN peers"
+     toggle (off by default).
+   - Extend `FleetCoordinator`'s announcement loop to publish
+     the local census every 6 hours when the toggle is on.
+   - Subscribe protocol on the receiving side; aggregate the
+     union into a per-LAN view.
+
+   Privacy invariant: every record carries SHA-256 prefix
+   hashes (96-bit), never plain bundleIDs.  Tests should pin
+   that no plain-text bundleID ever appears in the over-the-
+   wire payload.
+
+7. **CI cron for #2 + #4 + #7.**  Each script is currently
+   a manual one-shot.  GitHub Actions versions:
+
+   - `cask-sync.yml` — weekly clone+import+emit+PR
+   - `privacy-labels-sync.yml` — weekly batch run against the
+     top-500 most-popular apps (driven by #6 once it has
+     enough data; manual list until then)
+   - `wikidata-enrich.yml` — monthly enrichment pass
+
+   Each opens an auto-PR; maintainer reviews + merges in batch.
+
+### Strategic checkpoints
+
+- **Sovereignty coverage**: 95% on typical Macs is the floor.
+  Worth tracking what the bottom 5% looks like — those are
+  prime contribute-button targets.
+- **Trust coverage**: 151 → ~5,000 after #4 cron runs.
+  Manual review burden grows linearly; consider a "trust
+  triage" UI where the maintainer can pre-filter low-quality
+  Apple-label scrapes before they hit the catalog.
+- **AppPricing**: still 119 entries.  No tactic above directly
+  grows it — pricing data is uniquely hard to scrape because
+  prices change weekly + are localized.  Consider exposing the
+  catalog as a CSV that paying users (Pro tier) can extend
+  collaboratively.

@@ -2389,6 +2389,191 @@ re-review (day 8+ as of 2026-05-08).  Until then `main` =
 local-only `next-release rollup`; remote is `origin/rollup/
 2026-05-08`.
 
+### 2026-05-08 evening — catalog growth strategy + Homebrew Cask import
+
+After the design-revolution arc + audit hardening + end-of-day
+polish (commit `dc62d95` already documented above), the user
+flagged that the three Ask-tab catalogs (Confiança / Soberania /
+Poupanças) had "almost laughable" coverage:
+
+> "Confiança, Soberania e Poupanças... estas são as nossas mais
+> fracas prestações. Temos tão poucas referências no catálogo
+> que é quase risível.  Acho que temos de ser criativos e
+> inteligentes e pensar fora da caixa para resolvermos o problema."
+
+Numbers at the start of the segment:
+
+| Catalog              | 2026-05-08 size | Mac App Store size |
+|----------------------|-----------------|--------------------|
+| `SovereigntyCatalog` | 1,155 entries   | ~30,000            |
+| `TrustCatalog`       | 151 entries     | ~30,000            |
+| `AppPricing`         | 119 paid apps   | ~5,000 paid        |
+
+Hand-curation cannot scale with the long tail.  Proposed eight
+tactics, user said "Faz todas!" — this is the implementation log.
+
+#### Eight tactics + status
+
+| # | Tactic | Commit | Status |
+|---|---|---|---|
+| #1 | Categorical fallback (LSApplicationCategoryType → champions) | `5055bef` | ✅ live |
+| #2 | Homebrew Cask bulk import | `5055bef` (script) + `8482199` (data) | ✅ 4,088 hints live as JSON resource |
+| #3 | AI-suggested entries | `5055bef` (design only) | 🚧 design captured; live wiring stays in splynek-pro |
+| #4 | App Store privacy labels scraper | `5055bef` (script) | 📅 needs cron infra |
+| #5 | Contribute button (one-click GitHub issue) | `5055bef` | ✅ live, enriched with cask metadata |
+| #6 | Federated popularity census (Fleet) | `5055bef` (foundation) | 🚧 file shipped, announcement protocol pending |
+| #7 | Wikidata SPARQL enrichment | `5055bef` (script) | 📅 needs cron infra |
+| #8 | "We don't know yet" graceful state | `5055bef` | ✅ live |
+
+Single source of truth for the strategy lives in
+`CATALOG-GROWTH-STRATEGY.md`.
+
+#### Architectural pieces shipped
+
+- **`Sources/SplynekCore/SovereigntyCategoryChampions.swift`**
+  16 macOS categories × 3-5 free-software champions each.  Used
+  by `SovereigntyView.categoricalRows` to fall through when the
+  hand-curated catalog has no specific entry.  Coverage jumps
+  from ~50% → ~95% of typical-Mac installed apps.
+
+- **`Sources/SplynekCore/Resources/cask-hints.json`** + thin loader
+  4,088 Homebrew Cask metadata entries (bundleID, caskToken, name,
+  homepage, downloadURL, category hint).  Loaded lazily by
+  `SovereigntyCatalog.caskHints` via Bundle.splynekCore /
+  Bundle.main fallback.  Powers the unknown-apps row enrichment
+  (real names + green "Cask" badge) and pre-fills the contribute
+  GitHub-issue body.
+
+- **`Sources/SplynekCore/Fleet/PopularityCensus.swift`**
+  Internal API for hashed-bundleID popularity tracking via Fleet.
+  SHA-256 prefix (96-bit) of bundleID + version + the (already
+  non-PII) LSApplicationCategoryType.  No bundleID in plain text
+  leaves the LAN.  Foundation only — announcement protocol +
+  Settings opt-in toggle pending follow-up.
+
+- **`Scripts/import-from-homebrew-cask.py`**
+  Clone the cask repo + run; emits `Scripts/cask-import.json`.
+  Filters non-app casks (fonts, drivers, CLI-only).  Bundle-ID
+  guess via reverse-DNS of homepage host.  86% bundle-ID coverage,
+  100% download URL coverage in the resulting JSON.
+
+- **`Scripts/scrape-app-store-privacy-labels.py`**
+  Skeleton + complete documentation for scraping Apple's publicly-
+  readable privacy labels into TrustCatalog concerns.  Maps
+  `DATA_USED_TO_TRACK_YOU` / `DATA_LINKED_TO_YOU` /
+  `DATA_NOT_LINKED_TO_YOU` to existing concern kinds with primary-
+  source citations.
+
+- **`Scripts/wikidata-sovereignty-enrich.py`**
+  Skeleton + complete documentation for SPARQL queries against
+  query.wikidata.org.  Maps country Q-IDs to
+  `SovereigntyCatalog.Origin` (full EU+EEA+UK Q-ID table inline).
+
+- **`Scripts/emit-cask-swift.py`**
+  Converts `Scripts/cask-import.json` → `Resources/cask-hints.json`
+  + thin Swift loader.  Pinned the architectural lessons from the
+  swiftc OOM saga (see below) so a future regenerator doesn't
+  regress.
+
+- **`CATALOG-GROWTH-STRATEGY.md`** — the master doc for all eight
+  tactics + coverage timeline + operational principles.  Read
+  this first if a future session needs to reason about the
+  catalog's growth model.
+
+#### The swiftc OOM saga (lesson learned)
+
+Two attempts at a Swift literal for the cask hints both blew up:
+
+1. **`static let caskHintsByBundleID: [String: CaskHint] = [...]`**
+   exit 137, OOM at ~200 GB.  Dictionary literals trigger
+   exponential type-check paths above ~1,000 entries.
+
+2. **`static let caskHints: [CaskHint] = [...]` with String fields**
+   (no URL force-unwraps anywhere in the literal) — exit 144,
+   OOM at ~200 GB *again*.  4,088 array elements alone tripped
+   constraint solving.
+
+Reference: `SovereigntyCatalog+Entries.swift` compiles fine at
+26,368 lines because the top-level array has only ~1,155 elements
+(the line count comes from nested .init() calls per entry's
+alternatives).  4× element count was the wall.
+
+**Pattern for future large datasets**: ship as a JSON resource +
+lazy decoder.  Decoder runs once on first access (~30 ms), result
+caches for the process lifetime.  The runtime dictionary index
+is built via for-loop, NOT a dictionary literal — same trap.
+
+This is now codified in `CATALOG-GROWTH-STRATEGY.md` and in
+the loader's source-comment header.
+
+#### Coverage delta
+
+| Catalog              | 2026-05-08 morning | 2026-05-08 evening |
+|----------------------|--------------------|--------------------|
+| Sovereignty specific | 1,155              | 1,155              |
+| Sovereignty cask hints | —                | **4,088**          |
+| Sovereignty categorical | —              | ~95% of installed  |
+| Sovereignty effective | ~50% of installed | ~95% of installed + 4,088 cask-enriched contribute paths |
+| Trust                | 151                | 151 (script ready) |
+| AppPricing           | 119                | 119                |
+
+#### Verification
+
+- 740 tests pass (no test changes needed — pure data + UI)
+- `swift build` clean
+- xcodebuild Splynek + Splynek-MAS + SplynekCompanion all
+  BUILD SUCCEEDED — the JSON resource is bundled into all three
+  target paths via Package.swift + project.yml resources blocks.
+- All work pushed to `origin/rollup/2026-05-08` (the backup
+  branch from earlier in the day).  Local `main` is now ~140
+  commits ahead of `origin/main`.
+
+#### Where it stands at end of session
+
+`main` carries the full 2026-05-08 arc:
+- Sidebar consolidation
+- 7 tab revolutions
+- Updates resilience hardening
+- Fleet dedupe + per-row Reveal/Stop/Trash
+- Whole-app audit + L10n catalog filling
+- Catalog growth: 8 tactics with 4 live + 1 design + 3 scripts
+- 4,088-entry Homebrew Cask metadata bundled as JSON resource
+
+`origin/rollup/2026-05-08` is the safe backup.  When Apple clears
+v1.0 MAS re-review, the cut sequence is:
+
+```bash
+git push origin main           # publish the whole rollup
+git tag v2.0 && git push --tags
+./Scripts/build.sh              # cut DMG
+xcrun notarytool submit build/Splynek.dmg --keychain-profile AC_PASSWORD --wait
+xcrun stapler staple build/Splynek.dmg
+./Scripts/build-mas.sh          # cut MAS pkg + resubmit
+```
+
+#### Open follow-ups for the next session
+
+1. **End-to-end smoke test** following the 12-checkbox checklist
+   added to SESSION-LOG by `dc62d95`.  Live UI walkthrough of
+   the design-revolution surfaces + failure-mode paths.
+2. **L10n native-speaker review** — `L10N-REVIEW.md` has a
+   38-key pt-PT checklist for Paulo to walk in 5 minutes.
+3. **Run the cron scripts** (#4 + #7) against the union of
+   cask-imported + popularly-installed apps → grow Trust 151
+   → ~5,000 + Sovereignty origins enriched.  Both scripts are
+   skeleton + docs; the live network calls + retry handling
+   live in CI infrastructure that doesn't exist yet.
+4. **Promote OSS-confirmed cask entries** to first-class
+   Sovereignty matches — currently they only enrich the
+   contribute flow.  Filter by `license:` (when extractable
+   from cask) + cross-check against #7 Wikidata results.
+5. **Wire AI-suggested entries** persistence (cache,
+   "AI · not yet verified" badge, "Confirm + open PR" button) —
+   the live LLM call already runs in Pro's `uncatalogedSection`.
+6. **Settings → Fleet → Popularity census toggle** + the Fleet
+   announcement protocol extension to share `PopularityCensus`
+   observations across the LAN.
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
