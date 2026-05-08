@@ -88,6 +88,13 @@ targets:
         type: folder
         buildPhase: resources
         optional: true
+      # 2026-05-08: 4088-entry Homebrew Cask metadata JSON, used by
+      # SovereigntyCatalog+CaskHints.swift's runtime loader to enrich
+      # the contribute flow.  SwiftPM picks this up via Package.swift
+      # resources block; for Xcode (this section) we declare it as an
+      # explicit resource so MAS builds bundle it too.
+      - path: Sources/SplynekCore/Resources/cask-hints.json
+        buildPhase: resources
     info:
       path: Resources/Generated-Info.plist
       properties:
@@ -171,6 +178,10 @@ targets:
         type: folder
         buildPhase: resources
         optional: true
+      # 2026-05-08: cask-hints JSON resource (mirrored from Splynek
+      # macOS target so MAS bundles it too).
+      - path: Sources/SplynekCore/Resources/cask-hints.json
+        buildPhase: resources
     info:
       path: Resources/Generated-Info-MAS.plist
       properties:

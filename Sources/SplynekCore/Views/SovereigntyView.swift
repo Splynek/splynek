@@ -436,6 +436,11 @@ struct SovereigntyView: View {
 
     @ViewBuilder
     private func unknownAppRow(_ app: SovereigntyScanner.InstalledApp) -> some View {
+        // 2026-05-08: enrich the row with Homebrew Cask metadata
+        // when we have it.  ~4000 apps in our cask-hint index get
+        // a homepage + downloadURL + better name out of the box,
+        // and the contribute body pre-fills with that data.
+        let hint = SovereigntyCatalog.caskHint(forBundleID: app.id)
         HStack(spacing: 8) {
             let nsIcon = NSWorkspace.shared.icon(forFile: app.bundleURL.path)
             Image(nsImage: nsIcon)
@@ -443,15 +448,25 @@ struct SovereigntyView: View {
                 .frame(width: 20, height: 20)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
             VStack(alignment: .leading, spacing: 1) {
-                Text(app.name)
-                    .font(.callout.weight(.medium))
+                HStack(spacing: 4) {
+                    Text(hint?.name ?? app.name)
+                        .font(.callout.weight(.medium))
+                    if hint != nil {
+                        Text("Cask")
+                            .font(.caption2.weight(.medium))
+                            .padding(.horizontal, 4).padding(.vertical, 1)
+                            .background(Capsule().fill(Color.green.opacity(0.18)))
+                            .foregroundStyle(.green)
+                            .help("Splynek has Homebrew Cask metadata for this app — homepage + download URL pre-filled in the contribute issue.")
+                    }
+                }
                 Text(app.id)
                     .font(.caption2.monospaced())
                     .foregroundStyle(.secondary)
                     .lineLimit(1).truncationMode(.middle)
             }
             Spacer()
-            Link(destination: contributeURL(for: app)) {
+            Link(destination: contributeURL(for: app, caskHint: hint)) {
                 Label("Contribute", systemImage: "arrow.up.right.square")
                     .font(.caption)
             }
@@ -468,17 +483,29 @@ struct SovereigntyView: View {
     }
 
     /// Builds a GitHub-issue URL pre-filled with the app's metadata
-    /// so a contributor can open + edit + submit in one click.  Falls
-    /// back to a generic "/issues/new" when URL encoding fails (very
-    /// unusual — only if the bundleID has invalid UTF-8).
-    private func contributeURL(for app: SovereigntyScanner.InstalledApp) -> URL {
+    /// so a contributor can open + edit + submit in one click.  When
+    /// a CaskHint is available, the body pre-fills the homepage,
+    /// download URL, and category hint — saving the contributor that
+    /// research.  Falls back to a generic "/issues/new" when URL
+    /// encoding fails (very unusual — only if the bundleID has
+    /// invalid UTF-8).
+    private func contributeURL(
+        for app: SovereigntyScanner.InstalledApp,
+        caskHint: CaskHint? = nil
+    ) -> URL {
         let title = "Catalog entry: \(app.id)"
+        let displayName = caskHint?.name ?? app.name
+        let homepage = caskHint?.homepageString ?? "<add publisher URL>"
+        let downloadHint = caskHint?.downloadURLString ?? "<add direct .dmg / .pkg / .zip URL>"
+        let category = app.lsCategory ?? caskHint?.categoryHint.map { "public.app-category.\($0)" } ?? "(not declared)"
+        let caskRow = caskHint.map { "**Homebrew Cask**: `\($0.caskToken)` (auto-imported metadata)\n" } ?? ""
         let body = """
-        **App**: \(app.name)
+        **App**: \(displayName)
         **Bundle ID**: `\(app.id)`
         **Version**: \(app.version ?? "unknown")
-        **Category**: \(app.lsCategory ?? "(not declared)")
-        **Homepage**: <add publisher URL>
+        **Category**: \(category)
+        \(caskRow)**Homepage**: \(homepage)
+        **Download URL**: \(downloadHint)
 
         Splynek doesn't have a catalog entry for this app yet. Adding to:
 

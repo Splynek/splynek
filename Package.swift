@@ -44,7 +44,10 @@ let package = Package(
             // truth for the schema across iOS + macOS.
             dependencies: ["SplynekCompanionCore"],
             path: "Sources/SplynekCore",
-            resources: [.process("Localizable.xcstrings")]
+            resources: [
+                .process("Localizable.xcstrings"),
+                .process("Resources/cask-hints.json"),
+            ]
         ),
         .target(
             name: "SplynekCompanionCore",
