@@ -69,10 +69,7 @@ struct InstallView: View {
                     resultCard(result: result)
                 }
 
-                installedAppsList
-                if !installedRecords.isEmpty {
-                    autoUpdateActivityCard
-                }
+                installedAppsCard
             }
             .padding(20)
         }
@@ -277,124 +274,216 @@ struct InstallView: View {
         }
     }
 
-    // MARK: - Installed apps list
+    // MARK: - Installed apps card
+    //
+    // 2026-05-08 revolution.  Was two cards (installed-apps list +
+    // auto-update activity), with errors floating in the second card
+    // disconnected from the apps they belonged to.  Now one card:
+    // each app is its own block; per-app errors render inline with
+    // human-readable language; the sweep summary + Check now button
+    // sit in the card header.  The /var/folders temp paths the
+    // engine emits are scrubbed before being shown.
 
     @ViewBuilder
-    private var installedAppsList: some View {
+    private var installedAppsCard: some View {
         let records = installedRecords
-        if !records.isEmpty {
-            TitledCard(title: "Installed via Splynek (\(records.count))", systemImage: "checkmark.shield") {
-                VStack(alignment: .leading, spacing: 10) {
-                    ForEach(records) { r in
-                        HStack(alignment: .center, spacing: 10) {
-                            // 2026-05-06 fix: was `Image(systemName: "app")`
-                            // which renders as an empty rounded square —
-                            // looks identical to an unchecked checkbox,
-                            // so users tried to click it expecting
-                            // selection.  Now show the real app icon
-                            // pulled from the .app bundle, with a
-                            // filled-app SF Symbol fallback so the
-                            // checkbox confusion never happens.
-                            installedAppIcon(for: r)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(r.spec.name).font(.callout.weight(.medium))
-                                if let v = r.installedVersion {
-                                    Text("v\(v)")
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            Spacer()
-                            // v1.8.3: per-record auto-update toggle.
-                            // Flipping persists immediately to the
-                            // registry; the next periodic sweep picks
-                            // up the change.  Tooltip clarifies what
-                            // gets checked when on.
-                            Toggle("Auto-update", isOn: Binding(
-                                get: { r.autoUpdate },
-                                set: { newVal in
-                                    InstalledAppRegistry.setAutoUpdate(r.id, enabled: newVal)
-                                    bumpRegistryRefresh()
-                                }
-                            ))
-                            .toggleStyle(.switch)
-                            .controlSize(.mini)
-                            .help("When on, Splynek re-runs the installer pipeline every 6 hours and replaces this app if the publisher's URL serves new bytes.")
-                            Text(relativeDate(r.installedDate))
-                                .font(.caption2.monospacedDigit())
-                                .foregroundStyle(.secondary)
-                                .frame(width: 70, alignment: .trailing)
-                        }
+        TitledCard(
+            title: "Installed via Splynek",
+            systemImage: "checkmark.shield",
+            accessory: AnyView(
+                HStack(spacing: 6) {
+                    if !records.isEmpty {
+                        Text("\(records.count)")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                    Button {
+                        Task { await vm.runAutoUpdateSweep() }
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                    .buttonStyle(.splynekHover)
+                    .help("Check every auto-updating app for new versions now.")
+                }
+            )
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                if records.isEmpty {
+                    Text("Nothing tracked yet. Drop a .dmg, .zip, or .app above and Splynek will keep the install record here.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    ForEach(Array(records.enumerated()), id: \.element.id) { idx, r in
+                        if idx > 0 { Divider().opacity(0.3) }
+                        installedAppRow(r)
+                    }
+                    Divider().opacity(0.3)
+                    HStack(spacing: 6) {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .foregroundStyle(.secondary)
+                        Text(autoUpdateSummaryKey)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
                     }
                 }
             }
         }
     }
 
+    /// One self-contained block per installed app.  Layout: icon +
+    /// name with status pill on the right, subtitle line with version
+    /// + source host + relative install date, optional inline error
+    /// when the last sweep flagged this app, then the auto-update
+    /// toggle and a `⋯` menu (Reveal · Forget).
     @ViewBuilder
-    private var autoUpdateActivityCard: some View {
-        TitledCard(title: "Auto-update activity", systemImage: "arrow.triangle.2.circlepath") {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    // v1.9.x: route the dynamic summary string
-                    // through LocalizedStringKey so each variant
-                    // localises against the catalog.  See the four
-                    // returnNoApps / returnAllCurrent / returnSweep
-                    // / returnOptedIn cases in
-                    // `autoUpdateSummaryKey` for the format-spec
-                    // catalog entries.
-                    Text(autoUpdateSummaryKey)
-                        .font(.callout)
-                        .foregroundStyle(.primary)
-                    Spacer()
-                    Button {
-                        Task { await vm.runAutoUpdateSweep() }
-                    } label: {
-                        Label("Check now", systemImage: "arrow.clockwise")
-                    }
-                    .controlSize(.small)
-                }
-                if let sweep = vm.lastAutoUpdateSweep {
-                    if !sweep.updates.isEmpty {
-                        Divider()
-                        ForEach(sweep.updates.indices, id: \.self) { i in
-                            let upd = sweep.updates[i]
-                            HStack(alignment: .top, spacing: 8) {
-                                Image(systemName: updateIcon(for: upd))
-                                    .foregroundStyle(updateColour(for: upd))
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(upd.record.spec.name)
-                                        .font(.callout.weight(.semibold))
-                                    Text(updateDescription(for: upd))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                            }
+    private func installedAppRow(_ r: InstalledAppRecord) -> some View {
+        let health = healthFor(r)
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .center, spacing: 10) {
+                installedAppIcon(for: r)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(r.spec.name).font(.callout.weight(.semibold))
+                    HStack(spacing: 6) {
+                        if let v = r.installedVersion {
+                            Text("v\(v)")
+                                .font(.caption2.monospaced())
+                                .foregroundStyle(.secondary)
                         }
-                    }
-                    if !sweep.errors.isEmpty {
-                        Divider()
-                        ForEach(sweep.errors.indices, id: \.self) { i in
-                            let entry = sweep.errors[i]
-                            HStack(alignment: .top, spacing: 8) {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundStyle(.orange)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(entry.record.spec.name)
-                                        .font(.callout.weight(.semibold))
-                                    Text(entry.message)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                        .lineLimit(2)
-                                }
-                                Spacer()
-                            }
+                        if let host = r.spec.downloadURL.host {
+                            Text("·").foregroundStyle(.tertiary).font(.caption2)
+                            Text(host)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
                         }
+                        Text("·").foregroundStyle(.tertiary).font(.caption2)
+                        Text(relativeDate(r.installedDate))
+                            .font(.caption2.monospacedDigit())
+                            .foregroundStyle(.secondary)
                     }
                 }
+                Spacer()
+                StatusPill(text: health.label, style: health.pillStyle)
+                Menu {
+                    Button("Reveal in Finder") {
+                        if FileManager.default.fileExists(atPath: r.installedAt.path) {
+                            NSWorkspace.shared.activateFileViewerSelecting([r.installedAt])
+                        }
+                    }
+                    .disabled(!FileManager.default.fileExists(atPath: r.installedAt.path))
+                    Button(r.autoUpdate ? "Disable auto-update" : "Enable auto-update") {
+                        InstalledAppRegistry.setAutoUpdate(r.id, enabled: !r.autoUpdate)
+                        bumpRegistryRefresh()
+                    }
+                    Divider()
+                    Button("Forget this app", role: .destructive) {
+                        InstalledAppRegistry.remove(id: r.id)
+                        bumpRegistryRefresh()
+                    }
+                    .help("Removes the entry from Splynek's registry. Does NOT uninstall the .app — drag it to the Trash separately.")
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .foregroundStyle(.secondary)
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .frame(width: 24)
+            }
+            // Inline error from the last sweep, humanised.
+            if case .updateBlocked(let humanReason) = health {
+                Text(humanReason)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.leading, 38)
+            }
+            if case .missing = health {
+                Text("This app is no longer at \(r.installedAt.path). Forget the entry to clean it up.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.leading, 38)
+            }
+            HStack(spacing: 8) {
+                Toggle("Auto-update", isOn: Binding(
+                    get: { r.autoUpdate },
+                    set: { newVal in
+                        InstalledAppRegistry.setAutoUpdate(r.id, enabled: newVal)
+                        bumpRegistryRefresh()
+                    }
+                ))
+                .toggleStyle(.switch)
+                .controlSize(.mini)
+                .disabled(!FileManager.default.fileExists(atPath: r.installedAt.path))
+                .help("When on, Splynek re-runs the installer pipeline every 6 hours and replaces this app if the publisher's URL serves new bytes.")
+                Spacer()
+            }
+            .padding(.leading, 38)
+        }
+    }
+
+    /// Health classification for a single registry entry.  Drives the
+    /// status pill and the inline message.
+    private enum InstalledAppHealth {
+        case healthy
+        case updateBlocked(humanReason: String)
+        case missing
+        var label: String {
+            switch self {
+            case .healthy: return "ACTIVE"
+            case .updateBlocked: return "UPDATE BLOCKED"
+            case .missing: return "MISSING"
             }
         }
+        var pillStyle: StatusPill.Style {
+            switch self {
+            case .healthy: return .success
+            case .updateBlocked: return .warning
+            case .missing: return .danger
+            }
+        }
+    }
+
+    private func healthFor(_ r: InstalledAppRecord) -> InstalledAppHealth {
+        if !FileManager.default.fileExists(atPath: r.installedAt.path) {
+            return .missing
+        }
+        if let sweep = vm.lastAutoUpdateSweep,
+           let err = sweep.errors.first(where: { $0.record.id == r.id }) {
+            return .updateBlocked(humanReason: humanizeUpdateError(err.message))
+        }
+        return .healthy
+    }
+
+    /// Translate the raw `AutoUpdateScheduler` error into a single
+    /// readable sentence.  Strips `/var/folders/...` temp paths
+    /// (they're internal autoupdate scratch dirs) and pattern-matches
+    /// the few common engine outputs.  Fallback: returns the cleaned
+    /// raw message — at least it doesn't have the path noise.
+    private func humanizeUpdateError(_ raw: String) -> String {
+        var s = raw
+        // Strip absolute paths to the autoupdate temp dir.  The exact
+        // shape is `/var/folders/<a>/<b>/T/splynek-autoupdate-<UUID>/<file>`
+        // (and the `/private` symlinked variant), which adds zero
+        // information for the user.
+        s = s.replacingOccurrences(
+            of: #"(?:/private)?/var/folders/[^\s:]+"#,
+            with: "the downloaded file",
+            options: .regularExpression
+        )
+        let lower = s.lowercased()
+        if lower.contains("rejected") && lower.contains("no usable signature") {
+            return "Splynek blocked this update: the source URL no longer serves a binary with a verifiable signature. Disable auto-update or remove the entry."
+        }
+        if lower.contains("rejected") && lower.contains("digest") {
+            return "Splynek blocked this update: the downloaded file's hash does not match the expected digest."
+        }
+        if lower.contains("timed out") || lower.contains("timeout") {
+            return "Couldn't reach the source server in time. Try again in a few minutes."
+        }
+        if lower.contains("connection") || lower.contains("network") {
+            return "Network error contacting the source. Check your connection and retry."
+        }
+        return s
     }
 
     /// Auto-update summary, returned as a LocalizedStringKey so the
@@ -441,30 +530,6 @@ struct InstallView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 22, height: 22)
                 .foregroundStyle(.tint.opacity(0.7))
-        }
-    }
-
-    private func updateIcon(for u: AutoUpdateScheduler.Sweep.Update) -> String {
-        switch u.result {
-        case .success: return "checkmark.circle.fill"
-        case .failure: return "xmark.octagon.fill"
-        }
-    }
-
-    private func updateColour(for u: AutoUpdateScheduler.Sweep.Update) -> Color {
-        switch u.result {
-        case .success: return .green
-        case .failure: return .red
-        }
-    }
-
-    private func updateDescription(for u: AutoUpdateScheduler.Sweep.Update) -> String {
-        switch u.result {
-        case .success(let rec):
-            return "Updated to digest \(u.newDigest.prefix(12))…"
-                + (rec.installedVersion.map { " (v\($0))" } ?? "")
-        case .failure(let err):
-            return err.errorDescription ?? "Update failed."
         }
     }
 

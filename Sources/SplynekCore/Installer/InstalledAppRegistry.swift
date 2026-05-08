@@ -24,8 +24,19 @@ import Foundation
 /// Splynek's auto-update flow.
 enum InstalledAppRegistry {
 
+    /// 2026-05-08: tests used to write to the production registry path
+    /// because `_resetForTesting()` only wiped the file before the
+    /// suite continued upserting fixtures.  Result: `Bork` + `Good`
+    /// fixtures leaked into real users' `~/Library/Application
+    /// Support/Splynek/installed-apps.json`.  Setting this to a tmp
+    /// URL inside `_resetForTesting()` redirects all reads + writes
+    /// for the rest of the process; the user's real registry is
+    /// untouched.  Production code never sets this.
+    static var _testOverrideURL: URL?
+
     /// Path on disk.  Mirrors the convention used by `DownloadHistory`.
     static var storeURL: URL {
+        if let override = _testOverrideURL { return override }
         let fm = FileManager.default
         let appSupport = (try? fm.url(
             for: .applicationSupportDirectory,
@@ -118,10 +129,27 @@ enum InstalledAppRegistry {
         try? data.write(to: storeURL, options: .atomic)
     }
 
-    /// Test-only helper: clear the on-disk store.  Used by
-    /// `InstalledAppRegistryTests` to reset between cases.
+    /// Test-only helper: redirect the registry to a unique tmp file
+    /// AND wipe it.  Tests that previously wrote to the user's real
+    /// `~/Library/Application Support/Splynek/installed-apps.json`
+    /// (via the `swift run splynek-test` binary, which runs
+    /// unsandboxed) now stay isolated for the rest of the process.
+    /// Each call generates a fresh UUID-named file under
+    /// `FileManager.default.temporaryDirectory` so order-independence
+    /// is preserved without inter-test cleanup.
     static func _resetForTesting() {
-        try? FileManager.default.removeItem(at: storeURL)
+        let tmp = FileManager.default.temporaryDirectory
+            .appendingPathComponent("splynek-test-registry-\(UUID().uuidString).json")
+        _testOverrideURL = tmp
+        try? FileManager.default.removeItem(at: tmp)
+    }
+
+    /// User-facing helper: wipe every record.  Used by the Install
+    /// tab's "Reset registry" button when the user wants to clear the
+    /// list (e.g. after one of the leaked `Bork` / `Good` fixtures
+    /// landed in their real registry pre-2026-05-08 fix).
+    static func wipeAll() {
+        save([])
     }
 }
 
