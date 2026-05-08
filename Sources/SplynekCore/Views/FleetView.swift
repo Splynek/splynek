@@ -179,10 +179,78 @@ struct FleetView: View {
     }
 
     // MARK: Local activity
+    //
+    // 2026-05-08 revolution.  Three problems with the prior layout:
+    //   - Same file appearing 4× when Finder had renamed (`X (1).zip`)
+    //     made the card look broken.  Now deduped by `outputPath`
+    //     with a "× N" badge + "saved at <date>" tooltip.
+    //   - The eye-slash button was styled as `.foregroundStyle(.secondary)`
+    //     which made it indistinguishable from the byte-count text
+    //     next to it.  Users couldn't tell it was a button.  Now each
+    //     row has a hover-revealed action group: Reveal · Stop sharing
+    //     · Trash, with explicit labels and a context-menu mirror.
+    //   - No way to reclaim disk space.  Trash now moves the file to
+    //     the macOS Trash via `NSWorkspace.recycle` and prunes every
+    //     matching history entry so the row disappears.
+
+    /// One displayable row in the "What this Mac is sharing" list.
+    /// Dedupes the underlying `fleet.local.completed` by outputPath,
+    /// counts collisions, sums total bytes, and stores the youngest
+    /// finishedAt for "saved at" display.
+    fileprivate struct ShareRow: Identifiable {
+        let id: String              // outputPath — stable across renames
+        let filename: String
+        let outputPath: String
+        let url: String             // a representative URL (any one)
+        let totalBytes: Int64
+        let copies: Int
+        let mostRecent: Date
+    }
+
+    private var dedupedCompleted: [ShareRow] {
+        var byPath: [String: ShareRow] = [:]
+        for done in fleet.local.completed {
+            if let existing = byPath[done.outputPath] {
+                byPath[done.outputPath] = ShareRow(
+                    id: existing.id,
+                    filename: existing.filename,
+                    outputPath: existing.outputPath,
+                    url: existing.url,
+                    totalBytes: existing.totalBytes,
+                    copies: existing.copies + 1,
+                    mostRecent: max(existing.mostRecent, done.finishedAt)
+                )
+            } else {
+                byPath[done.outputPath] = ShareRow(
+                    id: done.outputPath,
+                    filename: done.filename,
+                    outputPath: done.outputPath,
+                    url: done.url,
+                    totalBytes: done.totalBytes,
+                    copies: 1,
+                    mostRecent: done.finishedAt
+                )
+            }
+        }
+        return byPath.values.sorted { $0.totalBytes > $1.totalBytes }
+    }
 
     private var localActivityCard: some View {
-        TitledCard(title: "What this Mac is sharing", systemImage: "tray.and.arrow.up") {
-            if fleet.local.active.isEmpty && fleet.local.completed.isEmpty {
+        let rows = dedupedCompleted
+        let totalBytes = rows.reduce(Int64(0)) { $0 + $1.totalBytes }
+
+        return TitledCard(
+            title: "What this Mac is sharing",
+            systemImage: "tray.and.arrow.up",
+            accessory: rows.isEmpty
+                ? nil
+                : AnyView(
+                    Text("\(rows.count) · \(formatBytes(totalBytes))")
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                  )
+        ) {
+            if fleet.local.active.isEmpty && rows.isEmpty {
                 Text("Nothing yet. Start a download — other Splyneks on this LAN will see it and can pull completed chunks from this Mac once they land on disk.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
@@ -200,36 +268,9 @@ struct FleetView: View {
                                 .monospacedDigit()
                         }
                     }
-                    ForEach(fleet.local.completed.prefix(10), id: \.url) { done in
-                        HStack(spacing: 8) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
-                            Text(done.filename).font(.callout)
-                                .lineLimit(1).truncationMode(.middle)
-                            Spacer()
-                            Text(formatBytes(done.totalBytes))
-                                .font(.caption).foregroundStyle(.secondary)
-                                .monospacedDigit()
-                            // v0.46: per-file "stop sharing" button.
-                            // Clicking this removes the file from
-                            // fleet offerings on this Mac but keeps
-                            // the file + the history entry intact.
-                            // The exclusion list is persisted; a
-                            // re-toggle from History puts the file
-                            // back in the share pool.
-                            Button(role: .destructive) {
-                                vm.toggleFleetSharing(url: done.url)
-                            } label: {
-                                Image(systemName: "eye.slash")
-                                    .foregroundStyle(.secondary)
-                            }
-                            .buttonStyle(.splynekHover)
-                            .help("Stop sharing this file with other Splyneks on the LAN. The file and history entry are kept; only fleet sharing stops.")
-                        }
+                    ForEach(rows) { row in
+                        ShareableRowView(row: row, vm: vm)
                     }
-                    // v0.46: if any files are excluded, surface a
-                    // small restore link at the bottom so users can
-                    // undo without digging through history.
                     if !vm.fleetExcludedURLs.isEmpty {
                         Divider().opacity(0.3)
                         HStack(spacing: 6) {
@@ -269,5 +310,87 @@ struct FleetView: View {
                 ? "1 active swarm:"
                 : "\(listings.count) active swarms:"] + lines)
             .joined(separator: "\n")
+    }
+}
+
+// MARK: - ShareableRowView (separate so @State / .onHover compose cleanly)
+//
+// SwiftUI doesn't allow @State inside a @ViewBuilder local function;
+// extracting the hover-state-bearing row to a tiny struct keeps the
+// FleetView body readable.
+
+private struct ShareableRowView: View {
+    let row: FleetView.ShareRow
+    @ObservedObject var vm: SplynekViewModel
+
+    @State private var hovered: Bool = false
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+            Text(row.filename)
+                .font(.callout)
+                .lineLimit(1).truncationMode(.middle)
+            if row.copies > 1 {
+                Text("×\(row.copies)")
+                    .font(.caption2.monospacedDigit().weight(.semibold))
+                    .padding(.horizontal, 5).padding(.vertical, 1)
+                    .background(
+                        Capsule().fill(Color.secondary.opacity(0.15))
+                    )
+                    .help("\(row.copies) history entries point at this same file. Trashing here removes them all.")
+            }
+            Spacer()
+
+            if hovered {
+                HStack(spacing: 4) {
+                    Button {
+                        vm.revealInFinder(outputPath: row.outputPath)
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                    .buttonStyle(.splynekHover)
+                    .help("Reveal in Finder")
+
+                    Button {
+                        vm.toggleFleetSharing(url: row.url)
+                    } label: {
+                        Image(systemName: "eye.slash")
+                    }
+                    .buttonStyle(.splynekHover)
+                    .help("Stop sharing this file with other Splyneks on the LAN.")
+
+                    Button(role: .destructive) {
+                        vm.trashAndForgetCompletedFile(outputPath: row.outputPath)
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundStyle(.red.opacity(0.85))
+                    }
+                    .buttonStyle(.splynekHover)
+                    .keyboardShortcut(.delete, modifiers: .command)
+                    .help("Move the file to the Trash and remove it from Splynek's history.")
+                }
+            } else {
+                Text(formatBytes(row.totalBytes))
+                    .font(.caption).foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
+        }
+        .padding(.vertical, 2)
+        .contentShape(Rectangle())
+        .onHover { hovered = $0 }
+        .contextMenu {
+            Button("Reveal in Finder") {
+                vm.revealInFinder(outputPath: row.outputPath)
+            }
+            Button("Stop sharing on the LAN") {
+                vm.toggleFleetSharing(url: row.url)
+            }
+            Divider()
+            Button("Move to Trash", role: .destructive) {
+                vm.trashAndForgetCompletedFile(outputPath: row.outputPath)
+            }
+        }
     }
 }

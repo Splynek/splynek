@@ -523,6 +523,39 @@ final class SplynekViewModel: ObservableObject {
         publishFleetState()
     }
 
+    /// Move the file to the macOS Trash AND prune EVERY history entry
+    /// that pointed at this `outputPath`, so it stops appearing in the
+    /// Fleet card.  Uses `NSWorkspace.recycle(_:)` so the user can
+    /// recover the file from the Trash if needed.  Silent on failure
+    /// (e.g. file already gone) — we still prune the history entries
+    /// so the row disappears from the UI.
+    ///
+    /// We match by `outputPath` rather than `url` because Finder
+    /// rename collisions (`X (1).zip`, `X (2).zip`) can produce
+    /// multiple history rows pointing at the SAME file path; trashing
+    /// any of those should clean them all up.
+    ///
+    /// Used by the FleetView per-row Trash button (2026-05-08).
+    func trashAndForgetCompletedFile(outputPath: String) {
+        let url = URL(fileURLWithPath: outputPath)
+        if FileManager.default.fileExists(atPath: outputPath) {
+            NSWorkspace.shared.recycle([url], completionHandler: nil)
+        }
+        let victims = history.filter { $0.outputPath == outputPath }.map(\.id)
+        for id in victims { DownloadHistory.remove(id: id) }
+        history = DownloadHistory.load()
+        publishFleetState()
+    }
+
+    /// Reveal a file in Finder.  No-op when the file no longer exists
+    /// — caller should hide the action in that case.  Used by the
+    /// FleetView per-row "Reveal" affordance.
+    func revealInFinder(outputPath: String) {
+        let url = URL(fileURLWithPath: outputPath)
+        guard FileManager.default.fileExists(atPath: outputPath) else { return }
+        NSWorkspace.shared.activateFileViewerSelecting([url])
+    }
+
     // MARK: AI
 
     /// Local-AI assistant backed by Ollama on localhost. See

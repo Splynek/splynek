@@ -33,6 +33,17 @@ enum DownloadHistory {
         }
     }
 
+    /// Remove a single history entry by its UUID.  Used by the Fleet
+    /// tab's per-row Trash action — when the user trashes a shared
+    /// file, the entry is also pruned so it stops re-appearing in the
+    /// pool the next time `publishFleetState()` runs.
+    static func remove(id: UUID) {
+        let filtered = load().filter { $0.id != id }
+        if let data = try? JSONEncoder.iso8601.encode(filtered) {
+            try? data.write(to: storeURL, options: .atomic)
+        }
+    }
+
     /// Aggregate a lane-performance profile for the given host, if we have
     /// prior data. Returns per-interface average throughput (bytes/sec).
     ///
