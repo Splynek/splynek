@@ -7,6 +7,10 @@ struct HistoryView: View {
     @State private var previewURL: URL?
     /// Entry the user just tapped — drives `HistoryDetailSheet`.
     @State private var detailEntry: HistoryEntry?
+    /// Drives the "Clear all history" confirmation alert (2026-05-08).
+    /// Required because clearing is destructive; we won't accept a
+    /// stray click without explicit confirmation.
+    @State private var confirmingClearAll: Bool = false
 
     var body: some View {
         ScrollView {
@@ -201,9 +205,35 @@ struct HistoryView: View {
         return TitledCard(
             title: searchText.isEmpty ? "Recent" : "Results",
             systemImage: "list.bullet.rectangle",
-            accessory: searchText.isEmpty ? nil : AnyView(
-                Text("\(results.count) of \(vm.history.count)")
-                    .font(.caption).foregroundStyle(.secondary)
+            accessory: AnyView(
+                HStack(spacing: 6) {
+                    // 2026-05-08: always show count.  Without it the
+                    // section read as "recent" but actually contained
+                    // every entry — confusing when the count is large.
+                    if searchText.isEmpty {
+                        Text("\(results.count)")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("\(results.count) of \(vm.history.count)")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                    if !vm.history.isEmpty {
+                        Menu {
+                            Button("Clear all history", role: .destructive) {
+                                confirmingClearAll = true
+                            }
+                            .help("Removes every entry from the history log. Does NOT delete any downloaded files — only the log.")
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .foregroundStyle(.secondary)
+                        }
+                        .menuStyle(.borderlessButton)
+                        .menuIndicator(.hidden)
+                        .frame(width: 24)
+                    }
+                }
             )
         ) {
             if results.isEmpty {
@@ -217,12 +247,24 @@ struct HistoryView: View {
                     ForEach(results, id: \.id) { entry in
                         HistoryRow(
                             entry: entry,
+                            vm: vm,
                             previewURL: $previewURL,
                             onShowDetail: { detailEntry = entry }
                         )
                     }
                 }
             }
+        }
+        .confirmationDialog(
+            "Clear all download history?",
+            isPresented: $confirmingClearAll
+        ) {
+            Button("Clear all history", role: .destructive) {
+                vm.clearAllHistory()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This removes every entry from the history log. Downloaded files on disk are NOT deleted.")
         }
     }
 }
@@ -274,8 +316,11 @@ private struct HostRow: View {
 
 private struct HistoryRow: View {
     let entry: HistoryEntry
+    @ObservedObject var vm: SplynekViewModel
     @Binding var previewURL: URL?
     var onShowDetail: () -> Void = {}
+
+    @State private var hovered: Bool = false
 
     private var fileURL: URL { URL(fileURLWithPath: entry.outputPath) }
 
@@ -330,8 +375,24 @@ private struct HistoryRow: View {
             }
             .buttonStyle(.splynekHover)
             .help("Reveal the downloaded file in Finder.")
+
+            // 2026-05-08: hover-revealed Forget button.  Only shows
+            // when the row is hovered to avoid stacking three icons
+            // for every entry; the same action lives in the right-
+            // click context menu for keyboard / VoiceOver users.
+            if hovered {
+                Button(role: .destructive) {
+                    vm.forgetHistoryEntry(id: entry.id)
+                } label: {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.red.opacity(0.8))
+                }
+                .buttonStyle(.splynekHover)
+                .help("Forget this entry. Does NOT delete the downloaded file.")
+            }
         }
         .contentShape(Rectangle())
+        .onHover { hovered = $0 }
         .onTapGesture(count: 2) { onShowDetail() }
         .padding(.vertical, 6)
         .padding(.horizontal, 10)
@@ -362,6 +423,20 @@ private struct HistoryRow: View {
             } label: {
                 Label("Copy URL", systemImage: "link")
             }
+            Divider()
+            Button(role: .destructive) {
+                vm.forgetHistoryEntry(id: entry.id)
+            } label: {
+                Label("Forget entry", systemImage: "trash")
+            }
+            .help("Remove this row from history. The downloaded file stays on disk.")
+            Button(role: .destructive) {
+                vm.trashAndForgetCompletedFile(outputPath: entry.outputPath)
+            } label: {
+                Label("Move to Trash", systemImage: "trash.slash")
+            }
+            .disabled(!FileManager.default.fileExists(atPath: entry.outputPath))
+            .help("Send the downloaded file to the macOS Trash AND forget the entry.")
         }
     }
 }

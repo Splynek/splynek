@@ -44,6 +44,16 @@ enum DownloadHistory {
         }
     }
 
+    /// Wipe every history entry.  Used by the History tab's "Clear
+    /// all" action (2026-05-08).  Does NOT touch any downloaded
+    /// files — only the on-disk history.json log.  Single rewrite
+    /// (vs N rewrites if the caller looped `remove(id:)`).
+    static func clearAll() {
+        if let data = try? JSONEncoder.iso8601.encode([HistoryEntry]()) {
+            try? data.write(to: storeURL, options: .atomic)
+        }
+    }
+
     /// Aggregate a lane-performance profile for the given host, if we have
     /// prior data. Returns per-interface average throughput (bytes/sec).
     ///

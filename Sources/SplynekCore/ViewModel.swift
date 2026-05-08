@@ -563,6 +563,25 @@ final class SplynekViewModel: ObservableObject {
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 
+    /// Remove a single history entry by its UUID.  Does NOT touch
+    /// the file on disk — caller separately decides whether the
+    /// physical file should also be trashed.  Used by the History
+    /// tab's per-row "Forget" action (2026-05-08).
+    func forgetHistoryEntry(id: UUID) {
+        DownloadHistory.remove(id: id)
+        history = DownloadHistory.load()
+        publishFleetState()
+    }
+
+    /// Wipe every entry in the history file.  Does NOT delete any
+    /// downloaded files — by design.  Used by the History tab's
+    /// "Clear all" menu item (2026-05-08).
+    func clearAllHistory() {
+        DownloadHistory.clearAll()
+        history = DownloadHistory.load()
+        publishFleetState()
+    }
+
     // MARK: AI
 
     /// Local-AI assistant backed by Ollama on localhost. See
