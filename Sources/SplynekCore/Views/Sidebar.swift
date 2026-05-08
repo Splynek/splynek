@@ -241,16 +241,27 @@ struct Sidebar: View {
                         )
                     }
                     // 2026-05-07: Apps — Install + Updates merged.
-                    // The badge counts installed apps that have a
-                    // resolvable updater attached; the segmented
-                    // control inside `AppsView` handles the
-                    // Install↔Updates switch without burning a
-                    // second sidebar row.
+                    // 2026-05-08: badge prefers pending update count
+                    // (action item) over installed count (info-only).
+                    // When updates are pending the pill becomes a
+                    // warning-style "↑ N" so it draws the eye; when
+                    // everything's current we fall back to the
+                    // monospaced installed-count text.
                     NavigationLink(value: SidebarSection.apps) {
                         sidebarRow(
                             title: "Apps",
                             systemImage: "shippingbox.fill",
                             accessory: {
+                                let updates = vm.availableUpdateCount
+                                if updates > 0 {
+                                    return AnyView(
+                                        StatusPill(
+                                            text: "↑ \(updates)",
+                                            style: .warning,
+                                            inverted: selection == .apps
+                                        )
+                                    )
+                                }
                                 let n = InstalledAppRegistry.load().count
                                 return n == 0
                                     ? nil

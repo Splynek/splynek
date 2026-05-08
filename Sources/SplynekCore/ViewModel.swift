@@ -509,6 +509,13 @@ final class SplynekViewModel: ObservableObject {
         UserDefaults.standard.stringArray(forKey: "fleetExcludedURLs") ?? []
     )
 
+    /// Number of installed apps with a newer upstream version pending.
+    /// Drives the sidebar's Apps-row badge so the user sees a count
+    /// instead of a generic "NEW" pill (2026-05-08).  UpdatesView
+    /// writes this whenever it finishes a sweep — see
+    /// `Views/UpdatesView.swift::checkAll`.
+    @Published var availableUpdateCount: Int = 0
+
     /// Toggle a completed file's fleet-sharing status. Does NOT
     /// delete the file or remove the history entry — just changes
     /// whether peers can fetch it from us.

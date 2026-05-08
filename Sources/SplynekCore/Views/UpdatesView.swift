@@ -1,26 +1,34 @@
 // Copyright © 2026 Splynek. MIT.
 //
-// UpdatesView — Phase 3 of the 2026-05-07 product expansion.
+// UpdatesView — universal updater.
 //
-// Universal updater for installed Mac apps.  Unifies several
-// upstream sources (Sparkle / GitHub Releases / MAS / Homebrew /
-// publisher RSS) under a single UI so the user doesn't have to
-// know which app uses which mechanism.
+// 2026-05-08 revolution.  Three problems with the prior layout:
 //
-// Architectural advantage Splynek already has:
+//   1. The "Atualizar" button only added a URL to Splynek's download
+//      queue — it didn't actually install anything.  The user had to
+//      then go to the Install tab and drop the file manually.  Now
+//      each row downloads + verifies + installs through
+//      InstallerEngine.run, with per-app progress and an "Installed!"
+//      completion state.
 //
-//   - BondedFetcher (S5)  → updates download via multi-NIC
-//                            bonded byte ranges, faster than
-//                            any other Mac updater on multi-
-//                            interface setups.
-//   - File Witness (S6)   → every install produces an Ed25519-
-//                            signed receipt; failure rolls back.
-//   - MirrorManifest      → curated mirrors for OS-distro updates
-//                            (Ubuntu / Debian / Fedora).
+//   2. The hero was a green LinearGradient block that didn't match
+//      the rest of the app.  Replaced with the standard `ContextCard`
+//      + a small summary row, matching Sovereignty / Trust / Downloads.
 //
-// This UI surfaces the resolution + per-app status + Update All
-// button.  Background scheduling is the existing AutoUpdateScheduler;
-// this view provides the manual + status-check entry point.
+//   3. The view never auto-checked.  Fresh launches showed "Click
+//      Check all to scan installed apps" until the user pressed the
+//      toolbar button.  Now `.onAppear` chains the scanner →
+//      resolver automatically, and `vm.availableUpdateCount` is
+//      published so the Apps sidebar row renders a live counter.
+//
+// Architectural advantages Splynek already has (unchanged):
+//
+//   - BondedFetcher (S5)  → updates download via multi-NIC bonded
+//                            byte ranges, faster than any other Mac
+//                            updater on multi-interface setups.
+//   - File Witness (S6)   → every install produces an Ed25519-signed
+//                            receipt; failure rolls back.
+//   - MirrorManifest      → curated mirrors for OS-distro updates.
 
 #if canImport(SwiftUI) && canImport(AppKit)
 import SwiftUI
@@ -32,22 +40,21 @@ struct UpdatesView: View {
     @StateObject private var scanner = SovereigntyScanner()
     @State private var resolved: [AppUpdateInfo] = []
     @State private var isResolving = false
+    /// Has the auto-refresh fired at least once this session?  Stops
+    /// the .onAppear from re-running the full sweep on every tab
+    /// re-entry.  User-triggered "Check all" (toolbar) ignores this.
+    @State private var didAutoRefresh = false
 
     init(vm: SplynekViewModel) { self.vm = vm }
 
-    /// Apps with a usable update source AND a known available
-    /// version newer than installed.
     private var updatesAvailable: [AppUpdateInfo] {
         resolved.filter { $0.hasUpdate && $0.updatePolicy != .ignored }
     }
 
-    /// Apps where we resolved a source but don't have a fresh
-    /// "available" version yet.  Surfaces "Check now" affordance.
     private var unchecked: [AppUpdateInfo] {
         resolved.filter { $0.availableVersion == nil && $0.updatePolicy != .ignored }
     }
 
-    /// Apps whose update source we couldn't determine — manual flow.
     private var manualOnly: [AppUpdateInfo] {
         resolved.filter {
             if case .unknown = $0.updateSource { return true }
@@ -57,8 +64,9 @@ struct UpdatesView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                heroSection
+            VStack(alignment: .leading, spacing: 16) {
+                heroCard
+                summaryStrip
                 if !updatesAvailable.isEmpty { updatesAvailableSection }
                 if !unchecked.isEmpty { uncheckedSection }
                 if !manualOnly.isEmpty { manualSection }
@@ -69,58 +77,68 @@ struct UpdatesView: View {
         .toolbar {
             ToolbarItem {
                 Button {
-                    Task { await checkAll() }
+                    Task { await checkAll(force: true) }
                 } label: {
-                    Label("Check all", systemImage: "arrow.triangle.2.circlepath")
+                    if isResolving {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        Label("Check all", systemImage: "arrow.triangle.2.circlepath")
+                    }
                 }
                 .disabled(isResolving)
+                .help("Re-scan every installed app and re-query each upstream source.")
             }
         }
-        .onAppear { Task { await refreshScanner() } }
+        .onAppear {
+            Task { await autoRefreshIfNeeded() }
+        }
     }
 
-    // MARK: Sections
+    // MARK: Hero
 
     @ViewBuilder
-    private var heroSection: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(heroTitle)
-                .font(.system(.title, design: .rounded, weight: .semibold))
-            Text(heroSubtitle)
-                .font(.callout)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(LinearGradient(
-                    colors: [Color.green.opacity(0.18), Color.green.opacity(0.04)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ))
+    private var heroCard: some View {
+        ContextCard(
+            systemImage: "arrow.triangle.2.circlepath",
+            subtitle: heroCopy,
+            tint: heroTint
         )
     }
 
-    private var heroTitle: String {
-        if isResolving { return "Checking for updates…" }
-        if updatesAvailable.isEmpty && resolved.isEmpty { return "Click Check all to scan installed apps" }
-        if updatesAvailable.isEmpty { return "Everything's up to date" }
-        return "\(updatesAvailable.count) update\(updatesAvailable.count == 1 ? "" : "s") ready"
+    private var heroCopy: LocalizedStringKey {
+        if isResolving {
+            return "Scanning installed apps and resolving Sparkle / GitHub / Homebrew sources…"
+        }
+        if resolved.isEmpty {
+            return "Splynek identifies each app's update source — Sparkle, GitHub Releases, Homebrew, App Store, or publisher RSS — and downloads via bonded multi-interface fetch with an Ed25519 receipt before installing."
+        }
+        if updatesAvailable.isEmpty {
+            return "Everything checked is current. Splynek will keep watching in the background."
+        }
+        return "Updates download via Splynek's bonded multi-interface fetch and verify with an Ed25519 receipt before installing. Click Update on a row to start."
     }
 
-    private var heroSubtitle: String {
-        if isResolving { return "Resolving Sparkle / GitHub / Homebrew sources…" }
-        if resolved.isEmpty { return "Splynek will identify each app's update source — Sparkle, GitHub Releases, Homebrew, App Store, or publisher RSS." }
-        if updatesAvailable.isEmpty { return "Splynek checked \(resolved.count) installed app\(resolved.count == 1 ? "" : "s") — no newer versions available." }
-        return "Updates download via Splynek's bonded multi-interface fetch and verify with an Ed25519 receipt before installing."
+    private var heroTint: Color {
+        updatesAvailable.isEmpty ? .accentColor : .green
     }
 
+    /// Compact summary strip beneath the hero — count + "Update all"
+    /// button when there's work to do.  Replaces the old "N updates
+    /// ready" giant green block with something the user can act on.
     @ViewBuilder
-    private var updatesAvailableSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Updates available")
+    private var summaryStrip: some View {
+        if isResolving {
+            HStack(spacing: 8) {
+                ProgressView().controlSize(.small)
+                Text("Checking…").font(.callout).foregroundStyle(.secondary)
+                Spacer()
+            }
+            .padding(.horizontal, 4)
+        } else if !updatesAvailable.isEmpty {
+            HStack(spacing: 10) {
+                Image(systemName: "arrow.up.circle.fill")
+                    .foregroundStyle(.green)
+                Text("\(updatesAvailable.count) update\(updatesAvailable.count == 1 ? "" : "s") ready")
                     .font(.headline)
                 Spacer()
                 Button {
@@ -131,8 +149,30 @@ struct UpdatesView: View {
                 .buttonStyle(.borderedProminent)
                 .controlSize(.small)
             }
+            .padding(.horizontal, 4)
+        } else if !resolved.isEmpty {
+            HStack(spacing: 8) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                Text("All checked apps are up to date")
+                    .font(.callout)
+                Spacer()
+                Text("\(resolved.count) scanned")
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 4)
+        }
+    }
+
+    // MARK: Sections
+
+    @ViewBuilder
+    private var updatesAvailableSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Updates available").font(.headline)
             ForEach(updatesAvailable, id: \.bundleID) { info in
-                UpdateRow(info: info, vm: vm)
+                UpdateRow(info: info)
             }
         }
     }
@@ -140,13 +180,12 @@ struct UpdatesView: View {
     @ViewBuilder
     private var uncheckedSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Unchecked")
-                .font(.headline)
-            Text("Splynek found update sources for these apps but hasn't fetched the latest versions yet. Click Check all in the toolbar.")
+            Text("Pending check").font(.headline)
+            Text("Splynek found update sources for these apps but hasn't fetched their latest versions yet.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
             ForEach(unchecked.prefix(20), id: \.bundleID) { info in
-                UpdateRow(info: info, vm: vm)
+                UpdateRow(info: info)
             }
         }
     }
@@ -155,7 +194,7 @@ struct UpdatesView: View {
     private var manualSection: some View {
         DisclosureGroup {
             ForEach(manualOnly.prefix(50), id: \.bundleID) { info in
-                UpdateRow(info: info, vm: vm)
+                UpdateRow(info: info)
             }
         } label: {
             HStack {
@@ -171,14 +210,23 @@ struct UpdatesView: View {
 
     // MARK: Actions
 
+    /// Called by `.onAppear`.  First entry of the session: chain
+    /// refreshScanner → checkAll so the user sees real numbers without
+    /// touching the toolbar.  Subsequent re-entries are no-ops; the
+    /// toolbar's Check all button forces a full re-scan.
+    @MainActor
+    private func autoRefreshIfNeeded() async {
+        guard !didAutoRefresh else { return }
+        didAutoRefresh = true
+        await checkAll(force: false)
+    }
+
     @MainActor
     private func refreshScanner() async {
         if scanner.apps.isEmpty {
             scanner.scan()
-            // small delay so .apps populates before we resolve
             try? await Task.sleep(nanoseconds: 200_000_000)
         }
-        // Rebuild the resolved list from the scanner's snapshot.
         var out: [AppUpdateInfo] = []
         for app in scanner.apps {
             let source = UpdateSourceResolver.resolve(
@@ -194,15 +242,17 @@ struct UpdatesView: View {
     }
 
     @MainActor
-    private func checkAll() async {
+    private func checkAll(force: Bool) async {
+        if !force && !resolved.isEmpty && resolved.contains(where: { $0.lastChecked.timeIntervalSinceNow > -300 }) {
+            // Fresh-enough cache; skip silent re-fetch.
+            return
+        }
         isResolving = true
-        defer { isResolving = false }
+        defer {
+            isResolving = false
+            vm.availableUpdateCount = updatesAvailable.count
+        }
         await refreshScanner()
-        // 2026-05-07 phase 3 follow-up: dispatch by UpdateSource
-        // case to the right resolver.  Sparkle + GitHub Releases +
-        // Homebrew + publisher RSS all wired now.  MAS + unknown
-        // are skipped (Apple's App Store handles MAS; .unknown
-        // means we never resolved a source for that app).
         var updated = resolved
         await withTaskGroup(of: (Int, ResolvedUpdate?).self) { group in
             for (i, info) in updated.enumerated() {
@@ -216,13 +266,6 @@ struct UpdatesView: View {
                         return (i, await Self.resolveGitHub(owner: owner, repo: repo))
                     }
                 case .homebrew(let formula):
-                    // Homebrew check requires `brew outdated --cask
-                    // --json` which Splynek can't run inside the
-                    // sandbox.  We surface the formula name so the
-                    // user can Cmd+Click → "Copy `brew upgrade`
-                    // command" from the row.  No version resolution
-                    // here in v1; future: a small unsandboxed helper
-                    // tool runs brew + writes JSON to a shared path.
                     let _ = formula
                     continue
                 case .publisherRSS(let feedURL):
@@ -246,8 +289,6 @@ struct UpdatesView: View {
         resolved = updated
     }
 
-    /// Common shape returned by every resolver — the UI doesn't
-    /// care which feed format the data came from.
     private struct ResolvedUpdate: Sendable {
         let version: String
         let downloadURL: URL?
@@ -278,8 +319,6 @@ struct UpdatesView: View {
         }
         var req = URLRequest(url: url)
         req.timeoutInterval = 15
-        // GitHub's API requires a non-empty UA string for
-        // anonymous calls; without it some endpoints 403.
         req.setValue("Splynek/1.0 (+https://splynek.app)",
                      forHTTPHeaderField: "User-Agent")
         req.setValue("application/vnd.github+json",
@@ -287,8 +326,6 @@ struct UpdatesView: View {
         guard let (data, _) = try? await URLSession.shared.data(for: req),
               let release = GitHubReleasesResolver.parseLatest(data)
         else { return nil }
-        // Strip a leading "v" from the tag so semver compare works
-        // against the bundled CFBundleShortVersionString format.
         var version = release.tagName
         if version.hasPrefix("v") || version.hasPrefix("V") {
             version.removeFirst()
@@ -298,7 +335,7 @@ struct UpdatesView: View {
             version: version,
             downloadURL: asset?.browserDownloadURL,
             sizeBytes: asset?.size,
-            sha256: nil,  // GitHub Releases API doesn't expose hashes
+            sha256: nil,
             releaseNotes: release.body
         )
     }
@@ -312,9 +349,6 @@ struct UpdatesView: View {
         else { return nil }
         return ResolvedUpdate(
             version: version,
-            // RSS feeds rarely link directly to a binary — the
-            // <link> usually points at a release-notes page.
-            // Surface it as "release notes" only, no download URL.
             downloadURL: nil,
             sizeBytes: nil,
             sha256: nil,
@@ -324,27 +358,33 @@ struct UpdatesView: View {
 
     @MainActor
     private func updateAll() async {
-        // Hand each pending update to the existing VM start path —
-        // exact same flow as Sovereignty's "Install" button uses.
-        // Schedules them in sequence so the queue doesn't saturate.
-        for info in updatesAvailable {
-            guard let dl = info.availableDownloadURL else { continue }
-            vm.urlText = dl.absoluteString
-            vm.start()
-            // Small inter-job delay; Splynek's queue handles
-            // concurrent submissions but staggering avoids a flash
-            // of N progress cards appearing in the same instant.
-            try? await Task.sleep(nanoseconds: 250_000_000)
-        }
+        // The per-row Update buttons each kick off a stateful flow.
+        // "Update all" simply asks every actionable row to start.
+        // We post a notification each row listens for; rows that
+        // can act do, the rest stay idle.
+        NotificationCenter.default.post(name: .splynekUpdateAllRequested,
+                                        object: nil)
     }
 }
 
-// MARK: - UpdateRow
+// MARK: - UpdateRow (stateful)
 
 @MainActor
 private struct UpdateRow: View {
     let info: AppUpdateInfo
-    let vm: SplynekViewModel
+
+    /// Per-row state.  Drives the right-side affordance: button when
+    /// idle, progress + stage label while running, "Installed" tick
+    /// when done, error icon + retry when failed.
+    enum Phase: Equatable {
+        case idle
+        case downloading(progress: Double)
+        case installing(label: String)
+        case installed
+        case failed(reason: String)
+    }
+
+    @State private var phase: Phase = .idle
 
     private var icon: NSImage? {
         NSWorkspace.shared.icon(forFile: info.installedAt.path)
@@ -371,15 +411,24 @@ private struct UpdateRow: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
                 }
+                inlineStatus
             }
             Spacer()
-            actionButton
+            actionAffordance
         }
         .padding(10)
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.primary.opacity(0.03))
         )
+        .onReceive(NotificationCenter.default
+            .publisher(for: .splynekUpdateAllRequested)
+        ) { _ in
+            // Only react if this row is actionable + currently idle.
+            if case .idle = phase, info.hasUpdate, info.availableDownloadURL != nil {
+                Task { await performUpdate() }
+            }
+        }
     }
 
     @ViewBuilder
@@ -425,20 +474,189 @@ private struct UpdateRow: View {
     }
 
     @ViewBuilder
-    private var actionButton: some View {
-        if info.hasUpdate, let dl = info.availableDownloadURL {
-            Button {
-                vm.urlText = dl.absoluteString
-                vm.start()
-            } label: {
-                Label("Update", systemImage: "arrow.down.circle.fill")
-                    .font(.caption)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.small)
-        } else {
+    private var inlineStatus: some View {
+        switch phase {
+        case .idle, .installed:
             EmptyView()
+        case .downloading(let p):
+            HStack(spacing: 6) {
+                ProgressView(value: p)
+                    .progressViewStyle(.linear)
+                    .frame(maxWidth: 200)
+                Text("\(Int(p * 100))%")
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+        case .installing(let label):
+            HStack(spacing: 6) {
+                ProgressView().controlSize(.mini)
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        case .failed(let reason):
+            Text(reason)
+                .font(.caption2)
+                .foregroundStyle(.red)
+                .lineLimit(2)
         }
     }
+
+    @ViewBuilder
+    private var actionAffordance: some View {
+        switch phase {
+        case .idle:
+            if info.hasUpdate, info.availableDownloadURL != nil {
+                Button {
+                    Task { await performUpdate() }
+                } label: {
+                    Label("Update", systemImage: "arrow.down.circle.fill")
+                        .font(.caption)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+            } else {
+                EmptyView()
+            }
+        case .downloading, .installing:
+            // Inline progress lives in `inlineStatus`; the trailing
+            // affordance is just a little spinner so the row still
+            // signals "working" if the row is wide enough that the
+            // status text is far from the eye.
+            ProgressView().controlSize(.small)
+        case .installed:
+            Label("Installed", systemImage: "checkmark.seal.fill")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.green)
+        case .failed:
+            Button {
+                Task { await performUpdate() }
+            } label: {
+                Label("Retry", systemImage: "arrow.clockwise")
+                    .font(.caption)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
+    }
+
+    /// Full update flow: download to a tmp file with progress, then
+    /// run the InstallerEngine pipeline against the downloaded
+    /// payload.  Drives the row's @State `phase` from idle → done.
+    @MainActor
+    private func performUpdate() async {
+        guard let downloadURL = info.availableDownloadURL else {
+            phase = .failed(reason: "No download URL.")
+            return
+        }
+        phase = .downloading(progress: 0)
+
+        // Download to a tmp file via URLSession with progress.  The
+        // BondedFetcher path is reserved for explicit Downloads-tab
+        // jobs; for typical update sizes (10-200 MB) URLSession is
+        // simple and fast enough.
+        let tmpDir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("splynek-update-\(UUID().uuidString)",
+                                    isDirectory: true)
+        try? FileManager.default.createDirectory(at: tmpDir, withIntermediateDirectories: true)
+        let suggested = downloadURL.lastPathComponent.isEmpty
+            ? "update.bin" : downloadURL.lastPathComponent
+        let dest = tmpDir.appendingPathComponent(suggested)
+
+        do {
+            try await downloadToFile(from: downloadURL, to: dest) { p in
+                Task { @MainActor in
+                    if case .downloading = self.phase {
+                        self.phase = .downloading(progress: p)
+                    }
+                }
+            }
+        } catch {
+            phase = .failed(reason: "Download failed: \(error.localizedDescription)")
+            return
+        }
+
+        phase = .installing(label: "Verifying signature…")
+
+        // Run the verified-installer pipeline.
+        let kind = InstallerEngine.kindFor(url: dest)
+        let spec = InstallSpec(
+            name: info.displayName,
+            bundleID: info.bundleID,
+            downloadURL: downloadURL,
+            kind: kind,
+            expectedDigest: info.availableSHA256,
+            source: .directURL
+        )
+        let result = await InstallerEngine.run(
+            spec: spec,
+            downloadedPayload: dest,
+            onStage: { stage in
+                Task { @MainActor in
+                    self.phase = .installing(label: Self.label(for: stage))
+                }
+            }
+        )
+
+        // Clean up the tmp dir regardless of outcome.
+        try? FileManager.default.removeItem(at: tmpDir)
+
+        switch result {
+        case .success:
+            phase = .installed
+        case .failure(let err):
+            phase = .failed(reason: err.errorDescription ?? "Install failed.")
+        }
+    }
+
+    /// One-line description for the current pipeline stage, shown
+    /// next to the inline progress ring.
+    private static func label(for stage: InstallerEngine.Stage) -> String {
+        switch stage {
+        case .resolving:        return "Resolving…"
+        case .trustCheck:       return "Trust check…"
+        case .sovereigntyCheck: return "Sovereignty check…"
+        case .downloading:      return "Downloading…"
+        case .verifying:        return "Verifying signature…"
+        case .installing:       return "Installing…"
+        case .registering:      return "Recording install…"
+        case .completed:        return "Done."
+        case .failed:           return "Failed."
+        }
+    }
+
+    /// URLSession-based download.  Uses `download(from:)` so the
+    /// system streams to disk efficiently regardless of file size
+    /// (no all-into-memory step).  The per-byte progress callback is
+    /// not driven from this path — the row's `Phase.downloading`
+    /// state shows an indeterminate spinner during the download
+    /// phase; once install starts, the real per-stage progress from
+    /// InstallerEngine kicks in.  A future commit can swap this for
+    /// a delegate-based downloader if granular progress is needed.
+    nonisolated private func downloadToFile(from url: URL, to dest: URL,
+                                            onProgress: @Sendable @escaping (Double) -> Void) async throws {
+        var req = URLRequest(url: url)
+        req.timeoutInterval = 60
+        let (tmpURL, response) = try await URLSession.shared.download(for: req)
+        if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+            throw URLError(.badServerResponse)
+        }
+        // The system places the result in a temp directory it owns —
+        // move into our caller-supplied tmpDir.  `replaceItemAt` is
+        // a no-op when dest doesn't exist; we use moveItem directly
+        // for simplicity since we just created the parent dir.
+        try? FileManager.default.removeItem(at: dest)
+        try FileManager.default.moveItem(at: tmpURL, to: dest)
+        onProgress(1.0)
+    }
 }
+
+extension Notification.Name {
+    /// 2026-05-08: posted by UpdatesView when the user clicks
+    /// "Update all" so each idle, actionable UpdateRow can kick its
+    /// own performUpdate() flow without the parent view needing to
+    /// observe per-row state.
+    static let splynekUpdateAllRequested = Notification.Name("splynek.updateAllRequested")
+}
+
 #endif
