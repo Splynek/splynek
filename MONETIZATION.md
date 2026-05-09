@@ -3,11 +3,27 @@
 This document is an honest answer to "how does this make money?"
 Written from the perspective of a single-developer Mac app in 2026.
 
+> **2026-05-09 update**: this doc has been repositioned per
+> `STRATEGY-2026-PRO-PLUS-IPHONE.md`.  Pro is now centred on
+> **Trust Watcher** + **Sovereignty + Pro on iPhone** rather
+> than "Concierge as marquee feature".  The pricing anchor
+> ($29 one-time) is unchanged; what's new is **what users
+> actually buy** and the **iPhone Companion as a viral
+> conversion vector**.
+
 ## TL;DR
 
-- **Model**: freemium with a one-time Pro unlock at **$29**, plus an
-  optional **Splynek Teams** subscription at **$4 / user / month**
-  (annual) for the small-studio / home-lab segment.
+- **Model**: freemium with a one-time Pro unlock at **$29**.  Splynek
+  Teams (subscription) deferred indefinitely — Pro Family Sharing on
+  MAS covers 80% of the household-multi-Mac case for free.
+- **Pro marquee** (2026-05-09): **Trust Watcher** — daily diff of
+  Privacy Policies + Terms of Service for installed apps; alerts
+  when a vendor materially changes a document.  Defensible value
+  Apple Intelligence won't replicate (it's a curation problem,
+  not an LLM problem).  Plus **Pro on iPhone** — every Pro feature
+  on the Mac surfaces on the phone via the existing relay, the
+  iOS App Intents (Hey Siri), the Lock-Screen widget, and CloudKit
+  push notifications.
 - **Distribution**: Mac App Store as the primary revenue channel
   (automated payments, refunds, updates) + direct DMG via a
   Stripe/Paddle checkout for users who avoid MAS.
@@ -18,7 +34,9 @@ Written from the perspective of a single-developer Mac app in 2026.
   scale with sales.
 - **Realistic y1 revenue**: **$5k – $40k** depending on how much
   launch signal the app gets (HN front page vs not, Product Hunt
-  rank, Reddit/Twitter coverage).
+  rank, Reddit/Twitter coverage).  Conversion target: **3%**
+  (was 2%) — the iPhone Companion's "ask the Mac owner to upgrade"
+  prompt + Trust Watcher's recurring engagement justify the bump.
 
 ## The target buyer — sharper than "power user"
 
@@ -58,41 +76,75 @@ would kill organic spread.
 
 ### Pro tier — "Splynek Pro", $29 one-time
 
-- **AI Concierge** — the natural-language chat interface (v0.28).
-  This is new value, aligns with "AI" as the monetization hook, and
-  is defensible (pulling it off well requires engineering skill the
-  free competitors won't replicate quickly).
+**2026-05-09 repositioning** (per `STRATEGY-2026-PRO-PLUS-IPHONE.md`):
+
+**Marquee features** — what we actually sell as Pro:
+
+- **Trust Watcher** — daily diff of Privacy Policies + Terms of
+  Service for popular installed apps.  Alerts when a vendor
+  materially changes a document.  Defensible: Apple Intelligence
+  won't track ToS deltas; ChatGPT can summarise one ToS once but
+  doesn't watch it over time; Splynek already has the catalog
+  + the diff engine.
+- **Pro on iPhone** — every Pro feature on the Mac surfaces on
+  the iPhone Companion via the relay endpoints + iOS App Intents
+  + the home-screen Widget + CloudKit-driven push notifications.
+  *Including Trust Watcher alerts on the lock screen.*  No extra
+  fee — same Pro purchase covers the iPhone surface.
+
+**Already-shipped Pro features bundled into the same purchase:**
+
+- **AI Concierge** — natural-language chat interface, intent
+  routing, action sequences (Sprint 2: with-confirmation
+  sequences).
 - **Mobile web dashboard** — the LAN dashboard accessible from any
   phone + QR pairing. Free tier is loopback-only.
 - **Fleet beyond 2 devices** — free has a 2-device cap; Pro is
   unlimited. Small studios need ≥3.
 - **Scheduled downloads** — "download between 2am and 6am", cron-
-  style windows. (ships v0.29)
-- **AI history search** with embeddings index (v0.29; v0.27 ships
-  the in-context version for free).
+  style windows.
+- **AI history search** with embeddings index.
 - **Priority email support** — one-dev promise: answered within 48 h.
 - **Lifetime updates** for the 0.x line; 1.x is a new purchase if/when.
+
+**Family Sharing on MAS is gratis-by-default** — every Pro purchase
+covers the entire household (up to 6 family members).  This is
+**already true** on the App Store; the marketing leverage is
+**announcing it explicitly** on the landing page as
+"buy once, your whole household has Pro" — including phones.
 
 One-time vs subscription: Mac indie buyers overwhelmingly prefer
 one-time. Subscriptions work for apps with ongoing server costs
 (Bear, 1Password) but Splynek has no cloud backend. Asking $29/yr
 forever for a local app doesn't land.
 
-### Team tier — "Splynek Teams", $4 / user / month annual
+**Trust Watcher catalog refreshes** are free for the lifetime of
+the Pro purchase (Sprint 1 ships).  We may revisit a future
+**Trust+ subscription** (~$9/yr) for catalog refreshes after the
+first year *if* telemetry shows >40% daily-engagement on the
+feature; until that signal exists, refreshes ship as part of the
+regular update cadence.
 
-For the small-studio buyer specifically. Gates:
-- **Shared library across Macs** — my colleague downloaded
-  Xcode-16.3.dmg yesterday; my Splynek picks it up from hers
-  instantly via the Team cache. Fleet-across-VPN via a
-  rendezvous-server we host (requires the "private fleet" feature
-  in MONETIZATION version; see the risks we flagged earlier).
-- **Admin console** — per-user bandwidth caps, shared host caps,
-  per-seat activity log.
-- **SSO via Google Workspace + Okta** (SAML).
+### Team tier — "Splynek Teams" — DEFERRED INDEFINITELY
 
-This tier needs operating infrastructure (rendezvous, billing,
-admin) and is a v2 conversation, not v1. Target 6 months after Pro
-launch.
+**2026-05-09 update**: Teams is on indefinite hold.  Two reasons:
+
+1. **Pro Family Sharing on MAS is free-of-fee and covers the
+   household-multi-Mac case** — the original Teams pitch was
+   3-10 Mac small studios, but most "small-studio" buyers have
+   ≤6 Macs that would be covered by a single Pro purchase under
+   Apple Family Sharing.  Surfacing this in the landing copy is
+   higher leverage than building the Teams tier.
+2. **Teams requires operating infrastructure** (rendezvous server,
+   admin console, billing automation) that Splynek deliberately
+   doesn't have today.  Re-opening that scope before Pro tier
+   crosses 300 unit sales is premature — we'd be building B2B
+   infra for a B2C-product-market fit that hasn't been validated.
+
+**Reactivation gate**: re-evaluate once Pro tier sales > 300 units
+AND we receive explicit B2B inbound requests for SSO + admin
+controls.  Until then, Splynek stays a single-tier consumer
+product with $29 one-time pricing.
 
 ## Distribution channels
 
@@ -155,28 +207,32 @@ launch.
 
 ## Realistic y1 revenue
 
-Model a launch week + 52 weeks of residual:
+Model a launch week + 52 weeks of residual.  **Updated 2026-05-09**
+to reflect the PRO-PLUS-IPHONE conversion uplift target (3% → from
+2% in the original projection).  iPhone Companion as conversion
+funnel is the lever: every household member who installs the free
+Companion sees Pro features gated with "ask the Mac owner to
+upgrade".
 
 **Pessimistic (no signal):**
 - 2,000 installs over the year (organic + word of mouth)
-- 2% convert to Pro: 40 sales × $29 = **$1,160**
-- After MAS fee (30%): ~$800
+- 2.5% convert to Pro: 50 sales × $29 = **$1,450**
+- After MAS fee (30%): ~$1,015
 
 **Median (decent HN + Product Hunt):**
 - 25k installs y1
-- 2% convert: 500 × $29 = **$14,500**
+- 3% convert: 750 × $29 = **$21,750**
 - Mix of MAS (70% of sales) + direct (30%):
-  ($14.5k × 0.7 × 0.7) + ($14.5k × 0.3 × 0.97) = $7,100 + $4,220
-  = **~$11,300 net**
+  ($21.75k × 0.7 × 0.7) + ($21.75k × 0.3 × 0.97) = $10,660 + $6,330
+  = **~$16,990 net**
 
 **Good (HN front page + MacStories feature):**
 - 100k installs y1
-- 3% convert: 3,000 × $29 = **$87,000**
-- Net ~$68,000 after platform fees.
+- 4% convert: 4,000 × $29 = **$116,000**
+- Net ~$91,000 after platform fees.
 
-Teams revenue on top (if shipped in y1):
-- 10 teams × 5 seats × $48/yr = **$2,400/yr** at the low end.
-- Needs the rendezvous infrastructure to be real before selling.
+(No Teams revenue projected — see the deferred-indefinitely note
+above.)
 
 ## First 90 days plan
 
@@ -247,3 +303,34 @@ piece.
 **The single most leveraged action** isn't another feature — it's
 the launch video + Show HN post. Spend a week on them. Get the
 motion right. The product already does the work.
+
+---
+
+## 2026-05-09 strategy update — what changed
+
+This memo was originally written when Concierge was Pro's marquee
+feature.  Apple Intelligence's gradual integration of LLM-driven
+download / file actions changes the defensibility calculus.
+**Concierge stops being defensible** once macOS 26 ships system-
+level natural-language file operations.  We needed a new marquee
+that:
+
+1. Is *unique to Splynek* — uses our catalog data nobody else has.
+2. Is *recurring* — gives the user a reason to relaunch / look
+   at the app weekly.
+3. *Cashes out* on the iPhone — generates push notifications the
+   user wants, turning the Companion into a must-have.
+
+**Trust Watcher** ticks all three.  Plus **Pro on iPhone** turns
+the existing Pro purchase into a multi-surface experience without
+requiring new feature investment on the Mac.
+
+The pricing anchor ($29 one-time) stays.  The **conversion-rate
+target** rises to 3% (vs 2% originally projected) on the basis of
+the iPhone Companion's "ask the Mac owner to upgrade" prompt.  And
+**Teams is deferred indefinitely** — Family Sharing on MAS already
+covers the household-multi-Mac case for free, and re-opening the
+B2B scope before Pro tier hits 300 sales is premature.
+
+See `STRATEGY-2026-PRO-PLUS-IPHONE.md` for the full strategic
+framing.

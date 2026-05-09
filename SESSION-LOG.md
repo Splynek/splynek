@@ -2706,6 +2706,160 @@ to the smoke-test checklist: walk Trust / Fila / Frota / Agentes
 and confirm each migrated card renders in its new home and the
 brand footer appears at the bottom of the sidebar.
 
+### 2026-05-09 evening — PRO-PLUS-IPHONE Sprint 1 (5 commits)
+
+After the Settings decentralization arc settled, Paulo asked for
+strategic thinking on two fronts:
+
+> "pensa aprofundadamente no que fazer para alavancar, melhorar e
+>  tornar mais valiosa a compra do pro... temos de apostar no Pro
+>  e em levá-lo para outros patamares.  Ao mesmo tempo, estudar
+>  formas de melhorar a app para iphone, que ferramentas levar
+>  para lá, como torná-la um must."
+
+I produced a strategy memo identifying five Pro bets (Aposta A-E)
++ an iPhone Companion must-have list.  User approved with
+"Quero que faças TUDO o que está no documento!" — full Sprint 1
+execution.
+
+#### Five commits (chronological)
+
+| #   | Commit    | What                                                              |
+|-----|-----------|-------------------------------------------------------------------|
+| 1   | `5e30f5c` | Strategy doc + Trust Watcher Mac-complete (4 source files + 22 tests + UI) |
+| 2   | `a113dc9` | Mac REST endpoints (pause-all/resume-all + 4 summary endpoints) + iOS App Intents |
+| 3   | `9dca20c` | iOS Widget (small + medium) + Pro on iPhone Insights tab          |
+| 4   | `fabf46e` | CloudKit push notifications (Mac publisher + iOS subscriber)      |
+| 5   | this      | Docs: STRATEGY-2026 + MONETIZATION reposition + SESSION-LOG       |
+
+After all five: 767 tests pass (was 740 pre-strategy; +27 new),
+Mac `swift build` clean, iOS `xcodebuild SplynekCompanion BUILD
+SUCCEEDED`, all pushed to `origin/rollup/2026-05-08`.
+
+#### What it does
+
+**Marquee Pro feature: Trust Watcher.**  Daily-diff engine watches
+24 policy URLs (12 popular apps × Privacy Policy + ToS).  When
+the body hash changes, emits a severity-tagged alert.  100% local
+detection (MAS-2.5.2-safe — no LLM in the path).
+
+**iPhone Companion turns into a must-have via:**
+- **iOS App Intents** — 5 intents wired to `AppShortcutsProvider`
+  so "Hey Siri, send to Splynek" / "Hey Siri, pause Splynek
+  downloads" / "Hey Siri, what's my Splynek sovereignty score"
+  work out of the box, no Shortcut required.
+- **Home-screen Widget** (small + medium) — sovereignty score as
+  hero number; medium variant adds active downloads + Trust
+  Watcher pending alerts.
+- **Pro on iPhone** ("Insights" tab) — sovereignty / trust /
+  trust-watcher / history summaries pulled live from the paired
+  Mac via the new `/api/*/summary` endpoints.
+- **Push notifications** — when Trust Watcher detects a change,
+  the Mac writes a `SplynekTrustWatchAlert` record to the user's
+  private CloudKit DB; the iPhone's CKQuerySubscription fires a
+  silent push, the app composes a `UNNotification`, the user
+  sees "Spotify Privacy Policy changed (notable)" on the lock
+  screen.  Zero-server: same Apple-private-DB pattern as the
+  existing CloudKit relay.
+
+#### Architectural choices that paid off
+
+1. **Shared `RelaySummary` types in iOS/Shared (SplynekCompanionCore).**
+   SplynekCore depends on SplynekCompanionCore (already), so moving
+   the Codable summary types there gives both Mac (REST encoder)
+   and iPhone (REST decoder + Widget + Insights view) one schema
+   with zero risk of drift.  No JSON-spec docs needed; the type
+   is the spec.
+
+2. **Closure-based summary providers in FleetCoordinator.**  Same
+   pattern the existing `onWebIngest` / `onCancelAll` callbacks
+   use.  Coordinator stays decoupled from the VM type; each
+   summary endpoint returns nil → 404/503.  Pro-gating happens at
+   the source (`license.isPro` in `buildTrustWatcherSummary`),
+   not in the coordinator.
+
+3. **Pure callback for alert emission.**  `TrustWatchService`
+   exposes a Sendable closure `onAlertsEmitted` that the VM wires
+   to the CloudKit publisher.  Both the auto-sweep timer and the
+   manual `runOnce()` go through the same path — no duplicated
+   "publish on manual" code.
+
+4. **macOS 13 deployment-target onChange compat.**  Caught by
+   build error early; fixed by reverting to single-arg form.
+   The codebase still targets macOS 13 (Package.swift) so
+   anything iOS-17+ / macOS-14+ needs guards.
+
+#### Critical lessons
+
+- **iOS targets don't `import` shared modules** — they inline
+  source files via project.yml.  My initial widget pulled
+  `import SplynekCompanionCore` and broke the build; the fix
+  was to remove the import (all the types are in scope from
+  the inlined files).
+
+- **CloudKit subscriptions are zero-server but require
+  out-of-band schema setup.**  The `SplynekTrustWatchAlert`
+  record type needs to be added to the existing CloudKit
+  Dashboard schema (alongside `SplynekRelayJob`).  Until that
+  happens, the publisher logs a warning + the local UI keeps
+  working.  Documented as a maintainer step in the commit
+  message.
+
+- **macOS App Intents already shipped (2024) on the Mac side**
+  via `AppIntentsProvider.swift`; the iOS side was a separate
+  file because the App Group / paired-Mac resolution differs.
+  Pattern matches: each intent fetches the user's most-recently-
+  seen paired Mac, errors with a typed `AppIntentError` for the
+  not-paired / unreachable / Pro-required cases.
+
+#### Numbers
+
+```
+Commits:                5
+Tests:                  740 → 767 (+27 new)
+Pure new code:         ~3,000 lines across 13 new files
+Mac source files:       5 (TrustWatcher/{Watcher, Catalog, Store,
+                           Service, CloudKitNotifier})
+iOS Companion files:    3 (AppIntents, MacInsightsView,
+                           TrustWatchPushSubscriber)
+iOS Widget files:       1 (SplynekStatusWidget)
+iOS Shared files:       2 (RelaySummaryTypes, TrustWatchAlertRecord)
+Test files:             2 (TrustWatcher, TrustWatchAlertRecord)
+Strategy + docs:       STRATEGY-2026-PRO-PLUS-IPHONE.md (300 lines)
+                        MONETIZATION.md repositioned
+```
+
+#### What's intentionally NOT in Sprint 1
+
+These are Sprint 2 (3-6 months out):
+
+- **Sovereignty Migrate Wizard** — one-click swap with cask install
+- **Concierge that acts** — sequence executor with confirmation
+- **Apple Watch app** — tap-to-pause + complication
+- **Geo-fence** — leaving home → pause; arriving home → resume
+
+Sprint 3 (6-12 months out): pricing telemetry → Trust+ subscription
+evaluation if engagement justifies.
+
+#### Where it stands at end of session
+
+`origin/rollup/2026-05-08` carries everything.  Branch is now
+~150 commits ahead of `origin/main`.  Apple v1.0 MAS re-review
+status: still day 8+.  When it clears, the cut sequence is
+unchanged from the previous SESSION-LOG entry.
+
+Maintainer steps still required (out of band; not Claude-fixable):
+1. Add `SplynekTrustWatchAlert` to CloudKit Dashboard schema
+   (alongside existing `SplynekRelayJob`).  Fields: alertID,
+   sourceMacUUID, targetAppName, policyKind, severity, pageURL,
+   observedAt, acknowledged.
+2. Promote schema to Production environment.
+3. Re-archive iOS + macOS apps with iCloud entitlement verified.
+
+Until step 3, Trust Watcher + iPhone push fall back gracefully:
+local Mac UI shows alerts as normal; CloudKit publish logs a
+notice + iPhone push silently no-ops.
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
