@@ -517,6 +517,52 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         CODE_SIGN_STYLE: Automatic
 
+  # Sprint 2 part-2 (2026-05-09) — watchOS Splynek Watch app.
+  # Tap-to-pause/resume + Sovereignty score complication, all
+  # backed by the same PairedMacClient + RelaySummary endpoints
+  # the iPhone Companion uses.
+  #
+  # Pairing model: the Watch app reads PairedMac records from
+  # the same App Group plist the iPhone writes to.  No separate
+  # pairing flow — a Mac paired on the iPhone is automatically
+  # available on the watch.  Future commits add a watch-specific
+  # toggle to pick which Mac the watch acts on when multiple are
+  # available.
+  #
+  # Status (this commit): app target wired, basic SwiftUI body
+  # with two buttons + a status label.  Complication, deeper
+  # connectivity (WatchConnectivity for fast Mac picks), and
+  # background refresh deferred to a follow-up commit.
+  SplynekWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: iOS/SplynekWatch
+      # Pull the iOS/Shared sources (PairedMac, PairedMacStore,
+      # PairedMacClient, RelaySummary) so the Watch can act on
+      # the user's paired Mac directly.  Same inlining pattern
+      # the Widget extension uses.
+      - path: iOS/Shared
+    info:
+      path: iOS/SplynekWatch/Info.plist
+      properties:
+        CFBundleDisplayName: Splynek
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSLocalNetworkUsageDescription: "Splynek Watch sends pause/resume commands to your Mac on the same Wi-Fi."
+        WKApplication: true
+    settings:
+      base:
+        PRODUCT_NAME: Splynek Watch
+        PRODUCT_BUNDLE_IDENTIFIER: app.splynek.companion.watchkitapp
+        TARGETED_DEVICE_FAMILY: "4"  # Watch
+        SWIFT_VERSION: "5.9"
+        WATCHOS_DEPLOYMENT_TARGET: "10.0"
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Automatic
+
   # S4 phase 2 (2026-05-07) — Widget Extension hosting the
   # DownloadActivityWidget Live Activity views.  Activities are
   # started by the host SplynekCompanion app's LiveActivityDriver;
@@ -580,6 +626,14 @@ schemes:
         SplynekCompanion: all
         SplynekShareExtension: all
         SplynekCompanionWidgets: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  SplynekWatch:
+    build:
+      targets:
+        SplynekWatch: all
     run:
       config: Debug
     archive:
