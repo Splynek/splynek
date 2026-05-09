@@ -4457,36 +4457,36 @@
         }
       }
     },
-    "Describe downloads in plain English": {
+    "Describe downloads in plain language": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Downloads in einfachem Englisch beschreiben"
+            "value": "Downloads in einfachen Worten beschreiben"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Describe descargas en inglés sencillo"
+            "value": "Describe descargas en lenguaje sencillo"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Décrivez vos téléchargements en anglais courant"
+            "value": "Décris tes téléchargements en langage courant"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Descrivi i download in inglese semplice"
+            "value": "Descrivi i download in linguaggio semplice"
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Descrever transferências em inglês corrente"
+            "value": "Descrever transferências por palavras"
           }
         }
       }
@@ -15883,7 +15883,7 @@
         }
       }
     },
-    "Talk to Splynek in plain English": {
+    "Talk to Splynek in plain language": {
       "localizations": {
         "de": {
           "stringUnit": {
@@ -19692,7 +19692,7 @@
         }
       }
     },
-    "Say it in plain English — downloads, queue, history, and app actions. Your personal download concierge, powered by a local LLM, offline.": {
+    "Say it in plain language — downloads, queue, history, and app actions. Your personal download concierge, powered by a local LLM, offline.": {
       "extractionState": "manual",
       "localizations": {
         "de": {

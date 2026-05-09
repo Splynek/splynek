@@ -39,7 +39,7 @@ struct ConciergeView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    bulletRow("Talk to Splynek in plain English")
+                    bulletRow("Talk to Splynek in plain language")
                     bulletRow("Chat-routed downloads, queue, cancellations, pauses")
                     bulletRow("Natural-language search of your download history")
                     bulletRow("100% local LLM (LM Studio or Ollama) — no cloud, no account")

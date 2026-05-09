@@ -88,7 +88,7 @@ struct DownloadView: View {
                 .foregroundStyle(.purple)
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
-                    Text("Describe downloads in plain English")
+                    Text("Describe downloads in plain language")
                         .font(.callout).fontWeight(.semibold)
                     StatusPill(text: "PRO", style: .warning)
                 }
