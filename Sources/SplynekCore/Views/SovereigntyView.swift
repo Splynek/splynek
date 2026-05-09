@@ -30,6 +30,12 @@ struct SovereigntyView: View {
     /// know or care about export failures (different concern).
     @State private var exportError: String? = nil
 
+    /// Sprint 2 part-2 (2026-05-09): active Migrate plan presented
+    /// as a sheet.  Set from the per-alternative "Migrate" button;
+    /// nil means no sheet open.  Drives `.sheet(item:)` on the
+    /// scroll view.
+    @State private var migratePlanSheet: SovereigntyMigratePlan? = nil
+
     /// v1.3 AI fallback state.  For apps NOT in the curated catalog,
     /// the user can opt-in per-app to ask the local LLM for
     /// alternative suggestions.  State is view-local: nothing is
@@ -154,6 +160,17 @@ struct SovereigntyView: View {
             Button("OK") { exportError = nil }
         } message: {
             Text(exportError ?? "")
+        }
+        // Sprint 2 part-2 (2026-05-09): Migrate Wizard sheet —
+        // walks the user through `migratePlanSheet`'s steps with
+        // per-step confirmation.  Pro-only entry point (the
+        // button is gated upstream); free-tier `migratePlanSheet`
+        // stays nil because the upsell button doesn't set it.
+        .sheet(item: $migratePlanSheet) { plan in
+            SovereigntyMigrateWizardView(
+                plan: plan,
+                onClose: { migratePlanSheet = nil }
+            )
         }
     }
 
@@ -807,7 +824,7 @@ struct SovereigntyView: View {
             .accessibilityLabel(rowHeaderAccessibilityLabel(row))
             VStack(spacing: 8) {
                 ForEach(row.visibleAlternatives) { alt in
-                    alternativeRow(alt)
+                    alternativeRowWithMigrate(alt, entry: row.entry)
                 }
             }
         }
@@ -820,6 +837,50 @@ struct SovereigntyView: View {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
         )
+    }
+
+    /// Sprint 2 part-2 (2026-05-09): wrap the standard alternative
+    /// row with a Migrate button.  The button is Pro-gated; free
+    /// tier sees an upsell tooltip.  Used only from `resultRow`
+    /// where we have a parent `Entry`; the champions/unknown-apps
+    /// path uses the plain `alternativeRow(_:)`.
+    @ViewBuilder
+    private func alternativeRowWithMigrate(
+        _ alt: SovereigntyCatalog.Alternative,
+        entry: SovereigntyCatalog.Entry
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            alternativeRow(alt)
+            HStack {
+                Spacer()
+                if vm.license.isPro {
+                    Button {
+                        if let plan = SovereigntyMigratePlanner.makePlan(
+                            from: entry, alternative: alt
+                        ) {
+                            migratePlanSheet = plan
+                        }
+                    } label: {
+                        Label("Migrate \(entry.targetDisplayName) → \(alt.name)",
+                              systemImage: "arrow.right.arrow.left")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .help("Walk through a guided swap from \(entry.targetDisplayName) to \(alt.name) — open the homepage, mark the original for review.")
+                } else {
+                    Button {
+                        vm.requestProUnlock()
+                    } label: {
+                        Label("Migrate (Pro)", systemImage: "lock.fill")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .help("Splynek Pro unlocks the guided Migrate Wizard — walk through a swap one confirmation at a time.")
+                }
+            }
+        }
     }
 
     @ViewBuilder
