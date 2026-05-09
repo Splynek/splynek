@@ -141,16 +141,32 @@ final class SovereigntyScanner: ObservableObject {
             ) else { continue }
 
             for url in contents where url.pathExtension.lowercased() == "app" {
-                guard let bundle = Bundle(url: url),
-                      let bid = bundle.bundleIdentifier,
+                // 2026-05-09: read Info.plist directly via
+                // PropertyListSerialization instead of Bundle(url:).
+                // Foundation's Bundle(url:) is a process-global
+                // singleton — once loaded, the Info.plist is cached.
+                // After Splynek replaces a .app on disk (Updates flow,
+                // `replaceExisting: true`), a subsequent scan would
+                // return the OLD Bundle with the OLD version, even
+                // though the .app on disk is now the new one.  This
+                // is why the Updates tab kept reappearing rows
+                // post-install while the Install tab (which sources
+                // versions from `InstalledAppRegistry` directly) was
+                // correct.  Direct plist read bypasses that cache.
+                let plistURL = url.appendingPathComponent("Contents/Info.plist")
+                guard let data = try? Data(contentsOf: plistURL),
+                      let plist = (try? PropertyListSerialization
+                          .propertyList(from: data, options: [], format: nil))
+                          as? [String: Any],
+                      let bid = plist["CFBundleIdentifier"] as? String,
                       !Self.shouldSkip(bundleID: bid, url: url)
                 else { continue }
 
-                let name = (bundle.infoDictionary?["CFBundleDisplayName"] as? String)
-                    ?? (bundle.infoDictionary?["CFBundleName"] as? String)
+                let name = (plist["CFBundleDisplayName"] as? String)
+                    ?? (plist["CFBundleName"] as? String)
                     ?? url.deletingPathExtension().lastPathComponent
-                let version = bundle.infoDictionary?["CFBundleShortVersionString"] as? String
-                let category = bundle.infoDictionary?["LSApplicationCategoryType"] as? String
+                let version = plist["CFBundleShortVersionString"] as? String
+                let category = plist["LSApplicationCategoryType"] as? String
 
                 let candidate = InstalledApp(
                     id: bid, name: name, bundleURL: url,
