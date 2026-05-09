@@ -309,15 +309,94 @@ struct Sidebar: View {
             }
             .listStyle(.sidebar)
 
-            // 2026-05-07: brand footer removed.  The 28pt logo +
-            // version + Settings gear used to live here; in practice
-            // it ate a sidebar row at every window height and Settings
-            // is already in the macOS menu bar (Cmd+,) per the v0.49
-            // layout note.  About is also reachable from the Apple
-            // menu.  The footer added zero navigation value.
+            // 2026-05-09: brand footer restored.  The Settings tab
+            // had so many cards offloaded into their feature tabs
+            // that the sidebar gained breathing room, and the user
+            // asked to bring back the logo + Settings gear at the
+            // foot of the pane.  Original removal note (2026-05-07)
+            // is now obsolete: the gear is the most-discoverable
+            // way to reach Settings since the tab itself was hidden
+            // from the sidebar in v0.49.
+            brandFooter
         }
         .navigationTitle("Splynek")
     }
+
+    /// Small 28 pt logo + version at the foot of the sidebar, with
+    /// a Settings gear on the trailing edge.  The brand area opens
+    /// About; the gear opens Settings.  Both still available from
+    /// the macOS menu bar — this is the more discoverable click
+    /// target since most users never look in the menu bar for
+    /// app-internal settings.
+    private var brandFooter: some View {
+        HStack(spacing: 0) {
+            Button {
+                NotificationCenter.default.post(
+                    name: .splynekShowAbout, object: nil
+                )
+            } label: {
+                HStack(spacing: 10) {
+                    Group {
+                        if let url = Bundle.main.url(forResource: "Splynek", withExtension: "icns"),
+                           let nsImage = NSImage(contentsOf: url) {
+                            Image(nsImage: nsImage)
+                                .resizable()
+                                .interpolation(.high)
+                        } else if let nsImage = NSApp.applicationIconImage {
+                            Image(nsImage: nsImage).resizable().interpolation(.high)
+                        } else {
+                            Image(systemName: "arrow.down.circle.fill")
+                        }
+                    }
+                    .frame(width: 28, height: 28)
+
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Splynek")
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.primary)
+                        Text("v\(appVersion())")
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+                .padding(.leading, 12)
+                .padding(.vertical, 10)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help("About Splynek")
+
+            // Settings gear on the trailing edge.  Posts the same
+            // notification the menu bar's "Settings…" item posts —
+            // RootView routes both to the same SidebarSection.settings
+            // destination.  Adding the icon doesn't change behaviour;
+            // it only adds a second, more discoverable click target.
+            Button {
+                NotificationCenter.default.post(
+                    name: .splynekShowSettings, object: nil
+                )
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.trailing, 8)
+            .help("Settings")
+            .accessibilityLabel("Settings")
+        }
+        .background(
+            Divider()
+                .frame(maxWidth: .infinity, alignment: .top)
+                .opacity(0.5),
+            alignment: .top
+        )
+    }
+
+    private func appVersion() -> String { SplynekVersion.current }
 
     @ViewBuilder
     private func sidebarRow(title: String, systemImage: String, accessory: AnyView? = nil) -> some View {

@@ -1,15 +1,16 @@
 import SwiftUI
 import AppKit
 
-/// Everything a user might want to *configure* — separated out of About,
-/// which is now just brand + features + links.
+/// Everything a user might want to *configure* that doesn't have a
+/// natural feature-tab home.  As of 2026-05-09 most cards have been
+/// decentralized — Trust weights live in Confiança, Schedule + Watched
+/// folder in Fila, Swarm token + Security in Frota, Web dashboard +
+/// QR pair in Agentes.  What remains here is genuinely cross-cutting:
 ///
-/// Sections:
+///   • Pro license (gates several feature tabs at once)
 ///   • Browser helpers (Chrome extension, Safari bookmarklets)
-///   • Web dashboard (LAN URL, QR, token controls)
-///   • Local AI (Ollama detection + model)
-///   • Background mode (dock icon, login item)
-///   • Security & privacy (privacy mode, loopback, regenerate token)
+///   • Local AI (Ollama detection + model — used by Concierge + History)
+///   • Background mode (dock icon, login item — app-wide behaviour)
 ///
 /// All cards are identical in visual weight; the user scans down a
 /// single column to configure the app.
@@ -24,29 +25,23 @@ struct SettingsView: View {
             VStack(spacing: 16) {
                 ContextCard(
                     systemImage: "gearshape",
-                    subtitle: "Integrations, background behaviour, web dashboard, and security controls. Nothing here phones home.",
+                    subtitle: "Cross-cutting preferences — license, browser integrations, local AI, and background behaviour. Feature-specific knobs live next to the features they affect. Nothing here phones home.",
                     tint: .gray
                 )
                 proCard
                 browserHelpersCard
-                // 2026-05-09: webDashboardCard + iPhonePairingRow moved
-                // to AgentsView — both are external-access surfaces
-                // sharing the same listener and token gating; living
-                // next to the MCP setup tells the full story in one
-                // tab.  See AgentsView.mobileDashboardCard.
-                // 2026-05-09: swarmHouseholdCard + securityCard moved
-                // to FleetView — household token + privacy/loopback
-                // controls now live next to the swarm peers they
-                // gate.  See FleetView.householdTokenCard / securityCard.
                 aiCard
-                // 2026-05-09: scheduleCard + watchedFolderCard moved
-                // to QueueView — both configure HOW the queue behaves
-                // (gating + ingestion); now live next to the queue
-                // they affect.
                 backgroundModeCard
-                // 2026-05-09: trustWeightsCard moved to TrustView —
-                // sliders that tune the Trust score now live next
-                // to the score they tune.  See TrustView.weightsDisclosure.
+                // 2026-05-09 settings decentralization (commits 57fb6cb,
+                // b494a2b, f944b09, 52e9249):
+                //   • Trust weights        → TrustView.weightsDisclosure
+                //   • Schedule + Watched   → QueueView (scheduleCard,
+                //                            watchedFolderCard)
+                //   • Swarm token + Sec.   → FleetView (householdTokenCard,
+                //                            securityCard)
+                //   • Web dashboard + QR   → AgentsView.mobileDashboardCard
+                // Discovery wins — the user finds each control next
+                // to the surface it governs.
             }
             .padding(20)
             .frame(maxWidth: 780)
