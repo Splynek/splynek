@@ -12,7 +12,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var selection: Tab = .macs
 
-    enum Tab: Hashable { case macs, submit, settings }
+    enum Tab: Hashable { case macs, submit, insights, settings }
 
     var body: some View {
         TabView(selection: $selection) {
@@ -23,6 +23,13 @@ struct ContentView: View {
             NavigationStack { SubmitURLView() }
                 .tabItem { Label("Submit", systemImage: "arrow.up.doc.on.clipboard") }
                 .tag(Tab.submit)
+
+            // Sprint 1 PRO-PLUS-IPHONE (2026-05-09): Pro on iPhone.
+            // Surfaces Sovereignty / Trust / Trust Watcher / History
+            // pulled live over the relay summary endpoints.
+            NavigationStack { MacInsightsView() }
+                .tabItem { Label("Insights", systemImage: "chart.bar.doc.horizontal") }
+                .tag(Tab.insights)
 
             NavigationStack { SettingsView() }
                 .tabItem { Label("Settings", systemImage: "gearshape") }

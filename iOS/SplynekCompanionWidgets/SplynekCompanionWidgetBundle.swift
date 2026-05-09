@@ -16,6 +16,12 @@ import WidgetKit
 struct SplynekCompanionWidgetBundle: WidgetBundle {
     var body: some Widget {
         DownloadActivityWidget()
+        // Sprint 1 PRO-PLUS-IPHONE (2026-05-09): home-screen status
+        // widget — Sovereignty score, active downloads, Trust
+        // Watcher pending alerts.  Two families (small + medium).
+        if #available(iOS 16.0, *) {
+            SplynekStatusWidget()
+        }
     }
 }
 #endif
