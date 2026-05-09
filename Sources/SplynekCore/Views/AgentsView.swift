@@ -40,7 +40,7 @@ struct AgentsView: View {
             VStack(spacing: 0) {
                 ContextCard(
                     systemImage: "antenna.radiowaves.left.and.right",
-                    subtitle: "Splynek as a programmable platform — let Claude, ChatGPT, or any MCP-compatible agent drive downloads, run audits, and search your history through one HTTP endpoint.",
+                    subtitle: "Splynek as a programmable platform — let your phone, Claude, ChatGPT, or any MCP-compatible agent drive downloads, run audits, and search your history through one HTTP endpoint.",
                     tint: .indigo
                 )
                 .padding(.horizontal, 16)
@@ -48,6 +48,13 @@ struct AgentsView: View {
 
                 VStack(spacing: 18) {
                     statusCard
+                    // 2026-05-09: web dashboard + iPhone pairing QR moved
+                    // here from Settings.  Same listener as MCP; same
+                    // token gating; same "external interface" story.
+                    // Surfacing them together in Agentes lets the user
+                    // see every way an outside client can reach this
+                    // Mac in one place.
+                    mobileDashboardCard
                     toolGalleryCard
                     if vm.mcpEnabled {
                         quickTestCard
@@ -125,6 +132,151 @@ struct AgentsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+            }
+        }
+    }
+
+    // MARK: - Mobile dashboard + iPhone pairing
+    //
+    // 2026-05-09: migrated from SettingsView.  Free tier shows a
+    // ProLockedView; Pro shows the pair-by-QR experience.  Lives
+    // here (not Settings) because it's the same external-access
+    // story the rest of this tab tells — the phone is just another
+    // client paired with a token-gated endpoint.
+
+    @ViewBuilder
+    private var mobileDashboardCard: some View {
+        if vm.license.isPro {
+            mobileDashboardCardUnlocked
+        } else {
+            ProLockedView(
+                featureTitle: "Mobile web dashboard",
+                summary: "Let your phone submit downloads to this Mac over the LAN — QR pairing, live progress, token-gated submit. Free tier runs the dashboard loopback-only; Pro opens it to the LAN.",
+                systemImage: "iphone.gen3.radiowaves.left.and.right",
+                onUnlock: { vm.requestProUnlock() }
+            )
+        }
+    }
+
+    private var mobileDashboardCardUnlocked: some View {
+        TitledCard(title: "Web dashboard", systemImage: "iphone.gen3.radiowaves.left.and.right") {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Scan the QR with a phone on the same LAN to submit downloads to this Mac. Read-only state is open to the LAN; submit requires the token embedded in the QR.")
+                    .font(.callout).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if let url = vm.fleet.webDashboardURL() {
+                    HStack(alignment: .top, spacing: 14) {
+                        if let qr = QRCode.image(for: url.absoluteString, size: 110) {
+                            Image(nsImage: qr)
+                                .interpolation(.none)
+                                .resizable()
+                                .frame(width: 110, height: 110)
+                                .background(Color.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(Color.primary.opacity(0.12),
+                                                      lineWidth: 0.5)
+                                )
+                        }
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(url.absoluteString)
+                                .font(.system(.caption, design: .monospaced))
+                                .lineLimit(2).truncationMode(.middle)
+                                .textSelection(.enabled)
+                            HStack(spacing: 8) {
+                                Button {
+                                    NSPasteboard.general.clearContents()
+                                    NSPasteboard.general.setString(
+                                        url.absoluteString, forType: .string
+                                    )
+                                } label: {
+                                    Label("Copy URL", systemImage: "doc.on.doc")
+                                }
+                                .buttonStyle(.bordered)
+                                Button {
+                                    NSWorkspace.shared.open(url)
+                                } label: {
+                                    Label("Open", systemImage: "safari")
+                                }
+                                .buttonStyle(.borderedProminent)
+                            }
+                        }
+                        Spacer()
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        ProgressView().controlSize(.small)
+                        Text("Waiting for the fleet listener to bind…")
+                            .font(.callout).foregroundStyle(.secondary)
+                    }
+                }
+
+                // S4 iPhone Companion (2026-05-07): second QR for
+                // pairing the iOS Splynek Companion app.  Distinct
+                // from the dashboard QR — encodes
+                // `splynek://pair?host=...&port=...&token=...&name=...`
+                // which the iOS app's PairingSheet scans + pre-fills.
+                Divider().padding(.vertical, 4)
+                iPhonePairingRow
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var iPhonePairingRow: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: "iphone")
+                    .foregroundStyle(.tint)
+                Text("Pair Splynek Companion (iPhone)")
+                    .font(.headline)
+            }
+            Text("Open Splynek Companion on your iPhone, tap +, then Scan QR. Pairing is instant — no token paste.")
+                .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let pairURL = vm.fleet.iPhonePairingURLString() {
+                HStack(alignment: .top, spacing: 14) {
+                    if let qr = QRCode.image(for: pairURL, size: 110) {
+                        Image(nsImage: qr)
+                            .interpolation(.none)
+                            .resizable()
+                            .frame(width: 110, height: 110)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .strokeBorder(Color.primary.opacity(0.12),
+                                                  lineWidth: 0.5)
+                            )
+                    }
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(pairURL)
+                            .font(.system(.caption, design: .monospaced))
+                            .lineLimit(2).truncationMode(.middle)
+                            .textSelection(.enabled)
+                        Button {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(
+                                pairURL, forType: .string
+                            )
+                        } label: {
+                            Label("Copy pair URL", systemImage: "doc.on.doc")
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    Spacer()
+                }
+            } else {
+                // Loopback-only mode (free tier, default) hides the
+                // pairing row — phones aren't on the same network as
+                // 127.0.0.1, so a QR pointing to loopback would never
+                // pair.  Surface a hint instead.
+                Text("LAN sharing is disabled (Privacy mode → Loopback only). Disable Loopback-only above to pair an iPhone.")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .padding(.vertical, 4)
             }
         }
     }
