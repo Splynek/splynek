@@ -37,6 +37,10 @@
 	<string>Splynek scans a QR code from your Mac's Settings → Sharing pane to pair instantly.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Splynek finds Macs running Splynek on your Wi-Fi to send downloads to them.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Splynek monitors a single home boundary in the background to pause and resume downloads on your Mac as you come and go. Only the boolean "you crossed the boundary" leaves the device — to your Mac, on your Wi-Fi.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Splynek detects when you leave or arrive home so it can pause and resume downloads on your Mac. Coordinates never leave your device.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UILaunchScreen</key>

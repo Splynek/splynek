@@ -39,6 +39,13 @@ struct SplynekCompanionApp: App {
                     if #available(iOS 16.0, *) {
                         await TrustWatchPushSubscriber.setUpSubscription()
                     }
+                    // Sprint 2 part-2 (2026-05-09): re-arm the
+                    // geo-fence region after a reboot / re-install.
+                    // No-op if the user hasn't opted in or hasn't
+                    // set a home coordinate.
+                    if #available(iOS 16.0, *) {
+                        GeoFenceCoordinator.shared.enable()
+                    }
                 }
         }
     }

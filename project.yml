@@ -441,6 +441,13 @@ targets:
         NSSupportsLiveActivities: true
         # QR-pairing camera (S4 phase 2) — AVFoundation scanner.
         NSCameraUsageDescription: "Splynek scans a QR code from your Mac's Settings → Sharing pane to pair instantly."
+        # Sprint 2 part-2 (2026-05-09) — Geo-fence pause/resume.
+        # whenInUse is enough to register the home region; always
+        # is required for the boundary cross to fire while the app
+        # is in the background.  We ask whenInUse first; the user
+        # opts-in to always via a Settings toggle.
+        NSLocationWhenInUseUsageDescription: "Splynek detects when you leave or arrive home so it can pause and resume downloads on your Mac. Coordinates never leave your device."
+        NSLocationAlwaysAndWhenInUseUsageDescription: "Splynek monitors a single home boundary in the background to pause and resume downloads on your Mac as you come and go. Only the boolean \"you crossed the boundary\" leaves the device — to your Mac, on your Wi-Fi."
     settings:
       base:
         PRODUCT_NAME: Splynek

@@ -136,6 +136,71 @@ public final class PairedMacStore {
     }
     private var cloudKitRelayMemory: Bool = true
 
+    // Sprint 2 part-2 (2026-05-09): Geo-fence preferences.
+    //
+    // The iOS Companion's GeoFenceCoordinator reads these on
+    // launch + on Settings save.  All three persist in the
+    // App Group plist alongside cloudKitRelayEnabled.
+
+    private static let geoFenceEnabledKey = "splynek.companion.geoFenceEnabled"
+    private static let geoFenceHomeLatKey = "splynek.companion.geoFenceHomeLat"
+    private static let geoFenceHomeLonKey = "splynek.companion.geoFenceHomeLon"
+    private static let geoFenceHomeRadiusKey = "splynek.companion.geoFenceHomeRadius"
+
+    /// Master switch.  Default off — user must explicitly enable
+    /// in Settings (and grant CoreLocation Always authorization).
+    public var geoFenceEnabled: Bool {
+        get {
+            if memoryMode { return geoFenceEnabledMemory }
+            return defaults.bool(forKey: Self.geoFenceEnabledKey)
+        }
+        set {
+            if memoryMode { geoFenceEnabledMemory = newValue; return }
+            defaults.set(newValue, forKey: Self.geoFenceEnabledKey)
+        }
+    }
+    private var geoFenceEnabledMemory: Bool = false
+
+    /// User's home coordinate.  nil until they tap "Use my
+    /// current location as home" in Settings.  Stored as two
+    /// Doubles so the App Group plist stays plist-friendly.
+    public var geoFenceHomeCoordinate: (latitude: Double, longitude: Double)? {
+        get {
+            if memoryMode { return geoFenceHomeMemory }
+            guard let lat = defaults.object(forKey: Self.geoFenceHomeLatKey) as? Double,
+                  let lon = defaults.object(forKey: Self.geoFenceHomeLonKey) as? Double
+            else { return nil }
+            return (lat, lon)
+        }
+        set {
+            if memoryMode { geoFenceHomeMemory = newValue; return }
+            if let coord = newValue {
+                defaults.set(coord.latitude, forKey: Self.geoFenceHomeLatKey)
+                defaults.set(coord.longitude, forKey: Self.geoFenceHomeLonKey)
+            } else {
+                defaults.removeObject(forKey: Self.geoFenceHomeLatKey)
+                defaults.removeObject(forKey: Self.geoFenceHomeLonKey)
+            }
+        }
+    }
+    private var geoFenceHomeMemory: (latitude: Double, longitude: Double)? = nil
+
+    /// Region radius in meters.  Default 200 m (typical city
+    /// block — wide enough for GPS noise, narrow enough to
+    /// distinguish "at home" from "down the street").
+    public var geoFenceHomeRadius: Double {
+        get {
+            if memoryMode { return geoFenceHomeRadiusMemory }
+            if defaults.object(forKey: Self.geoFenceHomeRadiusKey) == nil { return 200 }
+            return defaults.double(forKey: Self.geoFenceHomeRadiusKey)
+        }
+        set {
+            if memoryMode { geoFenceHomeRadiusMemory = newValue; return }
+            defaults.set(newValue, forKey: Self.geoFenceHomeRadiusKey)
+        }
+    }
+    private var geoFenceHomeRadiusMemory: Double = 200
+
     // MARK: Plist persistence
 
     private func loadPlist() throws -> [PairedMac] {
