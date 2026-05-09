@@ -192,3 +192,44 @@ A maior parte das funcionalidades Pro hoje **não estão acessíveis no iPhone**
   decentralization (`57fb6cb` → `00f6c80`).  User pediu para
   "alavancar Pro" e "tornar iPhone Companion um must"; este memo
   é a resposta.  Sprint 1 execução começa imediatamente.
+
+- **2026-05-09 evening** — Sprint 1 SHIPPED (4 commits `5e30f5c` →
+  `fabf46e` + docs `7a93885`).  Trust Watcher (Mac complete with
+  UI, 22 tests, ProLockedView teaser, Pro-gated activation), Mac
+  REST relay endpoints (6 new endpoints + Codable summary types),
+  iOS App Intents (5 intents wired for Hey Siri), iOS Widget
+  (small + medium home-screen with Sovereignty score hero), Pro
+  on iPhone (Insights tab), CloudKit push notifications (Trust
+  Watcher alert → user's private DB → iPhone subscriber → local
+  UNNotification).  767 tests green; iOS xcodebuild SUCCEEDED.
+
+- **2026-05-09 evening** — Sprint 2 scaffolds opened.  Pure data
+  models + invariant-enforcing policy modules + tests for three of
+  four Sprint 2 items: Sovereignty Migrate Wizard, Concierge
+  Sequences with confirmation, Geo-fence pause/resume.  786 tests
+  green.  **Watch app deferred** to Sprint 2 part 2 — adding a
+  watchOS target to project.yml requires a separate build pipeline
+  + Apple Developer Program watchOS provisioning + ActivityKit
+  glanceable variant; cleaner to ship in a focused commit when the
+  prerequisites are confirmed.
+
+  ### Sprint 2 part-1 scaffolds (this commit)
+
+  | File                                                     | Purpose                              |
+  |----------------------------------------------------------|--------------------------------------|
+  | `Sources/SplynekCore/Migrate/SovereigntyMigratePlan.swift` | Migrate plan data model + planner    |
+  | `Sources/SplynekCore/ConciergeSequence.swift`              | Sequence type + policy invariants    |
+  | `iOS/Shared/GeoFencePolicy.swift`                          | iOS geo-fence decision logic         |
+  | `Tests/SplynekTests/SovereigntyMigratePlanTests.swift`     | 6 tests                              |
+  | `Tests/SplynekTests/ConciergeSequenceTests.swift`          | 7 tests                              |
+  | `Tests/SplynekTests/GeoFencePolicyTests.swift`             | 5 tests                              |
+
+  ### Sprint 2 part-2 (next session)
+
+  - `SovereigntyMigrateWizardView` (SwiftUI) + step runner
+  - `ConciergeBridge` plumbing for sequence preview + per-step
+    confirmation UI
+  - `iOS/SplynekCompanion/GeoFenceCoordinator.swift` (CoreLocation
+    wrapper) + Settings UI for "Use my current location as home"
+  - Watch app target (separate commit)
+  - End-to-end smoke test of all four flows
