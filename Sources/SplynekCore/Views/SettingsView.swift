@@ -35,7 +35,9 @@ struct SettingsView: View {
                 scheduleCard
                 watchedFolderCard
                 backgroundModeCard
-                trustWeightsCard
+                // 2026-05-09: trustWeightsCard moved to TrustView —
+                // sliders that tune the Trust score now live next
+                // to the score they tune.  See TrustView.weightsDisclosure.
                 securityCard
             }
             .padding(20)
@@ -728,92 +730,10 @@ struct SettingsView: View {
     // snippets, privacy story) instead of compressing the whole story
     // into a 200-px Settings card.
 
-    private var trustWeightsCard: some View {
-        TitledCard(title: "Trust score weights", systemImage: "checkmark.seal") {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Adjust how the Trust tab weighs each axis when scoring your installed apps.  A user who cares mostly about privacy can dial security down — the underlying concerns don't change, only the score that summarises them.  Defaults: security 1.5, privacy 1.0, trust 1.0, business model 0.6.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                trustWeightSlider(
-                    label: "Privacy",
-                    accessibilityLabel: "Privacy",
-                    systemImage: "eye.slash",
-                    tint: .blue,
-                    value: $vm.trustWeightPrivacy
-                )
-                trustWeightSlider(
-                    label: "Security",
-                    accessibilityLabel: "Security",
-                    systemImage: "shield.fill",
-                    tint: .red,
-                    value: $vm.trustWeightSecurity
-                )
-                trustWeightSlider(
-                    label: "Trust / reputation",
-                    accessibilityLabel: "Trust",
-                    systemImage: "scalemass",
-                    tint: .orange,
-                    value: $vm.trustWeightTrust
-                )
-                trustWeightSlider(
-                    label: "Business model",
-                    accessibilityLabel: "Business model",
-                    systemImage: "creditcard",
-                    tint: .purple,
-                    value: $vm.trustWeightBusinessModel
-                )
-
-                HStack {
-                    Spacer()
-                    Button("Reset to defaults") {
-                        vm.resetTrustWeightsToDefault()
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func trustWeightSlider(
-        label: LocalizedStringKey,
-        accessibilityLabel: String,
-        systemImage: String,
-        tint: Color,
-        value: Binding<Double>
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 8) {
-                Image(systemName: systemImage)
-                    .foregroundStyle(tint)
-                    .font(.callout)
-                    .frame(width: 18)
-                Text(label).font(.callout)
-                Spacer()
-                Text(String(format: "%.1f", value.wrappedValue))
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
-                    .frame(width: 32, alignment: .trailing)
-            }
-            // Range (0, 3].  We start at 0.1 instead of 0 so a slider
-            // at the leftmost position still produces a valid weight
-            // (Weights.sanitised would clamp 0 → 0.1 anyway, but
-            // showing "0.1" in the UI matches what's actually used).
-            //
-            // v1.5.4 fix: the accessibility label was previously built
-            // via `"\(label) weight"` where label was a LocalizedStringKey
-            // — Swift's interpolation produced unhelpful VoiceOver output.
-            // Now passed as a separate plain-String parameter so the
-            // axis name is read correctly by screen readers.
-            Slider(value: value, in: 0.1...3.0, step: 0.1)
-                .tint(tint)
-                .accessibilityLabel(Text(accessibilityLabel + " weight"))
-                .accessibilityValue(String(format: "%.1f", value.wrappedValue))
-        }
-    }
+    // 2026-05-09: trustWeightsCard + trustWeightSlider helper moved
+    // to TrustView (`weightsDisclosure` + `weightSlider`).  Discovery
+    // wins — the user finds the sliders at the exact moment they're
+    // looking at the score they want to tune.
 
     // MARK: Security & privacy
 

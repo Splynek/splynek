@@ -236,6 +236,12 @@ struct TrustView: View {
             Divider()
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
+                    // 2026-05-09: weights card was previously in
+                    // Settings — moved here so the "tune the score
+                    // I'm seeing" affordance lives next to the score
+                    // it tunes.  Collapsed by default so the per-app
+                    // rows remain the primary content.
+                    weightsDisclosure
                     if matchedRows.isEmpty && !scanner.isScanning {
                         noMatchesFooter
                     } else {
@@ -250,6 +256,104 @@ struct TrustView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    // MARK: - Weights (moved from SettingsView 2026-05-09)
+    //
+    // The Trust score is a weighted sum across four axes (privacy /
+    // security / trust / business model).  Defaults match the
+    // TrustScorer.Weights.default values.  Putting the sliders here
+    // — collapsed by default — means the user finds them at the
+    // moment they're looking at a score they want to tune.
+    // Previously buried in Settings, two screens away from the data.
+
+    @State private var weightsExpanded = false
+
+    @ViewBuilder
+    private var weightsDisclosure: some View {
+        DisclosureGroup(isExpanded: $weightsExpanded) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Adjust how the Trust tab weighs each axis when scoring your installed apps. A user who cares mostly about privacy can dial security down — the underlying concerns don't change, only the score that summarises them. Defaults: security 1.5, privacy 1.0, trust 1.0, business model 0.6.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                weightSlider(label: "Privacy",
+                             accessibilityLabel: "Privacy",
+                             systemImage: "eye.slash",
+                             tint: .blue,
+                             value: $vm.trustWeightPrivacy)
+                weightSlider(label: "Security",
+                             accessibilityLabel: "Security",
+                             systemImage: "shield.fill",
+                             tint: .red,
+                             value: $vm.trustWeightSecurity)
+                weightSlider(label: "Trust / reputation",
+                             accessibilityLabel: "Trust",
+                             systemImage: "scalemass",
+                             tint: .orange,
+                             value: $vm.trustWeightTrust)
+                weightSlider(label: "Business model",
+                             accessibilityLabel: "Business model",
+                             systemImage: "creditcard",
+                             tint: .purple,
+                             value: $vm.trustWeightBusinessModel)
+                HStack {
+                    Spacer()
+                    Button("Reset to defaults") {
+                        vm.resetTrustWeightsToDefault()
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                }
+            }
+            .padding(.top, 8)
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "slider.horizontal.3")
+                    .foregroundStyle(.tint)
+                Text("Score weights")
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Text(String(format: "P %.1f · S %.1f · T %.1f · B %.1f",
+                            vm.trustWeightPrivacy, vm.trustWeightSecurity,
+                            vm.trustWeightTrust, vm.trustWeightBusinessModel))
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.primary.opacity(0.03))
+        )
+    }
+
+    @ViewBuilder
+    private func weightSlider(
+        label: LocalizedStringKey,
+        accessibilityLabel: String,
+        systemImage: String,
+        tint: Color,
+        value: Binding<Double>
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Image(systemName: systemImage)
+                    .foregroundStyle(tint)
+                    .font(.callout)
+                    .frame(width: 18)
+                Text(label).font(.callout)
+                Spacer()
+                Text(String(format: "%.1f", value.wrappedValue))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .frame(width: 32, alignment: .trailing)
+            }
+            Slider(value: value, in: 0.1...3.0, step: 0.1)
+                .tint(tint)
+                .accessibilityLabel(Text(accessibilityLabel + " weight"))
+                .accessibilityValue(String(format: "%.1f", value.wrappedValue))
         }
     }
 
