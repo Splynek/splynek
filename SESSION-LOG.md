@@ -2574,6 +2574,138 @@ xcrun stapler staple build/Splynek.dmg
    announcement protocol extension to share `PopularityCensus`
    observations across the LAN.
 
+### 2026-05-09 — Settings decentralization (5 commits)
+
+After the 2026-05-08 design-revolution arc settled, Paulo flagged
+that several Settings cards conceptually belonged in their feature
+tabs:
+
+> "Existem várias coisas nos settings que acho que têm lugar nas
+> tabs correspondentes, como por exemplo o peso da pontuação Trust
+> deveria estar na tab trust. O que achas? Verifica os settings
+> todos e vê o que faz sentido levar para as tabs.  Para além
+> disso, neste momento temos espaço de sobra para voltarmos a ter
+> o logo e a roldana de settings no rodapé do pane."
+
+The principle: **discovery wins** — the user finds each control
+at the moment they're looking at the surface it governs.  The
+sliders that tune Trust live next to the Trust score they tune;
+the schedule that gates the queue lives next to the queue it
+gates; the household swarm token lives next to the swarm peers it
+authorizes; the dashboard QR lives next to the MCP setup it
+shares a listener with.
+
+User approved the 5-commit plan with "cooncordo".
+
+#### Five commits (chronological)
+
+| #   | Commit    | Migration                                              | Net diff       |
+|-----|-----------|--------------------------------------------------------|----------------|
+| 1/5 | `57fb6cb` | Trust weights → **TrustView** (`weightsDisclosure`)    | -ratio in Settings, +disclosure card on top of Confiança |
+| 2/5 | `b494a2b` | Schedule + Watched folder → **QueueView**              | both cards now under the queue list |
+| 3/5 | `f944b09` | Swarm token + Security → **FleetView**                 | extension after `localActivityCard` |
+| 4/5 | `52e9249` | Web dashboard + iPhone pairing QR → **AgentsView**     | `mobileDashboardCard` after `statusCard` |
+| 5/5 | `2b3a87f` | Brand footer restored in Sidebar + Settings cleanup    | logo + version + gear at bottom of pane |
+
+After all five: 740/740 tests still green, `swift build` clean,
+all pushed to `origin/rollup/2026-05-08`.
+
+#### Migration patterns established
+
+Each card moved with the same shape:
+
+1. **In-source forwarding comment** at the original site —
+   future readers find a breadcrumb pointing to the new home,
+   not a deletion mystery.  Example from `SettingsView.swift`:
+
+   ```
+   // 2026-05-09: trustWeightsCard moved to TrustView —
+   // sliders that tune the Trust score now live next
+   // to the score they tune.  See TrustView.weightsDisclosure.
+   ```
+
+2. **Card-as-`fileprivate` extension** at the destination — keeps
+   the destination view's struct body slim and lets the migrated
+   card's helpers (e.g. `weightSlider`, `pickWatchFolder`) stay
+   private to the file without polluting the host struct.
+
+3. **No behaviour change** — bindings still go through the same
+   `vm.fleet.*` / `vm.trust.*` / `vm.swarmHouseholdToken` paths.
+   Pure surface relocation, not a model refactor.
+
+4. **Disclosure-style for advanced knobs** — Trust weights moved
+   into a `DisclosureGroup` (not always-visible), because the
+   sliders are advanced configuration, not first-class content.
+   The card itself sits at the **top** of TrustView — closed by
+   default, single click to open, right above the score it tunes.
+
+#### Why this isn't busywork
+
+The original Settings tab was 8 cards all of equal weight.  Many
+of them had no relationship to each other beyond "configures
+something" — the user's mental model can't map "schedule downloads"
+and "Trust score weights" to the same neighborhood.  After the
+migration, Settings has 4 **genuinely cross-cutting** cards:
+
+- **Pro license** — gates several feature tabs at once
+- **Browser helpers** — Chrome extension + Safari bookmarklets
+- **Local AI** — Ollama detection + model (used by Concierge +
+  History search)
+- **Background mode** — dock icon + login item (app-wide)
+
+Everything else lives next to what it affects.  Bonus side effect:
+SettingsView shrank from 583 → 368 lines.  Each destination tab
+gained ~100-200 lines but the cognitive load went **down**: the
+reader is already in the right context when they encounter each
+control.
+
+#### Brand footer restoration (Move 5)
+
+The footer was removed in commit `2efa8d0` (2026-05-07) on the
+grounds that "it ate a sidebar row at every window height" and
+Settings was reachable from `Cmd+,` in the menu bar.  Two days
+of layout polish later, the sidebar has plenty of breathing room
+**and** the Settings tab is no longer in the sidebar at all
+(removed in v0.49) — meaning users who don't know about the menu
+bar gear had no on-screen path to Settings.
+
+The restored footer:
+- 28 pt app icon + "Splynek" name + version on the lead edge,
+  tapping opens About via the existing `splynekShowAbout`
+  notification
+- Gear icon on the trailing edge, tapping opens Settings via the
+  same `splynekShowSettings` notification the menu-bar `Cmd+,`
+  posts (RootView's routing is unchanged — pure UI affordance)
+- Top-edge divider keeps it visually distinct from the sidebar
+  list above
+
+#### Numbers
+
+```
+Commits:                5
+Tests:                  740/740 (no test changes — pure UI)
+SettingsView:           583 → 368 lines (-215)
+TrustView:              ~840 → 1,071 lines (+231)
+QueueView:              ~360 → 591 lines (+231)
+FleetView:              ~440 → 546 lines (+106)
+AgentsView:             ~500 → 650 lines (+150)
+Sidebar:                ~360 → 451 lines (+91)
+Net delta:             +594 lines (mostly forwarding comments
+                       + extension wrappers; no model code added)
+```
+
+#### Where it stands at end of session
+
+`origin/rollup/2026-05-08` carries the full 2026-05-08 + 2026-05-09
+arc.  Branch is now ~145 commits ahead of `origin/main`.  Next
+maintainer steps unchanged from the 2026-05-08 evening entry:
+end-to-end smoke test, L10n native-speaker review, run cron
+scripts, promote OSS-confirmed cask entries, wire AI-suggested
+persistence.  The Settings decentralization adds **one** thing
+to the smoke-test checklist: walk Trust / Fila / Frota / Agentes
+and confirm each migrated card renders in its new home and the
+brand footer appears at the bottom of the sidebar.
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
