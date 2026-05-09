@@ -152,6 +152,86 @@ public actor PairedMacClient {
         }
     }
 
+    // MARK: - Sprint 1 PRO-PLUS-IPHONE — remote control + summary fetches
+    //
+    // These power the iOS App Intents (Hey Siri, pause Splynek
+    // downloads), the Apple Watch quick actions, the Widget refresh,
+    // and the Pro-on-iPhone Sovereignty / Trust / History views.
+    //
+    // All fail safely on free-tier Macs: 404 from
+    // /api/trust-watcher/summary becomes a clean
+    // `ClientError.http(404)` the caller can surface as "ask the Mac
+    // owner to upgrade".
+
+    /// `POST /splynek/v1/api/pause-all?t=<token>`.  Pauses every
+    /// running download on the paired Mac.  Idempotent on the Mac
+    /// side — already-paused jobs are untouched.
+    public func pauseAll() async throws {
+        try await postEmpty(action: "pause-all")
+    }
+
+    /// `POST /splynek/v1/api/resume-all?t=<token>`.
+    public func resumeAll() async throws {
+        try await postEmpty(action: "resume-all")
+    }
+
+    /// `GET /splynek/v1/api/sovereignty/summary?t=<token>`.
+    /// Returns a small Codable snapshot suitable for a Widget
+    /// render or a Sovereignty-on-iPhone view.
+    public func sovereigntySummary() async throws -> RelaySummary.Sovereignty {
+        try await getJSON(path: "splynek/v1/api/sovereignty/summary",
+                          as: RelaySummary.Sovereignty.self)
+    }
+
+    /// `GET /splynek/v1/api/trust/summary?t=<token>`.
+    public func trustSummary() async throws -> RelaySummary.Trust {
+        try await getJSON(path: "splynek/v1/api/trust/summary",
+                          as: RelaySummary.Trust.self)
+    }
+
+    /// `GET /splynek/v1/api/trust-watcher/summary?t=<token>`.
+    /// Pro-only on the Mac side — throws `ClientError.http(404)` for
+    /// free-tier Macs.  Callers (the iPhone Trust-Watcher view, the
+    /// CloudKit subscription wiring) catch that specifically.
+    public func trustWatcherSummary() async throws -> RelaySummary.TrustWatcher {
+        try await getJSON(path: "splynek/v1/api/trust-watcher/summary",
+                          as: RelaySummary.TrustWatcher.self)
+    }
+
+    /// `GET /splynek/v1/api/history/summary?t=<token>`.
+    public func historySummary() async throws -> RelaySummary.History {
+        try await getJSON(path: "splynek/v1/api/history/summary",
+                          as: RelaySummary.History.self)
+    }
+
+    // MARK: - Internal generic helpers
+
+    private func postEmpty(action: String) async throws {
+        guard let endpoint = mac.baseURL?
+            .appendingPathComponent("splynek/v1/api/\(action)")
+        else { throw ClientError.notReachable }
+        var comps = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)!
+        comps.queryItems = [URLQueryItem(name: "t", value: mac.token)]
+        var req = URLRequest(url: comps.url!)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let (_, resp) = try await session.data(for: req)
+        try check(resp)
+    }
+
+    private func getJSON<T: Decodable>(path: String, as: T.Type) async throws -> T {
+        guard let base = mac.baseURL?.appendingPathComponent(path)
+        else { throw ClientError.notReachable }
+        var comps = URLComponents(url: base, resolvingAgainstBaseURL: false)!
+        comps.queryItems = [URLQueryItem(name: "t", value: mac.token)]
+        let (data, resp) = try await session.data(from: comps.url!)
+        try check(resp)
+        guard let decoded = try? JSONDecoder().decode(T.self, from: data) else {
+            throw ClientError.decode
+        }
+        return decoded
+    }
+
     /// S4 phase 3 (2026-05-07): LAN-first submission with optional
     /// CloudKit-relay fallback.  Used by the Share Extension and
     /// the main app's SubmitURLView.

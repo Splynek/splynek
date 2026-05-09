@@ -2,6 +2,9 @@ import Foundation
 import Network
 import SwiftUI
 import CryptoKit
+// SplynekCompanionCore carries RelaySummary (Sprint 1 PRO-PLUS-IPHONE)
+// — single source of truth shared across iOS Companion + Mac.
+import SplynekCompanionCore
 
 /// Bonjour-advertised per-device fleet orchestration.
 ///
@@ -283,6 +286,43 @@ public final class FleetCoordinator: ObservableObject {
     /// Binds to `vm.cancelAll()` — we keep the closure shape simple so
     /// the coordinator doesn't need to see the VM type.
     var onCancelAll: (() -> Void)?
+
+    // MARK: Sprint 1 PRO-PLUS-IPHONE remote-control + summary closures
+    //
+    // Same callback pattern as `onWebIngest` / `onCancelAll`: the
+    // VM injects these on init so the coordinator stays decoupled
+    // from the VM type.  Each is opt-in — if a closure is nil the
+    // corresponding endpoint returns 404.
+    //
+    // Pause/Resume all power the iOS App Intents + Apple Watch
+    // Quick Actions ("Hey Siri, pause Splynek downloads").
+    // Summary closures power the Pro on iPhone surfaces +
+    // iOS Widget + Live Activity Spectator panel.
+
+    /// Pause every running download.  Bound to a VM helper that
+    /// loops `pauseJob(_:)` over the running set.
+    var onPauseAll: (() -> Void)?
+
+    /// Resume every paused download.  Bound to a VM helper that
+    /// loops `resumeJob(_:)` over the paused set.
+    var onResumeAll: (() -> Void)?
+
+    /// Provide a fresh `RelaySummary.Sovereignty` snapshot.
+    /// Async because the VM may need to await the
+    /// `SovereigntyScanner` finishing a scan.  Returns nil →
+    /// coordinator answers 404.
+    var onSovereigntySummary: (() async -> RelaySummary.Sovereignty?)?
+
+    /// Provide a fresh `RelaySummary.Trust` snapshot.
+    var onTrustSummary: (() async -> RelaySummary.Trust?)?
+
+    /// Provide a fresh `RelaySummary.TrustWatcher` snapshot.
+    /// Returns nil for free-tier Macs — the iPhone client treats
+    /// 404 as "Pro feature; ask Mac owner to upgrade".
+    var onTrustWatcherSummary: (() async -> RelaySummary.TrustWatcher?)?
+
+    /// Provide a fresh `RelaySummary.History` snapshot.
+    var onHistorySummary: (() async -> RelaySummary.History?)?
 
     /// Base URL a client can open to reach the web dashboard or MCP
     /// endpoint. Returns `nil` until the listener binds.
@@ -831,6 +871,18 @@ public final class FleetCoordinator: ObservableObject {
             await serveAPISubmit(conn, path: path, body: body, method: method, action: "queue")
         } else if path.hasPrefix("/splynek/v1/api/cancel") {
             await serveAPICancel(conn, path: path, method: method)
+        } else if path.hasPrefix("/splynek/v1/api/pause-all") {
+            await serveAPIPauseAll(conn, path: path, method: method)
+        } else if path.hasPrefix("/splynek/v1/api/resume-all") {
+            await serveAPIResumeAll(conn, path: path, method: method)
+        } else if path.hasPrefix("/splynek/v1/api/sovereignty/summary") {
+            await serveAPISovereigntySummary(conn, path: path, method: method)
+        } else if path.hasPrefix("/splynek/v1/api/trust/summary") {
+            await serveAPITrustSummary(conn, path: path, method: method)
+        } else if path.hasPrefix("/splynek/v1/api/trust-watcher/summary") {
+            await serveAPITrustWatcherSummary(conn, path: path, method: method)
+        } else if path.hasPrefix("/splynek/v1/api/history/summary") {
+            await serveAPIHistorySummary(conn, path: path, method: method)
         } else if path.hasPrefix("/splynek/v1/fetch") {
             await serveFetch(conn, path: path, rangeHeader: rangeHeader)
         } else if path.hasPrefix("/splynek/v1/content/") {
@@ -1205,6 +1257,120 @@ public final class FleetCoordinator: ObservableObject {
         let handler = self.onCancelAll
         await MainActor.run { handler?() }
         try? await respond(conn, status: "202 Accepted")
+    }
+
+    // MARK: - Sprint 1 PRO-PLUS-IPHONE — pause/resume + summary endpoints
+
+    /// `POST /splynek/v1/api/pause-all?t=<token>` — bound to
+    /// `vm.pauseAllRunning()`.  Used by the iPhone "Pause all"
+    /// quick action + Siri intent + Apple Watch tap-to-pause.
+    private func serveAPIPauseAll(_ conn: NWConnection, path: String, method: String) async {
+        guard method == "POST" else {
+            try? await respond(conn, status: "405 Method Not Allowed"); return
+        }
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        let handler = self.onPauseAll
+        await MainActor.run { handler?() }
+        try? await respond(conn, status: "202 Accepted")
+    }
+
+    /// `POST /splynek/v1/api/resume-all?t=<token>`.
+    private func serveAPIResumeAll(_ conn: NWConnection, path: String, method: String) async {
+        guard method == "POST" else {
+            try? await respond(conn, status: "405 Method Not Allowed"); return
+        }
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        let handler = self.onResumeAll
+        await MainActor.run { handler?() }
+        try? await respond(conn, status: "202 Accepted")
+    }
+
+    /// `GET /splynek/v1/api/sovereignty/summary?t=<token>`
+    private func serveAPISovereigntySummary(_ conn: NWConnection, path: String, method: String) async {
+        guard method == "GET" else {
+            try? await respond(conn, status: "405 Method Not Allowed"); return
+        }
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        guard let provider = self.onSovereigntySummary else {
+            try? await respond(conn, status: "404 Not Found"); return
+        }
+        guard let summary = await provider() else {
+            try? await respond(conn, status: "503 Service Unavailable"); return
+        }
+        guard let body = try? JSONEncoder().encode(summary) else {
+            try? await respond(conn, status: "500 Internal Server Error"); return
+        }
+        try? await respondJSON(conn, body: body)
+    }
+
+    /// `GET /splynek/v1/api/trust/summary?t=<token>`
+    private func serveAPITrustSummary(_ conn: NWConnection, path: String, method: String) async {
+        guard method == "GET" else {
+            try? await respond(conn, status: "405 Method Not Allowed"); return
+        }
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        guard let provider = self.onTrustSummary else {
+            try? await respond(conn, status: "404 Not Found"); return
+        }
+        guard let summary = await provider() else {
+            try? await respond(conn, status: "503 Service Unavailable"); return
+        }
+        guard let body = try? JSONEncoder().encode(summary) else {
+            try? await respond(conn, status: "500 Internal Server Error"); return
+        }
+        try? await respondJSON(conn, body: body)
+    }
+
+    /// `GET /splynek/v1/api/trust-watcher/summary?t=<token>`.
+    /// Returns 404 on free-tier Macs (no Trust Watcher running).
+    private func serveAPITrustWatcherSummary(_ conn: NWConnection, path: String, method: String) async {
+        guard method == "GET" else {
+            try? await respond(conn, status: "405 Method Not Allowed"); return
+        }
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        guard let provider = self.onTrustWatcherSummary else {
+            try? await respond(conn, status: "404 Not Found"); return
+        }
+        guard let summary = await provider() else {
+            // Pro Mac with watcher enabled but state empty → still
+            // return JSON.  nil means "this Mac doesn't run a
+            // watcher" (free tier or explicitly disabled).
+            try? await respond(conn, status: "404 Not Found"); return
+        }
+        guard let body = try? JSONEncoder().encode(summary) else {
+            try? await respond(conn, status: "500 Internal Server Error"); return
+        }
+        try? await respondJSON(conn, body: body)
+    }
+
+    /// `GET /splynek/v1/api/history/summary?t=<token>`.
+    private func serveAPIHistorySummary(_ conn: NWConnection, path: String, method: String) async {
+        guard method == "GET" else {
+            try? await respond(conn, status: "405 Method Not Allowed"); return
+        }
+        guard tokenFromQuery(path) == webToken else {
+            try? await respond(conn, status: "401 Unauthorized"); return
+        }
+        guard let provider = self.onHistorySummary else {
+            try? await respond(conn, status: "404 Not Found"); return
+        }
+        guard let summary = await provider() else {
+            try? await respond(conn, status: "503 Service Unavailable"); return
+        }
+        guard let body = try? JSONEncoder().encode(summary) else {
+            try? await respond(conn, status: "500 Internal Server Error"); return
+        }
+        try? await respondJSON(conn, body: body)
     }
 
     // MARK: MCP server (v1.6)

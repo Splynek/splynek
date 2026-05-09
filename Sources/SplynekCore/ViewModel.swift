@@ -3,6 +3,8 @@ import SwiftUI
 import AppKit
 import Combine
 import UniformTypeIdentifiers
+// SplynekCompanionCore carries RelaySummary (Sprint 1 PRO-PLUS-IPHONE)
+import SplynekCompanionCore
 
 @MainActor
 final class SplynekViewModel: ObservableObject {
@@ -1038,6 +1040,26 @@ final class SplynekViewModel: ObservableObject {
         // contract the scheme handler, drop handler, and menu-bar
         // popover use. One path for every surface.
         fleet.onCancelAll = { [weak self] in self?.cancelAll() }
+        // Sprint 1 PRO-PLUS-IPHONE: remote-control endpoints for the
+        // iOS App Intents + Apple Watch + Pause/Resume quick actions.
+        fleet.onPauseAll = { [weak self] in self?.pauseAllRunning() }
+        fleet.onResumeAll = { [weak self] in self?.resumeAllPaused() }
+        // Summary endpoints for Pro on iPhone (Sovereignty / Trust /
+        // History on phone) + iOS Widget + future Watch complications.
+        // Each closure async-builds a Codable payload; nil means "this
+        // surface isn't ready yet" → endpoint returns 503/404.
+        fleet.onSovereigntySummary = { [weak self] in
+            await self?.buildSovereigntySummary()
+        }
+        fleet.onTrustSummary = { [weak self] in
+            await self?.buildTrustSummary()
+        }
+        fleet.onTrustWatcherSummary = { [weak self] in
+            await self?.buildTrustWatcherSummary()
+        }
+        fleet.onHistorySummary = { [weak self] in
+            await self?.buildHistorySummary()
+        }
         fleet.onWebIngest = { [weak self] action, raw in
             guard let self else { return }
             let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -2149,6 +2171,154 @@ final class SplynekViewModel: ObservableObject {
             DownloadQueue.save(queue)
         }
     }
+
+    // MARK: - Sprint 1 PRO-PLUS-IPHONE — bulk pause/resume + summary builders
+
+    /// Pause every running download.  Bound to
+    /// `fleet.onPauseAll` so the iPhone "Pause all" button + the
+    /// `PauseAllSplynekDownloadsIntent` Siri intent route here.
+    /// Idempotent — paused jobs are left untouched.
+    func pauseAllRunning() {
+        for job in activeJobs where job.lifecycle == .running {
+            pauseJob(job)
+        }
+    }
+
+    /// Resume every paused download.  Bound to
+    /// `fleet.onResumeAll`.  Idempotent — running jobs are left
+    /// untouched.
+    func resumeAllPaused() {
+        for job in activeJobs where job.lifecycle == .paused {
+            resumeJob(job)
+        }
+    }
+
+    /// Build a `RelaySummary.Sovereignty` snapshot for an iOS
+    /// Companion / Widget / external client polling
+    /// `/api/sovereignty/summary`.  We build off the cached
+    /// `sovereigntyScannerApps` published from SovereigntyView and
+    /// the `SovereigntyCatalog`.  Returns nil when the scanner
+    /// hasn't run yet — the endpoint then 503's so the client
+    /// can retry.
+    func buildSovereigntySummary() async -> RelaySummary.Sovereignty? {
+        let apps = self.sovereigntyScannerApps
+        guard !apps.isEmpty else { return nil }
+        var withAlternatives = 0
+        var topConcerns: [RelaySummary.Sovereignty.TopApp] = []
+        for app in apps {
+            guard let entry = SovereigntyCatalog.alternatives(for: app.id) else {
+                continue
+            }
+            if !entry.alternatives.isEmpty {
+                withAlternatives += 1
+                if topConcerns.count < 3 {
+                    topConcerns.append(.init(
+                        bundleID: app.id,
+                        displayName: app.name,
+                        firstAlternative: entry.alternatives.first?.name
+                    ))
+                }
+            }
+        }
+        // Score: 100 - (apps_with_alts * 100 / total).  Higher
+        // means fewer apps need swapping → user is already sovereign.
+        let score = apps.isEmpty ? 100
+            : max(0, 100 - (withAlternatives * 100 / apps.count))
+        return .init(
+            score: score,
+            totalApps: apps.count,
+            appsWithAlternatives: withAlternatives,
+            topConcerns: topConcerns,
+            generatedAt: TrustWatcher.iso8601(Date())
+        )
+    }
+
+    /// Build a `RelaySummary.Trust` snapshot.  Returns nil when
+    /// the scanner hasn't enumerated.
+    func buildTrustSummary() async -> RelaySummary.Trust? {
+        let apps = self.sovereigntyScannerApps
+        guard !apps.isEmpty else { return nil }
+        let weights = trustWeights
+        var scores: [(app: String, bundle: String, score: Int, top: String)] = []
+        for app in apps {
+            guard let entry = TrustCatalog.profile(for: app.id) else { continue }
+            let report = TrustScorer.score(entry, weights: weights)
+            let top = entry.concerns.first?.summary ?? ""
+            scores.append((app.name, app.id, report.value, top))
+        }
+        guard !scores.isEmpty else { return nil }
+        let avg = scores.map(\.score).reduce(0, +) / scores.count
+        let highRisk = scores.filter { $0.score < 50 }.count
+        let topConcerns = scores
+            .sorted { $0.score < $1.score }
+            .prefix(3)
+            .map { RelaySummary.Trust.TopApp(
+                bundleID: $0.bundle,
+                displayName: $0.app,
+                score: $0.score,
+                topConcernSummary: $0.top
+            ) }
+        return .init(
+            averageScore: avg,
+            totalAppsWithProfile: scores.count,
+            highRiskCount: highRisk,
+            topConcerns: Array(topConcerns),
+            generatedAt: TrustWatcher.iso8601(Date())
+        )
+    }
+
+    /// Build a `RelaySummary.TrustWatcher` snapshot.  Returns nil
+    /// for free-tier — endpoint then 404's, signalling "Pro
+    /// feature; ask Mac owner to upgrade".
+    func buildTrustWatcherSummary() async -> RelaySummary.TrustWatcher? {
+        guard license.isPro else { return nil }
+        let state = await trustWatcher.currentState()
+        let recent = state.alerts.prefix(10).map { alert in
+            RelaySummary.TrustWatcher.Alert(
+                id: alert.id,
+                displayName: alert.target.displayName,
+                kindLabel: alert.target.kind.label,
+                severityLabel: alert.severity.label,
+                observedAt: alert.observedAt,
+                acknowledged: alert.acknowledged,
+                pageURL: alert.target.url.absoluteString
+            )
+        }
+        return .init(
+            watchingCount: TrustWatchCatalog.watchedBundleIDs.count,
+            pendingAlertCount: state.pendingAlertCount,
+            lastSweepAt: state.lastSweepAt,
+            recentAlerts: Array(recent),
+            generatedAt: TrustWatcher.iso8601(Date())
+        )
+    }
+
+    /// Build a `RelaySummary.History` snapshot.
+    func buildHistorySummary() async -> RelaySummary.History? {
+        let entries = self.history
+        let totalBytes = entries.reduce(Int64(0)) { $0 + $1.totalBytes }
+        let recent = entries.prefix(10).map { entry in
+            RelaySummary.History.Item(
+                url: entry.url,
+                filename: entry.filename,
+                bytes: entry.totalBytes,
+                finishedAt: TrustWatcher.iso8601(entry.finishedAt)
+            )
+        }
+        return .init(
+            totalEntries: entries.count,
+            totalBytes: totalBytes,
+            recent: Array(recent),
+            generatedAt: TrustWatcher.iso8601(Date())
+        )
+    }
+
+    /// Cached output of `SovereigntyScanner` for the summary
+    /// builders.  Refreshed by SovereigntyView on each scan; the
+    /// VM only reads it.  Default empty until the scanner runs.
+    /// Stored as the same `SovereigntyScanner.InstalledApp` value
+    /// type the scanner emits — keeps coupling minimal.
+    @Published var sovereigntyScannerApps: [SovereigntyScanner.InstalledApp] = []
 
     /// Preserved for existing call-sites (menu-bar `.keyboardShortcut(".")`,
     /// toolbar Cancel button).

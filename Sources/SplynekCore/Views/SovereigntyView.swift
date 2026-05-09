@@ -109,6 +109,14 @@ struct SovereigntyView: View {
                 scanner.scan()
             }
         }
+        // Sprint 1 PRO-PLUS-IPHONE: mirror the scanner's app list
+        // into the VM so the relay summary endpoints +
+        // TrustWatchService have something to filter against.
+        // Using the macOS 13 single-argument onChange form to stay
+        // within Package.swift's `.macOS(.v13)` minimum.
+        .onChange(of: scanner.apps) { newValue in
+            vm.sovereigntyScannerApps = newValue
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
