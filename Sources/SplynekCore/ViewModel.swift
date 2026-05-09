@@ -499,6 +499,69 @@ final class SplynekViewModel: ObservableObject {
     // Fleet orchestration — singleton, owned by the VM, exposed to views.
     let fleet = FleetCoordinator()
 
+    // MARK: Trust Watcher (Pro, Sprint 1 of PRO-PLUS-IPHONE strategy)
+
+    /// Daily-diff engine for app policies.  Marquee Pro feature
+    /// per `STRATEGY-2026-PRO-PLUS-IPHONE.md` § "Aposta A".
+    /// Created lazily on first license unlock; stays alive once
+    /// activated (license downgrades within a session are rare and
+    /// the worker is cheap to keep idle).
+    let trustWatcher = TrustWatchService()
+
+    /// Mirror of `trustWatcher.currentState()` for SwiftUI views.
+    /// Refreshed in `refreshTrustWatcher()` after every sweep + on
+    /// the polling timer below.
+    @Published var trustWatchState: TrustWatchStore = .empty
+
+    /// Pro-gated activation.  Called once at startup (see
+    /// `init`) and again whenever the license toggles.  Idempotent.
+    func activateTrustWatcherIfPro() {
+        let pro = license.isPro
+        Task { [weak self, pro] in
+            guard let self else { return }
+            if pro {
+                await self.trustWatcher.start()
+            } else {
+                await self.trustWatcher.stop()
+            }
+            await self.refreshTrustWatcher()
+        }
+    }
+
+    /// One-shot manual sweep ("Run now" UI button).  Returns the
+    /// alerts emitted in this run so the UI can announce.
+    func runTrustWatcherNow() async -> [TrustWatchAlert] {
+        let new = await trustWatcher.runOnce()
+        await refreshTrustWatcher()
+        return new
+    }
+
+    /// Pull `trustWatchState` from the actor.  Called after sweeps,
+    /// from the periodic timer, and after acknowledgements.
+    @MainActor
+    func refreshTrustWatcher() async {
+        let state = await trustWatcher.currentState()
+        self.trustWatchState = state
+    }
+
+    /// Acknowledge a single alert (UI swipe / dismiss button).
+    func acknowledgeTrustAlert(_ alertID: String) {
+        Task { [weak self] in
+            guard let self else { return }
+            await self.trustWatcher.acknowledge(alertID: alertID)
+            await self.refreshTrustWatcher()
+        }
+    }
+
+    /// Acknowledge every pending alert ("Clear all" button).
+    func acknowledgeAllTrustAlerts() {
+        Task { [weak self] in
+            guard let self else { return }
+            await self.trustWatcher.acknowledgeAll()
+            await self.refreshTrustWatcher()
+        }
+    }
+
     /// URLs the user has explicitly excluded from fleet sharing.
     /// Persisted to UserDefaults. Entries here are filtered out of
     /// `publishFleetState`'s completed list, so other Splyneks on
@@ -954,6 +1017,12 @@ final class SplynekViewModel: ObservableObject {
         fleet.proGateForcesLoopback = !license.isPro
         fleet.start()
         publishFleetState()
+        // Sprint 1 PRO-PLUS-IPHONE: spin up Trust Watcher (Pro
+        // gated; a no-op for free-tier).  Per-app filter is set
+        // by SovereigntyView once the scanner has run; until then
+        // the watcher runs against the full bundled catalog so
+        // a Pro user sees alerts even before they open Sovereignty.
+        activateTrustWatcherIfPro()
         // Force-write the fleet descriptor shortly after launch so the
         // CLI / Raycast / Alfred always find a current file. Release
         // optimizer has a way of folding the NWListener .ready

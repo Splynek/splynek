@@ -236,6 +236,11 @@ struct TrustView: View {
             Divider()
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
+                    // 2026-05-09 Sprint 1 PRO-PLUS-IPHONE: Trust
+                    // Watcher card surfaces policy / ToS changes
+                    // detected by the daily diff sweep.  Pro-only;
+                    // free users see a Pro-locked teaser instead.
+                    trustWatcherCard
                     // 2026-05-09: weights card was previously in
                     // Settings — moved here so the "tune the score
                     // I'm seeing" affordance lives next to the score
@@ -1067,5 +1072,190 @@ struct FlowLayout: Layout {
             lineHeight = max(lineHeight, s.height)
             x += s.width + spacing
         }
+    }
+}
+
+// MARK: - Trust Watcher card (2026-05-09 Sprint 1 PRO-PLUS-IPHONE)
+//
+// Sits at the top of the Trust scan results.  Behaviour:
+//   • Pro + 0 alerts          → a green "Watching N apps" status
+//                                pill + last-sweep timestamp + a
+//                                "Run now" button.
+//   • Pro + ≥1 pending alerts → list of alerts with severity-tinted
+//                                rows, click-through to the policy
+//                                URL, dismiss-each + Clear-all
+//                                buttons.
+//   • Free                    → ProLockedView upsell — "Get notified
+//                                when Privacy Policies change."
+//
+// Placement above the weights disclosure: alerts are time-sensitive
+// content; weights are configuration.  News on top, knobs below.
+
+extension TrustView {
+
+    @ViewBuilder
+    fileprivate var trustWatcherCard: some View {
+        if vm.license.isPro {
+            trustWatcherProCard
+        } else {
+            ProLockedView(
+                featureTitle: "Trust Watcher",
+                summary: "Get notified when an app you have installed materially changes its Privacy Policy or Terms of Service. Daily check, fully local — we just hash the public policy page and tell you when the hash changes. Splynek Pro.",
+                systemImage: "bell.badge",
+                onUnlock: { vm.requestProUnlock() }
+            )
+        }
+    }
+
+    @ViewBuilder
+    fileprivate var trustWatcherProCard: some View {
+        let state = vm.trustWatchState
+        let pending = state.alerts.filter { !$0.acknowledged }
+        TitledCard(
+            title: "Trust Watcher",
+            systemImage: "bell.badge",
+            accessory: AnyView(
+                StatusPill(
+                    text: pending.isEmpty
+                        ? "WATCHING \(TrustWatchCatalog.watchedBundleIDs.count)"
+                        : "\(pending.count) NEW",
+                    style: pending.isEmpty ? .success : .warning
+                )
+            )
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Daily diff of Privacy Policies + ToS for popular apps. Splynek hashes the public policy page; when the hash changes you'll see the alert here. Each alert links to the live page so you can read what changed.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if pending.isEmpty {
+                    HStack(spacing: 10) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text(lastSweepLabel(state.lastSweepAt))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button {
+                            Task { _ = await vm.runTrustWatcherNow() }
+                        } label: {
+                            Label("Run now", systemImage: "arrow.clockwise")
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                } else {
+                    ForEach(pending) { alert in
+                        trustWatcherAlertRow(alert)
+                    }
+                    HStack(spacing: 10) {
+                        Spacer()
+                        Button {
+                            vm.acknowledgeAllTrustAlerts()
+                        } label: {
+                            Label("Clear all", systemImage: "tray")
+                        }
+                        .buttonStyle(.bordered)
+                        Button {
+                            Task { _ = await vm.runTrustWatcherNow() }
+                        } label: {
+                            Label("Run now", systemImage: "arrow.clockwise")
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    fileprivate func trustWatcherAlertRow(_ alert: TrustWatchAlert) -> some View {
+        let tint: Color = {
+            switch alert.severity {
+            case .info:     return .blue
+            case .notice:   return .orange
+            case .material: return .red
+            }
+        }()
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: alert.severity == .material
+                  ? "exclamationmark.triangle.fill"
+                  : "bell.fill")
+                .foregroundStyle(tint)
+                .font(.callout)
+                .frame(width: 20)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Text(alert.target.displayName)
+                        .font(.callout.weight(.semibold))
+                    Text("·").foregroundStyle(.tertiary)
+                    Text(alert.target.kind.label)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                    Spacer(minLength: 0)
+                    StatusPill(text: alert.severity.label.uppercased(),
+                               style: alert.severity == .material
+                                    ? .danger
+                                    : (alert.severity == .notice ? .warning : .info))
+                }
+                Text(deltaLabel(alert))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                HStack(spacing: 8) {
+                    Button {
+                        NSWorkspace.shared.open(alert.target.url)
+                    } label: {
+                        Label("View page", systemImage: "safari")
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    Button {
+                        vm.acknowledgeTrustAlert(alert.id)
+                    } label: {
+                        Label("Dismiss", systemImage: "xmark")
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                }
+            }
+        }
+        .padding(10)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(tint.opacity(0.08))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .strokeBorder(tint.opacity(0.25), lineWidth: 0.6)
+        )
+    }
+
+    fileprivate func deltaLabel(_ alert: TrustWatchAlert) -> String {
+        let pct = alert.lengthDeltaFraction * 100
+        let sign = pct >= 0 ? "+" : ""
+        let pctStr = String(format: "%@%.0f%%", sign, pct)
+        let bytes = abs(alert.newLength - alert.previousLength)
+        let bytesStr: String
+        switch bytes {
+        case ..<1024:        bytesStr = "\(bytes) B"
+        case ..<1_048_576:   bytesStr = String(format: "%.1f KB", Double(bytes) / 1024.0)
+        default:             bytesStr = String(format: "%.1f MB", Double(bytes) / 1_048_576.0)
+        }
+        return "Body \(pctStr) (\(bytesStr)) on \(prettyDate(alert.observedAt))"
+    }
+
+    fileprivate func lastSweepLabel(_ iso: String?) -> String {
+        guard let iso else { return "Watcher activated; first sweep within minutes." }
+        return "Last check: \(prettyDate(iso))."
+    }
+
+    fileprivate func prettyDate(_ iso: String) -> String {
+        let isoF = ISO8601DateFormatter()
+        isoF.formatOptions = [.withInternetDateTime]
+        guard let date = isoF.date(from: iso) else { return iso }
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .short
+        return f.string(from: date)
     }
 }
