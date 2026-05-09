@@ -21,12 +21,57 @@
 
 #if canImport(SwiftUI)
 import SwiftUI
+import UIKit
 
 @main
 struct SplynekCompanionApp: App {
+    @UIApplicationDelegateAdaptor(SplynekCompanionAppDelegate.self) var appDelegate
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task {
+                    // Sprint 1 PRO-PLUS-IPHONE (2026-05-09):
+                    // register a CloudKit subscription for Trust
+                    // Watcher alerts published by the user's Pro
+                    // Mac + request notification permission.
+                    // Idempotent across launches.
+                    if #available(iOS 16.0, *) {
+                        await TrustWatchPushSubscriber.setUpSubscription()
+                    }
+                }
+        }
+    }
+}
+
+/// AppDelegate handles the silent push CloudKit's CKQuerySubscription
+/// fires when a Trust Watcher alert arrives.  Sprint 1 PRO-PLUS-IPHONE.
+final class SplynekCompanionAppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        // Register for remote notifications so APNs can deliver
+        // CloudKit silent pushes.  Silent push needs no permission
+        // prompt; the alert-permission prompt happens later in
+        // TrustWatchPushSubscriber.setUpSubscription.
+        application.registerForRemoteNotifications()
+        return true
+    }
+
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        if #available(iOS 16.0, *) {
+            Task {
+                let handled = await TrustWatchPushSubscriber
+                    .handleRemoteNotification(userInfo)
+                completionHandler(handled ? .newData : .noData)
+            }
+        } else {
+            completionHandler(.noData)
         }
     }
 }

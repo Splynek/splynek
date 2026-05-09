@@ -519,11 +519,31 @@ final class SplynekViewModel: ObservableObject {
     /// `init`) and again whenever the license toggles.  Idempotent.
     func activateTrustWatcherIfPro() {
         let pro = license.isPro
-        Task { [weak self, pro] in
+        // Set up / tear down the CloudKit publisher in lockstep.
+        // Sprint 1 PRO-PLUS-IPHONE: notifier is the bridge between
+        // a local diff-detected alert and an iPhone push.
+        if pro && trustWatchNotifier == nil {
+            trustWatchNotifier = TrustWatchCloudKitNotifier(
+                sourceMacUUID: fleet.deviceUUID
+            )
+        } else if !pro {
+            trustWatchNotifier = nil
+        }
+        let notifierRef = trustWatchNotifier
+        Task { [weak self, pro, notifierRef] in
             guard let self else { return }
             if pro {
+                // Wire the alerts callback so every sweep (manual
+                // or auto-timer) publishes to CloudKit.  Captures
+                // the notifier by value — a single sendable closure.
+                if let notifier = notifierRef {
+                    await self.trustWatcher.setOnAlertsEmitted { alerts in
+                        await notifier.publish(alerts: alerts)
+                    }
+                }
                 await self.trustWatcher.start()
             } else {
+                await self.trustWatcher.setOnAlertsEmitted { _ in }
                 await self.trustWatcher.stop()
             }
             await self.refreshTrustWatcher()
@@ -532,11 +552,19 @@ final class SplynekViewModel: ObservableObject {
 
     /// One-shot manual sweep ("Run now" UI button).  Returns the
     /// alerts emitted in this run so the UI can announce.
+    /// CloudKit publish happens inside the actor's
+    /// `onAlertsEmitted` callback (set by `activateTrustWatcherIfPro`),
+    /// so manual + auto-timer runs go through the same path.
     func runTrustWatcherNow() async -> [TrustWatchAlert] {
         let new = await trustWatcher.runOnce()
         await refreshTrustWatcher()
         return new
     }
+
+    /// Lazily-constructed CloudKit publisher.  Only set when
+    /// `license.isPro`; nil for free tier.  Initialised in
+    /// `activateTrustWatcherIfPro()`.
+    var trustWatchNotifier: TrustWatchCloudKitNotifier?
 
     /// Pull `trustWatchState` from the actor.  Called after sweeps,
     /// from the periodic timer, and after acknowledgements.

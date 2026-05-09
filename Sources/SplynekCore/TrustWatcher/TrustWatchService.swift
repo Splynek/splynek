@@ -95,6 +95,17 @@ public actor TrustWatchService {
         Self.log.info("TrustWatcher active targets: \(self.activeTargets.count, privacy: .public)")
     }
 
+    /// Optional callback fired by every auto-sweep + manual run
+    /// with the freshly-emitted alerts.  Sprint 1 PRO-PLUS-IPHONE:
+    /// the ViewModel sets this to publish alerts to CloudKit so
+    /// the user's iPhone receives a push notification.  Pure
+    /// closure shape — no VM type leak into this actor.
+    public var onAlertsEmitted: (@Sendable ([TrustWatchAlert]) async -> Void)?
+
+    public func setOnAlertsEmitted(_ handler: @escaping @Sendable ([TrustWatchAlert]) async -> Void) {
+        self.onAlertsEmitted = handler
+    }
+
     /// Begin the daily sweep loop.  Idempotent.  The first sweep
     /// runs immediately (after a 5-second grace period to let
     /// the app finish booting); subsequent sweeps fire every
@@ -106,7 +117,8 @@ public actor TrustWatchService {
             try? await Task.sleep(nanoseconds: 5_000_000_000)
             while !Task.isCancelled {
                 _ = await self.runOnce()
-                try? await Task.sleep(nanoseconds: UInt64(await self.sweepInterval * 1_000_000_000))
+                let intervalNs = UInt64(self.sweepInterval * 1_000_000_000)
+                try? await Task.sleep(nanoseconds: intervalNs)
             }
         }
     }
@@ -156,6 +168,11 @@ public actor TrustWatchService {
         Self.log.info(
             "TrustWatcher sweep done in \(elapsed, format: .fixed(precision: 1))s, \(newAlerts.count) new alerts"
         )
+        // Sprint 1 PRO-PLUS-IPHONE: forward fresh alerts to the
+        // optional callback so the VM can push them to CloudKit.
+        if !newAlerts.isEmpty, let cb = onAlertsEmitted {
+            await cb(newAlerts)
+        }
         return newAlerts
     }
 
