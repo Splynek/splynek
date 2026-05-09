@@ -21,6 +21,14 @@ struct FleetView: View {
                 thisDeviceCard
                 peersCard
                 localActivityCard
+                // 2026-05-09: householdTokenCard + securityCard
+                // migrated from Settings.  Both are LAN-scoped:
+                // the swarm token is the household identity boundary,
+                // the security toggles control privacy mode +
+                // loopback-only binding.  They configure the same
+                // surface this tab visualises.
+                householdTokenCard
+                securityCard
             }
             .padding(20)
         }
@@ -435,6 +443,102 @@ private struct ShareableRowView: View {
             Button("Move to Trash", role: .destructive) {
                 for path in row.allOutputPaths {
                     vm.trashAndForgetCompletedFile(outputPath: path)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Household token + Security (migrated from SettingsView 2026-05-09)
+//
+// Both cards configure the LAN/swarm surface this tab visualises:
+// • householdTokenCard — identity boundary for the swarm (peers
+//   with the same string can lend bytes to each other; empty
+//   disables peer-to-peer transfers).
+// • securityCard — privacy mode (hide downloads from peers) +
+//   loopback-only (block dashboard from reaching the LAN).
+//
+// They were buried in Settings; configuration of HOW the LAN
+// behaves now lives next to the LAN view itself.
+
+extension FleetView {
+
+    fileprivate var householdTokenCard: some View {
+        TitledCard(title: "Household swarm token", systemImage: "person.3.fill") {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Set the same string on every Mac in your household to let them share download bytes over the LAN. Empty disables peer-to-peer transfers; phone QR + same-Mac flows still work.")
+                    .font(.callout).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: 8) {
+                    SecureField("Shared token (any string)", text: $vm.swarmHouseholdToken)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 360)
+                    Button {
+                        vm.swarmHouseholdToken = ""
+                    } label: {
+                        Label("Clear", systemImage: "xmark.circle")
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(vm.swarmHouseholdToken.isEmpty)
+                }
+                if vm.swarmHouseholdToken.isEmpty {
+                    StatusPill(text: "OFF", style: .neutral)
+                } else {
+                    StatusPill(text: "ACTIVE", style: .success)
+                }
+                Text("Best practice: pick a short memorable phrase, type it on each Mac. Every chunk is still SHA-256 verified before it lands on disk — a malicious peer cannot inject corrupt bytes.")
+                    .font(.caption).foregroundStyle(.tertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    fileprivate var securityCard: some View {
+        TitledCard(title: "Security & privacy", systemImage: "lock.shield.fill") {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Controls over what the LAN can see and who can submit downloads to this Mac.")
+                    .font(.callout).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Toggle(isOn: Binding(
+                    get: { vm.fleet.privacyMode },
+                    set: { vm.fleet.privacyMode = $0 }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Privacy mode")
+                        Text("Hide active + completed downloads from other Splyneks on this LAN. Cooperative cache disabled.")
+                            .font(.caption).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .toggleStyle(.switch)
+
+                Toggle(isOn: Binding(
+                    get: { vm.fleet.loopbackOnly },
+                    set: { vm.fleet.loopbackOnly = $0 }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Loopback only (takes effect at next launch)")
+                        Text("Bind the dashboard + API to 127.0.0.1 only. Your phone won't reach it over Wi-Fi.")
+                            .font(.caption).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .toggleStyle(.switch)
+
+                Divider().opacity(0.3)
+
+                HStack(spacing: 10) {
+                    Button {
+                        vm.fleet.regenerateWebToken()
+                    } label: {
+                        Label("Regenerate token", systemImage: "arrow.triangle.2.circlepath.circle")
+                    }
+                    .buttonStyle(.bordered)
+                    .help("Invalidate any QR code you've already shared. CLI / Raycast / Alfred re-pair automatically.")
+                    Text("Rate limit: 60 req / 10 s per remote IP.")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Spacer()
                 }
             }
         }
