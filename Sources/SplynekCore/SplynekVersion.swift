@@ -34,7 +34,7 @@ public enum SplynekVersion {
     /// version metadata bump (Info.plist + project.yml + Alfred plist
     /// + Cask).  Asserted equal to Info.plist by
     /// `ReleaseCoherenceTests`.
-    public static let fallback = "1.6.2"
+    public static let fallback = "2.0.0"
 
     /// The version string SwiftUI views should display.  Reads
     /// Info.plist when available; otherwise returns `fallback`.

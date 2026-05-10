@@ -50,7 +50,7 @@ settings:
     # venda" (Ready for Sale) before MAS resubmissions.  The DMG /
     # Developer-ID stream (`./Scripts/build.sh`) is independent and
     # safe to re-cut at any time.
-    MARKETING_VERSION: "1.6.2"
+    MARKETING_VERSION: "2.0.0"
     CURRENT_PROJECT_VERSION: "1620"
     ENABLE_HARDENED_RUNTIME: "YES"
     CODE_SIGN_STYLE: Automatic

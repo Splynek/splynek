@@ -3,6 +3,128 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v2.0.0 — PRO-PLUS-IPHONE strategic arc (2026-05-10)
+
+Eight-sprint arc that pivots the Pro tier marquee from "AI Concierge"
+to **Trust Watcher** + **Pro on iPhone**, ships three external
+API-token clients (Raycast / CLI / Alfred), and live-validates the
+whole surface on a Mac DMG dev build + iPhone 17 Pro simulator.
+
+### Marquee Pro features
+
+- **Trust Watcher** — daily-diff engine for Privacy Policies + Terms
+  of Service of installed apps.  When a vendor materially changes a
+  document, an alert lands on your Mac and a push notification on
+  your iPhone.  100% local detection (SHA-256 hashing of public
+  policy pages; no LLM in the diff path; aligns with MAS-2.5.2).
+  Seeded with 12 popular apps × 2 URLs (Spotify, Netflix, Slack,
+  Discord, Zoom, Adobe, Notion, Dropbox, Chrome, Firefox, ChatGPT,
+  Claude); catalog grows via PR.
+- **Sovereignty Migrate Wizard** — guided one-click swap from a
+  paid US-controlled app to a European or open-source alternative.
+  Per-step confirmation; nothing destroyed; original app stays
+  installed unless you uninstall it manually.  Plus a "still on
+  your migration list" banner in Sovereignty + a Concierge tool
+  (`migrate_review_digest`) for natural-language queries.
+- **API tokens for power users** — mint persistent named tokens
+  for Raycast, Alfred, BetterTouchTool, shell scripts.  Two scopes
+  (read-only / read+write); revoke any time.  Three external
+  client scaffolds shipped:
+  - `Extensions/Raycast/splynek/` — 5 Raycast commands
+  - `Extensions/CLI/splynek` — bash wrapper + curl/jq cookbook
+  - `Extensions/Alfred/splynek/` — Alfred workflow scaffold
+- **Engagement viewer** — privacy through transparency.  Settings
+  card surfaces every counter the engagement store records; the
+  user reads the same JSON the future Trust+ subscription gate
+  reads.  No telemetry leaves the device.
+
+### Pro on iPhone
+
+- **Insights tab** — fourth tab on the iPhone Companion.  Live
+  Sovereignty / Trust / Trust Watcher / Recent Downloads cards
+  fetched from the paired Mac via token-gated relay endpoints.
+- **App Intents (Hey Siri)** — five intents wired through
+  `AppShortcutsProvider`: Send URL to Splynek / Pause All Splynek
+  Downloads / Resume All / Active Splynek Downloads / Splynek
+  Sovereignty Score.
+- **Home-screen Widget** — small + medium families with traffic-
+  light Sovereignty score.  30-min refresh budget.
+- **Geo-fence** — Settings toggle + "Use current location as home"
+  + radius slider (100-1000 m).  CLLocationManager monitors a
+  single CLCircularRegion; entries / exits drive PairedMacClient
+  pause-all / resume-all.  Coordinates never leave the device.
+- **CloudKit push notifications** — Trust Watcher alerts published
+  to the user's private CloudKit DB; iPhone CKQuerySubscription
+  fires a UNNotification with severity-aware body.
+
+### Apple Watch
+
+- App with two action buttons (Pause All / Resume All) + Sovereignty
+  score row + WKInterfaceDevice haptic feedback.  Reads paired Mac
+  from the App Group plist (no separate Watch pairing).
+- Three watch-face complication families (`accessoryCircular`
+  Gauge with traffic-light tint, `accessoryRectangular` two-line,
+  inline one-line).
+
+### Concierge sequences
+
+- `ConciergeSequence` Codable type + `ConciergeSequenceRunner` actor
+  wrapping `MCPServer.Bridge` (single dispatch source-of-truth).
+  Per-step user confirmation for every mutating step.  Halt on
+  first decline OR first failure.
+
+### Settings decentralization
+
+- 6 cards moved out of Settings into their feature tabs (Trust
+  weights → Confiança, Schedule + Watched folder → Fila, Swarm
+  token + Security → Frota, Web dashboard + iPhone pairing QR →
+  Agentes).  Settings now holds only the four genuinely
+  cross-cutting cards (Pro license, browser helpers, local AI,
+  background mode).  Brand footer restored at the bottom of the
+  sidebar with About + Settings buttons.
+
+### L10n catalog reaches zero gap
+
+- Mac `Localizable.xcstrings`: 740 → **841 strings × 5 locales =
+  4,205 translations**.  Audit script reports **0 missing** for
+  the first time in the codebase's history.
+- iOS Companion `Localizable.xcstrings`: +37 strings auto-extracted
+  by Xcode during the smoke build; English-only as committed.
+  v2.0.1 candidate for translation pass.
+
+### Architectural patterns
+
+- **5 pure decision modules**: APITokenValidator, EngagementGate,
+  GeoFencePolicy, ConciergeSequencePolicy, TrustWatcher.diff.
+- **5 persisted JSON stores** following the same lock-guarded
+  pattern (CellularBudget + TrustWatchStore + Sovereignty­Migrate­
+  Review­List + EngagementStore + APITokenStoreFile).
+- **3 documentation artifacts** for v2.0+ release flow:
+  STRATEGY-2026-PRO-PLUS-IPHONE.md, SMOKE-TEST-RUNBOOK.md,
+  LANDING-V2-DRAFT.md.
+
+### Numbers
+
+- 39 commits in the PRO-PLUS-IPHONE arc (Sprints 1-8)
+- 740 → **820 tests** (+80)
+- ~12,500 lines of new code across ~60 files
+- ~500 new translations
+
+### Maintainer post-tag steps
+
+- `xcrun notarytool submit build/Splynek.dmg --keychain-profile
+  AC_PASSWORD --wait` + `xcrun stapler staple build/Splynek.dmg`
+- `./Scripts/build-mas.sh` → MAS pkg + Application Loader upload
+- Refresh `Packaging/splynek.rb` cask with new SHA-256 + version
+- Adapt `LANDING-V2-DRAFT.md` into the splynek-landing repo
+- Show HN + Product Hunt + Mac-app blogger emails per the
+  press kit in LANDING-V2-DRAFT.md
+- CloudKit Dashboard: provision `SplynekTrustWatchAlert` schema
+  to Production
+- v2.0.1 follow-up: iOS Companion L10n round 5; Bonjour TXT-
+  record version string fix; Concierge / Recipes UI verification
+  via MAS build; physical-iPhone push test.
+
 ## v1.6.2 — validation pass + build-pipeline fixes (2026-04-30)
 
 End-to-end validation of v1.6 surfaces via computer-use surfaced
