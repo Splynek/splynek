@@ -4091,6 +4091,75 @@ maintainer steps before distribution:
   5. Address smoke-test sections 3, 7, 8, 9 with real
      hardware
 
+### 2026-05-10 18:00 — **DMG NOTARIZED + STAPLED** (Apple Accepted)
+
+The maintainer ran the Developer-ID re-sign + notarize + staple
+chain.  All four steps green.
+
+```
+Build:        build/Splynek.app  (Developer ID: Paulo Moura, 58C6YC5GB5)
+DMG:          build/Splynek.dmg  (7.7 MB)
+Notary:       c92dfa2c-9240-4b6b-b406-ae7a447af239
+              Status: Accepted
+Stapled:      yes ("The staple and validate action worked!")
+SHA-256:      5404d86a7e069f5fc2ca6bf57f3760386e0a735309e944be0a4be76e3ebdd30f
+              (was 381538de... ad-hoc; staple changes the hash)
+```
+
+#### Build-time warning to investigate in v2.0.1
+
+```
+⚠  Xcode build for App Intents metadata failed; SPM .app will lack Shortcuts.app discovery
+   See /tmp/splynek-appintents-build.log
+```
+
+The SPM-built .app doesn't expose the 5 Mac App Intents to
+Shortcuts.app (DownloadURL / QueueURL / Cancel / etc.).  The
+MAS build via Xcode target handles this correctly.  Known
+limitation of the SPM build path; the workaround is to pass
+`--xcodeproj` to `appintentsmetadataprocessor` from inside the
+build.sh, OR to require maintainers to ship the MAS build for
+the App Intents experience.
+
+Not a release blocker — the App Intents on the iPhone Companion
+work correctly (those are in the iOS target which builds via
+Xcode).  The Mac DMG users just won't see Shortcuts.app
+integration; they can still use the Concierge / MCP / browser
+flows.
+
+v2.0.1 candidate: investigate build.sh's appintentsmetadataprocessor
+invocation; either pass --xcodeproj or document the limitation in
+README.
+
+#### Cask refresh
+
+`Packaging/splynek.rb` updated with v2.0.0 + the notarized SHA-256.
+Ready for the homebrew-cask PR once the GitHub Release is up.
+
+#### What's left (maintainer)
+
+1. **GitHub Release**: `gh release create v2.0.0 build/Splynek.dmg
+   --title "v2.0.0 — PRO-PLUS-IPHONE strategic arc" --notes-file
+   <(awk '/^## v2.0.0/,/^## v1.6.2/' CHANGELOG.md | head -n -2)`
+   — or the GUI equivalent on github.com/Splynek/splynek/releases/new.
+2. **homebrew-cask PR**: refresh `Packaging/splynek.rb` to upstream
+   homebrew/cask once GitHub Release URL settles + 75-star
+   threshold cleared.
+3. **Mac App Store**: `./Scripts/build-mas.sh` → MAS pkg upload
+   via Xcode → App Store Connect.
+4. **CloudKit Dashboard**: provision `SplynekTrustWatchAlert`
+   record type schema + promote to Production.
+5. **Adapt LANDING-V2-DRAFT.md** into the splynek-landing repo.
+6. **Show HN / Product Hunt / blogger emails** per LANDING-V2-DRAFT
+   press kit.
+7. **v2.0.1 follow-up backlog** (≤ 2 weeks):
+   - iOS Companion L10n round 5
+   - Bonjour TXT-record version string fix
+   - Concierge / Recipes Pro UI verification via MAS build
+   - Physical-iPhone push test
+   - App Intents metadata for SPM .app build (this session's
+     warning)
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:

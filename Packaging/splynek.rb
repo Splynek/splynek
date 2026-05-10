@@ -2,11 +2,12 @@
 # frozen_string_literal: true
 
 cask "splynek" do
-  version "1.6.2"
-  # ⚠️  sha256 placeholder — replace with the real hash once the
-  # v1.5.6 DMG is built + uploaded to GitHub Releases.
-  # Compute via: shasum -a 256 dist/Splynek-1.5.6.dmg
-  sha256 :no_check
+  version "2.0.0"
+  # SHA-256 of the notarized + stapled v2.0.0 DMG cut
+  # 2026-05-10 17:38.  Apple notarization submission ID
+  # c92dfa2c-9240-4b6b-b406-ae7a447af239 (Accepted).
+  # Re-compute via: shasum -a 256 build/Splynek.dmg
+  sha256 "5404d86a7e069f5fc2ca6bf57f3760386e0a735309e944be0a4be76e3ebdd30f"
 
   url "https://github.com/Splynek/splynek/releases/download/v#{version}/Splynek-#{version}.dmg",
       verified: "github.com/Splynek/"
