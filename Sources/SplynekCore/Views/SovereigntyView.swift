@@ -36,6 +36,13 @@ struct SovereigntyView: View {
     /// scroll view.
     @State private var migratePlanSheet: SovereigntyMigratePlan? = nil
 
+    /// Sprint 3 (2026-05-10): in-memory mirror of the persisted
+    /// SovereigntyMigrateReviewList for the "still on your list"
+    /// banner.  Refreshed on appear + after the Migrate sheet
+    /// dismisses (so a fresh mark immediately changes the count).
+    @State private var migrateReviewList: SovereigntyMigrateReviewList = .empty
+    private let migrateReviewStore = SovereigntyMigrateReviewStore()
+
     /// v1.3 AI fallback state.  For apps NOT in the curated catalog,
     /// the user can opt-in per-app to ask the local LLM for
     /// alternative suggestions.  State is view-local: nothing is
@@ -114,6 +121,10 @@ struct SovereigntyView: View {
             if scanner.apps.isEmpty && !scanner.isScanning {
                 scanner.scan()
             }
+            // Sprint 3 (2026-05-10): load the review list snapshot
+            // for the banner.  Re-loaded after a Migrate sheet
+            // dismiss via the .sheet's onDismiss path below.
+            migrateReviewList = migrateReviewStore.read()
         }
         // Sprint 1 PRO-PLUS-IPHONE: mirror the scanner's app list
         // into the VM so the relay summary endpoints +
@@ -166,7 +177,12 @@ struct SovereigntyView: View {
         // per-step confirmation.  Pro-only entry point (the
         // button is gated upstream); free-tier `migratePlanSheet`
         // stays nil because the upsell button doesn't set it.
-        .sheet(item: $migratePlanSheet) { plan in
+        .sheet(item: $migratePlanSheet, onDismiss: {
+            // Sprint 3 (2026-05-10): refresh the review-list
+            // snapshot so a fresh mark-for-review immediately
+            // changes the banner state.
+            migrateReviewList = migrateReviewStore.read()
+        }) { plan in
             SovereigntyMigrateWizardView(
                 plan: plan,
                 onClose: { migratePlanSheet = nil }
@@ -262,6 +278,27 @@ struct SovereigntyView: View {
             Divider()
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
+                    // Sprint 3 (2026-05-10): "still on your list"
+                    // banner above the matched rows.  Pro-only;
+                    // free users have no entry point to mark
+                    // apps for review.  Hidden when the list is
+                    // empty or every entry is younger than the
+                    // 7-day threshold.
+                    if vm.license.isPro {
+                        let stale = migrateReviewList.entriesOlderThan(
+                            days: SovereigntyMigrateReviewBanner.reviewThresholdDays
+                        )
+                        SovereigntyMigrateReviewBanner(
+                            staleEntries: stale,
+                            onForget: { id in
+                                migrateReviewStore.mutate { $0.remove(id: id) }
+                                migrateReviewList = migrateReviewStore.read()
+                            },
+                            onOpenHomepage: { url in
+                                NSWorkspace.shared.open(url)
+                            }
+                        )
+                    }
                     ForEach(matchedRows, id: \.app.id) { row in
                         resultRow(row)
                     }

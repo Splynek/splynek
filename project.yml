@@ -563,6 +563,42 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         CODE_SIGN_STYLE: Automatic
 
+  # Sprint 3 (2026-05-10) — Watch face complications.  Same
+  # WidgetKit shape as the iOS SplynekStatusWidget; subset of
+  # data (Sovereignty score + active downloads) tuned for the
+  # tighter Watch families (accessoryCircular, accessoryRectangular,
+  # accessoryInline).  Hosted as an extension so the watch face
+  # can pull them in to a custom face.
+  SplynekWatchComplications:
+    type: app-extension
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: iOS/SplynekWatchComplications
+        excludes:
+          - "Info.plist"
+      # Same iOS/Shared inline pattern — the complication needs
+      # PairedMacStore / PairedMacClient / RelaySummary at hand.
+      - path: iOS/Shared
+    info:
+      path: iOS/SplynekWatchComplications/Info.plist
+      properties:
+        CFBundleDisplayName: Splynek Complications
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_NAME: SplynekWatchComplications
+        PRODUCT_BUNDLE_IDENTIFIER: app.splynek.companion.watchkitapp.complications
+        SKIP_INSTALL: "YES"
+        SWIFT_VERSION: "5.9"
+        WATCHOS_DEPLOYMENT_TARGET: "10.0"
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Automatic
+
   # S4 phase 2 (2026-05-07) — Widget Extension hosting the
   # DownloadActivityWidget Live Activity views.  Activities are
   # started by the host SplynekCompanion app's LiveActivityDriver;
@@ -634,6 +670,7 @@ schemes:
     build:
       targets:
         SplynekWatch: all
+        SplynekWatchComplications: all
     run:
       config: Debug
     archive:
