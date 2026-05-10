@@ -4011,6 +4011,86 @@ Or alternative: tag v2.0.0 NOW given the validated Mac surface
 + iPhone simulator coverage; treat L10n round 5 + Bonjour
 version + push-NTF tests as v2.0.1 follow-up.
 
+### 2026-05-10 17:38 — **v2.0.0 TAGGED** (Path A executed)
+
+After Sprint 8's live-validated state + the Path A vs Path B
+decision, the user chose **A** (tag now, polish in v2.0.1).
+
+#### Sequence executed
+
+| Step | Action | Result |
+|---|---|---|
+| 1 | Bump CFBundleVersion 1620 → 2000, CFBundleShortVersionString 1.6.2 → 2.0.0 in Resources/Info.plist | done |
+| 2 | Bump SplynekVersion.fallback in Sources/SplynekCore/SplynekVersion.swift | done |
+| 3 | Bump MARKETING_VERSION in project.yml | done |
+| 4 | Bump CFBundleShortVersionString in Extensions/Alfred/Splynek.alfredworkflow/info.plist | done |
+| 5 | Add v2.0.0 entry to CHANGELOG.md (full feature list + maintainer steps) | done |
+| 6 | Verify 820 tests still pass on the bumped working tree | ✅ 820/820 |
+| 7 | Commit `ccdd96c` — "v2.0.0 — PRO-PLUS-IPHONE strategic arc" | done |
+| 8 | Push `origin/main` (fast-forward, 186 commits) | b777231 → ccdd96c |
+| 9 | Tag `v2.0.0` annotated + push tag | tag pushed |
+| 10 | `./Scripts/build.sh release` + `./Scripts/dmg.sh` | build/Splynek.dmg 7.7 MB |
+| 11 | shasum -a 256 build/Splynek.dmg | `381538de5a157b236931969d0595d9bd2c6a2a4e195328a1941016e0ae63bf62` |
+
+**v2.0.0 is shipped on GitHub.**  `origin/main` reflects the
+full PRO-PLUS-IPHONE arc; tag `v2.0.0` is published.
+
+#### Build artifact
+
+```
+build/Splynek.dmg                          7.7 MB
+SHA-256:  381538de5a157b236931969d0595d9bd2c6a2a4e195328a1941016e0ae63bf62
+```
+
+The DMG is **ad-hoc signed** (no Developer ID).  Required
+maintainer steps before distribution:
+
+1. Re-sign with Developer ID Application:
+   ```sh
+   SIGN_IDENTITY="Developer ID Application: Paulo Moura (58C6YC5GB5)" \
+     ENTITLEMENTS="Resources/Splynek.entitlements" \
+     ./Scripts/build.sh release
+   ./Scripts/dmg.sh
+   ```
+2. Notarize:
+   ```sh
+   xcrun notarytool submit build/Splynek.dmg \
+     --keychain-profile AC_PASSWORD --wait
+   xcrun stapler staple build/Splynek.dmg
+   ```
+3. Upload to GitHub Releases under the v2.0.0 tag.
+4. Refresh `Packaging/splynek.rb` cask with the new SHA-256
+   (the post-notarization SHA changes; recompute after step 2).
+
+#### What's left for the maintainer
+
+- **GitHub Release**: notarize + upload DMG with release notes
+  (CHANGELOG entry is the press-ready text).
+- **Mac App Store**: `./Scripts/build-mas.sh` → MAS pkg upload
+  via Application Loader / Xcode → App Store Connect.
+- **Homebrew Cask**: refresh `Packaging/splynek.rb` cask → PR
+  to homebrew-cask once notarization SHA settles.
+- **CloudKit Dashboard**: provision `SplynekTrustWatchAlert`
+  record type schema in App Store Connect → CloudKit Dashboard,
+  promote to Production.  Required for Trust Watcher iPhone
+  push notifications.
+- **Landing page**: adapt `LANDING-V2-DRAFT.md` into the
+  `splynek-landing` repo (Hugo / GitHub Pages).
+- **Announcement**: Show HN (Tuesday or Wednesday 15:00 UTC),
+  Product Hunt launch, Mac-app blogger emails (MacStories,
+  ATP, MacRumors, etc.) per the press kit in
+  `LANDING-V2-DRAFT.md`.
+- **v2.0.1 follow-up** (≤ 2 weeks):
+  1. iOS Companion L10n round 5 (de/es/fr/it/pt-PT for the
+     ~37 auto-extracted strings)
+  2. Bonjour TXT-record version string fix (currently
+     hardcoded "v0.19" — caught during Sprint 8 simulator
+     test)
+  3. Concierge / Recipes Pro UI verification via MAS build
+  4. Physical-iPhone test of push notifications + geo-fence
+  5. Address smoke-test sections 3, 7, 8, 9 with real
+     hardware
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
