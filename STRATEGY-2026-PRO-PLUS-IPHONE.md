@@ -272,19 +272,45 @@ A maior parte das funcionalidades Pro hoje **não estão acessíveis no iPhone**
   Sprint 4: end-to-end smoke test (manual) and splynek-pro
   ConciergeView wiring (private repo, requires LLM dispatch).
 
-  ### Sprint 4 (next session, if executed)
+  ### Sprint 4 — SHIPPED 2026-05-10 night (4 commits)
 
-  1. End-to-end smoke test of every Pro surface from Sprints
-     1-3 — manual walk-through of Trust Watcher, Migrate
-     Wizard, review banner, iOS Companion Insights tab,
-     iOS Widget, geo-fence, Watch app
-  2. Trust+ upsell card UI shown when `EngagementGate
-     .shouldOfferTrustPlus(counters:)` fires (Sprint 3 built
-     the foundation; Sprint 4 builds the UI)
-  3. User-facing engagement viewer ("you've checked Trust
-     Watcher 47 times this month") — privacy through
-     transparency
-  4. splynek-pro: ConciergeView wiring that emits a sequence
-     from a user prompt (LLM call lives in pro)
-  5. Apple Developer Program: provision Watch + Watch
-     Complications bundle IDs (maintainer step)
+  Items 2-3 of the original Sprint 4 backlog closed; new items
+  added:
+  - **Engagement viewer** (`7f02266`) — privacy through
+    transparency.  User reads the same JSON the future Trust+
+    gate reads.
+  - **Trust+ upsell card** (`7f02266`) — appears only when
+    `EngagementGate.shouldOfferTrustPlus` fires.  Honest
+    pitch with mailto: registration of interest, no server.
+  - **L10n catalog +28 strings × 5 locales** (`96b03f1`) —
+    closes 24/79 of the audit gap.
+  - **API tokens for external scripting** (`088d8d1`) —
+    Aposta E developer power-up.  Persistent named tokens
+    with two scopes; Settings UI to mint/list/revoke.
+
+  Sprint 4 numbers: 4 commits + docs; 808 → 820 tests (+12);
+  ~1,400 lines new code + 140 new translations.
+
+  Items 1, 4, 5 of the original backlog deferred:
+  - Item 1 (smoke test) — manual; deferred to Sprint 5.
+  - Item 4 (splynek-pro Concierge) — private repo; deferred
+    until pro-side capacity.
+  - Item 5 (Apple Developer provisioning) — maintainer step;
+    out of band.
+
+  ### Sprint 5 (next session, if executed)
+
+  1. End-to-end smoke test of every Pro surface across
+     Sprints 1-4 — manual walk-through of all features
+  2. L10n round 2 — translate the remaining 55 interpolated
+     strings (Sprint 4 caught the simple ones; Sprint 5
+     catches the `%@` placeholder forms)
+  3. Raycast extension scaffolding — first external script
+     using API tokens; ships in a separate repo with a
+     usage README + screenshots
+  4. iPhone Companion Insights tab uses an API token
+     (instead of webToken) so external scripts on the
+     phone can also pair via paste rather than QR-only
+  5. Pricing decision based on aggregate of N user "I'd be
+     interested" clicks — Sprint 6 likely too early; Sprint
+     7+ once telemetry has 90+ days of signal

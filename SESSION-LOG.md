@@ -3165,6 +3165,157 @@ Maintainer steps still required (out of band):
 - Apple Developer Program: provision watch app + watch
   complications bundle IDs
 
+### 2026-05-10 night — PRO-PLUS-IPHONE Sprint 4 (4 commits)
+
+After Sprint 3 (`85d6e4f` → `bbd1f65`) the user said "continuar"
+once more.  Sprint 4 closes Sprint 3's loose ends + opens the
+developer-tools angle.
+
+#### Four commits (chronological)
+
+| #   | Commit    | What                                                              |
+|-----|-----------|-------------------------------------------------------------------|
+| 1   | `7f02266` | Engagement viewer + Trust+ upsell card in SettingsView            |
+| 2   | `96b03f1` | L10n audit — 28 new strings × 5 locales (140 translations)        |
+| 3   | `088d8d1` | API tokens for external scripting (Aposta E developer power-up)   |
+| 4   | this      | Docs: SESSION-LOG + HANDOFF + STRATEGY                            |
+
+After all four: 820 tests pass (was 808 before Sprint 4; +12),
+Mac `swift build` clean, all pushed to `origin/rollup/2026-05-08`.
+
+#### What lit up
+
+**Engagement viewer + Trust+ upsell** — closes the foundation
+laid in `ec1e9d9`.  Two new Settings cards, both Pro-only:
+- `engagementViewerCard` shows every counter the
+  EngagementStore records, organized into three groups (Trust
+  Watcher / Sovereignty Migrate / iPhone Companion).  "Show
+  JSON file" button opens Finder to the actual file — privacy
+  through transparency.
+- `trustPlusUpsellCard` appears only when
+  `EngagementGate.shouldOfferTrustPlus(counters:)` fires.  The
+  pitch is honest: "you've engaged X times; we're evaluating
+  Trust+ — want to register interest?".  Two buttons: "I'd be
+  interested" (mailto: trust-plus@splynek.app — no server) +
+  "Not interested" (session-local hide).
+
+**L10n audit** — closed the 79-strings gap from Sprints 1-4
+down to 55.  28 highest-visibility strings translated × 5
+locales = 140 translations added (catalog 742 → 770).  Strings
+covered: Trust Watcher card (Run now / Dismiss / Clear all /
+View page + explainers), Migrate Wizard (Confirm + run, Run
+all, CHANGES STATE pill), review banner, Concierge sequence
+preview, engagement viewer + Trust+ upsell.  Remaining 55 are
+mostly interpolated strings that need a separate pass with
+`%@` placeholder forms — Sprint 5 task.
+
+**API tokens for external scripting** — Aposta E from the
+strategy memo.  Persistent named tokens (Raycast, Alfred,
+shell scripts) authenticate against the same REST endpoints
+that previously only accepted the session webToken.  Two
+scopes (read-only / read+write); the validator is a pure
+function with three Decision branches, single source of truth
+for auth.  All 11 existing `tokenFromQuery == webToken` sites
+replaced with `validateToken(path:method:)` in one Edit
+replace_all.
+
+#### Architectural choices that paid off
+
+1. **Pure decision functions everywhere — again.**
+   `APITokenValidator.decide` joins
+   `EngagementGate.shouldOfferTrustPlus`,
+   `GeoFencePolicy.action`, `ConciergeSequencePolicy.validate`,
+   `TrustWatcher.diff`.  Five pure decision modules now;
+   tests stay fast and the call-site behaviour is auditable
+   in one short function.
+
+2. **Persisted JSON pattern at five stores.**  CellularBudget
+   (the original) → TrustWatchStore →
+   SovereigntyMigrateReviewList → EngagementStore →
+   APITokenStoreFile.  Each is identical: NSLock + atomic
+   write + `_testOverrideURL`.  Variations (alert-cap dedupe,
+   sticky firstRecordedAt, recordUse stamping) sit in the
+   mutate closure.
+
+3. **One Edit replace_all to update 11 call sites.**  All
+   the `guard tokenFromQuery(path) == webToken` sites used
+   the **identical** expression, which made `replace_all` a
+   one-shot bulk update.  When refactoring, identical
+   expressions are easier to audit + change than per-site
+   variations.
+
+4. **Privacy through transparency as a UI pattern.**  The
+   engagement viewer surfaces the EXACT same JSON the future
+   gate reads.  "Show JSON file" opens Finder, not an in-app
+   reader — the user's confidence comes from seeing the file
+   directly.
+
+#### Critical lessons
+
+- **xcstrings catalog regeneration is deterministic + auditable.**
+  Adding a new dict to `regenerate-localizations.py` + running
+  the script produced a clean diff.  All 5 locales reported
+  100% coverage on the new strings.
+
+- **Cards reading from a non-published store need a version
+  bump.**  The API tokens card reads
+  `vm.fleet.apiTokenStoreFile.read()` directly (not via
+  @Published).  SwiftUI's view-identity tracking would otherwise
+  hold the old `store.tokens` snapshot across mutations.  Added
+  `apiTokenStoreVersion: Int` @State that increments on every
+  mutate to force the body to re-read.  Pattern recognized:
+  use this any time a SettingsView card reads from a non-VM
+  persisted store.
+
+- **HLS proxy GET-only doesn't have method in scope.**  The
+  bulk replace_all caught this — one site needed
+  `validateToken(path:method:"GET")` literal because the
+  surrounding function signature didn't have method as a
+  parameter.  Build error caught it; one-line fix.
+
+#### Numbers
+
+```
+Commits this sprint:    4
+Tests:                  808 → 820 (+12)
+New code (Mac):         ~1,400 lines (engagement viewer,
+                        Trust+ upsell, API tokens model +
+                        store + UI, validator)
+Localizable.xcstrings:  +28 strings × 5 locales (=140 lines)
+                        + 770 - 742 = 28 new keys, 5×28 = 140
+                        translations
+Net for the day arc:    22 commits across PRO-PLUS-IPHONE
+                        Sprints 1+2+3+4, ~9,000 lines new code
+```
+
+#### Where it stands at end of session
+
+`origin/rollup/2026-05-08` carries the entire PRO-PLUS-IPHONE
+strategy through Sprint 4.  Branch is now ~169 commits ahead
+of `origin/main`.
+
+**Sprint 5 (next session, if executed)**:
+1. Smoke test end-to-end of Sprint 4 surfaces (engagement
+   viewer, Trust+ upsell, API tokens — mint-list-revoke flow)
+2. L10n round 2 — translate the remaining 55 interpolated
+   strings (Sprint 4 caught the simple ones; Sprint 5 catches
+   the `%@` placeholder forms)
+3. Raycast extension scaffolding — first external script using
+   API tokens; ships in a separate repo with a usage README
+4. Integrate API tokens into the iPhone Companion's pairing
+   flow as an alternative to QR-only (some users prefer paste)
+5. Pricing decision based on aggregate of N user "I'd be
+   interested" clicks — Sprint 5 likely too early; Sprint 6 or
+   later
+
+Maintainer steps still required (out of band):
+- CloudKit Dashboard: add `SplynekTrustWatchAlert` record type
+- watchOS SDK install: Xcode → Settings → Components → watchOS
+- Apple Developer Program: provision Watch + Watch
+  Complications + iOS App Group entitlements
+- Stripe / Paddle account for direct DMG sales (separate from
+  MAS)
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
