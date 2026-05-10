@@ -1,0 +1,91 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "splynek",
+  "title": "Splynek",
+  "description": "Submit URLs to Splynek, see active downloads, pause/resume, check Sovereignty score — all from Raycast.",
+  "icon": "command-icon.png",
+  "author": "splynek",
+  "license": "MIT",
+  "homepage": "https://splynek.app",
+  "categories": [
+    "Productivity",
+    "Web"
+  ],
+  "preferences": [
+    {
+      "name": "host",
+      "type": "textfield",
+      "required": true,
+      "title": "Mac host",
+      "description": "Hostname or IP of the Mac running Splynek (e.g. 192.168.1.42 or my-mac.local).",
+      "placeholder": "192.168.1.42"
+    },
+    {
+      "name": "port",
+      "type": "textfield",
+      "required": true,
+      "title": "Port",
+      "description": "Splynek's HTTP port — find it in the Mac's Settings → Web dashboard QR.",
+      "placeholder": "55432",
+      "default": "55432"
+    },
+    {
+      "name": "apiToken",
+      "type": "password",
+      "required": true,
+      "title": "API token",
+      "description": "Mint one in Splynek (Mac) → Settings → API tokens. Pro feature."
+    }
+  ],
+  "commands": [
+    {
+      "name": "submit-url",
+      "title": "Submit URL to Splynek",
+      "subtitle": "Splynek",
+      "description": "Queue a URL on the paired Mac.",
+      "mode": "view"
+    },
+    {
+      "name": "active-downloads",
+      "title": "Active Splynek Downloads",
+      "subtitle": "Splynek",
+      "description": "List downloads currently in flight.",
+      "mode": "view"
+    },
+    {
+      "name": "sovereignty-score",
+      "title": "Splynek Sovereignty Score",
+      "subtitle": "Splynek",
+      "description": "Show the Sovereignty score for your Mac's installed apps.",
+      "mode": "view"
+    },
+    {
+      "name": "pause-all",
+      "title": "Pause All Splynek Downloads",
+      "subtitle": "Splynek",
+      "description": "Pause every running download on the paired Mac.",
+      "mode": "no-view"
+    },
+    {
+      "name": "resume-all",
+      "title": "Resume All Splynek Downloads",
+      "subtitle": "Splynek",
+      "description": "Resume every paused download on the paired Mac.",
+      "mode": "no-view"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.81.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
