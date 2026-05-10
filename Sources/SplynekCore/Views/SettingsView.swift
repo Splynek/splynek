@@ -18,6 +18,14 @@ struct SettingsView: View {
     @ObservedObject var vm: SplynekViewModel
     @EnvironmentObject var background: BackgroundModeController
 
+    /// Sprint 4 PRO-PLUS-IPHONE (2026-05-10): hide-the-Trust+-upsell
+    /// session-local toggle.  Persisting this requires another
+    /// preference key + read/write site; the v1 scope hides for
+    /// the current session only.  If the user wants permanent
+    /// dismissal they ignore the card; the next session renders it
+    /// again only if engagement still exceeds the gate.
+    @State private var upsellHidden: Bool = false
+
     init(vm: SplynekViewModel) { self.vm = vm }
 
     var body: some View {
@@ -32,6 +40,14 @@ struct SettingsView: View {
                 browserHelpersCard
                 aiCard
                 backgroundModeCard
+                // Sprint 4 PRO-PLUS-IPHONE (2026-05-10): pure-local
+                // engagement viewer + Trust+ upsell.  Both Pro-only;
+                // both consume the EngagementCounters foundation
+                // shipped in `ec1e9d9`.  Privacy through transparency
+                // — the user reads the same JSON the future Trust+
+                // gate reads.
+                engagementViewerCard
+                trustPlusUpsellCard
                 // 2026-05-09 settings decentralization (commits 57fb6cb,
                 // b494a2b, f944b09, 52e9249):
                 //   • Trust weights        → TrustView.weightsDisclosure
@@ -366,3 +382,243 @@ struct SettingsView: View {
         alert.runModal()
     }
 }
+
+// MARK: - Sprint 4 PRO-PLUS-IPHONE (2026-05-10): engagement viewer + Trust+ upsell
+//
+// engagementViewerCard — privacy through transparency.  Surfaces
+// every counter the EngagementStore records so the user reads the
+// same data the future Trust+ gate reads.  No telemetry; the JSON
+// file lives at ~/Library/Application Support/Splynek/engagement.json.
+//
+// trustPlusUpsellCard — appears only when EngagementGate.shouldOfferTrustPlus
+// fires (≥20 Trust-Watcher engagement events).  Below the threshold
+// the card is invisible — the user hasn't earned the pitch yet.
+//
+// Both Pro-gated; both fileprivate so the SettingsView struct's
+// body stays readable.
+
+extension SettingsView {
+
+    @ViewBuilder
+    fileprivate var engagementViewerCard: some View {
+        if vm.license.isPro {
+            engagementViewerCardBody
+        } else {
+            EmptyView()  // free tier sees nothing here
+        }
+    }
+
+    @ViewBuilder
+    private var engagementViewerCardBody: some View {
+        TitledCard(
+            title: "Your engagement (read-only)",
+            systemImage: "chart.bar.doc.horizontal",
+            accessory: AnyView(
+                StatusPill(text: "LOCAL", style: .success)
+            )
+        ) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Splynek tracks how often you use each Pro feature so a future Trust+ subscription pitch only appears for users who actually engage. The data never leaves your Mac. You're reading the same JSON Splynek reads.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                let counters = vm.engagementStore.read()
+                Divider().opacity(0.3)
+                engagementGroup(title: "Trust Watcher", rows: [
+                    ("Card views",        counters.trustWatcherViews),
+                    ("Manual sweeps",     counters.trustWatcherManualRuns),
+                    ("Alerts handled",    counters.trustWatcherAcksHandled),
+                    ("Pages opened",      counters.trustWatcherPagesOpened),
+                ])
+                engagementGroup(title: "Sovereignty Migrate", rows: [
+                    ("Wizard opens",      counters.migrateWizardOpens),
+                    ("Steps completed",   counters.migrateStepsCompleted),
+                    ("Apps marked",       counters.migrateAppsMarkedTotal),
+                ])
+                engagementGroup(title: "iPhone Companion", rows: [
+                    ("Summary fetches",   counters.iphoneSummaryServes),
+                    ("Remote commands",   counters.iphoneRemoteCommands),
+                ])
+
+                Divider().opacity(0.3)
+                if let first = counters.firstRecordedAt {
+                    Text("Recording since \(prettyDate(first)).")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                } else {
+                    Text("No engagement recorded yet — try Trust Watcher's Run-now or open a Migrate wizard.")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+                HStack {
+                    Spacer()
+                    Button {
+                        revealEngagementJSON()
+                    } label: {
+                        Label("Show JSON file", systemImage: "doc.text.magnifyingglass")
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .help("Open the engagement.json file in Finder so you can inspect or delete it directly.")
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    fileprivate var trustPlusUpsellCard: some View {
+        if vm.license.isPro {
+            let counters = vm.engagementStore.read()
+            if EngagementGate.shouldOfferTrustPlus(counters: counters) {
+                trustPlusUpsellCardBody(counters: counters)
+            } else {
+                // Below threshold — no upsell shown.  The user
+                // hasn't demonstrated they value the feature.
+                EmptyView()
+            }
+        } else {
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private func trustPlusUpsellCardBody(
+        counters: EngagementCounters
+    ) -> some View {
+        let active = counters.trustWatcherManualRuns
+            + counters.trustWatcherAcksHandled
+            + counters.trustWatcherPagesOpened
+        TitledCard(
+            title: "Splynek Trust+",
+            systemImage: "sparkles.tv.fill",
+            accessory: AnyView(
+                StatusPill(text: "PREVIEW", style: .info)
+            )
+        ) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("You've engaged with Trust Watcher \(active) times. Splynek's evaluating a Trust+ subscription that adds: weekly Trust-catalog refreshes, acquisition radar (\"this app got bought by X — here's the privacy delta\"), one-click ToS history viewer.")
+                    .font(.callout)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("Trust+ would be opt-in — your existing Pro purchase keeps everything you have today, including Trust Watcher catalog refreshes for the lifetime of this purchase. Trust+ would only add ongoing premium catalog updates.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Divider().opacity(0.3)
+                Text("This is a preview surface — Trust+ isn't yet available for purchase. We're collecting interest to decide whether to ship it.")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .italic()
+                HStack {
+                    Spacer()
+                    Button {
+                        sendTrustPlusInterest(active: active)
+                    } label: {
+                        Label("I'd be interested", systemImage: "envelope")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                    Button {
+                        // Opt out forever — set the gate to a value
+                        // it cannot mathematically reach by user
+                        // action (counters are unsigned-ish; setting
+                        // each to 0 + adding a "muted" flag would be
+                        // cleaner, but for the Sprint-4 scope this
+                        // is just a session-local hide).
+                        upsellHidden = true
+                    } label: {
+                        Label("Not interested", systemImage: "xmark")
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                }
+            }
+        }
+        .opacity(upsellHidden ? 0 : 1)
+        .frame(height: upsellHidden ? 0 : nil)
+    }
+
+    @ViewBuilder
+    fileprivate func engagementGroup(
+        title: String, rows: [(String, Int)]
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title.uppercased())
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+            ForEach(rows, id: \.0) { (label, count) in
+                HStack {
+                    Text(label)
+                        .font(.callout)
+                    Spacer()
+                    Text("\(count)")
+                        .font(.callout.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
+    fileprivate func revealEngagementJSON() {
+        let fm = FileManager.default
+        guard let base = try? fm.url(
+            for: .applicationSupportDirectory, in: .userDomainMask,
+            appropriateFor: nil, create: false
+        ) else { return }
+        let path = base
+            .appendingPathComponent("Splynek", isDirectory: true)
+            .appendingPathComponent("engagement.json")
+        if fm.fileExists(atPath: path.path) {
+            NSWorkspace.shared.activateFileViewerSelecting([path])
+        } else {
+            NSWorkspace.shared.activateFileViewerSelecting([
+                path.deletingLastPathComponent()
+            ])
+        }
+    }
+
+    fileprivate func sendTrustPlusInterest(active: Int) {
+        // Sprint 4: open a pre-filled mailto.  Sprint 5 might add
+        // a one-click in-app form via a /trust-plus-interest
+        // endpoint on splynek.app; for now mailto keeps it
+        // privacy-pristine — user's mail client is the only thing
+        // that learns they're interested.
+        let subject = "Trust+ interest — \(active) engagement events"
+        let body = """
+        Hi Splynek,
+
+        I'd be interested in a Splynek Trust+ subscription with
+        weekly catalog refreshes, acquisition radar, and ToS
+        history viewer.
+
+        I've engaged with Trust Watcher \(active) times so far.
+
+        — sent from Settings → Splynek Trust+
+        """
+        var comps = URLComponents()
+        comps.scheme = "mailto"
+        comps.path = "trust-plus@splynek.app"
+        comps.queryItems = [
+            URLQueryItem(name: "subject", value: subject),
+            URLQueryItem(name: "body", value: body),
+        ]
+        if let url = comps.url {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+    fileprivate func prettyDate(_ iso: String) -> String {
+        let isoF = ISO8601DateFormatter()
+        isoF.formatOptions = [.withInternetDateTime]
+        guard let date = isoF.date(from: iso) else { return iso }
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .short
+        return f.string(from: date)
+    }
+}
+
+// `upsellHidden` is now a @State on SettingsView itself
+// (declared at the top of the struct).  The earlier
+// EnvironmentKey draft was dropped — direct @State is simpler.
