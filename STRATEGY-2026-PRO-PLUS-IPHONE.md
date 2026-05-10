@@ -316,21 +316,63 @@ A maior parte das funcionalidades Pro hoje **não estão acessíveis no iPhone**
   Sprint 5 numbers: 5 commits + docs; 820 → 820 tests
   (UI + scaffolding only); +130 new translations.
 
-  ### Sprint 6 (next session, if executed)
+  ### Sprint 6 — SHIPPED 2026-05-10 deep night (4 commits)
 
-  1. Walk the SMOKE-TEST-RUNBOOK end-to-end + record
-     results in a sign-off doc
-  2. L10n round 3 — close the remaining 40 strings (mostly
-     pre-Sprint-1 catalog debt: SovereigntyView contribute
-     flow, UpdatesView interpolated forms)
-  3. Alfred workflow under `Extensions/Alfred/splynek/`
-     (parallel to Raycast — different power-user community)
-  4. Shell-script README at `Extensions/CLI/README.md`
-     showing curl/jq recipes against the API-token
-     endpoints (ship-it-as-a-cookbook approach)
-  5. Landing-page update at splynek.app announcing Trust
-     Watcher + API tokens as marquee Pro features
-     (separate `splynek-landing` repo)
+  Items 2 + 4 + 5 of original backlog closed; items 1 + 3
+  deferred to Sprint 7 (1 = manual smoke; 3 = Alfred needs
+  installed Powerpack to test against):
+  - **CLI cookbook** (`5760117`) — `Extensions/CLI/` with
+    bash wrapper + cookbook README.  Second external
+    API-token client.
+  - **L10n round 3** (`a5e1139`) — +16 strings × 5 locales
+    (796 → 812).  Audit gap 40 → 25.
+  - **LANDING-V2-DRAFT** (`27ce72e`) — announcement copy
+    pivoting marquee from Concierge → Trust Watcher.
+    Show HN draft + press kit + gating checklist.
+
+  Sprint 6 numbers: 4 commits + docs; 820 → 820 tests
+  (UI/docs/L10n only); +80 new translations; ~330 lines bash.
+
+  ### Sprint 7 (next session, if executed)
+
+  1. Walk SMOKE-TEST-RUNBOOK end-to-end + record sign-off
+  2. L10n round 4 — close remaining 25 strings (long-tail
+     interpolated bodies: Savings annual cost framing,
+     FleetView hover text, PathMonitor rationale strings)
+  3. Alfred workflow scaffold under
+     `Extensions/Alfred/splynek/` (parallel to Raycast —
+     different power-user community)
+  4. Tag v2.0.0 + cut DMG + Homebrew Cask refresh + MAS
+     resubmit
+  5. Show HN post + Product Hunt launch + Mac-app blogger
+     emails (per the LANDING-V2-DRAFT press kit)
+
+  ### PRO-PLUS-IPHONE arc — public-repo state at end of
+  Sprint 6 (publish-ready)
+
+  31 commits total across Sprints 1-6; ~11,000 lines new code;
+  ~350 new translations; 820 tests green.  Branch
+  `rollup/2026-05-08` ~178 commits ahead of `origin/main`.
+
+  Three external API-token clients exist:
+  - Raycast extension (Sprint 5, GUI workflow tool)
+  - CLI bash wrapper (Sprint 6, headless / scriptable)
+  - iPhone Companion (Sprint 5 messaging update — uses
+    same API tokens for stable pairing)
+
+  Remaining work is split into three pots:
+  - **Maintainer-only out-of-band**: CloudKit Dashboard
+    schema (`SplynekTrustWatchAlert`), watchOS SDK install,
+    Apple Developer Program watch + complications + iOS
+    bundle-ID provisioning, Stripe/Paddle direct-DMG
+    account, Mac App Store v2.0 review + clearance.
+  - **`splynek-pro` repo**: ConciergeView wiring that emits
+    a `ConciergeSequence` from a user prompt (LLM call
+    lives in Pro repo).
+  - **Manual smoke + tag + announce**: walk
+    `SMOKE-TEST-RUNBOOK.md`, sign off, tag v2.0.0, cut
+    DMG + MAS pkg, adapt `LANDING-V2-DRAFT.md` into
+    splynek-landing, post Show HN.
 
   ### PRO-PLUS-IPHONE arc — public-repo state at end of
   Sprint 5

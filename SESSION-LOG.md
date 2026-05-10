@@ -3473,6 +3473,158 @@ public-repo side.  Remaining work is either:
    Watcher + API tokens as marquee Pro features
    (separate splynek-landing repo)
 
+### 2026-05-10 deep night — PRO-PLUS-IPHONE Sprint 6 (4 commits)
+
+After Sprint 5 (`79fe846` → `2036291`) the user said "continue"
+once more.  Sprint 6 ships the second + third external API-token
+clients (CLI cookbook + landing-page draft) + closes more L10n
+catalog gaps + finalizes the announcement copy.
+
+#### Four commits (chronological)
+
+| #   | Commit    | What                                                              |
+|-----|-----------|-------------------------------------------------------------------|
+| 1   | `5760117` | CLI cookbook (Extensions/CLI — README + bash wrapper)             |
+| 2   | `a5e1139` | L10n round 3 — 16 strings × 5 locales (796 → 812)                 |
+| 3   | `27ce72e` | LANDING-V2-DRAFT — announcement copy for splynek.app              |
+| 4   | this      | Docs: SESSION-LOG + HANDOFF + STRATEGY                            |
+
+After all four: 820 tests pass (Sprint 6 is mostly docs/L10n/
+shell scripts — no Swift test deltas), Mac `swift build` clean,
+all pushed to `origin/rollup/2026-05-08`.
+
+#### What lit up
+
+**CLI cookbook** (`5760117`) — `Extensions/CLI/` ships the
+**second** concrete external API-token client.  Where Raycast
+(Sprint 5) is the GUI workflow tool, this is the headless /
+scriptable / cron-friendly path:
+- `bin/splynek` ergonomic bash wrapper with 9 subcommands
+  (queue, download, jobs, jobs-raw, pause-all, resume-all,
+  sovereignty, trust, trust-watcher, history).  Reads
+  SPLYNEK_HOST/PORT/TOKEN from env.  Pretty `jq -r`
+  formatters; -raw subcommands for plain JSON.
+- `README.md` cookbook with 5 practical patterns:
+  queue-from-markdown, watch-queue-over-ssh, pause-on-DND,
+  daily-Sovereignty-cron, geo-trigger-via-iOS-Shortcut.
+  Privacy posture spelled out.  Troubleshooting table for
+  401 / 404 / connection-refused.
+
+**L10n round 3** (`a5e1139`) — 16 strings × 5 locales (catalog
+796 → 812; audit gap 40 → 25, the lowest yet).  Closed:
+SovereigntyView contribute flow (8 strings — "Apps we don't
+know yet", "Cask", "Contribute", "Free champions, by category",
+the long-form contribute-prompt bodies); AgentsView pairing
+copy (3 strings); the literal-Swift-form interpolations the
+audit tracks separately from %@/%lld converted forms ("Higher
+than \\(p)% of your installed apps", etc.); Sprint-4 long copy
+in literal-form ("Cross-cutting preferences..."). The
+remaining 25 are truly long-tail interpolated bodies (Savings
+annual cost framing, FleetView hover text, PathMonitor
+rationale strings) — Sprint 7 cleanup.
+
+**LANDING-V2-DRAFT** (`27ce72e`) — markdown copy + structure
+the maintainer adapts into the splynek-landing repo when MAS
+clears + DMG cuts.  Pivots the marquee from "AI Concierge" to
+"Trust Watcher" per the defensibility argument.  Includes a
+Show HN draft (5-paragraph max), press kit image list, 60-second
+video storyboard, "when to publish" gating checklist (MAS
+review + notarization + Homebrew PR + CloudKit schema +
+SMOKE-TEST-RUNBOOK sign-off).
+
+#### Architectural choices that paid off
+
+1. **Two external clients now prove the API surface** — Raycast
+   (GUI) + CLI (headless).  Different ecosystems, same API
+   tokens, same Mac code path.  When a future change touches
+   `validateToken(path:method:)` both clients will fail at
+   the same time; that's a feature.
+
+2. **The CLI wrapper hit a real bash 3.2 quirk** — apostrophes
+   inside `${VAR:?...}` parameter expansions break the parser
+   on macOS's default bash.  Worked around it with explicit
+   `if [[ -z ... ]]` blocks.  Documented inline so future-you
+   doesn't re-introduce the bug.  Lesson: "bash" on macOS
+   isn't bash 5; assume 3.2 by default.
+
+3. **Landing-page draft as a markdown file in this repo** —
+   versioned with the rest of v2.0 so the announcement copy
+   evolves with the product instead of going out of sync.
+   When MAS clears the maintainer adapts to Hugo + commits
+   to splynek-landing; the source-of-truth lives here.
+
+#### Critical lessons
+
+- **Catalog maintenance is bounded.**  Started PRO-PLUS-IPHONE
+  with 79 untranslated strings; round 1 closed 24, round 2
+  closed 15 more, round 3 closed 16 more = 55 done, 25 left.
+  Each round had diminishing returns (round 1 was bulk
+  Sprint-1 strings; round 3 is digging into pre-Sprint-1
+  catalog debt).  Sprint 7's L10n round 4 will cover the
+  long-tail interpolated bodies that need careful prose
+  translation.
+
+- **The Show HN draft is itself a forcing function.**
+  Writing the 5-paragraph post sharpens the v2.0 messaging
+  in a way the hero copy alone doesn't.  If you can't write
+  a tight HN post about the release, the release isn't
+  actually narratively coherent yet.
+
+- **Audit script + regenerator are deterministic across 6
+  rounds now.**  Run script, get catalog updates, run audit,
+  get the next batch.  No manual JSON surgery in months;
+  no drift across locales.  This is what compounding
+  infrastructure looks like.
+
+#### Numbers
+
+```
+Commits this sprint:    4
+Tests:                  820 → 820 (no Swift test changes —
+                        Sprint 6 is shell scripts + docs +
+                        L10n only)
+Localizable.xcstrings:  +16 strings × 5 locales (=80 new
+                        translations); catalog 796 → 812
+Audit gap:              40 → 25 (lowest yet)
+New code:               ~330 lines bash wrapper + README in
+                        Extensions/CLI/
+New docs:              LANDING-V2-DRAFT.md (215 lines)
+Net for the day arc:   31 commits across PRO-PLUS-IPHONE
+                       Sprints 1+2+3+4+5+6, ~11,000 lines
+                       new code + ~350 new translations
+```
+
+#### Where it stands at end of session
+
+`origin/rollup/2026-05-08` carries the entire PRO-PLUS-IPHONE
+strategy through Sprint 6.  Branch is now ~178 commits ahead
+of `origin/main`.
+
+The arc is **publish-ready** on the public-repo side.  Three
+external API-token clients now exist (Raycast GUI, CLI bash,
+plus the iPhone Companion which has used the same tokens since
+Sprint 5).  L10n catalog at 812 strings × 5 locales = 4,060
+translations.  Smoke-test runbook + landing-page draft both
+committed.
+
+**Sprint 7 (next session, if executed)**:
+1. Walk SMOKE-TEST-RUNBOOK end-to-end + record sign-off
+2. L10n round 4 — long-tail interpolated bodies (Savings,
+   FleetView, PathMonitor)
+3. Alfred workflow scaffold (parallel to Raycast — different
+   power-user community, separate ecosystem)
+4. Tag v2.0.0 + cut DMG + Homebrew Cask refresh + MAS resubmit
+5. Show HN post + Product Hunt launch + Mac-app blogger emails
+
+Maintainer steps still required (out of band):
+- CloudKit Dashboard: add `SplynekTrustWatchAlert` record type
+- watchOS SDK install: Xcode → Settings → Components → watchOS
+- Apple Developer Program: provision Watch + Watch
+  Complications + iOS App Group entitlements
+- Stripe / Paddle account for direct DMG sales
+- splynek-landing repo: adapt LANDING-V2-DRAFT.md into Hugo
+- Press kit: 5 screenshots + 60s video (per the draft)
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
