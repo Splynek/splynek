@@ -2860,6 +2860,150 @@ Until step 3, Trust Watcher + iPhone push fall back gracefully:
 local Mac UI shows alerts as normal; CloudKit publish logs a
 notice + iPhone push silently no-ops.
 
+### 2026-05-09 → 2026-05-10 — PRO-PLUS-IPHONE Sprint 2 part-2 (4 commits)
+
+After shipping Sprint 1 + Sprint 2 part-1 scaffolds (`9164418`),
+user said simply "continuar" — execute Sprint 2 part-2 too.
+
+#### Four commits (chronological)
+
+| #   | Commit    | What                                                              |
+|-----|-----------|-------------------------------------------------------------------|
+| 1   | `641dc70` | Sovereignty Migrate Wizard — runner + SwiftUI sheet + review list |
+| 2   | `f658e2f` | Geo-fence iOS — CLLocationManager wrapper + Settings UI           |
+| 3   | `aec950d` | Watch app target skeleton (project.yml + sources + scheme)        |
+| 4   | `9e1db78` | Concierge sequence runner + preview UI                            |
+
+After all four: 797 tests pass (was 786 before Sprint 2 part-1
+scaffolds; +11 net through part-2), Mac `swift build` clean,
+iOS `xcodebuild SplynekCompanion BUILD SUCCEEDED`, all pushed
+to `origin/rollup/2026-05-08`.
+
+#### What lit up
+
+**Mac side:**
+- Sovereignty Migrate Wizard end-to-end: every alternative row
+  in the matched-results section gets a Pro-gated "Migrate"
+  button.  Click → modal sheet walks plan steps with per-step
+  confirmation alerts.  Brew step opens Terminal.app via
+  AppleScript with the brew command pre-typed (Splynek itself
+  NEVER runs as root, NEVER mutates brew state).  Mark-for-
+  review writes to a persisted JSON list at
+  `~/Library/Application Support/Splynek/migrate-review-list.json`
+  for a "still on your list" banner (Sprint 3 surfaces banner).
+- Concierge sequence runner with full per-step dispatch via
+  the existing MCPServer.Bridge.  Preview SwiftUI sheet uses
+  CheckedContinuation to bridge the alert/confirm pattern with
+  the @Sendable confirm closure.
+
+**iOS side:**
+- Geo-fence: enable toggle + "Use current location as home"
+  button + 100-1000 m radius slider in Settings.  Coordinator
+  registers a CLCircularRegion via CLLocationManager; entries
+  + exits feed pure GeoFencePolicy.action which drives
+  PairedMacClient.pauseAll/resumeAll on the user's default
+  Mac.  Coordinates never leave the device.
+- Watch app: target wired in project.yml + scheme + minimal
+  SwiftUI body with two action buttons + a Sovereignty score
+  row + WKInterfaceDevice haptic feedback.  Reads PairedMacStore
+  from the same App Group plist the iPhone Companion writes to.
+  Compile-verify pending watchOS SDK install (maintainer step).
+
+#### Architectural choices that paid off again
+
+1. **Persisted state in `~/Library/Application Support/Splynek/`
+   is the standard pattern.**  TrustWatchStore and now
+   SovereigntyMigrateReviewList both follow CellularBudget's
+   layout: lock-guarded NSLock + JSON file + atomic write +
+   `_testOverrideURL` for safe tests.  Three call sites,
+   identical shape — easy to keep in sync.
+
+2. **Pure decision modules + thin runtime wrappers.**
+   GeoFencePolicy.action is exercised by tests on macOS;
+   GeoFenceCoordinator wraps CoreLocation around it.
+   ConciergeSequencePolicy.validate gated the runner before
+   any dispatch, exercised by 5 tests.  Same split as
+   `IsolatedFleetCoordinator` from earlier sprints.
+
+3. **CheckedContinuation bridges SwiftUI alerts with @Sendable
+   closures.**  ConciergeSequencePreviewView's confirm()
+   callback for the runner needs to await user input from a
+   modal alert.  Pattern: Task on @MainActor sets the
+   alert-state @State + stores the continuation; button taps
+   resolve the continuation.  Avoids global state, avoids
+   notifications, avoids race conditions.
+
+4. **xcodegen regenerates Info.plist from project.yml on every
+   build.**  Caught when manually editing the iOS Info.plist
+   to add NSLocationWhenInUseUsageDescription — xcodegen
+   reverted my change.  Solution: put the keys in project.yml's
+   `info: properties:` block.  Same lesson the maintainer doc
+   already mentioned for SplynekCompanion's existing keys —
+   re-confirmed.
+
+#### Critical lessons
+
+- **iOS App Group plist is shared between iPhone Companion +
+  Watch + Widget extension** via the App Group entitlement.
+  PairedMacStore reads/writes the plist using
+  UserDefaults(suiteName:) with the App Group ID.  Means the
+  Watch + Widget see paired Macs without a separate sync —
+  pairing on iPhone "just works" on the wrist.
+
+- **CLLocationManager doesn't retain its delegate.**  The
+  one-shot location fixer in iOS Settings needed a manual
+  in-flight retainer (`OneShotLocationFixer.inFlight: [Self]`)
+  to survive the async fix callback.  CLLocationManager + a
+  short-lived owner is the wrong pairing without this.
+
+- **MCPServer.Bridge is the right substrate for sequence
+  dispatch.**  When I started ConciergeSequenceRunner I was
+  about to define a parallel "tool dispatch" type.  Then
+  realised: every tool already routes through Bridge from
+  MCPServer.  Reuse → single source of truth.  Future tools
+  added to Bridge automatically get sequence support.
+
+#### Numbers
+
+```
+Commits:                4
+Tests:                  786 → 797 (+11)
+Mac source files:       4 (Migrate runner + UI, ConciergeRunner +
+                           preview view + review list)
+iOS Companion files:    1 (GeoFenceCoordinator)
+Watch target:           1 (SplynekWatchApp.swift + Info.plist)
+project.yml:            1 new target (SplynekWatch) + 1 new scheme
+Net new code:          ~2,200 lines
+Net for the day:       10 commits (5e30f5c → 9e1db78), ~6,000 lines
+```
+
+#### Where it stands at end of session
+
+`origin/rollup/2026-05-08` carries the entire PRO-PLUS-IPHONE
+strategy: Sprint 1 (5 commits) + Sprint 2 part-1 scaffolds
+(1 commit) + Sprint 2 part-2 (4 commits) = **10 commits total**.
+
+Branch is now ~160 commits ahead of `origin/main`.
+
+What's left for Sprint 3 (next session, if executed):
+1. End-to-end smoke test of all four Sprint 2 surfaces
+2. splynek-pro: ConciergeView wiring that emits a sequence
+   from a user prompt
+3. Watch complication for the watch face
+4. Sovereignty "still on your list" banner driven by
+   SovereigntyMigrateReviewList.entriesOlderThan(days:)
+5. Migrate review list digest in Concierge ("3 apps you marked
+   are still installed")
+6. Pricing telemetry → Trust+ subscription evaluation if
+   engagement justifies (Sprint 3 in the original plan)
+
+Maintainer steps still required (out of band; not Claude-fixable):
+- CloudKit Dashboard: add SplynekTrustWatchAlert record type
+  (alongside existing SplynekRelayJob)
+- watchOS SDK install: Xcode → Settings → Components → watchOS
+  (so xcodebuild SplynekWatch can verify the target)
+- Apple Developer Program: provision the watch app's bundle ID
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:

@@ -224,12 +224,40 @@ A maior parte das funcionalidades Pro hoje **não estão acessíveis no iPhone**
   | `Tests/SplynekTests/ConciergeSequenceTests.swift`          | 7 tests                              |
   | `Tests/SplynekTests/GeoFencePolicyTests.swift`             | 5 tests                              |
 
-  ### Sprint 2 part-2 (next session)
+  ### Sprint 2 part-2 — SHIPPED 2026-05-10 (4 commits)
 
-  - `SovereigntyMigrateWizardView` (SwiftUI) + step runner
-  - `ConciergeBridge` plumbing for sequence preview + per-step
-    confirmation UI
-  - `iOS/SplynekCompanion/GeoFenceCoordinator.swift` (CoreLocation
-    wrapper) + Settings UI for "Use my current location as home"
-  - Watch app target (separate commit)
-  - End-to-end smoke test of all four flows
+  All four items closed:
+  - **Sovereignty Migrate Wizard** end-to-end (`641dc70`) —
+    runner (NSWorkspace + AppleScript Terminal + review-list)
+    + SwiftUI sheet with per-step confirmation alerts +
+    persisted review list (`migrate-review-list.json`).
+    Pro-gated entry from every alternative row in Sovereignty.
+  - **Geo-fence iOS** end-to-end (`f658e2f`) — CLLocationManager
+    wrapper + Settings UI (enable toggle + "Use current
+    location as home" + radius slider).  Coordinates never
+    leave device; only "you crossed the boundary" boolean
+    triggers PairedMacClient.pauseAll/resumeAll.
+  - **Watch app target skeleton** (`aec950d`) — project.yml
+    target + scheme + minimal SwiftUI body with action buttons
+    + Sovereignty score row + haptics.  watchOS SDK install
+    required for compile-verify (maintainer step).
+  - **Concierge sequence runner + preview UI** (`9e1db78`) —
+    actor wrapping MCPServer.Bridge + SwiftUI sheet with
+    CheckedContinuation alert/confirm pattern.
+
+  Sprint 2 numbers: 5 total commits (1 part-1 scaffolds +
+  4 part-2 implementations); +30 tests across part-1 + part-2
+  (786 → 797 → 797 — runner counts in the latter).
+
+  ### Sprint 3 (next session, if executed)
+
+  1. End-to-end smoke test of all four Sprint 2 surfaces
+  2. splynek-pro: ConciergeView wiring that emits a sequence
+     from a user prompt (LLM call lives in pro)
+  3. Watch complication for the watch face
+  4. Sovereignty "still on your list" banner driven by
+     `SovereigntyMigrateReviewList.entriesOlderThan(days:)`
+  5. Migrate review list digest in Concierge ("3 apps you
+     marked are still installed")
+  6. Pricing telemetry → Trust+ subscription evaluation if
+     engagement justifies
