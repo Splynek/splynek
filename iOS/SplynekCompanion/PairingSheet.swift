@@ -53,12 +53,40 @@ struct PairingSheet: View {
                         .keyboardType(.numberPad)
                 }
                 Section("Token") {
-                    SecureField("Paste from Mac → Settings → Sharing", text: $token)
+                    SecureField("Paste a token from your Mac", text: $token)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                    Text("Open Splynek on your Mac, go to Settings → Sharing, and tap the copy-token button.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    // Sprint 5 PRO-PLUS-IPHONE (2026-05-10): two
+                    // valid token sources, ranked by stability.
+                    // API tokens (Pro) are permanent until revoked;
+                    // the session webToken rotates per Mac launch
+                    // and on "Regenerate token".  Recommend API
+                    // tokens for set-and-forget pairing.
+                    VStack(alignment: .leading, spacing: 6) {
+                        Label {
+                            Text("Recommended: API token (Pro)")
+                                .font(.caption.weight(.semibold))
+                        } icon: {
+                            Image(systemName: "key.fill")
+                                .foregroundStyle(.tint)
+                        }
+                        Text("On the Mac: Settings → API tokens → Mint token (Read + write). Permanent until you revoke it.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Divider().padding(.vertical, 2)
+                        Label {
+                            Text("Or: session token")
+                                .font(.caption.weight(.semibold))
+                        } icon: {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .foregroundStyle(.secondary)
+                        }
+                        Text("On the Mac: Settings → Web dashboard → copy. Rotates on relaunch + on Regenerate-token clicks; you'd need to re-pair after each.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 if let lastError {
                     Section {
