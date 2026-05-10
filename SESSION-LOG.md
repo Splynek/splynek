@@ -3625,6 +3625,176 @@ Maintainer steps still required (out of band):
 - splynek-landing repo: adapt LANDING-V2-DRAFT.md into Hugo
 - Press kit: 5 screenshots + 60s video (per the draft)
 
+### 2026-05-10 deep-deep night — PRO-PLUS-IPHONE Sprint 7 (4 commits)
+
+After Sprint 6 (`5760117` → `f7758bd`) the user asked to walk
+the runbook + close the L10n catalog + ship the Alfred workflow
+scaffold.  Sprint 7 hits all three with one milestone — **L10n
+audit gap reaches ZERO**, the first time in the arc.
+
+#### Four commits (chronological)
+
+| #   | Commit    | What                                                              |
+|-----|-----------|-------------------------------------------------------------------|
+| 1   | `836354c` | SMOKE-TEST partial sign-off (programmatic checks only)            |
+| 2   | `b16a6fd` | L10n round 4 — audit gap reaches **ZERO** (812 → 841 strings)     |
+| 3   | `90074a5` | Alfred workflow scaffold (third external API-token client)        |
+| 4   | this      | Docs: SESSION-LOG + HANDOFF + STRATEGY                            |
+
+After all four: 820 tests pass, Mac `swift build` clean, iOS
+`xcodebuild SplynekCompanion BUILD SUCCEEDED`, all pushed to
+`origin/rollup/2026-05-08`.
+
+#### What lit up
+
+**SMOKE-TEST partial sign-off** (`836354c`) — `SMOKE-TEST-SIGNOFF-2026-05-10.md`
+records every smoke-test runbook item that's verifiable from a
+Claude session vs. requires the maintainer.  Programmatic green:
+swift build, swift run splynek-test (820/820), iOS xcodebuild,
+catalog audit (was 25 missing at sign-off time; now 0 after
+round 4 — file kept dated for audit-trail integrity), regen
+100% across 5 locales, CLI bash syntax + Raycast files.
+Manual + maintainer-only items explicitly UNCHECKED with notes.
+Tag-readiness: not yet, awaiting manual UI walkthrough on real
+hardware.
+
+**L10n round 4 — audit gap reaches ZERO** (`b16a6fd`) — closed
+the remaining 25 long-tail interpolated strings + caught and
+fixed 5 mismatch issues from earlier rounds:
+- 3 strings used smart quotes (U+2019) in source where my
+  catalog used ASCII apostrophes
+- 1 string had a different actual source body than my round-2
+  approximation (round-3 fix had landed but with wrong text)
+- 1 string needed escaped `\\\"` in the catalog key form to
+  match the audit's regex capture (which preserves Swift's
+  source-form `\\"` rather than the runtime `"` char)
+Catalog grew 812 → 841 strings (+29 × 5 locales = +145
+translations).  All 5 locales (de/es/fr/it/pt-PT) at 100%
+coverage.  **Audit reports 0 missing** — first time in the
+PRO-PLUS-IPHONE arc.
+
+**Alfred workflow scaffold** (`90074a5`) — `Extensions/Alfred/splynek/`
+ships the third external API-token client (after Raycast GUI
+in Sprint 5 + CLI in Sprint 6).  5 keyword commands (splyq,
+splysov, splyjobs, splypause, splyresume), bash scripts that
+shell out to curl + jq, minimal `info.plist` scaffold the
+maintainer adapts in Alfred's GUI.  README explains the
+maintainer flow + lists why three workflow ecosystems coexist
+(Raycast = polished GUI, CLI = headless, Alfred = Powerpack
+community).
+
+#### Architectural choices that paid off
+
+1. **Three external API-token clients prove API surface
+   neutrality.**  Each ecosystem's UX preferences differ
+   (Raycast TypeScript+React, CLI bash+jq, Alfred bash+Script
+   Filter JSON).  Same `?t=<token>` convention works for all
+   three — the API token surface is genuinely client-agnostic.
+
+2. **L10n audit gap reaching zero is a quality milestone.**
+   PRO-PLUS-IPHONE started with 79 missing strings; 4 rounds
+   closed them all (+24 + 26 + 16 + 29 = 95 new strings — more
+   than the gap because some were entirely new Swift code from
+   Sprints 1-4).  Catalog at 841 strings × 5 locales = **4,205
+   translations**.  When the audit script reports 0 missing,
+   no string in any view falls back to English on a non-English
+   locale.  Major UX win for non-English speakers.
+
+3. **The audit's regex-capture form drives catalog key shape.**
+   The Trust+ engagement string mismatch turned out to be that
+   the audit captures Swift source-form `\\"` literally, while
+   my catalog had the runtime `"` char.  Documented inline in
+   the commit so future-you doesn't re-introduce the bug:
+   "the catalog key must match what the audit captures, so
+   escaped quotes inside Text(\"...\") need `\\\\\"` in the
+   catalog key form."
+
+4. **Smoke-test sign-off as a dated file.**  The runbook is
+   the checklist; this dated sign-off is the audit trail.
+   Future re-runs add new dated files alongside rather than
+   overwriting — accumulating evidence rather than replacing it.
+
+#### Critical lessons
+
+- **The audit script is the catalog's truth.**  When the audit
+  says a string is missing, it's missing — regardless of how
+  identical the catalog key looks to the source.  Reading the
+  audit's regex carefully (capture form, escape handling) is
+  faster than guessing why the strings don't match.
+
+- **Smart quotes vs ASCII apostrophes are silent killers.**
+  3 of the 5 final mismatches were source files using `'`
+  (U+2019) where my catalog had `'` (ASCII U+0027).  Swift's
+  text editor auto-converts in some files, not others —
+  there's no way to tell from a glance.  The fix was always
+  to copy-paste the source string verbatim into the catalog
+  dict.
+
+- **Alfred workflows are import-only-completable.**  The
+  `info.plist` Alfred regenerates on import has UUID-based
+  inter-object connections that are impractical to hand-write.
+  Shipping a scaffold + README that walks the maintainer
+  through the 5 Script Filter / Action wirings is the right
+  level of completion for this kind of artifact.
+
+#### Numbers
+
+```
+Commits this sprint:    4
+Tests:                  820 → 820 (Sprint 7 is L10n + docs +
+                        Alfred shell scripts only — no Swift
+                        test deltas)
+Localizable.xcstrings:  +29 strings × 5 locales (=145 new
+                        translations); catalog 812 → 841
+Audit gap:              25 → **0**  ← first time in the arc
+New code:               ~510 lines bash + plist + README in
+                        Extensions/Alfred/splynek/
+New docs:              SMOKE-TEST-SIGNOFF-2026-05-10.md (168
+                        lines)
+Net for the day arc:   35 commits across PRO-PLUS-IPHONE
+                       Sprints 1+2+3+4+5+6+7, ~12,000 lines
+                       new code + ~500 new translations
+```
+
+#### Where it stands at end of session
+
+`origin/rollup/2026-05-08` carries the entire PRO-PLUS-IPHONE
+strategy through Sprint 7.  Branch is now ~182 commits ahead
+of `origin/main`.
+
+The arc is **publish-ready and translation-complete** on the
+public-repo side:
+- 820/820 tests green
+- L10n audit reports 0 missing (a first)
+- Three external API-token clients shipped
+- Smoke-test runbook + dated programmatic sign-off
+- Landing-page draft committed
+
+**Sprint 8 (next session, if executed)**:
+1. Tag v2.0.0 from `rollup/2026-05-08` + cut DMG +
+   Homebrew Cask refresh + MAS resubmit
+2. Show HN post + Product Hunt launch + Mac-app blogger
+   emails (per LANDING-V2-DRAFT.md press kit)
+3. Adapt LANDING-V2-DRAFT.md into the splynek-landing repo
+   (Hugo/GitHub Pages)
+4. Walk SMOKE-TEST-RUNBOOK end-to-end on real hardware +
+   sign off the manual sections
+
+Or alternative directions:
+- Sprint 8 could pivot back to product if Apple v2.0 review
+  takes weeks — backlog includes the Trust+ subscription UI,
+  more sophisticated Trust Watcher catalog growth, splynek-pro
+  ConciergeView wiring.
+
+Maintainer steps still required (out of band):
+- CloudKit Dashboard: add `SplynekTrustWatchAlert` record type
+- watchOS SDK install: Xcode → Settings → Components → watchOS
+- Apple Developer Program: provision Watch + Watch
+  Complications + iOS App Group entitlements
+- Stripe / Paddle account for direct DMG sales
+- splynek-landing repo: adapt LANDING-V2-DRAFT.md into Hugo
+- Press kit: 5 screenshots + 60s video (per the draft)
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
