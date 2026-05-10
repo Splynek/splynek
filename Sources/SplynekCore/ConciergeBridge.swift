@@ -195,6 +195,8 @@ struct LiveConciergeBridge: ConciergeBridge {
             return handleTrustReport()
         case ConciergeToolRegistry.recentActivity.id:
             return handleRecentActivity()
+        case ConciergeToolRegistry.migrateReviewDigest.id:
+            return handleMigrateReviewDigest()
         case ConciergeToolRegistry.downloadByGoal.id:
             // The download-by-goal flow lives in the Pro repo — the
             // bridge can't resolve it on its own.  Surface the goal
@@ -339,4 +341,36 @@ struct LiveConciergeBridge: ConciergeBridge {
                 + (recent.count > 0 ? "\nMost recent: \(topNames)." : "")
         )
     }
+
+    /// Sprint 3 (2026-05-10) — Migrate review digest.  Reads
+    /// `SovereigntyMigrateReviewStore` (or the test fixture) and
+    /// renders a compact human summary with: list size, oldest
+    /// entry's age, comma-separated names, and a nudge.  Returns
+    /// a `.text` card so the LLM can quote it back to the user.
+    private func handleMigrateReviewDigest() -> ConciergeCard {
+        let list = migrateReviewFixture ?? SovereigntyMigrateReviewStore().read()
+        if list.entries.isEmpty {
+            return .text(
+                "Your migration list is empty. When you click Migrate on a Sovereignty alternative, the original app lands here so you don't forget to actually switch."
+            )
+        }
+        let names = list.entries.prefix(6)
+            .map { "\($0.originalDisplayName) → \($0.alternativeName)" }
+            .joined(separator: ", ")
+        let staleCount = list.entriesOlderThan(
+            days: SovereigntyMigrateReviewBanner.reviewThresholdDays
+        ).count
+        var lines: [String] = []
+        lines.append("\(list.entries.count) app(s) on your migration list.")
+        lines.append(names + (list.entries.count > 6 ? ", …" : "."))
+        if staleCount > 0 {
+            lines.append("\(staleCount) of those have been on the list more than a week — worth checking whether you actually made the switch.")
+        }
+        return .text(lines.joined(separator: "\n"))
+    }
+
+    /// **Tests only.**  When set, the migrate-review handler
+    /// reads this list instead of the on-disk store.  Same hook
+    /// pattern `historyFixture` uses.
+    var migrateReviewFixture: SovereigntyMigrateReviewList?
 }

@@ -62,6 +62,7 @@ enum ConciergeToolRegistry {
         trustReport,
         summarizePDF,
         recentActivity,
+        migrateReviewDigest,
     ]
 
     // MARK: - Tool definitions
@@ -211,6 +212,29 @@ enum ConciergeToolRegistry {
             Examples: "what did I download today?", "any active downloads?", \
             "what's in my queue?".  Handler reads DownloadHistory + the \
             current queue snapshot and returns a compact summary.
+            """,
+        argsSchema: .object([
+            "type": .string("object"),
+            "properties": .object([:]),
+            "required": .array([]),
+        ])
+    )
+
+    /// Sprint 3 (2026-05-10) — Migrate review digest.  Surfaces
+    /// the user's pending Sovereignty migrations: which apps they
+    /// committed to swap, when, and a nudge to actually do it.
+    /// Pro-only on the dispatch side (ProStubs filters tool list
+    /// for free tier).  See `SovereigntyMigrateReviewStore`.
+    static let migrateReviewDigest = ConciergeTool(
+        id: "migrate_review_digest",
+        title: "Migrate review digest",
+        description: """
+            User wants to know which Sovereignty migrations they have \
+            in flight.  Examples: "what's on my migration list?", \
+            "did I switch from Spotify yet?", "remind me what I marked \
+            for review".  Handler reads SovereigntyMigrateReviewStore \
+            and returns a compact summary including app names + how \
+            long ago each was marked.
             """,
         argsSchema: .object([
             "type": .string("object"),

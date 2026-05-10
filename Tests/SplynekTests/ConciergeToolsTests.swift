@@ -10,9 +10,22 @@ enum ConciergeToolsTests {
     static func run() {
         TestHarness.suite("ConciergeToolRegistry — invariants") {
 
-            TestHarness.test("Registry has exactly 8 tools (matches MAS-2.5.2-COMPLIANCE.md)") {
+            TestHarness.test("Registry has exactly 9 tools (drift guard)") {
+                // 8 tools shipped through v1.7; 9th
+                // (`migrate_review_digest`) added 2026-05-10 in
+                // PRO-PLUS-IPHONE Sprint 3.  Every catalog
+                // expansion is intentional + audited — drift here
+                // means the dispatcher gained a path that no
+                // longer matches the MAS-2.5.2 invariants; update
+                // both this number AND the dispatcher review
+                // before bumping.
+                //
+                // (Note: the MAS-2.5.2 brief talks about the 8 MCP
+                // tools in MCPToolRegistry — a separate surface.
+                // ConciergeToolRegistry has its own evolving set
+                // gated by ProStubs for the free tier.)
                 let n = ConciergeToolRegistry.allTools.count
-                try expect(n == 8, "Tool count drifted to \(n) — update brief if intentional")
+                try expect(n == 9, "Tool count drifted to \(n) — update guard if intentional")
             }
 
             TestHarness.test("Every tool has a non-empty id, title, description") {
