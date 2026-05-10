@@ -3316,6 +3316,163 @@ Maintainer steps still required (out of band):
 - Stripe / Paddle account for direct DMG sales (separate from
   MAS)
 
+### 2026-05-10 late night — PRO-PLUS-IPHONE Sprint 5 (5 commits)
+
+After Sprint 4 (`7f02266` → `5b137f1`) the user said "continue"
+once more.  Sprint 5 ships the first external API-token client +
+closes the Sprint 4 messaging loose end + finishes the L10n
+catch-up + writes a runbook for tagging.
+
+#### Five commits (chronological)
+
+| #   | Commit    | What                                                              |
+|-----|-----------|-------------------------------------------------------------------|
+| 1   | `79fe846` | Raycast extension scaffold (5 commands + shared API client + README) |
+| 2   | `eead2aa` | iPhone Companion — recommend API tokens for stable pairing        |
+| 3   | `552430c` | L10n round 2 — 26 more strings × 5 locales (770 → 796)            |
+| 4   | `6580ec0` | SMOKE-TEST-RUNBOOK 11-section walkthrough                         |
+| 5   | this      | Docs: SESSION-LOG + HANDOFF + STRATEGY                            |
+
+After all five: 820 tests pass (no test changes — Sprint 5 is
+mostly UI/docs/Raycast scaffolding), Mac `swift build` clean,
+iOS `xcodebuild SplynekCompanion BUILD SUCCEEDED`, all pushed
+to `origin/rollup/2026-05-08`.
+
+#### What lit up
+
+**Raycast extension** — first concrete external client of the
+Sprint 4 API tokens.  Five commands wired: Submit URL (Form),
+Active Downloads (List with 3s auto-refresh), Sovereignty Score
+(Detail with Markdown + traffic-light emoji), Pause All / Resume
+All (no-view).  Shared `api.ts` returns `{ ok: true, data } |
+{ ok: false, message }` so callers surface clean toasts without
+try/catch sprawl.  Prefs: host / port / API token (encrypted
+Raycast prefs).  README walks setup + privacy posture
+(LAN-only, no telemetry) + read-only token caveat.
+
+**iPhone Companion pairing recommends API tokens** — the
+PairingSheet token field already accepts any valid token (Mac's
+`validateToken` from Sprint 4 accepts session webToken OR API
+tokens additively).  This commit doesn't change validation; it
+restructures the Token-section help text into a two-tier guide:
+"Recommended: API token (Pro)" with key.fill icon vs "Or:
+session token" with rotation icon.  Honest about session
+rotation.
+
+**L10n round 2** — 26 more strings × 5 locales = 130 new
+translations.  Closed the highest-volume Sprint 4 strings
+(API tokens UI, Trust+ upsell long copy, engagement viewer
+empties) + introduced **interpolated %@-form catalog entries**
+that the audit tooling correctly recognises:
+"Migrate %1$@ → %2$@", "Failed — %@", "Skipped — %@",
+"Open %@", "Marked %@.", "Open %@ in browser",
+"Open %@ in App Store", "Higher than %lld%% of your installed
+apps".  Audit gap shrunk 55 → 40; remaining are mostly
+pre-Sprint-1 catalog debt outside this arc.
+
+**SMOKE-TEST-RUNBOOK** — 11-section walkthrough the maintainer
+walks before tagging the next release.  Time budget: ~30 min
+Mac+iPhone, +20 min Watch+Raycast.  Reset instructions, build
+sanity, sign-off block.  Path forward when the user asks
+"is the rollup ready to tag?".
+
+#### Architectural choices that paid off
+
+1. **API tokens enabled the Raycast extension immediately.**
+   No new Mac-side work; the Sprint 4 endpoints + token
+   validation just-work for any HTTP client that knows the
+   `?t=<token>` convention.  Raycast extension shipped in
+   one commit with zero Mac changes.
+
+2. **iPhone pairing didn't need a code change to gain the
+   API-token path.**  Mac's `validateToken` already accepted
+   API tokens additively; the iPhone always sent strings.
+   Sprint 5's pairing-flow commit is **purely messaging** —
+   the validation has worked since `088d8d1`.  Lesson: when
+   you build foundations right (additive validation,
+   single-source-of-truth dispatch), feature paths light up
+   "for free" later.
+
+3. **Catalog regenerator's `%@`-form support means
+   interpolated strings are first-class.**  No Swift code
+   changes needed; just the right format-spec entry in the
+   PRO_PLUS_IPHONE_STRINGS dict.  Locale word-order
+   variations handled by `%1$@` / `%2$@` positional
+   placeholders (Apple's Localizable.xcstrings format).
+
+4. **Smoke-test runbook is a checklist, not a script.**
+   Trying to automate the 11-section walkthrough would
+   either skip the visual-judgment checks or balloon into a
+   massive UI test framework.  A markdown checklist that a
+   human walks in 30-50 min is the right tool — same
+   pattern Apple uses internally for App Review readiness.
+
+#### Critical lessons
+
+- **External clients prove the API surface in a way
+  internal tests can't.**  The 12 unit tests for
+  APITokenValidator confirmed the decision logic.  The
+  Raycast extension's 5 commands hitting real endpoints
+  through real HTTP confirmed the *integration*.  Both
+  matter; neither replaces the other.
+
+- **L10n catalog regeneration is idempotent + deterministic.**
+  Run the script, get 100% across all 5 locales every time.
+  This makes catalog updates a no-stress operation —
+  contrast with the pre-v1.6 era where manual JSON
+  editing would drift translations.
+
+- **Runbook docs deserve commit-level treatment.**  The
+  smoke-test runbook is a deliverable, not a side note.
+  Future-Paulo (or future-Claude in a fresh session)
+  reads it cold + executes; if it's missing or out of
+  date, the rollup tagging guesswork takes the cost.
+
+#### Numbers
+
+```
+Commits this sprint:    5
+Tests:                  820 → 820 (no test changes — UI +
+                        docs + Raycast scaffolding)
+Localizable.xcstrings:  +26 strings × 5 locales (=130 new
+                        translations); catalog 770 → 796
+New code (Mac):         ~40 lines (PairingSheet copy update)
+New code (Raycast):     ~530 lines TS + JSON + MD across 10
+                        files in Extensions/Raycast/splynek/
+New docs:              SMOKE-TEST-RUNBOOK.md (151 lines)
+Net for the day arc:   27 commits across PRO-PLUS-IPHONE
+                       Sprints 1+2+3+4+5, ~10,500 lines new
+                       code + ~270 new translations
+```
+
+#### Where it stands at end of session
+
+`origin/rollup/2026-05-08` carries the entire PRO-PLUS-IPHONE
+strategy through Sprint 5.  Branch is now ~174 commits ahead
+of `origin/main`.
+
+The PRO-PLUS-IPHONE arc is now feature-complete on the
+public-repo side.  Remaining work is either:
+- **maintainer-only out-of-band steps** (CloudKit schema,
+  watchOS SDK install, Apple Developer Program provisioning,
+  Stripe/Paddle direct-DMG account)
+- **splynek-pro repo work** (Concierge sequence emit from
+  LLM prompt — the LLM call lives there)
+- **manual smoke + tag** (per the Sprint-5 runbook)
+
+**Sprint 6 (next session, if executed)**:
+1. Walk the SMOKE-TEST-RUNBOOK end-to-end + record results
+2. L10n round 3 — close the remaining 40 strings (mostly
+   pre-Sprint-1 debt: SovereigntyView contribute flow,
+   UpdatesView interpolated forms)
+3. Alfred workflow under `Extensions/Alfred/splynek/`
+   (parallel to Raycast — different power-user community)
+4. Shell-script README at `Extensions/CLI/README.md`
+   showing curl/jq recipes against the API token endpoints
+5. Landing-page update at splynek.app announcing Trust
+   Watcher + API tokens as marquee Pro features
+   (separate splynek-landing repo)
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
