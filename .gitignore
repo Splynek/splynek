@@ -27,6 +27,10 @@ Branding/Splynek-logo-clean.png
 *.log
 *.xcresult
 
+## Python bytecode caches (Scripts/ has .py helpers)
+__pycache__/
+*.pyc
+
 ## Generated DMGs
 build/*.dmg
 build/Splynek.zip
