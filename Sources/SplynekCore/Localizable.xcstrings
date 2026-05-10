@@ -724,31 +724,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%lld weitere"
+            "value": "+\\(apps.count - 10) weitere"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%lld más"
+            "value": "+\\(apps.count - 10) más"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%lld de plus"
+            "value": "+\\(apps.count - 10) de plus"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%lld altri"
+            "value": "+\\(apps.count - 10) altri"
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "+%lld mais"
+            "value": "+\\(apps.count - 10) mais"
           }
         }
       }
@@ -2321,6 +2321,40 @@
         }
       }
     },
+    "Apps we don't know yet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps, die wir noch nicht kennen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps que aún no conocemos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applications que nous ne connaissons pas encore"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App che ancora non conosciamo"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps que ainda não conhecemos"
+          }
+        }
+      }
+    },
     "Apps we don't know yet (%lld)": {
       "localizations": {
         "de": {
@@ -3578,6 +3612,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancelado"
+          }
+        }
+      }
+    },
+    "Cask": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cask"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cask"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cask"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cask"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cask"
           }
         }
       }
@@ -4915,6 +4983,40 @@
         }
       }
     },
+    "Contribute": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beitragen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contribuir"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contribuer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contribuisci"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contribuir"
+          }
+        }
+      }
+    },
     "Controls over what the LAN can see and who can submit downloads to this Mac.": {
       "localizations": {
         "de": {
@@ -5388,6 +5490,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Decisão judicial"
+          }
+        }
+      }
+    },
+    "Cross-cutting preferences — license, browser integrations, local AI, and background behaviour. Feature-specific knobs live next to the features they affect. Nothing here phones home.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übergreifende Einstellungen — Lizenz, Browser-Integrationen, lokale KI und Hintergrund­verhalten. Funktions­spezifische Knöpfe liegen neben der jeweiligen Funktion. Nichts davon ruft nach Hause."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferencias transversales — licencia, integraciones de navegador, IA local y comportamiento en segundo plano. Las opciones específicas de cada función viven junto a la función que controlan. Nada aquí contacta con servidores."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Préférences transversales — licence, intégrations de navigateur, IA locale et comportement en arrière-plan. Les réglages spécifiques à une fonctionnalité vivent à côté de la fonctionnalité concernée. Rien ici ne contacte de serveur."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferenze trasversali — licenza, integrazioni del browser, IA locale e comportamento in background. Le opzioni specifiche di ogni funzione vivono accanto alla funzione che controllano. Nulla qui contatta server."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferências transversais — licença, integrações de browser, IA local e comportamento de background. As opções específicas de cada funcionalidade vivem junto da funcionalidade que controlam. Nada aqui contacta servidores."
           }
         }
       }
@@ -6243,6 +6379,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dispensar"
+          }
+        }
+      }
+    },
+    "Distribution: \\(kind.displayLabel)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vertrieb: \\(kind.displayLabel)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distribución: \\(kind.displayLabel)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distribution : \\(kind.displayLabel)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distribuzione: \\(kind.displayLabel)"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distribuição: \\(kind.displayLabel)"
           }
         }
       }
@@ -9011,6 +9181,40 @@
         }
       }
     },
+    "Free champions, by category": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kostenlose Empfehlungen, nach Kategorie"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Campeones gratuitos, por categoría"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Champions gratuits, par catégorie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Campioni gratuiti, per categoria"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Campeões grátis, por categoria"
+          }
+        }
+      }
+    },
     "Freemium": {
       "extractionState": "manual",
       "localizations": {
@@ -9692,6 +9896,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Superior a %lld%% das tuas apps instaladas"
+          }
+        }
+      }
+    },
+    "Higher than \\(p)% of your installed apps": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Höher als \\(p)% Ihrer installierten Apps"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superior al \\(p)% de tus apps instaladas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supérieur à \\(p)% de vos applications installées"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superiore al \\(p)% delle tue app installate"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superior a \\(p)% das tuas apps instaladas"
           }
         }
       }
@@ -10924,6 +11162,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "CVE conhecida"
+          }
+        }
+      }
+    },
+    "LAN sharing is disabled (Privacy mode → Loopback only). Disable Loopback-only above to pair an iPhone.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LAN-Freigabe ist deaktiviert (Datenschutzmodus → Nur Loopback). Deaktivieren Sie oben Nur-Loopback, um ein iPhone zu koppeln."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El uso compartido en LAN está desactivado (Modo de privacidad → Solo loopback). Desactiva Solo-loopback arriba para emparejar un iPhone."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le partage LAN est désactivé (Mode confidentialité → Loopback uniquement). Désactive Loopback uniquement ci-dessus pour appairer un iPhone."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La condivisione LAN è disattivata (Modalità privacy → Solo loopback). Disattiva Solo-loopback sopra per abbinare un iPhone."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A partilha LAN está desactivada (Modo de privacidade → Apenas loopback). Desactiva o Apenas-loopback acima para emparelhar um iPhone."
           }
         }
       }
@@ -14615,6 +14887,40 @@
         }
       }
     },
+    "Open Splynek Companion on your iPhone, tap +, then Scan QR. Pairing is instant — no token paste.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek Companion auf dem iPhone öffnen, auf + tippen, dann QR scannen. Kopplung ist sofort — kein Token einzufügen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Splynek Companion en tu iPhone, toca +, luego Escanear QR. El emparejamiento es instantáneo — sin pegar token."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre Splynek Companion sur ton iPhone, touche +, puis Scanner QR. L'appairage est instantané — pas de jeton à coller."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri Splynek Companion sul tuo iPhone, tocca +, poi Scansiona QR. L'abbinamento è immediato — niente token da incollare."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre o Splynek Companion no iPhone, toca em +, depois Ler QR. O emparelhamento é instantâneo — sem colar token."
+          }
+        }
+      }
+    },
     "Open URL in browser": {
       "localizations": {
         "de": {
@@ -14680,6 +14986,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abrir a página de transferência de \\(alt.name) no navegador"
+          }
+        }
+      }
+    },
+    "Open a GitHub issue with this app's metadata pre-filled. Helps the next Splynek user too.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet ein GitHub-Issue mit vorausgefüllten Metadaten dieser App. Hilft auch dem nächsten Splynek-Benutzer."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre un issue en GitHub con los metadatos de esta app pre-rellenados. También ayuda al próximo usuario de Splynek."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre une issue GitHub avec les métadonnées de cette application pré-remplies. Aide aussi le prochain utilisateur de Splynek."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre una issue su GitHub con i metadati di questa app pre-compilati. Aiuta anche il prossimo utente di Splynek."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre um issue no GitHub com os metadados desta app pré-preenchidos. Também ajuda o próximo utilizador do Splynek."
           }
         }
       }
@@ -15299,6 +15639,40 @@
         }
       }
     },
+    "Pair Splynek Companion (iPhone)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek Companion (iPhone) koppeln"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparejar Splynek Companion (iPhone)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appairer Splynek Companion (iPhone)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbina Splynek Companion (iPhone)"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparelhar Splynek Companion (iPhone)"
+          }
+        }
+      }
+    },
     "Parse": {
       "localizations": {
         "de": {
@@ -15771,6 +16145,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Desempenho"
+          }
+        }
+      }
+    },
+    "Persistent tokens for external scripting.  Each token has a label, a scope, and shows up in Splynek's request logs by name. Read-only tokens can hit GET endpoints (jobs, summaries, history); read+write tokens can also queue/cancel/pause downloads.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Persistente Tokens für externes Scripting.  Jedes Token hat eine Bezeichnung, einen Geltungsbereich und erscheint in Splyneks Anfrage-Protokollen mit Namen. Schreibgeschützte Tokens erreichen GET-Endpoints (Jobs, Zusammen­fassungen, Verlauf); Lese+Schreib-Tokens können auch Downloads in die Warte­schlange stellen, abbrechen oder pausieren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tokens persistentes para scripting externo.  Cada token tiene una etiqueta, un ámbito y aparece en los logs de solicitudes de Splynek por su nombre. Los tokens de solo lectura pueden acceder a endpoints GET (jobs, resúmenes, historial); los tokens lectura+escritura también pueden encolar/cancelar/pausar descargas."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetons persistants pour le scripting externe.  Chaque jeton a un libellé, une portée et apparaît dans les journaux de requêtes Splynek par son nom. Les jetons en lecture seule peuvent atteindre les endpoints GET (jobs, résumés, historique) ; les jetons lecture+écriture peuvent également mettre en file d'attente/annuler/mettre en pause des téléchargements."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token persistenti per scripting esterno.  Ogni token ha un'etichetta, un ambito e appare nei log delle richieste di Splynek con il suo nome. I token in sola lettura possono raggiungere gli endpoint GET (job, riepiloghi, cronologia); i token lettura+scrittura possono anche accodare/annullare/mettere in pausa i download."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tokens persistentes para scripting externo.  Cada token tem um nome, um âmbito e aparece nos logs de pedidos do Splynek pelo nome. Tokens só-leitura podem aceder a endpoints GET (jobs, sumários, histórico); tokens leitura+escrita também podem enfileirar/cancelar/pausar transferências."
           }
         }
       }
@@ -21779,6 +22187,40 @@
         }
       }
     },
+    "Splynek has Homebrew Cask metadata for this app — homepage + download URL pre-filled in the contribute issue.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek hat Homebrew-Cask-Metadaten für diese App — Homepage + Download-URL vorausgefüllt im Beitragen-Issue."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek tiene metadatos de Homebrew Cask para esta app — homepage + URL de descarga pre-rellenados en el issue de contribución."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek dispose des métadonnées Homebrew Cask de cette application — page d'accueil + URL de téléchargement pré-remplies dans l'issue de contribution."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek ha metadati Homebrew Cask per questa app — homepage + URL di download pre-compilati nella issue di contribuzione."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek tem metadados do Homebrew Cask para esta app — homepage + URL de download pré-preenchidos no issue de contribuição."
+          }
+        }
+      }
+    },
     "Splynek looks up hostnames over Cloudflare's encrypted DNS (DNS-over-HTTPS, port 443). Stops your internet provider from seeing which sites you download from. Tiny latency cost on the first request to each hostname.": {
       "localizations": {
         "de": {
@@ -22495,6 +22937,40 @@
         }
       }
     },
+    "Suggested matches based on the app's macOS category. We don't have a specific catalog entry for these — these are the free-software champions in the same category.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorschläge basierend auf der macOS-Kategorie der App. Wir haben keinen spezifischen Katalog­eintrag für diese — es sind die Free-Software-Empfehlungen derselben Kategorie."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugerencias basadas en la categoría macOS de la app. No tenemos una entrada específica en el catálogo para estas — son los campeones de software libre de la misma categoría."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggestions basées sur la catégorie macOS de l'application. Nous n'avons pas d'entrée spécifique dans le catalogue pour celles-ci — ce sont les champions du logiciel libre de la même catégorie."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggerimenti basati sulla categoria macOS dell'app. Non abbiamo una voce specifica nel catalogo per queste — sono i campioni del software libero della stessa categoria."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugestões baseadas na categoria macOS da app. Não temos uma entrada específica no catálogo para estas — são os campeões de software livre da mesma categoria."
+          }
+        }
+      }
+    },
     "Summary": {
       "localizations": {
         "de": {
@@ -23005,6 +23481,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Os três documentos acima constituem o acordo completo entre ti e os mantenedores do Splynek. Se algo não for claro, ou se achares que uma cláusula precisa de mudar para o teu caso específico, contacta-nos:"
+          }
+        }
+      }
+    },
+    "These apps aren't in our catalog yet AND don't declare a category we cover. The fastest way to get coverage: open a one-click GitHub issue with the app's metadata pre-filled.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Apps sind noch nicht in unserem Katalog UND deklarieren keine Kategorie, die wir abdecken. Schnellster Weg zur Erfassung: ein One-Click-GitHub-Issue mit vorausgefüllten App-Metadaten öffnen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estas apps aún no están en nuestro catálogo Y no declaran una categoría que cubramos. La forma más rápida de obtener cobertura: abre un issue en GitHub con un clic, con los metadatos de la app pre-rellenados."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ces applications ne sont pas encore dans notre catalogue ET ne déclarent pas une catégorie que nous couvrons. Le moyen le plus rapide d'obtenir une couverture : ouvrir une issue GitHub en un clic, avec les métadonnées de l'application pré-remplies."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queste app non sono ancora nel nostro catalogo E non dichiarano una categoria che copriamo. Il modo più rapido per ottenere copertura: aprire una issue GitHub con un clic, con i metadati dell'app pre-compilati."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estas apps ainda não estão no nosso catálogo E não declaram uma categoria que cobrimos. A forma mais rápida de obter cobertura: abre um issue no GitHub com um clique, com os metadados da app pré-preenchidos."
           }
         }
       }
@@ -27146,6 +27656,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "yt-dlp detetado — usar para este URL"
+          }
+        }
+      }
+    },
+    "×\\(row.copies)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "×\\(row.copies)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "×\\(row.copies)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "×\\(row.copies)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "×\\(row.copies)"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "×\\(row.copies)"
           }
         }
       }

@@ -3601,6 +3601,139 @@ PRO_PLUS_IPHONE_STRINGS = {
         "de": "%@ im App Store öffnen",
         "it": "Apri %@ nell'App Store",
     },
+
+    # ── Sprint 6 round 3: SovereigntyView contribute flow ─────────
+    "Apps we don't know yet": {
+        "pt-PT": "Apps que ainda não conhecemos",
+        "es": "Apps que aún no conocemos",
+        "fr": "Applications que nous ne connaissons pas encore",
+        "de": "Apps, die wir noch nicht kennen",
+        "it": "App che ancora non conosciamo",
+    },
+    "Cask": {
+        "pt-PT": "Cask",
+        "es": "Cask",
+        "fr": "Cask",
+        "de": "Cask",
+        "it": "Cask",
+    },
+    "Contribute": {
+        "pt-PT": "Contribuir",
+        "es": "Contribuir",
+        "fr": "Contribuer",
+        "de": "Beitragen",
+        "it": "Contribuisci",
+    },
+    "Free champions, by category": {
+        "pt-PT": "Campeões grátis, por categoria",
+        "es": "Campeones gratuitos, por categoría",
+        "fr": "Champions gratuits, par catégorie",
+        "de": "Kostenlose Empfehlungen, nach Kategorie",
+        "it": "Campioni gratuiti, per categoria",
+    },
+    "Open a GitHub issue with this app's metadata pre-filled. Helps the next Splynek user too.": {
+        "pt-PT": "Abre um issue no GitHub com os metadados desta app pré-preenchidos. Também ajuda o próximo utilizador do Splynek.",
+        "es": "Abre un issue en GitHub con los metadatos de esta app pre-rellenados. También ayuda al próximo usuario de Splynek.",
+        "fr": "Ouvre une issue GitHub avec les métadonnées de cette application pré-remplies. Aide aussi le prochain utilisateur de Splynek.",
+        "de": "Öffnet ein GitHub-Issue mit vorausgefüllten Metadaten dieser App. Hilft auch dem nächsten Splynek-Benutzer.",
+        "it": "Apre una issue su GitHub con i metadati di questa app pre-compilati. Aiuta anche il prossimo utente di Splynek.",
+    },
+    "Splynek has Homebrew Cask metadata for this app — homepage + download URL pre-filled in the contribute issue.": {
+        "pt-PT": "O Splynek tem metadados do Homebrew Cask para esta app — homepage + URL de download pré-preenchidos no issue de contribuição.",
+        "es": "Splynek tiene metadatos de Homebrew Cask para esta app — homepage + URL de descarga pre-rellenados en el issue de contribución.",
+        "fr": "Splynek dispose des métadonnées Homebrew Cask de cette application — page d'accueil + URL de téléchargement pré-remplies dans l'issue de contribution.",
+        "de": "Splynek hat Homebrew-Cask-Metadaten für diese App — Homepage + Download-URL vorausgefüllt im Beitragen-Issue.",
+        "it": "Splynek ha metadati Homebrew Cask per questa app — homepage + URL di download pre-compilati nella issue di contribuzione.",
+    },
+    "Suggested matches based on the app's macOS category. We don't have a specific catalog entry for these — these are the free-software champions in the same category.": {
+        "pt-PT": "Sugestões baseadas na categoria macOS da app. Não temos uma entrada específica no catálogo para estas — são os campeões de software livre da mesma categoria.",
+        "es": "Sugerencias basadas en la categoría macOS de la app. No tenemos una entrada específica en el catálogo para estas — son los campeones de software libre de la misma categoría.",
+        "fr": "Suggestions basées sur la catégorie macOS de l'application. Nous n'avons pas d'entrée spécifique dans le catalogue pour celles-ci — ce sont les champions du logiciel libre de la même catégorie.",
+        "de": "Vorschläge basierend auf der macOS-Kategorie der App. Wir haben keinen spezifischen Katalog­eintrag für diese — es sind die Free-Software-Empfehlungen derselben Kategorie.",
+        "it": "Suggerimenti basati sulla categoria macOS dell'app. Non abbiamo una voce specifica nel catalogo per queste — sono i campioni del software libero della stessa categoria.",
+    },
+    "These apps aren't in our catalog yet AND don't declare a category we cover. The fastest way to get coverage: open a one-click GitHub issue with the app's metadata pre-filled.": {
+        "pt-PT": "Estas apps ainda não estão no nosso catálogo E não declaram uma categoria que cobrimos. A forma mais rápida de obter cobertura: abre um issue no GitHub com um clique, com os metadados da app pré-preenchidos.",
+        "es": "Estas apps aún no están en nuestro catálogo Y no declaran una categoría que cubramos. La forma más rápida de obtener cobertura: abre un issue en GitHub con un clic, con los metadatos de la app pre-rellenados.",
+        "fr": "Ces applications ne sont pas encore dans notre catalogue ET ne déclarent pas une catégorie que nous couvrons. Le moyen le plus rapide d'obtenir une couverture : ouvrir une issue GitHub en un clic, avec les métadonnées de l'application pré-remplies.",
+        "de": "Diese Apps sind noch nicht in unserem Katalog UND deklarieren keine Kategorie, die wir abdecken. Schnellster Weg zur Erfassung: ein One-Click-GitHub-Issue mit vorausgefüllten App-Metadaten öffnen.",
+        "it": "Queste app non sono ancora nel nostro catalogo E non dichiarano una categoria che copriamo. Il modo più rapido per ottenere copertura: aprire una issue GitHub con un clic, con i metadati dell'app pre-compilati.",
+    },
+
+    # ── Sprint 6 round 3: AgentsView pairing/dashboard ────────────
+    "Pair Splynek Companion (iPhone)": {
+        "pt-PT": "Emparelhar Splynek Companion (iPhone)",
+        "es": "Emparejar Splynek Companion (iPhone)",
+        "fr": "Appairer Splynek Companion (iPhone)",
+        "de": "Splynek Companion (iPhone) koppeln",
+        "it": "Abbina Splynek Companion (iPhone)",
+    },
+    "Open Splynek Companion on your iPhone, tap +, then Scan QR. Pairing is instant — no token paste.": {
+        "pt-PT": "Abre o Splynek Companion no iPhone, toca em +, depois Ler QR. O emparelhamento é instantâneo — sem colar token.",
+        "es": "Abre Splynek Companion en tu iPhone, toca +, luego Escanear QR. El emparejamiento es instantáneo — sin pegar token.",
+        "fr": "Ouvre Splynek Companion sur ton iPhone, touche +, puis Scanner QR. L'appairage est instantané — pas de jeton à coller.",
+        "de": "Splynek Companion auf dem iPhone öffnen, auf + tippen, dann QR scannen. Kopplung ist sofort — kein Token einzufügen.",
+        "it": "Apri Splynek Companion sul tuo iPhone, tocca +, poi Scansiona QR. L'abbinamento è immediato — niente token da incollare.",
+    },
+    "LAN sharing is disabled (Privacy mode → Loopback only). Disable Loopback-only above to pair an iPhone.": {
+        "pt-PT": "A partilha LAN está desactivada (Modo de privacidade → Apenas loopback). Desactiva o Apenas-loopback acima para emparelhar um iPhone.",
+        "es": "El uso compartido en LAN está desactivado (Modo de privacidad → Solo loopback). Desactiva Solo-loopback arriba para emparejar un iPhone.",
+        "fr": "Le partage LAN est désactivé (Mode confidentialité → Loopback uniquement). Désactive Loopback uniquement ci-dessus pour appairer un iPhone.",
+        "de": "LAN-Freigabe ist deaktiviert (Datenschutzmodus → Nur Loopback). Deaktivieren Sie oben Nur-Loopback, um ein iPhone zu koppeln.",
+        "it": "La condivisione LAN è disattivata (Modalità privacy → Solo loopback). Disattiva Solo-loopback sopra per abbinare un iPhone.",
+    },
+
+    # ── Sprint 6 round 3: literal-form interpolations the audit
+    # tracks separately from the %@ / %lld converted forms.  Apple's
+    # SwiftUI auto-localization stores both shapes; the audit looks
+    # for the literal Swift form, so both need entries.
+
+    "Higher than \\(p)% of your installed apps": {
+        "pt-PT": "Superior a \\(p)% das tuas apps instaladas",
+        "es": "Superior al \\(p)% de tus apps instaladas",
+        "fr": "Supérieur à \\(p)% de vos applications installées",
+        "de": "Höher als \\(p)% Ihrer installierten Apps",
+        "it": "Superiore al \\(p)% delle tue app installate",
+    },
+    "+\\(apps.count - 10) more": {
+        "pt-PT": "+\\(apps.count - 10) mais",
+        "es": "+\\(apps.count - 10) más",
+        "fr": "+\\(apps.count - 10) de plus",
+        "de": "+\\(apps.count - 10) weitere",
+        "it": "+\\(apps.count - 10) altri",
+    },
+    "Distribution: \\(kind.displayLabel)": {
+        "pt-PT": "Distribuição: \\(kind.displayLabel)",
+        "es": "Distribución: \\(kind.displayLabel)",
+        "fr": "Distribution : \\(kind.displayLabel)",
+        "de": "Vertrieb: \\(kind.displayLabel)",
+        "it": "Distribuzione: \\(kind.displayLabel)",
+    },
+    "×\\(row.copies)": {
+        "pt-PT": "×\\(row.copies)",
+        "es": "×\\(row.copies)",
+        "fr": "×\\(row.copies)",
+        "de": "×\\(row.copies)",
+        "it": "×\\(row.copies)",
+    },
+
+    # ── Sprint 6 round 3: SettingsView Sprint-4 long copy that
+    # the audit caught with literal Swift-interpolation forms.
+
+    "Cross-cutting preferences — license, browser integrations, local AI, and background behaviour. Feature-specific knobs live next to the features they affect. Nothing here phones home.": {
+        "pt-PT": "Preferências transversais — licença, integrações de browser, IA local e comportamento de background. As opções específicas de cada funcionalidade vivem junto da funcionalidade que controlam. Nada aqui contacta servidores.",
+        "es": "Preferencias transversales — licencia, integraciones de navegador, IA local y comportamiento en segundo plano. Las opciones específicas de cada función viven junto a la función que controlan. Nada aquí contacta con servidores.",
+        "fr": "Préférences transversales — licence, intégrations de navigateur, IA locale et comportement en arrière-plan. Les réglages spécifiques à une fonctionnalité vivent à côté de la fonctionnalité concernée. Rien ici ne contacte de serveur.",
+        "de": "Übergreifende Einstellungen — Lizenz, Browser-Integrationen, lokale KI und Hintergrund­verhalten. Funktions­spezifische Knöpfe liegen neben der jeweiligen Funktion. Nichts davon ruft nach Hause.",
+        "it": "Preferenze trasversali — licenza, integrazioni del browser, IA locale e comportamento in background. Le opzioni specifiche di ogni funzione vivono accanto alla funzione che controllano. Nulla qui contatta server.",
+    },
+    "Persistent tokens for external scripting.  Each token has a label, a scope, and shows up in Splynek's request logs by name. Read-only tokens can hit GET endpoints (jobs, summaries, history); read+write tokens can also queue/cancel/pause downloads.": {
+        "pt-PT": "Tokens persistentes para scripting externo.  Cada token tem um nome, um âmbito e aparece nos logs de pedidos do Splynek pelo nome. Tokens só-leitura podem aceder a endpoints GET (jobs, sumários, histórico); tokens leitura+escrita também podem enfileirar/cancelar/pausar transferências.",
+        "es": "Tokens persistentes para scripting externo.  Cada token tiene una etiqueta, un ámbito y aparece en los logs de solicitudes de Splynek por su nombre. Los tokens de solo lectura pueden acceder a endpoints GET (jobs, resúmenes, historial); los tokens lectura+escritura también pueden encolar/cancelar/pausar descargas.",
+        "fr": "Jetons persistants pour le scripting externe.  Chaque jeton a un libellé, une portée et apparaît dans les journaux de requêtes Splynek par son nom. Les jetons en lecture seule peuvent atteindre les endpoints GET (jobs, résumés, historique) ; les jetons lecture+écriture peuvent également mettre en file d'attente/annuler/mettre en pause des téléchargements.",
+        "de": "Persistente Tokens für externes Scripting.  Jedes Token hat eine Bezeichnung, einen Geltungsbereich und erscheint in Splyneks Anfrage-Protokollen mit Namen. Schreibgeschützte Tokens erreichen GET-Endpoints (Jobs, Zusammen­fassungen, Verlauf); Lese+Schreib-Tokens können auch Downloads in die Warte­schlange stellen, abbrechen oder pausieren.",
+        "it": "Token persistenti per scripting esterno.  Ogni token ha un'etichetta, un ambito e appare nei log delle richieste di Splynek con il suo nome. I token in sola lettura possono raggiungere gli endpoint GET (job, riepiloghi, cronologia); i token lettura+scrittura possono anche accodare/annullare/mettere in pausa i download.",
+    },
 }
 
 
