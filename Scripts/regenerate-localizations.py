@@ -3211,6 +3211,205 @@ NEW_V16_STRINGS = {
 }
 
 
+# Sprint 1-4 PRO-PLUS-IPHONE strings (2026-05-09 → 2026-05-10).
+# Trust Watcher UI + Migrate Wizard + Sovereignty review banner +
+# Concierge sequence preview + engagement viewer + Trust+ upsell.
+# Same dict shape as NEW_V16_STRINGS — applied identically by main().
+PRO_PLUS_IPHONE_STRINGS = {
+    # ── Trust Watcher card (TrustView) ───────────────────────────
+    "Trust Watcher": {
+        "pt-PT": "Vigia de Confiança",
+        "es": "Vigía de confianza",
+        "fr": "Sentinelle de confiance",
+        "de": "Vertrauenswächter",
+        "it": "Sentinella di fiducia",
+    },
+    "Run now": {
+        "pt-PT": "Executar agora",
+        "es": "Ejecutar ahora",
+        "fr": "Exécuter maintenant",
+        "de": "Jetzt ausführen",
+        "it": "Esegui ora",
+    },
+    "Dismiss": {
+        "pt-PT": "Dispensar",
+        "es": "Descartar",
+        "fr": "Ignorer",
+        "de": "Verwerfen",
+        "it": "Ignora",
+    },
+    "Clear all": {
+        "pt-PT": "Limpar tudo",
+        "es": "Limpiar todo",
+        "fr": "Tout effacer",
+        "de": "Alle löschen",
+        "it": "Cancella tutto",
+    },
+    "View page": {
+        "pt-PT": "Ver página",
+        "es": "Ver página",
+        "fr": "Voir la page",
+        "de": "Seite anzeigen",
+        "it": "Mostra pagina",
+    },
+    "Daily diff of Privacy Policies + ToS for popular apps. Splynek hashes the public policy page; when the hash changes you'll see the alert here. Each alert links to the live page so you can read what changed.": {
+        "pt-PT": "Diferença diária de Políticas de Privacidade + Termos de Serviço para apps populares. O Splynek calcula o hash da página pública; quando o hash muda, vês o alerta aqui. Cada alerta tem ligação para a página atual para leres o que mudou.",
+        "es": "Diferencia diaria de políticas de privacidad y términos de servicio de apps populares. Splynek calcula el hash de la página pública; cuando el hash cambia, ves la alerta aquí. Cada alerta enlaza a la página en directo para leer qué cambió.",
+        "fr": "Diff quotidien des politiques de confidentialité + CGU des applications populaires. Splynek hache la page publique ; quand le hash change, vous voyez l'alerte ici. Chaque alerte renvoie à la page en direct pour lire ce qui a changé.",
+        "de": "Täglicher Vergleich von Datenschutzerklärungen + AGB beliebter Apps. Splynek hashed die öffentliche Seite; wenn sich der Hash ändert, sehen Sie die Warnung hier. Jede Warnung verlinkt auf die aktuelle Seite, damit Sie nachlesen können, was sich geändert hat.",
+        "it": "Diff quotidiano di informative sulla privacy + termini di servizio di app popolari. Splynek calcola l'hash della pagina pubblica; quando l'hash cambia, vedi l'avviso qui. Ogni avviso rimanda alla pagina dal vivo per leggere cosa è cambiato.",
+    },
+    "Get notified when an app you have installed materially changes its Privacy Policy or Terms of Service. Daily check, fully local — we just hash the public policy page and tell you when the hash changes. Splynek Pro.": {
+        "pt-PT": "Recebe um aviso quando uma app que tens instalada altera materialmente a Política de Privacidade ou Termos de Serviço. Verificação diária, totalmente local — só calculamos o hash da página pública e avisamos quando o hash muda. Splynek Pro.",
+        "es": "Recibe un aviso cuando una app instalada cambia materialmente su política de privacidad o términos de servicio. Comprobación diaria, totalmente local — solo calculamos el hash de la página pública y te avisamos cuando cambia. Splynek Pro.",
+        "fr": "Soyez averti quand une application installée modifie matériellement sa politique de confidentialité ou ses CGU. Vérification quotidienne, 100 % locale — nous hashons simplement la page publique et vous prévenons quand le hash change. Splynek Pro.",
+        "de": "Lassen Sie sich benachrichtigen, wenn eine installierte App ihre Datenschutzerklärung oder AGB wesentlich ändert. Tägliche Prüfung, vollständig lokal — wir hashen einfach die öffentliche Seite und warnen Sie, wenn sich der Hash ändert. Splynek Pro.",
+        "it": "Ricevi una notifica quando un'app installata modifica in modo sostanziale la propria informativa sulla privacy o i termini di servizio. Controllo quotidiano, completamente locale — calcoliamo l'hash della pagina pubblica e ti avvisiamo quando cambia. Splynek Pro.",
+    },
+
+    # ── Migrate Wizard (SovereigntyView + WizardView) ─────────────
+    "Run with confirmation": {
+        "pt-PT": "Executar com confirmação",
+        "es": "Ejecutar con confirmación",
+        "fr": "Exécuter avec confirmation",
+        "de": "Mit Bestätigung ausführen",
+        "it": "Esegui con conferma",
+    },
+    "Run all (with confirmations)": {
+        "pt-PT": "Executar tudo (com confirmações)",
+        "es": "Ejecutar todo (con confirmaciones)",
+        "fr": "Tout exécuter (avec confirmations)",
+        "de": "Alle ausführen (mit Bestätigungen)",
+        "it": "Esegui tutto (con conferme)",
+    },
+    "Confirm + run": {
+        "pt-PT": "Confirmar + executar",
+        "es": "Confirmar y ejecutar",
+        "fr": "Confirmer + exécuter",
+        "de": "Bestätigen und ausführen",
+        "it": "Conferma + esegui",
+    },
+    "CHANGES STATE": {
+        "pt-PT": "ALTERA ESTADO",
+        "es": "CAMBIA ESTADO",
+        "fr": "CHANGE L'ÉTAT",
+        "de": "ÄNDERT ZUSTAND",
+        "it": "MODIFICA STATO",
+    },
+    "Migrate (Pro)": {
+        "pt-PT": "Migrar (Pro)",
+        "es": "Migrar (Pro)",
+        "fr": "Migrer (Pro)",
+        "de": "Migrieren (Pro)",
+        "it": "Migra (Pro)",
+    },
+    "Splynek Pro unlocks the guided Migrate Wizard — walk through a swap one confirmation at a time.": {
+        "pt-PT": "O Splynek Pro desbloqueia o Assistente de Migração guiado — segue uma substituição uma confirmação de cada vez.",
+        "es": "Splynek Pro desbloquea el Asistente de migración guiado — completa un cambio una confirmación a la vez.",
+        "fr": "Splynek Pro débloque l'Assistant de migration guidé — effectuez un échange une confirmation à la fois.",
+        "de": "Splynek Pro schaltet den geführten Migrations­assistenten frei — führen Sie einen Wechsel Schritt für Schritt mit Bestätigung durch.",
+        "it": "Splynek Pro sblocca la procedura guidata di migrazione — affronta uno scambio una conferma alla volta.",
+    },
+
+    # ── Sovereignty review banner ─────────────────────────────────
+    "Still on your migration list": {
+        "pt-PT": "Ainda na tua lista de migração",
+        "es": "Aún en tu lista de migración",
+        "fr": "Toujours sur ta liste de migration",
+        "de": "Noch auf Ihrer Migrationsliste",
+        "it": "Ancora nella tua lista di migrazione",
+    },
+    "I'm done; forget this": {
+        "pt-PT": "Terminei; esquece isto",
+        "es": "Listo; olvídalo",
+        "fr": "C'est fait, oublie cela",
+        "de": "Fertig; vergiss es",
+        "it": "Fatto; dimentica questo",
+    },
+
+    # ── Concierge sequence preview ────────────────────────────────
+    "Concierge proposal": {
+        "pt-PT": "Proposta do Concierge",
+        "es": "Propuesta del Concierge",
+        "fr": "Proposition du Concierge",
+        "de": "Concierge-Vorschlag",
+        "it": "Proposta del Concierge",
+    },
+    "Run sequence": {
+        "pt-PT": "Executar sequência",
+        "es": "Ejecutar secuencia",
+        "fr": "Exécuter la séquence",
+        "de": "Sequenz ausführen",
+        "it": "Esegui sequenza",
+    },
+
+    # ── Engagement viewer + Trust+ upsell (Sprint 4) ──────────────
+    "Your engagement (read-only)": {
+        "pt-PT": "A tua utilização (só leitura)",
+        "es": "Tu actividad (solo lectura)",
+        "fr": "Votre engagement (lecture seule)",
+        "de": "Ihre Nutzung (schreibgeschützt)",
+        "it": "Il tuo coinvolgimento (sola lettura)",
+    },
+    "LOCAL": {
+        "pt-PT": "LOCAL",
+        "es": "LOCAL",
+        "fr": "LOCAL",
+        "de": "LOKAL",
+        "it": "LOCALE",
+    },
+    "PREVIEW": {
+        "pt-PT": "PRÉ-VISUALIZAÇÃO",
+        "es": "VISTA PREVIA",
+        "fr": "APERÇU",
+        "de": "VORSCHAU",
+        "it": "ANTEPRIMA",
+    },
+    "Splynek Trust+": {
+        "pt-PT": "Splynek Trust+",
+        "es": "Splynek Trust+",
+        "fr": "Splynek Trust+",
+        "de": "Splynek Trust+",
+        "it": "Splynek Trust+",
+    },
+    "I'd be interested": {
+        "pt-PT": "Tenho interesse",
+        "es": "Me interesa",
+        "fr": "Cela m'intéresserait",
+        "de": "Hätte Interesse",
+        "it": "Mi interessa",
+    },
+    "Not interested": {
+        "pt-PT": "Sem interesse",
+        "es": "No me interesa",
+        "fr": "Pas intéressé",
+        "de": "Kein Interesse",
+        "it": "Non mi interessa",
+    },
+    "Show JSON file": {
+        "pt-PT": "Mostrar ficheiro JSON",
+        "es": "Mostrar archivo JSON",
+        "fr": "Afficher le fichier JSON",
+        "de": "JSON-Datei anzeigen",
+        "it": "Mostra file JSON",
+    },
+    "WATCHING %lld": {
+        "pt-PT": "A VIGIAR %lld",
+        "es": "VIGILANDO %lld",
+        "fr": "SURVEILLE %lld",
+        "de": "ÜBERWACHT %lld",
+        "it": "MONITORAGGIO %lld",
+    },
+    "%lld NEW": {
+        "pt-PT": "%lld NOVOS",
+        "es": "%lld NUEVOS",
+        "fr": "%lld NOUVEAU",
+        "de": "%lld NEU",
+        "it": "%lld NUOVI",
+    },
+}
+
+
 def main():
     # Load existing catalog (preserves the de/es/fr/it work already done
     # on the original 56 strings).
@@ -3231,6 +3430,19 @@ def main():
 
     # 2. Add new v1.6 strings with all 5 locales.
     for key, locales in NEW_V16_STRINGS.items():
+        if key not in catalog["strings"]:
+            catalog["strings"][key] = {"localizations": {}}
+        loc = catalog["strings"][key].setdefault("localizations", {})
+        for locale, value in locales.items():
+            loc[locale] = {
+                "stringUnit": {"state": "translated", "value": value}
+            }
+
+    # 3. Add Sprint 1-4 PRO-PLUS-IPHONE strings.  Same shape +
+    # propagation rules — added 2026-05-10 to cover Trust Watcher,
+    # Migrate Wizard, Sovereignty review banner, Concierge
+    # sequence preview, engagement viewer + Trust+ upsell.
+    for key, locales in PRO_PLUS_IPHONE_STRINGS.items():
         if key not in catalog["strings"]:
             catalog["strings"][key] = {"localizations": {}}
         loc = catalog["strings"][key].setdefault("localizations", {})
