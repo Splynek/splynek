@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+#
+# splynek — ergonomic CLI for Splynek's API-token endpoints.
+#
+# Sprint 6 PRO-PLUS-IPHONE (2026-05-10).  Same API surface the
+# Raycast extension uses; this is the curl + jq wrapper for shell
+# pipelines, cron jobs, Hammerspoon configs, etc.
+#
+# Required env:
+#   SPLYNEK_HOST   — e.g. "192.168.1.42" or "mac.local"
+#   SPLYNEK_PORT   — e.g. "55432" (find in Mac's Web dashboard QR)
+#   SPLYNEK_TOKEN  — API token minted in Mac's Settings → API tokens
+#
+# Subcommands:
+#   queue <url>       — queue a URL for download
+#   download <url>    — start downloading a URL immediately
+#   jobs              — list active downloads (pretty)
+#   jobs-raw          — same, raw JSON
+#   pause-all         — pause every running download
+#   resume-all        — resume every paused download
+#   sovereignty       — Sovereignty score + top concerns
+#   trust             — Trust summary
+#   trust-watcher     — Trust Watcher state (Pro-only)
+#   history           — recent finished downloads
+#   help              — show this help
+
+set -euo pipefail
+
+# ─── Config ─────────────────────────────────────────────────────
+
+cmd="${1:-help}"
+
+if [[ "$cmd" == "help" || "$cmd" == "-h" || "$cmd" == "--help" ]]; then
+    sed -n '/^# splynek/,/^# Subcommands:/p; /^# Subcommands:/,/^$/p' "$0" \
+        | sed 's/^# //; s/^#//'
+    exit 0
+fi
+
+# Validate config now so subcommands fail with a clear message.
+# Note: bash 3.2 (macOS default) has a parser bug with apostrophes
+# inside ${VAR:?...} expansions, so error messages stay
+# apostrophe-free.  See Extensions/CLI/README.md for full setup.
+if [[ -z "${SPLYNEK_HOST:-}" ]]; then
+    echo "splynek: SPLYNEK_HOST is not set. See Extensions/CLI/README.md." >&2
+    exit 65
+fi
+if [[ -z "${SPLYNEK_PORT:-}" ]]; then
+    echo "splynek: SPLYNEK_PORT is not set." >&2
+    exit 65
+fi
+if [[ -z "${SPLYNEK_TOKEN:-}" ]]; then
+    echo "splynek: SPLYNEK_TOKEN is not set. Mint one in Splynek (Mac) at Settings then API tokens." >&2
+    exit 65
+fi
+
+base="http://${SPLYNEK_HOST}:${SPLYNEK_PORT}"
+
+# ─── Helpers ────────────────────────────────────────────────────
+
+api_get() {
+    local path="$1"
+    curl -fsS "${base}${path}?t=${SPLYNEK_TOKEN}"
+}
+
+api_post() {
+    local path="$1"
+    local body="${2:-}"
+    if [[ -n "$body" ]]; then
+        curl -fsS -X POST -H "Content-Type: application/json" \
+            -d "$body" "${base}${path}?t=${SPLYNEK_TOKEN}"
+    else
+        curl -fsS -X POST "${base}${path}?t=${SPLYNEK_TOKEN}"
+    fi
+}
+
+require_jq() {
+    if ! command -v jq >/dev/null 2>&1; then
+        echo "splynek: 'jq' is required for pretty output. Install via:" >&2
+        echo "  brew install jq" >&2
+        echo "Or use the *-raw subcommands for plain JSON." >&2
+        exit 2
+    fi
+}
+
+# ─── Subcommands ────────────────────────────────────────────────
+
+case "$cmd" in
+    queue|download)
+        url="${2:?Usage: splynek $cmd <url>}"
+        api_post "/splynek/v1/api/${cmd}" "{\"url\":\"${url}\"}" >/dev/null
+        echo "splynek: $cmd  ✓"
+        ;;
+
+    jobs)
+        require_jq
+        api_get "/splynek/v1/api/jobs" \
+            | jq -r '.[] | "\(.lifecycle | ascii_upcase[0:7] | (. + (" " * (7 - length))))  \(if .total > 0 then ((.downloaded * 100 / .total) | floor | tostring + "%") else "  ?%" end)  \(.filename // .url)"'
+        ;;
+
+    jobs-raw)
+        api_get "/splynek/v1/api/jobs"
+        echo
+        ;;
+
+    pause-all|resume-all)
+        api_post "/splynek/v1/api/${cmd}" >/dev/null
+        echo "splynek: $cmd  ✓"
+        ;;
+
+    sovereignty)
+        require_jq
+        api_get "/splynek/v1/api/sovereignty/summary" | jq -r '
+            "Sovereignty score: \(.score) / 100",
+            "\(.appsWithAlternatives) of \(.totalApps) installed apps have an EU/OSS alternative.",
+            "",
+            "Top concerns:",
+            (.topConcerns | map("  - \(.displayName)\(if .firstAlternative then " → \(.firstAlternative)" else "" end)") | .[])'
+        ;;
+
+    trust)
+        require_jq
+        api_get "/splynek/v1/api/trust/summary" | jq -r '
+            "Trust average: \(.averageScore) / 100  (\(.highRiskCount) high-risk of \(.totalAppsWithProfile))"'
+        ;;
+
+    trust-watcher)
+        require_jq
+        # Pro-only on the Mac side; surface clean message for free.
+        if ! out=$(api_get "/splynek/v1/api/trust-watcher/summary" 2>&1); then
+            echo "Trust Watcher endpoint returned an error (typically 404 on free-tier Macs)."
+            exit 1
+        fi
+        echo "$out" | jq -r '
+            "Watching: \(.watchingCount) apps",
+            "Pending alerts: \(.pendingAlertCount)",
+            (if .lastSweepAt then "Last sweep: \(.lastSweepAt)" else "First sweep pending" end)'
+        ;;
+
+    history)
+        require_jq
+        api_get "/splynek/v1/api/history/summary" | jq -r '
+            "Total: \(.totalEntries) entries, \(.totalBytes) bytes",
+            "",
+            "Recent:",
+            (.recent[:10] | map("  \(.filename) — \(.bytes) bytes — \(.finishedAt)") | .[])'
+        ;;
+
+    *)
+        echo "splynek: unknown command '$cmd'.  Try 'splynek help'." >&2
+        exit 64
+        ;;
+esac
