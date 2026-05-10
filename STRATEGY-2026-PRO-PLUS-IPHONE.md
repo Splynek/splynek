@@ -249,15 +249,42 @@ A maior parte das funcionalidades Pro hoje **não estão acessíveis no iPhone**
   4 part-2 implementations); +30 tests across part-1 + part-2
   (786 → 797 → 797 — runner counts in the latter).
 
-  ### Sprint 3 (next session, if executed)
+  ### Sprint 3 — SHIPPED 2026-05-10 evening (4 commits)
 
-  1. End-to-end smoke test of all four Sprint 2 surfaces
-  2. splynek-pro: ConciergeView wiring that emits a sequence
+  Items 3-6 of the original Sprint 3 backlog all closed:
+  - **Watch complication** (`85d6e4f`) — three accessory
+    families backed by the same paired-Mac summary endpoints
+    the iOS Widget uses.  New SplynekWatchComplications target.
+  - **Sovereignty review banner** (`85d6e4f`) — DisclosureGroup
+    surfacing Migrate-marked apps >7 days old.
+  - **Migrate review digest in Concierge** (`529ea18`) — 9th
+    tool in ConciergeToolRegistry; handler returns `.text` card
+    with count + names + stale-week nudge.
+  - **Pricing telemetry foundation** (`ec1e9d9`) — pure-local
+    engagement counters, 9 per-surface ints, `EngagementGate
+    .shouldOfferTrustPlus` pure decision function.  Privacy
+    posture explicitly stated: nothing leaves the device.
+
+  Sprint 3 numbers: 4 commits + docs; 797 → 808 tests (+11);
+  ~1,000 lines new code.
+
+  Items 1-2 of the original Sprint 3 backlog are deferred to
+  Sprint 4: end-to-end smoke test (manual) and splynek-pro
+  ConciergeView wiring (private repo, requires LLM dispatch).
+
+  ### Sprint 4 (next session, if executed)
+
+  1. End-to-end smoke test of every Pro surface from Sprints
+     1-3 — manual walk-through of Trust Watcher, Migrate
+     Wizard, review banner, iOS Companion Insights tab,
+     iOS Widget, geo-fence, Watch app
+  2. Trust+ upsell card UI shown when `EngagementGate
+     .shouldOfferTrustPlus(counters:)` fires (Sprint 3 built
+     the foundation; Sprint 4 builds the UI)
+  3. User-facing engagement viewer ("you've checked Trust
+     Watcher 47 times this month") — privacy through
+     transparency
+  4. splynek-pro: ConciergeView wiring that emits a sequence
      from a user prompt (LLM call lives in pro)
-  3. Watch complication for the watch face
-  4. Sovereignty "still on your list" banner driven by
-     `SovereigntyMigrateReviewList.entriesOlderThan(days:)`
-  5. Migrate review list digest in Concierge ("3 apps you
-     marked are still installed")
-  6. Pricing telemetry → Trust+ subscription evaluation if
-     engagement justifies
+  5. Apple Developer Program: provision Watch + Watch
+     Complications bundle IDs (maintainer step)

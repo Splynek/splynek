@@ -3004,6 +3004,167 @@ Maintainer steps still required (out of band; not Claude-fixable):
   (so xcodebuild SplynekWatch can verify the target)
 - Apple Developer Program: provision the watch app's bundle ID
 
+### 2026-05-10 evening — PRO-PLUS-IPHONE Sprint 3 (4 commits)
+
+After Sprint 2 part-2 (`641dc70` → `9e1db78` + docs `6b4ca62`),
+user said "continua" — execute Sprint 3 too.
+
+#### Four commits (chronological)
+
+| #   | Commit    | What                                                              |
+|-----|-----------|-------------------------------------------------------------------|
+| 1   | `85d6e4f` | Sovereignty review banner + Watch complication                    |
+| 2   | `529ea18` | Concierge `migrate_review_digest` tool + handler                  |
+| 3   | `ec1e9d9` | Pricing telemetry foundation (engagement counters + Trust+ gate)  |
+| 4   | this      | Docs: SESSION-LOG + HANDOFF + STRATEGY                            |
+
+After all four: 808 tests pass (was 797 before Sprint 3; +11
+across Sprint 3), Mac `swift build` clean, iOS `xcodebuild
+SplynekCompanion BUILD SUCCEEDED`, all pushed to
+`origin/rollup/2026-05-08`.
+
+#### What lit up
+
+**Sovereignty review banner** — closes the loop the Migrate
+Wizard's mark-for-review step opened.  DisclosureGroup at the top
+of Sovereignty's matched-rows surfaces when entries are >7 days
+old: per-row "Open <alt>" + "I'm done; forget this".  Without
+this banner the review list was a write-only sink.
+
+**Watch complication** — three accessory families (circular,
+rectangular, inline) backed by the same paired-Mac summary
+endpoints the iOS Widget uses.  30-min refresh budget.  New
+`SplynekWatchComplications` extension target in project.yml
+under the SplynekWatch scheme.  Compile-verify pending watchOS
+SDK install (maintainer step).
+
+**Concierge migrate_review_digest tool** — 9th tool in
+`ConciergeToolRegistry.allTools`.  Description includes the
+example phrases users actually type ("did I switch from Spotify
+yet?", "what's on my migration list?") so the LLM idiom-matches.
+Handler reads `SovereigntyMigrateReviewStore` (or test fixture)
+and returns a `.text` card with: count, names, stale-week nudge.
+Bumped the drift-guard test from 8 → 9 with a precise comment
+distinguishing the Concierge tool registry from the (separate)
+MCP tool registry.  The MAS-2.5.2 brief is unchanged.
+
+**Pricing telemetry foundation** — pure-local engagement
+counters drive a future Trust+ subscription gate.  9 counters
+across Trust Watcher + Migrate + iPhone surfaces, persisted to
+`~/Library/Application Support/Splynek/engagement.json` via the
+same lock-guarded JSON pattern as TrustWatchStore.
+`EngagementGate.shouldOfferTrustPlus(counters:)` is a pure
+function with a threshold of 20 Trust-Watcher engagement events
+(manualRuns + acks + pagesOpened).  Migrate counters
+deliberately don't count toward Trust+ gate — Trust+ is
+specifically about Trust Watcher value.
+
+#### Privacy posture explicitly stated
+
+The pricing telemetry commit's docstring is the strongest
+statement of privacy posture in the codebase:
+
+> Privacy posture: this file represents the entirety of
+> Splynek's "telemetry".  No data ever leaves the device — the
+> user can read the JSON directly + delete it at any time via
+> ~/Library/Application Support/Splynek/engagement.json.  We do
+> not aggregate, transmit, or report; nothing here drives a
+> server-side decision because there is no server.  The only
+> consumer is a future client-side gate that decides whether to
+> show a Trust+ upsell card.
+
+This codifies the difference between Splynek's "telemetry" and
+the industry's: ours is a private inspection log the **user**
+reads; the industry's is a private inspection log the **vendor**
+reads.
+
+#### Architectural choices that paid off
+
+1. **Persisted JSON pattern is now load-bearing for 4 stores.**
+   CellularBudget (the original) → TrustWatchStore →
+   SovereigntyMigrateReviewStore → EngagementStore.  Identical
+   shape: NSLock + atomic write + `_testOverrideURL`.  Minor
+   variations (alert-cap dedupe, sticky firstRecordedAt) sit
+   in the mutate closure, not in the store itself.
+
+2. **Pure decision functions everywhere.**  `EngagementGate
+   .shouldOfferTrustPlus` is a 5-line pure function that takes
+   a Codable struct and returns Bool.  Tested in isolation
+   without spinning up the whole VM.  Same pattern as
+   `GeoFencePolicy.action`, `ConciergeSequencePolicy.validate`,
+   `TrustWatcher.diff`.  When everything's pure, tests stay fast
+   and call-site bugs become impossible.
+
+3. **engagementStore is reachable from any view via vm.**  No
+   environment object, no separate ObservableObject — just a
+   property on SplynekViewModel.  Wiring sites (TrustView's
+   "View page" button, SovereigntyView's "Migrate" button)
+   read `vm.engagementStore.mutate { ... }` directly.  Avoids
+   the SwiftUI environment object propagation tax.
+
+#### Critical lessons
+
+- **Drift-guard tests are valuable when they fail.**  The
+  ConciergeToolRegistry-has-8-tools test went red the moment I
+  added the 9th tool.  That's the test working as designed: a
+  forced confrontation with "do you really mean to expand the
+  surface?".  Updated the count to 9 + clarified that the
+  guard is for the Concierge registry, not the (unrelated) MCP
+  registry's separate 8-tool count which the MAS-2.5.2 brief
+  audits.
+
+- **Engagement counters need a wiring discipline.**  Easy to
+  forget to bump a counter when adding a new feature; the
+  EngagementCounters struct's per-counter docstrings name the
+  EXACT call site that should bump them.  When a future PR adds
+  a new feature, search-and-find the matching counter or add a
+  new one.
+
+- **`defer { ... }` in a function with `return` cases needs to
+  capture the engagement-bump intentionally.**  In
+  SovereigntyMigrateRunner.run, the engagementStore?.mutate is
+  in a `defer` block so it bumps on every return path
+  (.completed, .skipped, .failed) without manual repetition at
+  each return site.  Idiomatic Swift.
+
+#### Numbers
+
+```
+Commits this sprint:    4
+Tests:                  797 → 808 (+11)
+New code (Mac):         ~720 lines (banner, complication,
+                        migrate digest, telemetry foundation)
+New code (iOS):         ~280 lines (watch complication target)
+project.yml:            +1 target (SplynekWatchComplications),
+                        +1 target in SplynekWatch scheme
+Net for the day arc:    18 commits across PRO-PLUS-IPHONE
+                        Sprints 1+2+3, ~7,500 lines new code
+```
+
+#### Where it stands at end of session
+
+`origin/rollup/2026-05-08` carries the entire PRO-PLUS-IPHONE
+strategy through Sprint 3.  Branch is now ~165 commits ahead
+of `origin/main`.
+
+**Sprint 4 (next session, if executed)**:
+1. End-to-end smoke test of all four Sprint 2 surfaces +
+   Sprint 3 banner/digest/complication
+2. Trust+ upsell card UI shown when `EngagementGate
+   .shouldOfferTrustPlus` fires
+3. User-facing engagement viewer ("you've checked Trust Watcher
+   47 times this month") — privacy through transparency
+4. Pricing decision based on aggregate of N user reports
+   (never automatic; always opt-in disclosure)
+5. splynek-pro: ConciergeView wiring that emits a sequence
+   from a user prompt
+
+Maintainer steps still required (out of band):
+- CloudKit Dashboard: add `SplynekTrustWatchAlert` record type
+- watchOS SDK install: Xcode → Settings → Components → watchOS
+- Apple Developer Program: provision watch app + watch
+  complications bundle IDs
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:
