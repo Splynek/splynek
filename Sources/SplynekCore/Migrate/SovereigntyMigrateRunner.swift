@@ -29,8 +29,16 @@ enum SovereigntyMigrateRunner {
     static func run(
         step: SovereigntyMigrateStep,
         plan: SovereigntyMigratePlan,
-        reviewStore: SovereigntyMigrateReviewStore = SovereigntyMigrateReviewStore()
+        reviewStore: SovereigntyMigrateReviewStore = SovereigntyMigrateReviewStore(),
+        engagementStore: EngagementStore? = EngagementStore()
     ) -> StepOutcome {
+        defer {
+            // Sprint 3 (2026-05-10): record engagement.  Even
+            // skipped/failed steps count as "user attempted a
+            // migration step" — the gate cares about effort, not
+            // outcome.  Pure local counter.
+            engagementStore?.mutate { $0.migrateStepsCompleted += 1 }
+        }
         switch step.action {
         case .openHomepage, .openAppStore, .openDataExport:
             guard let url = step.url else {
@@ -73,6 +81,10 @@ enum SovereigntyMigrateRunner {
                 markedAt: ISO8601DateFormatter.shared.string(from: Date())
             )
             reviewStore.mutate { $0.upsert(entry) }
+            // Sprint 3 (2026-05-10): a successful mark-for-review
+            // is a meaningful engagement event distinct from any
+            // step's bookkeeping.
+            engagementStore?.mutate { $0.migrateAppsMarkedTotal += 1 }
             return .completed
         }
     }

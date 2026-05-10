@@ -1123,6 +1123,14 @@ extension TrustView {
                 )
             )
         ) {
+            // Sprint 3 (2026-05-10): record the view as engagement
+            // — tracks "user looked at the watcher card" without
+            // any off-device telemetry.
+            Color.clear
+                .frame(width: 0, height: 0)
+                .onAppear {
+                    vm.engagementStore.mutate { $0.trustWatcherViews += 1 }
+                }
             VStack(alignment: .leading, spacing: 12) {
                 Text("Daily diff of Privacy Policies + ToS for popular apps. Splynek hashes the public policy page; when the hash changes you'll see the alert here. Each alert links to the live page so you can read what changed.")
                     .font(.callout)
@@ -1203,6 +1211,9 @@ extension TrustView {
                     .foregroundStyle(.secondary)
                 HStack(spacing: 8) {
                     Button {
+                        // Sprint 3 (2026-05-10): record engagement
+                        // before opening; pure local counter.
+                        vm.engagementStore.mutate { $0.trustWatcherPagesOpened += 1 }
                         NSWorkspace.shared.open(alert.target.url)
                     } label: {
                         Label("View page", systemImage: "safari")

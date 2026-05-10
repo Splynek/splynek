@@ -895,6 +895,8 @@ struct SovereigntyView: View {
                         if let plan = SovereigntyMigratePlanner.makePlan(
                             from: entry, alternative: alt
                         ) {
+                            // Sprint 3 (2026-05-10): record engagement.
+                            vm.engagementStore.mutate { $0.migrateWizardOpens += 1 }
                             migratePlanSheet = plan
                         }
                     } label: {

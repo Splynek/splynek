@@ -558,6 +558,9 @@ final class SplynekViewModel: ObservableObject {
     func runTrustWatcherNow() async -> [TrustWatchAlert] {
         let new = await trustWatcher.runOnce()
         await refreshTrustWatcher()
+        // Sprint 3 (2026-05-10): record engagement so the Trust+
+        // gate has signal.  Pure local; no telemetry leaves device.
+        engagementStore.mutate { $0.trustWatcherManualRuns += 1 }
         return new
     }
 
@@ -565,6 +568,12 @@ final class SplynekViewModel: ObservableObject {
     /// `license.isPro`; nil for free tier.  Initialised in
     /// `activateTrustWatcherIfPro()`.
     var trustWatchNotifier: TrustWatchCloudKitNotifier?
+
+    /// Sprint 3 (2026-05-10) — pure-local engagement counters.
+    /// Drives the future Trust+ subscription gate.  Same persisted
+    /// pattern as TrustWatchStore (JSON in Application Support,
+    /// lock-guarded).
+    let engagementStore = EngagementStore()
 
     /// Pull `trustWatchState` from the actor.  Called after sweeps,
     /// from the periodic timer, and after acknowledgements.
@@ -576,6 +585,7 @@ final class SplynekViewModel: ObservableObject {
 
     /// Acknowledge a single alert (UI swipe / dismiss button).
     func acknowledgeTrustAlert(_ alertID: String) {
+        engagementStore.mutate { $0.trustWatcherAcksHandled += 1 }
         Task { [weak self] in
             guard let self else { return }
             await self.trustWatcher.acknowledge(alertID: alertID)
@@ -585,6 +595,18 @@ final class SplynekViewModel: ObservableObject {
 
     /// Acknowledge every pending alert ("Clear all" button).
     func acknowledgeAllTrustAlerts() {
+        let pending = trustWatchState.pendingAlertCount
+        engagementStore.mutate {
+            // Count this as one *user-decision* event regardless
+            // of how many alerts were cleared — the user clicked
+            // one button, not N.  Otherwise high-volume sweeps
+            // would inflate engagement spuriously.
+            $0.trustWatcherAcksHandled += 1
+            // But if we cleared a non-trivial batch, log it as
+            // an additional bookkeeping cue: total alerts swept.
+            // (Not part of the gate — see EngagementGate.)
+            _ = pending  // currently informational only
+        }
         Task { [weak self] in
             guard let self else { return }
             await self.trustWatcher.acknowledgeAll()
@@ -1070,23 +1092,33 @@ final class SplynekViewModel: ObservableObject {
         fleet.onCancelAll = { [weak self] in self?.cancelAll() }
         // Sprint 1 PRO-PLUS-IPHONE: remote-control endpoints for the
         // iOS App Intents + Apple Watch + Pause/Resume quick actions.
-        fleet.onPauseAll = { [weak self] in self?.pauseAllRunning() }
-        fleet.onResumeAll = { [weak self] in self?.resumeAllPaused() }
+        fleet.onPauseAll = { [weak self] in
+            self?.engagementStore.mutate { $0.iphoneRemoteCommands += 1 }
+            self?.pauseAllRunning()
+        }
+        fleet.onResumeAll = { [weak self] in
+            self?.engagementStore.mutate { $0.iphoneRemoteCommands += 1 }
+            self?.resumeAllPaused()
+        }
         // Summary endpoints for Pro on iPhone (Sovereignty / Trust /
         // History on phone) + iOS Widget + future Watch complications.
         // Each closure async-builds a Codable payload; nil means "this
         // surface isn't ready yet" → endpoint returns 503/404.
         fleet.onSovereigntySummary = { [weak self] in
-            await self?.buildSovereigntySummary()
+            self?.engagementStore.mutate { $0.iphoneSummaryServes += 1 }
+            return await self?.buildSovereigntySummary()
         }
         fleet.onTrustSummary = { [weak self] in
-            await self?.buildTrustSummary()
+            self?.engagementStore.mutate { $0.iphoneSummaryServes += 1 }
+            return await self?.buildTrustSummary()
         }
         fleet.onTrustWatcherSummary = { [weak self] in
-            await self?.buildTrustWatcherSummary()
+            self?.engagementStore.mutate { $0.iphoneSummaryServes += 1 }
+            return await self?.buildTrustWatcherSummary()
         }
         fleet.onHistorySummary = { [weak self] in
-            await self?.buildHistorySummary()
+            self?.engagementStore.mutate { $0.iphoneSummaryServes += 1 }
+            return await self?.buildHistorySummary()
         }
         fleet.onWebIngest = { [weak self] action, raw in
             guard let self else { return }
