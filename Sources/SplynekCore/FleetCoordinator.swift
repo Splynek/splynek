@@ -636,7 +636,13 @@ public final class FleetCoordinator: ObservableObject {
         let txt: [String: String] = [
             "uuid":  deviceUUID,
             "name":  deviceName,
-            "ver":   "0.19",
+            // v2.0.1 fix (2026-05-10): version was hardcoded "0.19"
+            // since v0.19 era — caught during PRO-PLUS-IPHONE Sprint 8
+            // iPhone smoke test, where the Companion's Bonjour browser
+            // surfaced the Mac as "v0.19" while the actual Mac was
+            // running v2.0.0.  Now reads from SplynekVersion.current
+            // so it tracks every release automatically.
+            "ver":   SplynekVersion.current,
             // v1.9.5: swarm-protocol capability flag.  Peers see
             // `swarm=1` in our TXT and know they can poll
             // `/splynek/v1/swarm/list` for our active swarms.
