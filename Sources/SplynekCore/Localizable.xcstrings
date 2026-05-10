@@ -1196,6 +1196,40 @@
         }
       }
     },
+    "API tokens": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API-Tokens"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tokens de API"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetons d'API"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token API"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tokens de API"
+          }
+        }
+      }
+    },
     "AUTO-DETECTED": {
       "localizations": {
         "de": {
@@ -4915,6 +4949,40 @@
         }
       }
     },
+    "Copy": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar"
+          }
+        }
+      }
+    },
     "Copy URL": {
       "localizations": {
         "de": {
@@ -6243,6 +6311,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Concluído"
+          }
+        }
+      }
+    },
+    "Done.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erledigt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fatto."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Concluído."
           }
         }
       }
@@ -8499,6 +8601,40 @@
         }
       }
     },
+    "Failed — %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehlgeschlagen — %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falló — %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec — %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non riuscito — %@"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falhou — %@"
+          }
+        }
+      }
+    },
     "Faster": {
       "localizations": {
         "de": {
@@ -9522,6 +9658,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apenas risco alto"
+          }
+        }
+      }
+    },
+    "Higher than %lld%% of your installed apps": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Höher als %lld%% Ihrer installierten Apps"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superior al %lld%% de tus apps instaladas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supérieur à %lld%% de vos applications installées"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superiore al %lld%% delle tue app installate"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superior a %lld%% das tuas apps instaladas"
           }
         }
       }
@@ -11985,6 +12155,40 @@
         }
       }
     },
+    "Marked %@.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Markiert %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marcado %@."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marqué %@."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contrassegnato %@."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marcado %@."
+          }
+        }
+      }
+    },
     "Matching installed apps with the pricing catalog…": {
       "localizations": {
         "de": {
@@ -12121,6 +12325,40 @@
         }
       }
     },
+    "Migrate %1$@ → %2$@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ → %2$@ migrieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Migrar %1$@ → %2$@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Migrer %1$@ → %2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Migra %1$@ → %2$@"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Migrar %1$@ → %2$@"
+          }
+        }
+      }
+    },
     "Migrate (Pro)": {
       "localizations": {
         "de": {
@@ -12151,6 +12389,74 @@
           "stringUnit": {
             "state": "translated",
             "value": "Migrar (Pro)"
+          }
+        }
+      }
+    },
+    "Mint stable tokens for Raycast, Alfred, BetterTouchTool, or any shell script that wants to talk to Splynek across sessions. Two scopes (read-only / read+write); revoke any time.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erstellen Sie stabile Tokens für Raycast, Alfred, BetterTouchTool oder jedes Skript, das sitzungsübergreifend mit Splynek kommunizieren möchte. Zwei Bereiche (schreibgeschützt / lesen+schreiben); jederzeit widerrufbar."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea tokens estables para Raycast, Alfred, BetterTouchTool o cualquier script que necesite hablar con Splynek entre sesiones. Dos ámbitos (solo lectura / lectura+escritura); revoca cuando quieras."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Générez des jetons stables pour Raycast, Alfred, BetterTouchTool ou tout script souhaitant communiquer avec Splynek entre les sessions. Deux portées (lecture seule / lecture+écriture) ; révocables à tout moment."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea token stabili per Raycast, Alfred, BetterTouchTool o qualsiasi script che voglia comunicare con Splynek tra sessioni. Due ambiti (sola lettura / lettura+scrittura); revoca in qualsiasi momento."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cria tokens estáveis para Raycast, Alfred, BetterTouchTool ou qualquer script que queira falar com o Splynek entre sessões. Dois âmbitos (só leitura / leitura+escrita); revoga quando quiseres."
+          }
+        }
+      }
+    },
+    "Mint token": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token erstellen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crear token"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Générer un jeton"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea token"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Criar token"
           }
         }
       }
@@ -12734,6 +13040,40 @@
         }
       }
     },
+    "Never used": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nie verwendet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nunca usado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jamais utilisé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mai usato"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nunca usado"
+          }
+        }
+      }
+    },
     "Next opening %@.": {
       "localizations": {
         "de": {
@@ -12935,6 +13275,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sem cabeçalhos personalizados — o pedido vai usar as predefinições."
+          }
+        }
+      }
+    },
+    "No engagement recorded yet — try Trust Watcher's Run-now or open a Migrate wizard.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch keine Nutzung erfasst — probieren Sie Jetzt ausführen im Vertrauenswächter aus oder öffnen Sie einen Migrationsassistenten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay actividad registrada — prueba Ejecutar ahora del Vigía de confianza o abre un Asistente de migración."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun engagement enregistré pour l'instant — essayez Exécuter maintenant de la Sentinelle de confiance ou ouvrez un Assistant de migration."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna attività registrata finora — prova Esegui ora della Sentinella di fiducia o apri una procedura guidata di migrazione."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ainda não há utilização registada — experimenta o Executar agora do Vigia de Confiança ou abre um Assistente de Migração."
           }
         }
       }
@@ -13244,6 +13618,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sem preocupações de registo público para as tuas apps instaladas"
+          }
+        }
+      }
+    },
+    "No tokens minted yet.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch keine Tokens erstellt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no has creado ningún token."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun jeton créé pour l'instant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun token creato finora."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ainda não criaste nenhum token."
           }
         }
       }
@@ -14037,6 +14445,108 @@
         }
       }
     },
+    "Open %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ öffnen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri %@"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir %@"
+          }
+        }
+      }
+    },
+    "Open %@ in App Store": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ im App Store öffnen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir %@ en la App Store"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir %@ dans l'App Store"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri %@ nell'App Store"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir %@ na App Store"
+          }
+        }
+      }
+    },
+    "Open %@ in browser": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ im Browser öffnen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir %@ en el navegador"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir %@ dans le navigateur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri %@ nel browser"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir %@ no navegador"
+          }
+        }
+      }
+    },
     "Open %@ in your browser": {
       "localizations": {
         "de": {
@@ -14273,6 +14783,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abrir página"
+          }
+        }
+      }
+    },
+    "Open the engagement.json file in Finder so you can inspect or delete it directly.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet die engagement.json-Datei im Finder, damit Sie sie direkt ansehen oder löschen können."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre el archivo engagement.json en Finder para inspeccionarlo o eliminarlo directamente."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre le fichier engagement.json dans le Finder pour l'inspecter ou le supprimer directement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre il file engagement.json nel Finder per ispezionarlo o eliminarlo direttamente."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre o ficheiro engagement.json no Finder para poderes inspeccioná-lo ou apagá-lo directamente."
           }
         }
       }
@@ -16597,6 +17141,74 @@
         }
       }
     },
+    "Read + write": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lesen + schreiben"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lectura + escritura"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lecture + écriture"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lettura + scrittura"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leitura + escrita"
+          }
+        }
+      }
+    },
+    "Read-only": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibgeschützt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo lectura"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lecture seule"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sola lettura"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Só leitura"
+          }
+        }
+      }
+    },
     "Reads only the bundle list — never opens app contents": {
       "localizations": {
         "de": {
@@ -17174,6 +17786,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Remover da fila"
+          }
+        }
+      }
+    },
+    "Remove this app from your migration list. The original app stays installed; we just stop reminding.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entfernt diese App aus Ihrer Migrationsliste. Die Original-App bleibt installiert; wir hören nur auf, Sie zu erinnern."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quita esta app de tu lista de migración. La app original sigue instalada; solo dejamos de recordártelo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retire cette application de ta liste de migration. L'application originale reste installée ; nous arrêtons simplement les rappels."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi questa app dalla lista di migrazione. L'app originale resta installata; smettiamo solo di ricordartelo."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove esta app da tua lista de migração. A app original continua instalada; só deixamos de te lembrar."
           }
         }
       }
@@ -18024,6 +18670,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Revê, desmarca e enfileira o lote inteiro com um clique"
+          }
+        }
+      }
+    },
+    "Revoke": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widerrufen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revocar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Révoquer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revoca"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revogar"
           }
         }
       }
@@ -18983,6 +19663,40 @@
         }
       }
     },
+    "Score weights": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Score-Gewichtungen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pesos de la puntuación"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poids du score"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pesi del punteggio"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pesos da pontuação"
+          }
+        }
+      }
+    },
     "Search by app name": {
       "localizations": {
         "de": {
@@ -19870,6 +20584,40 @@
         }
       }
     },
+    "Show": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anzeigen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar"
+          }
+        }
+      }
+    },
     "Show JSON file": {
       "localizations": {
         "de": {
@@ -20071,6 +20819,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ignorar"
+          }
+        }
+      }
+    },
+    "Skipped — %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersprungen — %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omitido — %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignoré — %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saltato — %@"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignorado — %@"
           }
         }
       }
@@ -21027,6 +21809,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "O Splynek resolve nomes de servidor através do DNS encriptado da Cloudflare (DNS-over-HTTPS, porta 443). Impede que o teu fornecedor de internet veja de que sites transferes. Pequeno custo de latência no primeiro pedido a cada nome."
+          }
+        }
+      }
+    },
+    "Splynek tracks how often you use each Pro feature so a future Trust+ subscription pitch only appears for users who actually engage. The data never leaves your Mac. You're reading the same JSON Splynek reads.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek erfasst, wie oft Sie jede Pro-Funktion nutzen, damit ein zukünftiges Trust+-Abonnement­angebot nur Nutzern angezeigt wird, die sich tatsächlich engagieren. Die Daten verlassen niemals Ihren Mac. Sie lesen dasselbe JSON, das Splynek liest."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek registra cuántas veces usas cada función Pro para que una futura propuesta de suscripción Trust+ solo aparezca a usuarios que realmente la usan. Los datos nunca salen de tu Mac. Estás leyendo el mismo JSON que Splynek lee."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek suit la fréquence d'utilisation de chaque fonctionnalité Pro afin qu'une future proposition d'abonnement Trust+ n'apparaisse qu'aux utilisateurs réellement engagés. Les données ne quittent jamais votre Mac. Vous lisez le même JSON que Splynek."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek registra quanto spesso usi ogni funzione Pro così che una futura proposta di abbonamento Trust+ appaia solo agli utenti realmente attivi. I dati non lasciano mai il tuo Mac. Stai leggendo lo stesso JSON che Splynek legge."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek regista a frequência com que usas cada funcionalidade Pro para que uma futura proposta de subscrição Trust+ só apareça a utilizadores que realmente usam. Os dados nunca saem do teu Mac. Estás a ler o mesmo JSON que o Splynek lê."
           }
         }
       }
@@ -22364,6 +23180,40 @@
         }
       }
     },
+    "This is a preview surface — Trust+ isn't yet available for purchase. We're collecting interest to decide whether to ship it.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dies ist eine Vorschau — Trust+ ist noch nicht zum Kauf verfügbar. Wir sammeln Interesse, um zu entscheiden, ob wir es veröffentlichen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta es una superficie de vista previa — Trust+ aún no está disponible para la compra. Estamos recogiendo interés para decidir si lanzarlo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il s'agit d'un aperçu — Trust+ n'est pas encore disponible à l'achat. Nous recueillons les intérêts pour décider s'il faut le lancer."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa è una superficie di anteprima — Trust+ non è ancora disponibile per l'acquisto. Stiamo raccogliendo interesse per decidere se lanciarlo."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta é uma superfície de pré-visualização — o Trust+ ainda não está disponível para compra. Estamos a recolher interesse para decidir se o lançamos."
+          }
+        }
+      }
+    },
     "This removes every entry from the history log. Downloaded files on disk are NOT deleted.": {
       "localizations": {
         "de": {
@@ -23214,6 +24064,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "O Trust apresenta factos de registo público sobre as tuas apps instaladas — as próprias etiquetas de privacidade da App Store da Apple (que os programadores divulgam), decisões dos reguladores da UE e dos EUA, a base de dados de CVEs do NVD, o corpus de violações da HIBP e os avisos de segurança dos fornecedores. Não editorializamos. Cada preocupação tem ligação à fonte primária para que possas verificar a afirmação. Se vires informação imprecisa ou desactualizada, abre um PR ou issue em github.com/Splynek/splynek."
+          }
+        }
+      }
+    },
+    "Trust+ would be opt-in — your existing Pro purchase keeps everything you have today, including Trust Watcher catalog refreshes for the lifetime of this purchase. Trust+ would only add ongoing premium catalog updates.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trust+ wäre optional — Ihr bestehender Pro-Kauf behält alles, was Sie heute haben, einschließlich Vertrauenswächter-Katalog­aktualisierungen für die Lebensdauer dieses Kaufs. Trust+ würde nur fortlaufende Premium-Katalog­aktualisierungen hinzufügen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trust+ sería opcional — tu compra Pro actual mantiene todo lo que tienes hoy, incluyendo actualizaciones del catálogo del Vigía de confianza durante la vida de esta compra. Trust+ solo añadiría actualizaciones premium continuas del catálogo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trust+ serait optionnel — votre achat Pro actuel conserve tout ce que vous avez aujourd'hui, y compris les mises à jour du catalogue de la Sentinelle de confiance pendant la durée de vie de cet achat. Trust+ n'ajouterait que des mises à jour premium continues du catalogue."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trust+ sarebbe opzionale — il tuo acquisto Pro attuale mantiene tutto ciò che hai oggi, inclusi gli aggiornamenti del catalogo della Sentinella di fiducia per tutta la vita di questo acquisto. Trust+ aggiungerebbe solo aggiornamenti premium continui del catalogo."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Trust+ seria opcional — a tua compra Pro actual mantém tudo o que tens hoje, incluindo actualizações do catálogo do Vigia de Confiança durante a vida desta compra. O Trust+ apenas adicionaria actualizações premium contínuas do catálogo."
           }
         }
       }

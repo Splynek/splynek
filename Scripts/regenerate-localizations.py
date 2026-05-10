@@ -3407,6 +3407,200 @@ PRO_PLUS_IPHONE_STRINGS = {
         "de": "%lld NEU",
         "it": "%lld NUOVI",
     },
+
+    # ── Sprint 4 API tokens UI (Settings) ─────────────────────────
+    "API tokens": {
+        "pt-PT": "Tokens de API",
+        "es": "Tokens de API",
+        "fr": "Jetons d'API",
+        "de": "API-Tokens",
+        "it": "Token API",
+    },
+    "Mint token": {
+        "pt-PT": "Criar token",
+        "es": "Crear token",
+        "fr": "Générer un jeton",
+        "de": "Token erstellen",
+        "it": "Crea token",
+    },
+    "Read + write": {
+        "pt-PT": "Leitura + escrita",
+        "es": "Lectura + escritura",
+        "fr": "Lecture + écriture",
+        "de": "Lesen + schreiben",
+        "it": "Lettura + scrittura",
+    },
+    "Read-only": {
+        "pt-PT": "Só leitura",
+        "es": "Solo lectura",
+        "fr": "Lecture seule",
+        "de": "Schreibgeschützt",
+        "it": "Sola lettura",
+    },
+    "Show": {
+        "pt-PT": "Mostrar",
+        "es": "Mostrar",
+        "fr": "Afficher",
+        "de": "Anzeigen",
+        "it": "Mostra",
+    },
+    "Copy": {
+        "pt-PT": "Copiar",
+        "es": "Copiar",
+        "fr": "Copier",
+        "de": "Kopieren",
+        "it": "Copia",
+    },
+    "Revoke": {
+        "pt-PT": "Revogar",
+        "es": "Revocar",
+        "fr": "Révoquer",
+        "de": "Widerrufen",
+        "it": "Revoca",
+    },
+    "Never used": {
+        "pt-PT": "Nunca usado",
+        "es": "Nunca usado",
+        "fr": "Jamais utilisé",
+        "de": "Nie verwendet",
+        "it": "Mai usato",
+    },
+    "No tokens minted yet.": {
+        "pt-PT": "Ainda não criaste nenhum token.",
+        "es": "Aún no has creado ningún token.",
+        "fr": "Aucun jeton créé pour l'instant.",
+        "de": "Noch keine Tokens erstellt.",
+        "it": "Nessun token creato finora.",
+    },
+    "Mint stable tokens for Raycast, Alfred, BetterTouchTool, or any shell script that wants to talk to Splynek across sessions. Two scopes (read-only / read+write); revoke any time.": {
+        "pt-PT": "Cria tokens estáveis para Raycast, Alfred, BetterTouchTool ou qualquer script que queira falar com o Splynek entre sessões. Dois âmbitos (só leitura / leitura+escrita); revoga quando quiseres.",
+        "es": "Crea tokens estables para Raycast, Alfred, BetterTouchTool o cualquier script que necesite hablar con Splynek entre sesiones. Dos ámbitos (solo lectura / lectura+escritura); revoca cuando quieras.",
+        "fr": "Générez des jetons stables pour Raycast, Alfred, BetterTouchTool ou tout script souhaitant communiquer avec Splynek entre les sessions. Deux portées (lecture seule / lecture+écriture) ; révocables à tout moment.",
+        "de": "Erstellen Sie stabile Tokens für Raycast, Alfred, BetterTouchTool oder jedes Skript, das sitzungsübergreifend mit Splynek kommunizieren möchte. Zwei Bereiche (schreibgeschützt / lesen+schreiben); jederzeit widerrufbar.",
+        "it": "Crea token stabili per Raycast, Alfred, BetterTouchTool o qualsiasi script che voglia comunicare con Splynek tra sessioni. Due ambiti (sola lettura / lettura+scrittura); revoca in qualsiasi momento.",
+    },
+
+    # ── Sprint 4 engagement viewer + Trust+ upsell ────────────────
+    "Splynek tracks how often you use each Pro feature so a future Trust+ subscription pitch only appears for users who actually engage. The data never leaves your Mac. You're reading the same JSON Splynek reads.": {
+        "pt-PT": "O Splynek regista a frequência com que usas cada funcionalidade Pro para que uma futura proposta de subscrição Trust+ só apareça a utilizadores que realmente usam. Os dados nunca saem do teu Mac. Estás a ler o mesmo JSON que o Splynek lê.",
+        "es": "Splynek registra cuántas veces usas cada función Pro para que una futura propuesta de suscripción Trust+ solo aparezca a usuarios que realmente la usan. Los datos nunca salen de tu Mac. Estás leyendo el mismo JSON que Splynek lee.",
+        "fr": "Splynek suit la fréquence d'utilisation de chaque fonctionnalité Pro afin qu'une future proposition d'abonnement Trust+ n'apparaisse qu'aux utilisateurs réellement engagés. Les données ne quittent jamais votre Mac. Vous lisez le même JSON que Splynek.",
+        "de": "Splynek erfasst, wie oft Sie jede Pro-Funktion nutzen, damit ein zukünftiges Trust+-Abonnement­angebot nur Nutzern angezeigt wird, die sich tatsächlich engagieren. Die Daten verlassen niemals Ihren Mac. Sie lesen dasselbe JSON, das Splynek liest.",
+        "it": "Splynek registra quanto spesso usi ogni funzione Pro così che una futura proposta di abbonamento Trust+ appaia solo agli utenti realmente attivi. I dati non lasciano mai il tuo Mac. Stai leggendo lo stesso JSON che Splynek legge.",
+    },
+    "No engagement recorded yet — try Trust Watcher's Run-now or open a Migrate wizard.": {
+        "pt-PT": "Ainda não há utilização registada — experimenta o Executar agora do Vigia de Confiança ou abre um Assistente de Migração.",
+        "es": "Aún no hay actividad registrada — prueba Ejecutar ahora del Vigía de confianza o abre un Asistente de migración.",
+        "fr": "Aucun engagement enregistré pour l'instant — essayez Exécuter maintenant de la Sentinelle de confiance ou ouvrez un Assistant de migration.",
+        "de": "Noch keine Nutzung erfasst — probieren Sie Jetzt ausführen im Vertrauenswächter aus oder öffnen Sie einen Migrationsassistenten.",
+        "it": "Nessuna attività registrata finora — prova Esegui ora della Sentinella di fiducia o apri una procedura guidata di migrazione.",
+    },
+    "Open the engagement.json file in Finder so you can inspect or delete it directly.": {
+        "pt-PT": "Abre o ficheiro engagement.json no Finder para poderes inspeccioná-lo ou apagá-lo directamente.",
+        "es": "Abre el archivo engagement.json en Finder para inspeccionarlo o eliminarlo directamente.",
+        "fr": "Ouvre le fichier engagement.json dans le Finder pour l'inspecter ou le supprimer directement.",
+        "de": "Öffnet die engagement.json-Datei im Finder, damit Sie sie direkt ansehen oder löschen können.",
+        "it": "Apre il file engagement.json nel Finder per ispezionarlo o eliminarlo direttamente.",
+    },
+    "This is a preview surface — Trust+ isn't yet available for purchase. We're collecting interest to decide whether to ship it.": {
+        "pt-PT": "Esta é uma superfície de pré-visualização — o Trust+ ainda não está disponível para compra. Estamos a recolher interesse para decidir se o lançamos.",
+        "es": "Esta es una superficie de vista previa — Trust+ aún no está disponible para la compra. Estamos recogiendo interés para decidir si lanzarlo.",
+        "fr": "Il s'agit d'un aperçu — Trust+ n'est pas encore disponible à l'achat. Nous recueillons les intérêts pour décider s'il faut le lancer.",
+        "de": "Dies ist eine Vorschau — Trust+ ist noch nicht zum Kauf verfügbar. Wir sammeln Interesse, um zu entscheiden, ob wir es veröffentlichen.",
+        "it": "Questa è una superficie di anteprima — Trust+ non è ancora disponibile per l'acquisto. Stiamo raccogliendo interesse per decidere se lanciarlo.",
+    },
+    "Trust+ would be opt-in — your existing Pro purchase keeps everything you have today, including Trust Watcher catalog refreshes for the lifetime of this purchase. Trust+ would only add ongoing premium catalog updates.": {
+        "pt-PT": "O Trust+ seria opcional — a tua compra Pro actual mantém tudo o que tens hoje, incluindo actualizações do catálogo do Vigia de Confiança durante a vida desta compra. O Trust+ apenas adicionaria actualizações premium contínuas do catálogo.",
+        "es": "Trust+ sería opcional — tu compra Pro actual mantiene todo lo que tienes hoy, incluyendo actualizaciones del catálogo del Vigía de confianza durante la vida de esta compra. Trust+ solo añadiría actualizaciones premium continuas del catálogo.",
+        "fr": "Trust+ serait optionnel — votre achat Pro actuel conserve tout ce que vous avez aujourd'hui, y compris les mises à jour du catalogue de la Sentinelle de confiance pendant la durée de vie de cet achat. Trust+ n'ajouterait que des mises à jour premium continues du catalogue.",
+        "de": "Trust+ wäre optional — Ihr bestehender Pro-Kauf behält alles, was Sie heute haben, einschließlich Vertrauenswächter-Katalog­aktualisierungen für die Lebensdauer dieses Kaufs. Trust+ würde nur fortlaufende Premium-Katalog­aktualisierungen hinzufügen.",
+        "it": "Trust+ sarebbe opzionale — il tuo acquisto Pro attuale mantiene tutto ciò che hai oggi, inclusi gli aggiornamenti del catalogo della Sentinella di fiducia per tutta la vita di questo acquisto. Trust+ aggiungerebbe solo aggiornamenti premium continui del catalogo.",
+    },
+
+    # ── Migrate Wizard interpolated forms ─────────────────────────
+    "Migrate %1$@ → %2$@": {
+        "pt-PT": "Migrar %1$@ → %2$@",
+        "es": "Migrar %1$@ → %2$@",
+        "fr": "Migrer %1$@ → %2$@",
+        "de": "%1$@ → %2$@ migrieren",
+        "it": "Migra %1$@ → %2$@",
+    },
+    "Done.": {
+        "pt-PT": "Concluído.",
+        "es": "Listo.",
+        "fr": "Terminé.",
+        "de": "Erledigt.",
+        "it": "Fatto.",
+    },
+    "Failed — %@": {
+        "pt-PT": "Falhou — %@",
+        "es": "Falló — %@",
+        "fr": "Échec — %@",
+        "de": "Fehlgeschlagen — %@",
+        "it": "Non riuscito — %@",
+    },
+    "Skipped — %@": {
+        "pt-PT": "Ignorado — %@",
+        "es": "Omitido — %@",
+        "fr": "Ignoré — %@",
+        "de": "Übersprungen — %@",
+        "it": "Saltato — %@",
+    },
+
+    # ── Sovereignty review banner interpolated ────────────────────
+    "Open %@": {
+        "pt-PT": "Abrir %@",
+        "es": "Abrir %@",
+        "fr": "Ouvrir %@",
+        "de": "%@ öffnen",
+        "it": "Apri %@",
+    },
+    "Marked %@.": {
+        "pt-PT": "Marcado %@.",
+        "es": "Marcado %@.",
+        "fr": "Marqué %@.",
+        "de": "Markiert %@.",
+        "it": "Contrassegnato %@.",
+    },
+    "Remove this app from your migration list. The original app stays installed; we just stop reminding.": {
+        "pt-PT": "Remove esta app da tua lista de migração. A app original continua instalada; só deixamos de te lembrar.",
+        "es": "Quita esta app de tu lista de migración. La app original sigue instalada; solo dejamos de recordártelo.",
+        "fr": "Retire cette application de ta liste de migration. L'application originale reste installée ; nous arrêtons simplement les rappels.",
+        "de": "Entfernt diese App aus Ihrer Migrationsliste. Die Original-App bleibt installiert; wir hören nur auf, Sie zu erinnern.",
+        "it": "Rimuovi questa app dalla lista di migrazione. L'app originale resta installata; smettiamo solo di ricordartelo.",
+    },
+
+    # ── Trust scoring (TrustView) ─────────────────────────────────
+    "Score weights": {
+        "pt-PT": "Pesos da pontuação",
+        "es": "Pesos de la puntuación",
+        "fr": "Poids du score",
+        "de": "Score-Gewichtungen",
+        "it": "Pesi del punteggio",
+    },
+    "Higher than %lld%% of your installed apps": {
+        "pt-PT": "Superior a %lld%% das tuas apps instaladas",
+        "es": "Superior al %lld%% de tus apps instaladas",
+        "fr": "Supérieur à %lld%% de vos applications installées",
+        "de": "Höher als %lld%% Ihrer installierten Apps",
+        "it": "Superiore al %lld%% delle tue app installate",
+    },
+
+    # ── Sovereignty long-tail interpolated ────────────────────────
+    "Open %@ in browser": {
+        "pt-PT": "Abrir %@ no navegador",
+        "es": "Abrir %@ en el navegador",
+        "fr": "Ouvrir %@ dans le navigateur",
+        "de": "%@ im Browser öffnen",
+        "it": "Apri %@ nel browser",
+    },
+    "Open %@ in App Store": {
+        "pt-PT": "Abrir %@ na App Store",
+        "es": "Abrir %@ en la App Store",
+        "fr": "Ouvrir %@ dans l'App Store",
+        "de": "%@ im App Store öffnen",
+        "it": "Apri %@ nell'App Store",
+    },
 }
 
 
