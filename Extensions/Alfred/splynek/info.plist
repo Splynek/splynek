@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Splynek Alfred workflow — scaffold.
+
+  Sprint 7 PRO-PLUS-IPHONE (2026-05-10).
+
+  This file is intentionally minimal.  Alfred regenerates UUIDs +
+  inter-object connections on import.  Maintainer flow:
+    1. Open Alfred → Preferences → Workflows → import this dir.
+    2. Inside Alfred, add 5 Script Filter / Script Action objects:
+       - splyq    → Run Script: bash "${alfred_workflow_dir}/scripts/queue-url.sh" "{query}"
+       - splysov  → Script Filter: bash "${alfred_workflow_dir}/scripts/sovereignty.sh"
+       - splyjobs → Script Filter: bash "${alfred_workflow_dir}/scripts/jobs.sh"
+       - splypause  → Hotkey + Run Script: bash "${alfred_workflow_dir}/scripts/pause-all.sh"
+       - splyresume → Hotkey + Run Script: bash "${alfred_workflow_dir}/scripts/resume-all.sh"
+    3. Add 3 user-config Variables (Workflow Configuration tab):
+       - splynek_host   (textfield, required, "192.168.1.42")
+       - splynek_port   (textfield, required, default "55432")
+       - splynek_token  (password, required)
+    4. Wire each Script Filter → "Open URL" or "Notification" output.
+    5. Save + export back to this directory + commit the populated plist.
+-->
+<plist version="1.0">
+<dict>
+    <key>bundleid</key>
+    <string>app.splynek.alfred</string>
+    <key>name</key>
+    <string>Splynek</string>
+    <key>category</key>
+    <string>Productivity</string>
+    <key>description</key>
+    <string>Submit URLs to Splynek, see active downloads, pause/resume, check Sovereignty score.</string>
+    <key>createdby</key>
+    <string>Splynek</string>
+    <key>webaddress</key>
+    <string>https://splynek.app</string>
+    <key>readme</key>
+    <string>See README.md alongside this info.plist for setup instructions.</string>
+    <key>version</key>
+    <string>0.1.0</string>
+    <key>variables</key>
+    <dict>
+        <key>splynek_host</key>
+        <string></string>
+        <key>splynek_port</key>
+        <string>55432</string>
+        <key>splynek_token</key>
+        <string></string>
+    </dict>
+    <key>variablesdontexport</key>
+    <array>
+        <string>splynek_host</string>
+        <string>splynek_token</string>
+    </array>
+    <key>userconfigurationconfig</key>
+    <array>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>default</key>
+                <string></string>
+                <key>placeholder</key>
+                <string>192.168.1.42 or mac.local</string>
+                <key>required</key>
+                <true/>
+            </dict>
+            <key>description</key>
+            <string>Hostname or IP of the Mac running Splynek.</string>
+            <key>label</key>
+            <string>Mac host</string>
+            <key>type</key>
+            <string>textfield</string>
+            <key>variable</key>
+            <string>splynek_host</string>
+        </dict>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>default</key>
+                <string>55432</string>
+                <key>required</key>
+                <true/>
+            </dict>
+            <key>description</key>
+            <string>Splynek's HTTP port (find it in the Mac's Web dashboard QR).</string>
+            <key>label</key>
+            <string>Mac port</string>
+            <key>type</key>
+            <string>textfield</string>
+            <key>variable</key>
+            <string>splynek_port</string>
+        </dict>
+        <dict>
+            <key>config</key>
+            <dict>
+                <key>default</key>
+                <string></string>
+                <key>required</key>
+                <true/>
+            </dict>
+            <key>description</key>
+            <string>Mint one in Splynek's Settings → API tokens.</string>
+            <key>label</key>
+            <string>API token</string>
+            <key>type</key>
+            <string>textfield</string>
+            <key>variable</key>
+            <string>splynek_token</string>
+        </dict>
+    </array>
+    <key>objects</key>
+    <array/>
+    <key>connections</key>
+    <dict/>
+    <key>uidata</key>
+    <dict/>
+</dict>
+</plist>
