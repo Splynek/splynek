@@ -4106,30 +4106,36 @@ SHA-256:      5404d86a7e069f5fc2ca6bf57f3760386e0a735309e944be0a4be76e3ebdd30f
               (was 381538de... ad-hoc; staple changes the hash)
 ```
 
-#### Build-time warning to investigate in v2.0.1
+#### Build-time warning to investigate in v2.0.1 — RESOLVED (148dabf)
+
+The warning from this build was:
 
 ```
 ⚠  Xcode build for App Intents metadata failed; SPM .app will lack Shortcuts.app discovery
    See /tmp/splynek-appintents-build.log
 ```
 
-The SPM-built .app doesn't expose the 5 Mac App Intents to
-Shortcuts.app (DownloadURL / QueueURL / Cancel / etc.).  The
-MAS build via Xcode target handles this correctly.  Known
-limitation of the SPM build path; the workaround is to pass
-`--xcodeproj` to `appintentsmetadataprocessor` from inside the
-build.sh, OR to require maintainers to ship the MAS build for
-the App Intents experience.
+Root cause turned out to NOT be the SPM build path itself — the
+auxiliary Xcode build that grafts `Metadata.appintents` into the
+SPM-built .app was failing because three Sprint 1 files
+(`FleetCoordinator.swift`, `ViewModel.swift`,
+`TrustWatchCloudKitNotifier.swift`) had unguarded
+`import SplynekCompanionCore` statements.  SPM resolved the
+module fine, but the Xcode build (which compiles iOS/Shared/
+sources directly into the Splynek target instead of using an
+SPM module) couldn't find it and silently fell through with the
+metadata-extraction-skipped warning.
 
-Not a release blocker — the App Intents on the iPhone Companion
-work correctly (those are in the iOS target which builds via
-Xcode).  The Mac DMG users just won't see Shortcuts.app
-integration; they can still use the Concierge / MCP / browser
-flows.
+Fix mirrors the pattern already in `CloudKitRelayReceiver.swift`:
+gate the SPM import behind `#if SWIFT_PACKAGE`, and add
+`iOS/Shared/RelaySummaryTypes.swift` +
+`iOS/Shared/TrustWatchAlertRecord.swift` to the Splynek +
+Splynek-MAS Xcode target sources (project.yml).  Verified clean
+on `swift build` + `xcodebuild -scheme Splynek -configuration
+Release` — `Metadata.appintents` written successfully with 27 KB
+of `extract.actionsdata` for the 5 Mac App Intents.
 
-v2.0.1 candidate: investigate build.sh's appintentsmetadataprocessor
-invocation; either pass --xcodeproj or document the limitation in
-README.
+Landed in `148dabf` (2026-05-10).
 
 #### Cask refresh
 
@@ -4153,12 +4159,17 @@ Ready for the homebrew-cask PR once the GitHub Release is up.
 6. **Show HN / Product Hunt / blogger emails** per LANDING-V2-DRAFT
    press kit.
 7. **v2.0.1 follow-up backlog** (≤ 2 weeks):
-   - iOS Companion L10n round 5
-   - Bonjour TXT-record version string fix
-   - Concierge / Recipes Pro UI verification via MAS build
-   - Physical-iPhone push test
-   - App Intents metadata for SPM .app build (this session's
-     warning)
+   - ✅ iOS Companion L10n round 5 — landed in `568f3ab` (2026-05-10)
+   - ✅ Bonjour TXT-record version string fix — landed in `da8ff89`
+   - ✅ App Intents metadata for SPM .app build — landed in `148dabf`
+     (root cause: unguarded `import SplynekCompanionCore` in
+     FleetCoordinator/ViewModel/TrustWatchCloudKitNotifier; fix
+     mirrors CloudKitRelayReceiver's pattern — gate import behind
+     `#if SWIFT_PACKAGE` and add iOS/Shared/RelaySummaryTypes.swift
+     + TrustWatchAlertRecord.swift to Xcode target sources)
+   - ⏳ Concierge / Recipes Pro UI verification via MAS build
+   - ⏳ Physical-iPhone push test (needs CloudKit schema provisioning
+     and an unlocked phone with Splynek Companion installed)
 
 ## When to re-read this doc
 
