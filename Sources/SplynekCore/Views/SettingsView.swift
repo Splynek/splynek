@@ -26,6 +26,19 @@ struct SettingsView: View {
     /// again only if engagement still exceeds the gate.
     @State private var upsellHidden: Bool = false
 
+    /// Sprint 4 PRO-PLUS-IPHONE (2026-05-10): API tokens UI state.
+    /// Keeps the mint form responsive without round-tripping the
+    /// store on every keystroke.
+    @State fileprivate var apiTokenDraftLabel: String = ""
+    @State fileprivate var apiTokenDraftScope: APITokenScope = .readWrite
+    @State fileprivate var apiTokenLastError: String?
+    @State fileprivate var revealAPIToken: String?  // token id whose secret is visible
+    /// Bumped on every mutate to force the card body to re-read
+    /// the store.  SwiftUI's view-identity tracking would otherwise
+    /// hold the old `store.tokens` snapshot across mutations
+    /// because `vm.fleet.apiTokenStoreFile.read()` isn't published.
+    @State fileprivate var apiTokenStoreVersion: Int = 0
+
     init(vm: SplynekViewModel) { self.vm = vm }
 
     var body: some View {
@@ -48,6 +61,11 @@ struct SettingsView: View {
                 // gate reads.
                 engagementViewerCard
                 trustPlusUpsellCard
+                // Sprint 4 PRO-PLUS-IPHONE (2026-05-10): API
+                // tokens.  Pro feature for Raycast / Alfred /
+                // shell scripts that need a stable secret across
+                // sessions.  Free users see a Pro-locked teaser.
+                apiTokensCard
                 // 2026-05-09 settings decentralization (commits 57fb6cb,
                 // b494a2b, f944b09, 52e9249):
                 //   • Trust weights        → TrustView.weightsDisclosure
@@ -622,3 +640,165 @@ extension SettingsView {
 // `upsellHidden` is now a @State on SettingsView itself
 // (declared at the top of the struct).  The earlier
 // EnvironmentKey draft was dropped — direct @State is simpler.
+
+// MARK: - Sprint 4 PRO-PLUS-IPHONE: API tokens UI
+
+extension SettingsView {
+
+    @ViewBuilder
+    fileprivate var apiTokensCard: some View {
+        if vm.license.isPro {
+            apiTokensCardBody
+        } else {
+            ProLockedView(
+                featureTitle: "API tokens",
+                summary: "Mint stable tokens for Raycast, Alfred, BetterTouchTool, or any shell script that wants to talk to Splynek across sessions. Two scopes (read-only / read+write); revoke any time.",
+                systemImage: "key.fill",
+                onUnlock: { vm.requestProUnlock() }
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var apiTokensCardBody: some View {
+        TitledCard(
+            title: "API tokens",
+            systemImage: "key.fill",
+            accessory: AnyView(
+                StatusPill(text: "PRO", style: .info)
+            )
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Persistent tokens for external scripting.  Each token has a label, a scope, and shows up in Splynek's request logs by name. Read-only tokens can hit GET endpoints (jobs, summaries, history); read+write tokens can also queue/cancel/pause downloads.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                let store = vm.fleet.apiTokenStoreFile.read()
+                if store.tokens.isEmpty {
+                    Text("No tokens minted yet.")
+                        .font(.callout)
+                        .foregroundStyle(.tertiary)
+                        .padding(.vertical, 4)
+                } else {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(store.tokens) { token in
+                            apiTokenRow(token)
+                        }
+                    }
+                }
+
+                Divider().opacity(0.3)
+
+                HStack(spacing: 8) {
+                    TextField("Label (e.g. Raycast)", text: $apiTokenDraftLabel)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 220)
+                    Picker("", selection: $apiTokenDraftScope) {
+                        Text("Read + write").tag(APITokenScope.readWrite)
+                        Text("Read-only").tag(APITokenScope.readOnly)
+                    }
+                    .labelsHidden()
+                    .pickerStyle(.menu)
+                    .frame(maxWidth: 140)
+                    Spacer()
+                    Button {
+                        mintAPIToken()
+                    } label: {
+                        Label("Mint token", systemImage: "plus.circle")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                    .disabled(apiTokenDraftLabel.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+                if let err = apiTokenLastError {
+                    Text(err)
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    fileprivate func apiTokenRow(_ token: APIToken) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(token.label)
+                    .font(.callout.weight(.semibold))
+                Text(token.scope.label)
+                    .font(.caption2.weight(.medium))
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(
+                        Capsule().fill(token.scope == .readOnly
+                            ? Color.blue.opacity(0.18)
+                            : Color.orange.opacity(0.18))
+                    )
+                    .foregroundStyle(token.scope == .readOnly ? .blue : .orange)
+                Spacer()
+                Button {
+                    revealAPIToken = token.id
+                } label: {
+                    Label("Show", systemImage: revealAPIToken == token.id
+                          ? "eye.slash" : "eye")
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                Button {
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(token.secret, forType: .string)
+                } label: {
+                    Label("Copy", systemImage: "doc.on.doc")
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                Button(role: .destructive) {
+                    vm.fleet.apiTokenStoreFile.mutate { $0.revoke(id: token.id) }
+                    apiTokenStoreVersion += 1
+                } label: {
+                    Label("Revoke", systemImage: "trash")
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            }
+            if revealAPIToken == token.id {
+                Text(token.secret)
+                    .font(.system(.caption, design: .monospaced))
+                    .textSelection(.enabled)
+                    .padding(8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .fill(Color.secondary.opacity(0.10))
+                    )
+            }
+            HStack(spacing: 6) {
+                Text("Created \(prettyDate(token.createdAt))")
+                if let used = token.lastUsedAt {
+                    Text("·").foregroundStyle(.tertiary)
+                    Text("Last used \(prettyDate(used))")
+                } else {
+                    Text("·").foregroundStyle(.tertiary)
+                    Text("Never used").foregroundStyle(.tertiary)
+                }
+            }
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 4)
+    }
+
+    fileprivate func mintAPIToken() {
+        let label = apiTokenDraftLabel.trimmingCharacters(in: .whitespaces)
+        guard !label.isEmpty else {
+            apiTokenLastError = "Label can't be empty."
+            return
+        }
+        let token = APIToken(label: label, scope: apiTokenDraftScope)
+        vm.fleet.apiTokenStoreFile.mutate { $0.add(token) }
+        apiTokenDraftLabel = ""
+        apiTokenLastError = nil
+        revealAPIToken = token.id  // open it so user can copy
+        apiTokenStoreVersion += 1
+    }
+}

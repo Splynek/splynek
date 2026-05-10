@@ -1232,7 +1232,7 @@ public final class FleetCoordinator: ObservableObject {
             try? await respond(conn, status: "405 Method Not Allowed")
             return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized")
             return
         }
@@ -1251,7 +1251,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "POST" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         let handler = self.onCancelAll
@@ -1268,7 +1268,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "POST" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         let handler = self.onPauseAll
@@ -1281,7 +1281,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "POST" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         let handler = self.onResumeAll
@@ -1294,7 +1294,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "GET" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         guard let provider = self.onSovereigntySummary else {
@@ -1314,7 +1314,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "GET" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         guard let provider = self.onTrustSummary else {
@@ -1335,7 +1335,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "GET" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         guard let provider = self.onTrustWatcherSummary else {
@@ -1358,7 +1358,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "GET" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         guard let provider = self.onHistorySummary else {
@@ -1384,7 +1384,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "POST" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         guard let server = self.mcpServer, server.enabled else {
@@ -1426,7 +1426,7 @@ public final class FleetCoordinator: ObservableObject {
         guard method == "GET" else {
             try? await respond(conn, status: "405 Method Not Allowed"); return
         }
-        guard tokenFromQuery(path) == webToken else {
+        guard validateToken(path: path, method: method) else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         // Reset?
@@ -1469,7 +1469,9 @@ public final class FleetCoordinator: ObservableObject {
     /// (for manifests) or the inferred segment Content-Type (.ts /
     /// .m4s / .mp4 / etc.) so the browser's HTML5 player accepts it.
     private func serveHLS(_ conn: NWConnection, path: String) async {
-        guard tokenFromQuery(path) == webToken else {
+        // HLS proxy is GET-only; pass the literal so the
+        // shared validator routes to the .read scope.
+        guard validateToken(path: path, method: "GET") else {
             try? await respond(conn, status: "401 Unauthorized"); return
         }
         // Reconstruct a URL we can pass to HLSProxyServer.parseRoute.
@@ -1589,6 +1591,43 @@ public final class FleetCoordinator: ObservableObject {
             if kv.count == 2, kv[0] == "t" { return kv[1] }
         }
         return nil
+    }
+
+    // MARK: - Sprint 4 PRO-PLUS-IPHONE: API token validation
+    //
+    // Validates a presented `?t=<...>` against the union of:
+    //   1. The session `webToken` (rotates per session) — accepts
+    //      everything (read + write) for backwards compatibility.
+    //   2. Persistent `APITokenStore` tokens — scope-checked.
+    // Returns true when accepted; bumps lastUsedAt on the matched
+    // API token (read-modify-write through the lock-guarded store).
+
+    /// Token store for persistent API tokens.  Pro users mint named
+    /// tokens via Settings → API tokens (Sprint 4); free users have
+    /// no entry point so the store stays empty.
+    let apiTokenStoreFile = APITokenStoreFile()
+
+    func validateToken(path: String, method: String) -> Bool {
+        let presented = tokenFromQuery(path) ?? ""
+        let kind: APITokenValidator.RequestKind =
+            (method.uppercased() == "GET") ? .read : .write
+        let decision = APITokenValidator.decide(
+            presented: presented,
+            webToken: webToken,
+            store: apiTokenStoreFile.read(),
+            kind: kind
+        )
+        switch decision {
+        case .acceptedSessionToken:
+            return true
+        case .acceptedAPIToken:
+            apiTokenStoreFile.mutate {
+                $0.recordUse(secret: presented, at: Date())
+            }
+            return true
+        case .rejected:
+            return false
+        }
     }
 }
 
