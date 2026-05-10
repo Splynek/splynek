@@ -3645,12 +3645,12 @@ PRO_PLUS_IPHONE_STRINGS = {
         "de": "Splynek hat Homebrew-Cask-Metadaten für diese App — Homepage + Download-URL vorausgefüllt im Beitragen-Issue.",
         "it": "Splynek ha metadati Homebrew Cask per questa app — homepage + URL di download pre-compilati nella issue di contribuzione.",
     },
-    "Suggested matches based on the app's macOS category. We don't have a specific catalog entry for these — these are the free-software champions in the same category.": {
-        "pt-PT": "Sugestões baseadas na categoria macOS da app. Não temos uma entrada específica no catálogo para estas — são os campeões de software livre da mesma categoria.",
-        "es": "Sugerencias basadas en la categoría macOS de la app. No tenemos una entrada específica en el catálogo para estas — son los campeones de software libre de la misma categoría.",
-        "fr": "Suggestions basées sur la catégorie macOS de l'application. Nous n'avons pas d'entrée spécifique dans le catalogue pour celles-ci — ce sont les champions du logiciel libre de la même catégorie.",
-        "de": "Vorschläge basierend auf der macOS-Kategorie der App. Wir haben keinen spezifischen Katalog­eintrag für diese — es sind die Free-Software-Empfehlungen derselben Kategorie.",
-        "it": "Suggerimenti basati sulla categoria macOS dell'app. Non abbiamo una voce specifica nel catalogo per queste — sono i campioni del software libero della stessa categoria.",
+    "Suggested matches based on the app's macOS category. We don't have a specific catalog entry for these — these are the free / open-source champions Splynek recommends for the category.": {
+        "pt-PT": "Sugestões baseadas na categoria macOS da app. Não temos uma entrada específica no catálogo para estas — são os campeões grátis / open-source que o Splynek recomenda para a categoria.",
+        "es": "Sugerencias basadas en la categoría macOS de la app. No tenemos una entrada específica en el catálogo para estas — son los campeones gratuitos / de código abierto que Splynek recomienda para la categoría.",
+        "fr": "Suggestions basées sur la catégorie macOS de l'application. Nous n'avons pas d'entrée spécifique dans le catalogue pour celles-ci — ce sont les champions gratuits / open-source que Splynek recommande pour cette catégorie.",
+        "de": "Vorschläge basierend auf der macOS-Kategorie der App. Wir haben keinen spezifischen Katalog­eintrag für diese — es sind die kostenlosen / Open-Source-Empfehlungen, die Splynek für diese Kategorie vorschlägt.",
+        "it": "Suggerimenti basati sulla categoria macOS dell'app. Non abbiamo una voce specifica nel catalogo per queste — sono i campioni gratuiti / open-source che Splynek consiglia per la categoria.",
     },
     "These apps aren't in our catalog yet AND don't declare a category we cover. The fastest way to get coverage: open a one-click GitHub issue with the app's metadata pre-filled.": {
         "pt-PT": "Estas apps ainda não estão no nosso catálogo E não declaram uma categoria que cobrimos. A forma mais rápida de obter cobertura: abre um issue no GitHub com um clique, com os metadados da app pré-preenchidos.",
@@ -3733,6 +3733,196 @@ PRO_PLUS_IPHONE_STRINGS = {
         "fr": "Jetons persistants pour le scripting externe.  Chaque jeton a un libellé, une portée et apparaît dans les journaux de requêtes Splynek par son nom. Les jetons en lecture seule peuvent atteindre les endpoints GET (jobs, résumés, historique) ; les jetons lecture+écriture peuvent également mettre en file d'attente/annuler/mettre en pause des téléchargements.",
         "de": "Persistente Tokens für externes Scripting.  Jedes Token hat eine Bezeichnung, einen Geltungsbereich und erscheint in Splyneks Anfrage-Protokollen mit Namen. Schreibgeschützte Tokens erreichen GET-Endpoints (Jobs, Zusammen­fassungen, Verlauf); Lese+Schreib-Tokens können auch Downloads in die Warte­schlange stellen, abbrechen oder pausieren.",
         "it": "Token persistenti per scripting esterno.  Ogni token ha un'etichetta, un ambito e appare nei log delle richieste di Splynek con il suo nome. I token in sola lettura possono raggiungere gli endpoint GET (job, riepiloghi, cronologia); i token lettura+scrittura possono anche accodare/annullare/mettere in pausa i download.",
+    },
+
+    # ── Sprint 7 round 4: long-tail interpolated bodies ───────────
+    # Closes the 25 final strings the audit was tracking.  Each
+    # uses Swift literal-form interpolation (\(varname)) which
+    # Apple's xcstrings system stores verbatim — the runtime
+    # converts to %@/%lld at lookup time.
+
+    "Copy pair URL": {
+        "pt-PT": "Copiar URL de emparelhamento",
+        "es": "Copiar URL de emparejamiento",
+        "fr": "Copier l'URL d'appairage",
+        "de": "Kopplungs-URL kopieren",
+        "it": "Copia URL di abbinamento",
+    },
+    "Splynek as a programmable platform — let your phone, Claude, ChatGPT, or any MCP-compatible agent drive downloads, run audits, and search your history through one HTTP endpoint.": {
+        "pt-PT": "O Splynek como uma plataforma programável — deixa o teu telemóvel, Claude, ChatGPT ou qualquer agente compatível com MCP controlar transferências, executar auditorias e pesquisar o histórico através de um único endpoint HTTP.",
+        "es": "Splynek como plataforma programable — deja que tu teléfono, Claude, ChatGPT o cualquier agente compatible con MCP controle descargas, ejecute auditorías y busque en tu historial a través de un único endpoint HTTP.",
+        "fr": "Splynek comme plateforme programmable — laissez votre téléphone, Claude, ChatGPT ou tout agent compatible MCP piloter les téléchargements, exécuter des audits et rechercher dans votre historique via un seul endpoint HTTP.",
+        "de": "Splynek als programmierbare Plattform — lassen Sie Ihr Telefon, Claude, ChatGPT oder einen beliebigen MCP-kompatiblen Agenten Downloads steuern, Audits durchführen und Ihren Verlauf über einen einzigen HTTP-Endpoint durchsuchen.",
+        "it": "Splynek come piattaforma programmabile — lascia che il tuo telefono, Claude, ChatGPT o qualsiasi agente compatibile MCP guidi i download, esegua audit e cerchi nella tua cronologia tramite un singolo endpoint HTTP.",
+    },
+
+    "This download used **\\(pathName)** alone. Splynek can stripe simultaneous byte-range requests across every interface you have — Ethernet + Wi-Fi, USB-C tether, iPhone hotspot, Tailscale. Add another and the next download finishes in a fraction of the time.": {
+        "pt-PT": "Esta transferência usou apenas **\\(pathName)**. O Splynek consegue distribuir pedidos simultâneos por intervalos de bytes em cada interface que tens — Ethernet + Wi-Fi, USB-C, hotspot do iPhone, Tailscale. Adiciona outra e a próxima transferência termina numa fracção do tempo.",
+        "es": "Esta descarga usó solo **\\(pathName)**. Splynek puede repartir solicitudes simultáneas por rangos de bytes en cada interfaz que tengas — Ethernet + Wi-Fi, USB-C, hotspot del iPhone, Tailscale. Añade otra y la siguiente descarga termina en una fracción del tiempo.",
+        "fr": "Ce téléchargement n'a utilisé que **\\(pathName)**. Splynek peut répartir des requêtes simultanées par plages d'octets sur chaque interface dont vous disposez — Ethernet + Wi-Fi, USB-C, hotspot iPhone, Tailscale. Ajoutez-en une autre et le prochain téléchargement se termine en une fraction du temps.",
+        "de": "Dieser Download hat nur **\\(pathName)** verwendet. Splynek kann gleichzeitige Byte-Range-Anfragen über jede verfügbare Schnitt­stelle verteilen — Ethernet + WLAN, USB-C-Tethering, iPhone-Hotspot, Tailscale. Eine weitere hinzufügen und der nächste Download beendet in einem Bruchteil der Zeit.",
+        "it": "Questo download ha usato solo **\\(pathName)**. Splynek può ripartire richieste simultanee per intervalli di byte su ogni interfaccia disponibile — Ethernet + Wi-Fi, USB-C, hotspot dell'iPhone, Tailscale. Aggiungine un'altra e il prossimo download termina in una frazione del tempo.",
+    },
+
+    "\\(row.copies) history entries point at this same file. Trashing here removes them all.": {
+        "pt-PT": "\\(row.copies) entradas no histórico apontam para o mesmo ficheiro. Apagar aqui remove todas.",
+        "es": "\\(row.copies) entradas del historial apuntan al mismo archivo. Eliminarlas aquí las quita todas.",
+        "fr": "\\(row.copies) entrées d'historique pointent vers le même fichier. Les supprimer ici les enlève toutes.",
+        "de": "\\(row.copies) Verlaufs­einträge zeigen auf dieselbe Datei. Hier in den Papierkorb verschieben entfernt sie alle.",
+        "it": "\\(row.copies) voci della cronologia puntano allo stesso file. Eliminarle qui le rimuove tutte.",
+    },
+
+    "This app is no longer at \\(r.installedAt.path). Forget the entry to clean it up.": {
+        "pt-PT": "Esta app já não está em \\(r.installedAt.path). Esquece a entrada para limpá-la.",
+        "es": "Esta app ya no está en \\(r.installedAt.path). Olvida la entrada para limpiarla.",
+        "fr": "Cette application n'est plus à \\(r.installedAt.path). Oubliez l'entrée pour la nettoyer.",
+        "de": "Diese App befindet sich nicht mehr unter \\(r.installedAt.path). Eintrag verwerfen, um aufzuräumen.",
+        "it": "Questa app non è più in \\(r.installedAt.path). Dimentica la voce per ripulirla.",
+    },
+
+    "No paid apps from Splynek’s seed catalog detected on this Mac. The average Mac has ~$540/year in paid software, mostly subscriptions — you’re already keeping that money.": {
+        "pt-PT": "Não foram detectadas apps pagas do catálogo inicial do Splynek neste Mac. O Mac médio tem ~$540/ano em software pago, na maioria subscrições — já estás a guardar esse dinheiro.",
+        "es": "No se detectaron apps de pago del catálogo inicial de Splynek en este Mac. El Mac medio tiene ~$540/año en software de pago, en su mayoría suscripciones — ya estás ahorrando ese dinero.",
+        "fr": "Aucune application payante du catalogue de base de Splynek n'a été détectée sur ce Mac. Un Mac moyen contient pour environ 540 $/an de logiciels payants, principalement des abonnements — vous gardez déjà cet argent.",
+        "de": "Keine bezahlten Apps aus Splyneks Anfangs­katalog auf diesem Mac erkannt. Der durchschnittliche Mac hat ~540$/Jahr an bezahlter Software, meist Abonnements — Sie behalten dieses Geld bereits.",
+        "it": "Nessuna app a pagamento dal catalogo iniziale di Splynek rilevata su questo Mac. Un Mac medio ha ~540$/anno in software a pagamento, per lo più abbonamenti — stai già risparmiando quei soldi.",
+    },
+    "Splynek’s Sovereignty catalog covers \\(AppPricing.supportedBundleIDs.count) paid apps and \\(SovereigntyCatalog.entries.count) alternatives.": {
+        "pt-PT": "O catálogo de Soberania do Splynek cobre \\(AppPricing.supportedBundleIDs.count) apps pagas e \\(SovereigntyCatalog.entries.count) alternativas.",
+        "es": "El catálogo de Soberanía de Splynek cubre \\(AppPricing.supportedBundleIDs.count) apps de pago y \\(SovereigntyCatalog.entries.count) alternativas.",
+        "fr": "Le catalogue Souveraineté de Splynek couvre \\(AppPricing.supportedBundleIDs.count) applications payantes et \\(SovereigntyCatalog.entries.count) alternatives.",
+        "de": "Splyneks Souveränitäts-Katalog umfasst \\(AppPricing.supportedBundleIDs.count) bezahlte Apps und \\(SovereigntyCatalog.entries.count) Alternativen.",
+        "it": "Il catalogo Sovranità di Splynek copre \\(AppPricing.supportedBundleIDs.count) app a pagamento e \\(SovereigntyCatalog.entries.count) alternative.",
+    },
+    "Switched · +$\\(Int(annualised))/yr counted in your savings": {
+        "pt-PT": "Trocado · +$\\(Int(annualised))/ano contabilizado nas tuas poupanças",
+        "es": "Cambiado · +$\\(Int(annualised))/año contabilizado en tu ahorro",
+        "fr": "Changé · +$\\(Int(annualised))/an comptabilisé dans tes économies",
+        "de": "Gewechselt · +$\\(Int(annualised))/Jahr in Ihre Ersparnis eingerechnet",
+        "it": "Cambiato · +$\\(Int(annualised))/anno conteggiato nei tuoi risparmi",
+    },
+    "costing you ~\\(formatUSD(currentApprox))/\\(cycle.displayLabel)": {
+        "pt-PT": "a custar-te ~\\(formatUSD(currentApprox))/\\(cycle.displayLabel)",
+        "es": "te cuesta ~\\(formatUSD(currentApprox))/\\(cycle.displayLabel)",
+        "fr": "vous coûte environ \\(formatUSD(currentApprox))/\\(cycle.displayLabel)",
+        "de": "kostet Sie ~\\(formatUSD(currentApprox))/\\(cycle.displayLabel)",
+        "it": "ti costa ~\\(formatUSD(currentApprox))/\\(cycle.displayLabel)",
+    },
+
+    "Created \\(prettyDate(token.createdAt))": {
+        "pt-PT": "Criado \\(prettyDate(token.createdAt))",
+        "es": "Creado \\(prettyDate(token.createdAt))",
+        "fr": "Créé \\(prettyDate(token.createdAt))",
+        "de": "Erstellt \\(prettyDate(token.createdAt))",
+        "it": "Creato \\(prettyDate(token.createdAt))",
+    },
+    "Last used \\(prettyDate(used))": {
+        "pt-PT": "Último uso \\(prettyDate(used))",
+        "es": "Último uso \\(prettyDate(used))",
+        "fr": "Dernière utilisation \\(prettyDate(used))",
+        "de": "Zuletzt verwendet \\(prettyDate(used))",
+        "it": "Ultimo utilizzo \\(prettyDate(used))",
+    },
+    "Recording since \\(prettyDate(first)).": {
+        "pt-PT": "A registar desde \\(prettyDate(first)).",
+        "es": "Registrando desde \\(prettyDate(first)).",
+        "fr": "Enregistrement depuis \\(prettyDate(first)).",
+        "de": "Aufzeichnung seit \\(prettyDate(first)).",
+        "it": "Registrazione da \\(prettyDate(first)).",
+    },
+    "You've engaged with Trust Watcher \\(active) times. Splynek's evaluating a Trust+ subscription that adds: weekly Trust-catalog refreshes, acquisition radar (\\\"this app got bought by X — here's the privacy delta\\\"), one-click ToS history viewer.": {
+        "pt-PT": "Já interagiste com o Vigia de Confiança \\(active) vezes. O Splynek está a avaliar uma subscrição Trust+ que adiciona: actualizações semanais do catálogo Trust, radar de aquisições (\"esta app foi comprada por X — eis a diferença de privacidade\"), visualizador de histórico de Termos de Serviço com um clique.",
+        "es": "Has interactuado con el Vigía de Confianza \\(active) veces. Splynek está evaluando una suscripción Trust+ que añade: actualizaciones semanales del catálogo Trust, radar de adquisiciones (\"esta app fue comprada por X — esta es la diferencia de privacidad\"), visor de historial de términos de servicio con un clic.",
+        "fr": "Vous avez interagi avec la Sentinelle de confiance \\(active) fois. Splynek évalue un abonnement Trust+ qui ajoute : actualisations hebdomadaires du catalogue Trust, radar d'acquisitions (« cette application a été rachetée par X — voici le delta de confidentialité »), visualiseur d'historique des CGU en un clic.",
+        "de": "Sie haben \\(active)-mal mit dem Vertrauenswächter interagiert. Splynek prüft ein Trust+-Abonnement, das Folgendes hinzufügt: wöchentliche Trust-Katalog­aktualisierungen, Übernahme-Radar („diese App wurde von X gekauft — hier ist die Datenschutz-Differenz“), Ein-Klick-AGB-Verlaufs­anzeige.",
+        "it": "Hai interagito con la Sentinella di fiducia \\(active) volte. Splynek sta valutando un abbonamento Trust+ che aggiunge: aggiornamenti settimanali del catalogo Trust, radar di acquisizioni (\"questa app è stata acquistata da X — ecco la differenza sulla privacy\"), visualizzatore di cronologia Termini di servizio con un clic.",
+    },
+
+    "Copy Homebrew install command for \\(alt.name)": {
+        "pt-PT": "Copiar comando Homebrew install para \\(alt.name)",
+        "es": "Copiar comando Homebrew install para \\(alt.name)",
+        "fr": "Copier la commande Homebrew install pour \\(alt.name)",
+        "de": "Homebrew-install-Befehl für \\(alt.name) kopieren",
+        "it": "Copia il comando Homebrew install per \\(alt.name)",
+    },
+    "Copy `brew install \\(homebrewFormulaName(for: alt))` to the clipboard, then paste into Terminal.": {
+        "pt-PT": "Copia `brew install \\(homebrewFormulaName(for: alt))` para a área de transferência e cola no Terminal.",
+        "es": "Copia `brew install \\(homebrewFormulaName(for: alt))` al portapapeles y pégalo en Terminal.",
+        "fr": "Copie `brew install \\(homebrewFormulaName(for: alt))` dans le presse-papiers, puis colle dans Terminal.",
+        "de": "Kopiert `brew install \\(homebrewFormulaName(for: alt))` in die Zwischen­ablage; im Terminal einfügen.",
+        "it": "Copia `brew install \\(homebrewFormulaName(for: alt))` negli appunti, poi incolla nel Terminale.",
+    },
+    "Open \\(alt.name) in the Mac App Store.": {
+        "pt-PT": "Abrir \\(alt.name) na Mac App Store.",
+        "es": "Abrir \\(alt.name) en la Mac App Store.",
+        "fr": "Ouvrir \\(alt.name) dans le Mac App Store.",
+        "de": "\\(alt.name) im Mac App Store öffnen.",
+        "it": "Apri \\(alt.name) nel Mac App Store.",
+    },
+    "Open \\(alt.name) in your browser. No native Mac app — runs in the browser.": {
+        "pt-PT": "Abrir \\(alt.name) no navegador. Sem app Mac nativa — corre no navegador.",
+        "es": "Abrir \\(alt.name) en el navegador. Sin app Mac nativa — funciona en el navegador.",
+        "fr": "Ouvrir \\(alt.name) dans le navigateur. Pas d'application Mac native — fonctionne dans le navigateur.",
+        "de": "\\(alt.name) im Browser öffnen. Keine native Mac-App — läuft im Browser.",
+        "it": "Apri \\(alt.name) nel browser. Nessuna app Mac nativa — gira nel browser.",
+    },
+    "Suggested matches based on the app's macOS category. We don't have a specific catalog entry for these — these are the free / open-source champions Splynek recommends for the category.": {
+        "pt-PT": "Sugestões baseadas na categoria macOS da app. Não temos uma entrada específica no catálogo para estas — são os campeões grátis / open-source que o Splynek recomenda para a categoria.",
+        "es": "Sugerencias basadas en la categoría macOS de la app. No tenemos una entrada específica en el catálogo para estas — son los campeones gratuitos / de código abierto que Splynek recomienda para la categoría.",
+        "fr": "Suggestions basées sur la catégorie macOS de l'application. Nous n'avons pas d'entrée spécifique dans le catalogue pour celles-ci — ce sont les champions gratuits / open-source que Splynek recommande pour cette catégorie.",
+        "de": "Vorschläge basierend auf der macOS-Kategorie der App. Wir haben keinen spezifischen Katalog­eintrag für diese — es sind die kostenlosen / Open-Source-Empfehlungen, die Splynek für diese Kategorie vorschlägt.",
+        "it": "Suggerimenti basati sulla categoria macOS dell'app. Non abbiamo una voce specifica nel catalogo per queste — sono i campioni gratuiti / open-source che Splynek consiglia per la categoria.",
+    },
+    "Visit \\(alt.name) (\\(kind.displayLabel.lowercased()))": {
+        "pt-PT": "Visitar \\(alt.name) (\\(kind.displayLabel.lowercased()))",
+        "es": "Visitar \\(alt.name) (\\(kind.displayLabel.lowercased()))",
+        "fr": "Visiter \\(alt.name) (\\(kind.displayLabel.lowercased()))",
+        "de": "\\(alt.name) besuchen (\\(kind.displayLabel.lowercased()))",
+        "it": "Visita \\(alt.name) (\\(kind.displayLabel.lowercased()))",
+    },
+    "Visit \\(alt.name) project page": {
+        "pt-PT": "Visitar página do projecto \\(alt.name)",
+        "es": "Visitar la página del proyecto de \\(alt.name)",
+        "fr": "Visiter la page projet de \\(alt.name)",
+        "de": "Projekt­seite von \\(alt.name) besuchen",
+        "it": "Visita la pagina del progetto \\(alt.name)",
+    },
+    "Walk through a guided swap from \\(entry.targetDisplayName) to \\(alt.name) — open the homepage, mark the original for review.": {
+        "pt-PT": "Percorre uma troca guiada de \\(entry.targetDisplayName) para \\(alt.name) — abre a página inicial, marca a original para revisão.",
+        "es": "Recorre un intercambio guiado de \\(entry.targetDisplayName) a \\(alt.name) — abre la página de inicio, marca la original para revisión.",
+        "fr": "Parcourir un échange guidé de \\(entry.targetDisplayName) vers \\(alt.name) — ouvrir la page d'accueil, marquer l'originale pour examen.",
+        "de": "Durchlaufen eines geführten Wechsels von \\(entry.targetDisplayName) zu \\(alt.name) — Startseite öffnen, Original zur Überprüfung markieren.",
+        "it": "Affronta uno scambio guidato da \\(entry.targetDisplayName) a \\(alt.name) — apri la home page, contrassegna l'originale per la revisione.",
+    },
+    "\\(alt.name)'s desktop app is announced but not yet shipped. Splynek tracks the project page.": {
+        "pt-PT": "A app desktop de \\(alt.name) foi anunciada mas ainda não está disponível. O Splynek segue a página do projecto.",
+        "es": "La app de escritorio de \\(alt.name) está anunciada pero aún no se ha lanzado. Splynek sigue la página del proyecto.",
+        "fr": "L'application desktop de \\(alt.name) est annoncée mais pas encore disponible. Splynek suit la page projet.",
+        "de": "Die Desktop-App von \\(alt.name) ist angekündigt, aber noch nicht veröffentlicht. Splynek verfolgt die Projekt­seite.",
+        "it": "L'app desktop di \\(alt.name) è stata annunciata ma non ancora rilasciata. Splynek segue la pagina del progetto.",
+    },
+
+    "Adjust how the Trust tab weighs each axis when scoring your installed apps. A user who cares mostly about privacy can dial security down — the underlying concerns don't change, only the score that summarises them. Defaults: security 1.5, privacy 1.0, trust 1.0, business model 0.6.": {
+        "pt-PT": "Ajusta como a tab Confiança pondera cada eixo ao pontuar as tuas apps instaladas. Um utilizador que se preocupa sobretudo com privacidade pode baixar a segurança — as preocupações subjacentes não mudam, apenas a pontuação que as resume. Predefinições: segurança 1.5, privacidade 1.0, confiança 1.0, modelo de negócio 0.6.",
+        "es": "Ajusta cómo la pestaña Confianza pondera cada eje al puntuar tus apps instaladas. Un usuario que se preocupa sobre todo por la privacidad puede bajar la seguridad — las preocupaciones subyacentes no cambian, solo la puntuación que las resume. Valores predeterminados: seguridad 1.5, privacidad 1.0, confianza 1.0, modelo de negocio 0.6.",
+        "fr": "Ajustez la manière dont l'onglet Confiance pondère chaque axe lors du scoring de vos applications installées. Un utilisateur qui se soucie surtout de la confidentialité peut baisser la sécurité — les préoccupations sous-jacentes ne changent pas, seul le score qui les résume. Valeurs par défaut : sécurité 1.5, confidentialité 1.0, confiance 1.0, modèle économique 0.6.",
+        "de": "Passen Sie an, wie der Vertrauen-Tab jede Achse bei der Bewertung Ihrer installierten Apps gewichtet. Wer vor allem Wert auf Datenschutz legt, kann Sicherheit herunter­regeln — die zugrunde liegenden Bedenken ändern sich nicht, nur die zusammen­fassende Punktzahl. Standard­werte: Sicherheit 1.5, Datenschutz 1.0, Vertrauen 1.0, Geschäfts­modell 0.6.",
+        "it": "Regola come la scheda Fiducia pondera ogni asse quando assegna un punteggio alle tue app installate. Un utente principalmente interessato alla privacy può abbassare la sicurezza — le preoccupazioni sottostanti non cambiano, solo il punteggio che le riassume. Valori predefiniti: sicurezza 1.5, privacy 1.0, fiducia 1.0, modello di business 0.6.",
+    },
+
+    "\\(manualOnly.count) apps without a known update source": {
+        "pt-PT": "\\(manualOnly.count) apps sem fonte de actualização conhecida",
+        "es": "\\(manualOnly.count) apps sin fuente de actualización conocida",
+        "fr": "\\(manualOnly.count) applications sans source de mise à jour connue",
+        "de": "\\(manualOnly.count) Apps ohne bekannte Update-Quelle",
+        "it": "\\(manualOnly.count) app senza fonte di aggiornamento nota",
+    },
+    "\\(resolved.count) scanned": {
+        "pt-PT": "\\(resolved.count) analisadas",
+        "es": "\\(resolved.count) escaneadas",
+        "fr": "\\(resolved.count) analysées",
+        "de": "\\(resolved.count) gescannt",
+        "it": "\\(resolved.count) analizzate",
     },
 }
 
