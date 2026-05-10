@@ -481,6 +481,19 @@ public final class FleetCoordinator: ObservableObject {
         // workflows.  Privacy posture wins.
         if effectiveLoopbackOnly { return }
         if cloudKitRelayReceiver != nil { return }
+        // 2026-05-10: gate behind MAS_BUILD compile flag.  The free
+        // DMG build is ad-hoc signed and lacks the iCloud entitlement;
+        // CKContainer.__allocating_init traps with EXC_BREAKPOINT in
+        // that case (Apple's defensive crash for "you didn't ask for
+        // this entitlement at signing time").  ubiquityIdentityToken
+        // can't distinguish DMG-from-MAS — it reflects the SYSTEM's
+        // iCloud login state, not the bundle's entitlement.
+        // Compile-time gate is the correct mechanism: only MAS builds
+        // (which carry com.apple.developer.icloud-container-identifiers)
+        // can talk to CloudKit safely.
+        #if !MAS_BUILD
+        return
+        #else
         let uuid = deviceUUID
         let receiver = CloudKitRelayReceiver(
             macUUID: uuid,
@@ -495,6 +508,7 @@ public final class FleetCoordinator: ObservableObject {
         Task {
             await receiver.start()
         }
+        #endif
     }
 
     private func stopCloudKitRelayReceiver() {

@@ -54,7 +54,7 @@ public actor TrustWatchCloudKitNotifier {
     @discardableResult
     public func publish(alerts: [TrustWatchAlert]) async -> [TrustWatchAlertRecord] {
         guard !alerts.isEmpty else { return [] }
-        #if canImport(CloudKit)
+        #if canImport(CloudKit) && MAS_BUILD
         let container = CKContainer.default()
         // accountStatus tells us whether the Mac has an iCloud
         // account and whether CloudKit is reachable.  Skip silently
