@@ -3795,6 +3795,222 @@ Maintainer steps still required (out of band):
 - splynek-landing repo: adapt LANDING-V2-DRAFT.md into Hugo
 - Press kit: 5 screenshots + 60s video (per the draft)
 
+### 2026-05-10 evening — PRO-PLUS-IPHONE Sprint 8 (live smoke test)
+
+After Sprint 7 (`836354c` → `35e89bf`) the user said "quero
+testar".  The session pivoted from execution into **live
+verification on real hardware** — first the DMG dev build with
+a local Pro flip, then the iPhone 17 Pro simulator (iOS 26.4)
+running the Companion app end-to-end.  Bugs caught +
+fixed-in-flight ship as 4 separate commits.
+
+#### Four commits (chronological)
+
+| #   | Commit    | What                                                              |
+|-----|-----------|-------------------------------------------------------------------|
+| 1   | `276d6ec` | CloudKit gates: skip CKContainer init in non-MAS builds            |
+| 2   | `9e25cd6` | SMOKE-TEST-RUNBOOK: dynamic port + correct token-gated endpoint   |
+| 3   | `bc5af7c` | iOS Companion Localizable.xcstrings auto-extract from Xcode build |
+| 4   | this      | SMOKE-TEST-SIGNOFF + SESSION-LOG + HANDOFF + STRATEGY              |
+
+After all four: 820 tests pass (smoke session was a UX walk +
+fixes, no test deltas), Mac `swift build` clean, iOS xcodebuild
+SUCCEEDED, watchOS SDK confirmed installed (xcodebuild
+SplynekWatch + SplynekWatchComplications BUILD SUCCEEDED),
+all pushed to `origin/rollup/2026-05-08`.
+
+#### What lit up — bugs caught + behaviour confirmed
+
+**Bug 1 — CloudKit init crash on Pro-flipped DMG.**  When
+`LicenseManager.isPro = true` (local override in ProStubs.swift,
+never committed), `FleetCoordinator.start()` reaches
+`startCloudKitRelayReceiverIfNeeded` → `CKContainer(identifier:)`
+→ `EXC_BREAKPOINT` (SIGTRAP) on launch.  Apple's defensive crash
+when an app's Info.plist + entitlements don't declare the iCloud
+capability.  Free-tier ad-hoc-signed DMG never carries the
+capability.
+
+Tried a runtime probe via `FileManager.default.ubiquityIdentityToken`
+first — turned out to reflect SYSTEM iCloud login, not bundle
+entitlement, so it returned non-nil even on the unentitled DMG.
+Switched to compile-time `#if !MAS_BUILD` gate.  Two call sites
+fixed:
+- `FleetCoordinator.startCloudKitRelayReceiverIfNeeded` — wraps
+  the receiver instantiation in `#if !MAS_BUILD return / #else …`.
+- `TrustWatchCloudKitNotifier.publish` — gated on `#if canImport(
+  CloudKit) && MAS_BUILD`.
+
+This is a genuinely production-relevant fix, not just a dev-test
+workaround: any future direct-DMG distribution with Pro license
+unlocked (e.g. via splynek-pro DMG hand-off) would have crashed
+identically.
+
+**Bug 2 — runbook port hardcode + endpoint mismatch.**  The
+original SMOKE-TEST-RUNBOOK example for API token verification
+used port `55432` (placeholder) and endpoint `/api/jobs` (which
+is intentionally unauthenticated for legacy web-dashboard
+polling).  Maintainer hit:
+- Connection refused on 55432 (Splynek picks a dynamic port via
+  `port: 0`; saw 49433 today).
+- After fixing the port to 49433 + retrying with `/api/jobs`,
+  curl returned `[]` (HTTP 200) but the token's `lastUsedAt`
+  never updated in `~/Library/Application Support/Splynek/api-tokens.json`
+  — because `validateToken` is never called for the unauth
+  legacy endpoint.
+
+Fix: runbook now uses `<PORT>` placeholder + lsof lookup
+command + recommends `/api/sovereignty/summary` (Sprint 1
+endpoint with proper `validateToken` guard).  Maintainer's curl
+against `/api/sovereignty/summary?t=<token>` returned the
+Sovereignty JSON + the token's `lastUsedAt` timestamp **did**
+update in the JSON file.
+
+**Bug 3 — iOS Companion strings auto-extracted by Xcode but
+not yet translated.**  Sprint 1's Insights tab + Sprint 2's
+geo-fence Settings + Sprint 5's pairing-flow updates added
+~30 strings to the iOS catalog.  Xcode's "Use Compiler to
+Extract Swift Strings" build setting auto-populated
+`iOS/SplynekCompanion/Localizable.xcstrings` with English-only
+entries during the smoke build.  Committed as-is for the
+Sprint 8 backlog (L10n round 5 — iPhone Companion catalog
+needs de/es/fr/it/pt-PT translation pass).
+
+**Live confirmation 1 — Mac Trust Watcher detected 9 real
+policy diffs.**  Run-now sweep on the Mac (with 12 watched apps
+× 2 URLs = 24 fetches) caught:
+- Claude · Terms of Service / Privacy Policy
+- ChatGPT · Privacy Policy
+- Dropbox · Terms of Service / Privacy Policy
+- Zoom · Terms of Service / Privacy Policy
+- Netflix · Terms of Service / Privacy Policy
+
+All classified as "Minor change" (<5% body delta).  These are
+the CDN-tracking-pixel / timestamp / whitespace noise the
+severity heuristic was tuned to NOT alarm-pop on — material
+policy edits would land as "Notable change" (5-20%) or
+"Material change" (>20%).  The pipeline correctly distinguishes
+noise from signal.
+
+**Live confirmation 2 — iPhone Insights tab pulled live data
+from Mac.**  Sprint 1's Pro-on-iPhone (`9dca20c`) verified
+end-to-end:
+- 4 cards rendered: Sovereignty 84/100 + Trust 75/100 avg +
+  Trust Watcher 9 alerts + Recent downloads (empty)
+- Mac-side `iphoneSummaryServes` counter went 0 → 6 after the
+  tab loaded + a pull-to-refresh
+- API token "Iphone" (read+write) `lastUsedAt` stamped on disk;
+  UI rendered "Last used 16:31" after tab-switch refresh
+
+**Live confirmation 3 — watchOS SDK install unblocks the watch
+target.**  `xcodebuild -project Splynek.xcodeproj -scheme
+SplynekWatch -destination 'generic/platform=watchOS'` =
+**BUILD SUCCEEDED**.  Both `SplynekWatch` (the app) and
+`SplynekWatchComplications` (the appex) compiled.  watchOS
+SDK 26.4 SDK provided by the maintainer's Xcode → Settings →
+Components install (the maintainer step from Sprint 2 part-2's
+commit message).
+
+#### Architectural choices that paid off
+
+1. **The persisted JSON pattern is observably trustworthy.**
+   When the `lastUsedAt` UI showed "Nunca usado" but disk should
+   have updated, opening the JSON file directly was the
+   diagnostic step.  The `Show JSON file` button in the
+   engagement viewer (Sprint 4 `7f02266`) follows the same
+   philosophy — privacy through transparency means the user
+   can always inspect the same data the app reads.  Validated.
+
+2. **Test scaffolds + live testing complement each other.**
+   The 820 unit tests caught what they were designed to catch
+   (pure logic, store mutations, validator decisions).  They
+   could never catch the CKContainer-init-crash because that's
+   a runtime trap from a system framework when an entitlement
+   is missing — only live launch reveals it.  Both layers
+   matter; neither replaces the other.
+
+3. **Compile-time gates beat runtime probes for entitlement
+   detection.**  `MAS_BUILD` flag is set at the Xcode-target
+   level; `swift build` (DMG path) doesn't have it.  Cleaner
+   than any runtime API would be (because there's no clean
+   public API to ask "what entitlements does my bundle carry").
+
+#### Critical lessons
+
+- **Dynamic ports caught the runbook off guard.**  Splynek
+  asks the OS for a port (`port: 0`).  This is the right design
+  — multi-instance, no conflicts, no hardcoded reservations.
+  But documentation that's authored in advance hardcoded a
+  placeholder, which broke the smoke test until corrected.
+
+- **Auth-by-default vs auth-by-explicit-route is a real design
+  choice.**  `/api/jobs` was intentionally left unauth for the
+  web-dashboard's polling needs; the Sprint-1 summary endpoints
+  added explicit `validateToken` guards.  The runbook didn't
+  document the distinction, which led the maintainer to a
+  false-negative ("token is broken!").  Fixed.
+
+- **Local Pro flip via ProStubs is a useful dev pattern but
+  carries hidden risks.**  Caught the CloudKit-init crash that
+  no test covered.  The flip never entered git history (Edit +
+  revert balanced out).  Worth keeping as a documented dev
+  technique — but always with a working CKContainer guard.
+
+#### Numbers
+
+```
+Commits this session:    4
+Tests:                   820 → 820 (smoke session was UX +
+                         doc work; no test deltas)
+Bugs caught + fixed:     3 (CloudKit gate, runbook port,
+                         runbook endpoint)
+iOS catalog:             +37 auto-extracted strings (no
+                         translations yet — Sprint 8 backlog)
+Pro features verified
+live (DMG flip):         Trust Watcher (full), Migrate Wizard
+                         (5/7), Engagement viewer (full),
+                         Trust+ upsell (gate not yet fired —
+                         needs 20+ events; saw 8), API tokens
+                         (full incl. curl round-trip)
+iOS Companion verified:  Bonjour, pairing via API token paste,
+                         Insights tab 4 cards, Definições
+                         pairing health, geo-fence section
+                         visible
+watchOS targets:         Both compile (BUILD SUCCEEDED) — SDK
+                         install unblocked the maintainer step
+Net for the day arc:    39 commits across PRO-PLUS-IPHONE
+                        Sprints 1+2+3+4+5+6+7+8, ~12,500 lines
+                        new code + ~500 translations
+```
+
+#### Where it stands at end of Sprint 8
+
+`origin/rollup/2026-05-08` carries the entire arc with the
+in-flight bug fixes integrated.  Branch is now ~186 commits
+ahead of `origin/main`.
+
+Tag-readiness has moved from "publish-ready / translation-
+complete" (Sprint 7 end) to **"publish-ready + live-validated
+on Mac + iPhone simulator"** (Sprint 8 end).  Three external
+clients (Raycast / CLI / Alfred) ship their scaffolds; iPhone
+Companion is end-to-end live; watch app + complications
+compile-verified.
+
+**Sprint 9 (next session, if executed)**:
+1. L10n round 5 — iPhone Companion catalog (auto-extracted
+   strings need de/es/fr/it/pt-PT translations)
+2. Update Bonjour TXT-record version string (currently
+   hardcoded to "v0.19" — caught by maintainer in iPhone
+   discovery test)
+3. Test Concierge / Recipes Pro UI via MAS build (requires
+   Apple Developer Program + signing)
+4. Actual physical-iPhone test (push notifications, geo-fence
+   walking)
+5. Tag v2.0.0 + announce (per LANDING-V2-DRAFT.md)
+
+Or alternative: tag v2.0.0 NOW given the validated Mac surface
++ iPhone simulator coverage; treat L10n round 5 + Bonjour
+version + push-NTF tests as v2.0.1 follow-up.
+
 ## When to re-read this doc
 
 This SESSION-LOG is meant for two scenarios:

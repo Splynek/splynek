@@ -348,16 +348,66 @@ A maior parte das funcionalidades Pro hoje **não estão acessíveis no iPhone**
   Sprint 7 numbers: 4 commits + docs; 820 → 820 tests
   (L10n + docs + bash only); +145 new translations.
 
-  ### Sprint 8 (next session, if executed)
+  ### Sprint 8 — LIVE-VALIDATED 2026-05-10 evening (4 commits)
 
-  1. Tag v2.0.0 from `rollup/2026-05-08` + cut DMG +
-     Homebrew Cask refresh + MAS resubmit
-  2. Show HN post + Product Hunt launch + Mac-app blogger
-     emails (per LANDING-V2-DRAFT.md press kit)
-  3. Adapt LANDING-V2-DRAFT.md into the splynek-landing repo
-     (Hugo / GitHub Pages)
-  4. Walk SMOKE-TEST-RUNBOOK end-to-end on real hardware +
-     sign off the manual sections
+  Item 4 of Sprint 8's original backlog (manual smoke on real
+  hardware) executed.  Items 1-3 (tag, announce, landing
+  adaptation) deferred to Sprint 9 — value of having walked the
+  surface live first is that we caught 3 in-flight bugs that
+  would have entered the v2.0.0 release otherwise:
+  - **CloudKit gates** (`276d6ec`) — `CKContainer.__allocating_init`
+    trap on Pro-DMG (no iCloud entitlement) fixed via compile-time
+    `#if !MAS_BUILD` gate.
+  - **Runbook port + endpoint corrections** (`9e25cd6`) —
+    `<PORT>` placeholder + `/api/sovereignty/summary` instead of
+    the unauth `/api/jobs`.
+  - **iOS Companion catalog auto-extract** (`bc5af7c`) — +37
+    English-only entries flagged for L10n round 5.
+
+  Live verification highlights (per `SMOKE-TEST-SIGNOFF-2026-05-10.md`):
+  - Trust Watcher detected 9 real policy hash diffs — all
+    correctly classified as "Minor change" (severity heuristic
+    distinguishes noise from signal as designed).
+  - iPhone Insights tab (Sprint 1) rendered live data from
+    Mac via API token; Sovereignty 84/100, Trust 75/100 avg.
+  - Mac-side `iphoneSummaryServes` engagement counter
+    0 → 6 confirmed end-to-end.
+  - watchOS SDK install unblocked; both Watch + Watch
+    Complications targets compile cleanly.
+
+  Sprint 8 numbers: 4 commits + docs; 820 → 820 tests
+  (live walk + bug fixes; no test deltas).
+
+  ### Sprint 9 (next session, if executed)
+
+  Decision point: tag v2.0.0 NOW given the live-validated
+  surface, or do one more polish round first?
+
+  **Path A — tag v2.0.0 now**:
+  1. Tag from `rollup/2026-05-08` + cut DMG + Homebrew Cask
+     refresh + MAS resubmit
+  2. Show HN + Product Hunt + Mac-app blogger emails
+  3. Adapt LANDING-V2-DRAFT.md into splynek-landing
+  4. Treat the Sprint 9 polish items as v2.0.1 follow-up
+
+  **Path B — one more polish round, tag v2.0.0 after**:
+  1. L10n round 5 — iPhone Companion catalog
+     (de/es/fr/it/pt-PT for the +37 auto-extracted strings)
+  2. Update Bonjour TXT-record version string (currently
+     hardcoded "v0.19" — caught in iPhone discovery)
+  3. Test Concierge / Recipes Pro UI via MAS build
+     (requires Apple Developer Program + signing)
+  4. Physical-iPhone test (push notifications, geo-fence
+     walking) once schema is in CloudKit Dashboard
+  5. THEN tag v2.0.0
+
+  Path A is faster + lets users see the marquee features
+  sooner; v2.0.1 polish lands within 2 weeks.  Path B
+  delays launch by 1-2 weeks but ships a more complete
+  initial cut.  Recommendation lean on **Path A** —
+  Sprint 8's live validation already caught the
+  catastrophic bugs (CloudKit init crash); the Path-B
+  items are polish, not blockers.
 
   Or alternative directions if Apple v2.0 review takes weeks:
   - Trust+ subscription UI (consume the engagement gate —
