@@ -22,22 +22,22 @@
 
 ## 1. Mac — Trust Watcher (Sprint 1)
 
-- [ ] Pro license active (Settings → Splynek Pro shows ACTIVE).
-- [ ] Open Trust tab → confirm the **Trust Watcher card** sits at the top of scan results.
-- [ ] Empty state: card shows `WATCHING N` pill (where N matches `TrustWatchCatalog.watchedBundleIDs.count`, currently 12) + last-sweep label.
-- [ ] Click **Run now** → progress; after sweep, alerts (if any) appear; pill flips to `K NEW` for K pending alerts.
-- [ ] Click an alert's **View page** → opens the policy URL in Safari.
-- [ ] Click **Dismiss** on an alert → row disappears; pending count decrements.
-- [ ] Click **Clear all** → every pending alert acknowledged; pill flips back to `WATCHING N`.
-- [ ] Switch license OFF (free tier) → card replaced with **ProLockedView** upsell. Switch back to Pro → card returns.
+- [x] Pro license active (Settings → Splynek Pro shows ACTIVE).
+- [x] Open Trust tab → confirm the **Trust Watcher card** sits at the top of scan results.
+- [x] Empty state: card shows `WATCHING N` pill (where N matches `TrustWatchCatalog.watchedBundleIDs.count`, currently 12) + last-sweep label.
+- [x] Click **Run now** → progress; after sweep, alerts (if any) appear; pill flips to `K NEW` for K pending alerts.
+- [x] Click an alert's **View page** → opens the policy URL in Safari.
+- [x] Click **Dismiss** on an alert → row disappears; pending count decrements.
+- [x] Click **Clear all** → every pending alert acknowledged; pill flips back to `WATCHING N`.
+- [x] Switch license OFF (free tier) → card replaced with **ProLockedView** upsell. Switch back to Pro → card returns.
 
 ## 2. Mac — Sovereignty Migrate Wizard (Sprint 2)
 
-- [ ] Sovereignty tab → matched-rows section.
-- [ ] Each alternative row has a **Migrate Original → Alt** button (Pro) OR **Migrate (Pro)** lock-icon (free).
-- [ ] Click Migrate → modal sheet opens with header `Migrate {original} → {alt}` + N steps + "each one runs only when you confirm" subtext.
-- [ ] Step-by-step: click **Run with confirmation** on a `markOriginalForReview` step → alert appears with the step's `confirmationPrompt` → click Confirm + run → row gets ✓ Done.
-- [ ] **Run all (with confirmations)** runs only the safe (non-destructive) steps; destructive steps still require their per-row confirmation.
+- [x] Sovereignty tab → matched-rows section.
+- [x] Each alternative row has a **Migrate Original → Alt** button (Pro) OR **Migrate (Pro)** lock-icon (free).
+- [x] Click Migrate → modal sheet opens with header `Migrate {original} → {alt}` + N steps + "each one runs only when you confirm" subtext.
+- [x] Step-by-step: click **Run with confirmation** on a `markOriginalForReview` step → alert appears with the step's `confirmationPrompt` → click Confirm + run → row gets ✓ Done.
+- [x] **Run all (with confirmations)** runs only the safe (non-destructive) steps; destructive steps still require their per-row confirmation.
 - [ ] Close sheet. Reopen Sovereignty tab → at the top of matched-rows: **Sovereignty Migrate review banner** appears with stale-week filter (>7 days). For freshly-marked entries the banner stays hidden until 7 days pass.
 - [ ] Banner row: **Open {alt}** opens homepage; **I'm done; forget this** removes from list.
 
@@ -50,31 +50,31 @@
 
 ## 4. Mac — Pricing telemetry + Trust+ upsell (Sprint 3 + 4)
 
-- [ ] Settings → scroll to **Your engagement (read-only)** card (Pro).
-- [ ] Three groups visible: Trust Watcher / Sovereignty Migrate / iPhone Companion.
-- [ ] Counters non-zero after the smoke-test runs above.
-- [ ] **Show JSON file** → Finder reveals `~/Library/Application Support/Splynek/engagement.json`.
+- [x] Settings → scroll to **Your engagement (read-only)** card (Pro).
+- [x] Three groups visible: Trust Watcher / Sovereignty Migrate / iPhone Companion.
+- [x] Counters non-zero after the smoke-test runs above.
+- [x] **Show JSON file** → Finder reveals `~/Library/Application Support/Splynek/engagement.json`.
 - [ ] If `EngagementGate.shouldOfferTrustPlus` fires (≥20 Trust-Watcher engagement events): **Splynek Trust+** upsell card appears below.
   - **I'd be interested** opens mailto: trust-plus@splynek.app with pre-filled subject/body.
   - **Not interested** hides the card for the session.
 
 ## 5. Mac — API tokens (Sprint 4)
 
-- [ ] Settings → **API tokens** card (Pro; ProLockedView for free).
-- [ ] Empty state: "No tokens minted yet." + mint form.
-- [ ] Mint a token: label "Smoke test", scope **Read + write** → click Mint → row appears, secret auto-revealed.
-- [ ] **Copy** copies the secret to clipboard.
-- [ ] Use the secret from terminal:
+- [x] Settings → **API tokens** card (Pro; ProLockedView for free).
+- [x] Empty state: "No tokens minted yet." + mint form.
+- [x] Mint a token: label "Smoke test", scope **Read + write** → click Mint → row appears, secret auto-revealed.
+- [x] **Copy** copies the secret to clipboard.
+- [x] Use the secret from terminal:
   ```sh
-  curl "http://localhost:55432/splynek/v1/api/jobs?t=<paste>" | jq
+  curl "http://localhost:55432/splynek/v1/api/jobs?t=1df657071cfc2265b19c9a631266b03eed96df99471ca5b3b941ae57bef7f937" | jq
   ```
   Expect 200 with the jobs JSON. Token's `lastUsedAt` updates.
-- [ ] Mint a **Read-only** token → confirm it returns 401 on a POST:
+- [x] Mint a **Read-only** token → confirm it returns 401 on a POST:
   ```sh
   curl -X POST "http://localhost:55432/splynek/v1/api/pause-all?t=<readonly>"
   # → 401 Unauthorized
   ```
-- [ ] **Revoke** a token → row disappears; subsequent requests with that secret return 401.
+- [x] **Revoke** a token → row disappears; subsequent requests with that secret return 401.
 
 ## 6. iPhone Companion (Sprint 1 + 2 + 5)
 
