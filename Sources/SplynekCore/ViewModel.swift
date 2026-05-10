@@ -3,8 +3,12 @@ import SwiftUI
 import AppKit
 import Combine
 import UniformTypeIdentifiers
-// SplynekCompanionCore carries RelaySummary (Sprint 1 PRO-PLUS-IPHONE)
+// SplynekCompanionCore carries RelaySummary (Sprint 1 PRO-PLUS-IPHONE).
+// Xcode compiles iOS/Shared/RelaySummaryTypes.swift directly into
+// the Splynek target (see project.yml); SPM imports the module here.
+#if SWIFT_PACKAGE
 import SplynekCompanionCore
+#endif
 
 @MainActor
 final class SplynekViewModel: ObservableObject {

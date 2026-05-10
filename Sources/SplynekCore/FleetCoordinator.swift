@@ -4,7 +4,11 @@ import SwiftUI
 import CryptoKit
 // SplynekCompanionCore carries RelaySummary (Sprint 1 PRO-PLUS-IPHONE)
 // — single source of truth shared across iOS Companion + Mac.
+// Xcode compiles iOS/Shared/RelaySummaryTypes.swift directly into
+// the Splynek target (see project.yml); SPM imports the module here.
+#if SWIFT_PACKAGE
 import SplynekCompanionCore
+#endif
 
 /// Bonjour-advertised per-device fleet orchestration.
 ///

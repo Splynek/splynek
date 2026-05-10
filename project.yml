@@ -73,12 +73,14 @@ targets:
     sources:
       - path: Sources/Splynek
       - path: Sources/SplynekCore
-      # S4 phase 3: CloudKitRelayReceiver in SplynekCore needs
-      # `CloudKitRelayRecord`, which lives in iOS/Shared/ for the iOS
-      # Companion app.  Xcode compiles this single file into the macOS
-      # Splynek target directly; SPM uses `import SplynekCompanionCore`
-      # gated on `SWIFT_PACKAGE`.
+      # S4 phase 3 / Sprint 1 PRO-PLUS-IPHONE: SplynekCore depends on
+      # types that live in iOS/Shared/ for the iOS Companion app.
+      # Xcode compiles these files into the macOS Splynek target
+      # directly; SPM uses `import SplynekCompanionCore` gated on
+      # `SWIFT_PACKAGE`.
       - path: iOS/Shared/CloudKitRelayRecord.swift
+      - path: iOS/Shared/RelaySummaryTypes.swift
+      - path: iOS/Shared/TrustWatchAlertRecord.swift
       - path: Resources/Splynek.icns
         buildPhase: resources
       - path: Resources/Legal
@@ -163,9 +165,11 @@ targets:
           - Views/ConciergeView.swift
           - Views/RecipeView.swift
           - Views/ProLockedView.swift
-      # S4 phase 3: shared CloudKitRelayRecord type (see Splynek
-      # macOS target for the rationale).
+      # S4 phase 3 / Sprint 1 PRO-PLUS-IPHONE: shared types from
+      # iOS/Shared (see Splynek macOS target for the rationale).
       - path: iOS/Shared/CloudKitRelayRecord.swift
+      - path: iOS/Shared/RelaySummaryTypes.swift
+      - path: iOS/Shared/TrustWatchAlertRecord.swift
       # splynek-pro's real Pro modules, pulled in from the sibling
       # private repo. Same module as the rest of the app target.
       - path: ../splynek-pro/Sources/SplynekPro

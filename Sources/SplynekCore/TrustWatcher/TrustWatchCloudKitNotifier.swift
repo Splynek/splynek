@@ -3,7 +3,12 @@ import Foundation
 import CloudKit
 #endif
 import os
+// TrustWatchAlertRecord lives in iOS/Shared/ for the iOS Companion.
+// Xcode compiles the file directly into the Splynek target (see
+// project.yml); SPM imports the module here.
+#if SWIFT_PACKAGE
 import SplynekCompanionCore
+#endif
 
 /// Publishes Trust Watcher alerts to the user's *private* CloudKit
 /// database so the iPhone Companion can surface them as push
