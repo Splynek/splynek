@@ -53,12 +53,18 @@ struct SplynekCompanionApp: App {
                     PhoneWatchSync.shared.activate()
                     PhoneWatchSync.shared.push()
                 }
-                // splynek://pair?host=…&port=…&token=… deep links
-                // are routed by SplynekCompanionAppDelegate.application(_:open:options:)
-                // — having @UIApplicationDelegateAdaptor in scope
-                // means SwiftUI's `.onOpenURL` never fires on its
-                // own.  Single canonical entry point keeps URL
-                // handling honest.
+                // Empirically: with @UIApplicationDelegateAdaptor
+                // and SwiftUI's WindowGroup, `.onOpenURL` IS the
+                // method iOS routes URLs through (verified end-to-
+                // end on iOS 26.4 sim with NSLog instrumentation).
+                // The AppDelegate's application(_:open:options:)
+                // method below is kept as belt-and-braces for any
+                // future iOS dispatch path change.
+                .onOpenURL { url in
+                    Task { @MainActor in
+                        await PairingDeepLink.handle(url: url)
+                    }
+                }
         }
     }
 }
