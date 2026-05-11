@@ -53,6 +53,12 @@ struct SplynekCompanionApp: App {
                     PhoneWatchSync.shared.activate()
                     PhoneWatchSync.shared.push()
                 }
+                // splynek://pair?host=…&port=…&token=… deep links
+                // are routed by SplynekCompanionAppDelegate.application(_:open:options:)
+                // — having @UIApplicationDelegateAdaptor in scope
+                // means SwiftUI's `.onOpenURL` never fires on its
+                // own.  Single canonical entry point keeps URL
+                // handling honest.
         }
     }
 }
@@ -69,6 +75,23 @@ final class SplynekCompanionAppDelegate: NSObject, UIApplicationDelegate {
         // prompt; the alert-permission prompt happens later in
         // TrustWatchPushSubscriber.setUpSubscription.
         application.registerForRemoteNotifications()
+        return true
+    }
+
+    /// v2.0.1 polish: route `splynek://pair?...` URLs into the
+    /// PairingDeepLink handler.  When `@UIApplicationDelegateAdaptor`
+    /// is in play, URL events arrive here first; if we don't claim
+    /// them, SwiftUI's `.onOpenURL` never fires.  We handle the
+    /// pair scheme synchronously and return true.
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+    ) -> Bool {
+        guard url.scheme?.lowercased() == "splynek" else { return false }
+        Task { @MainActor in
+            await PairingDeepLink.handle(url: url)
+        }
         return true
     }
 

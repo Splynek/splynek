@@ -445,6 +445,15 @@ targets:
         NSSupportsLiveActivities: true
         # QR-pairing camera (S4 phase 2) — AVFoundation scanner.
         NSCameraUsageDescription: "Splynek scans a QR code from your Mac's Settings → Sharing pane to pair instantly."
+        # v2.0.1 polish (2026-05-11): register the splynek:// URL
+        # scheme so a `splynek://pair?host=…&port=…&token=…` link
+        # — tapped in Messages / Mail / Notes after the user hits
+        # "Copy pair URL" on the Mac — auto-opens the Companion
+        # and pairs.  SplynekCompanionApp.onOpenURL handles it.
+        CFBundleURLTypes:
+          - CFBundleURLName: app.splynek.companion.pair
+            CFBundleURLSchemes: [splynek]
+            LSHandlerRank: Owner
         # Sprint 2 part-2 (2026-05-09) — Geo-fence pause/resume.
         # whenInUse is enough to register the home region; always
         # is required for the boundary cross to fire while the app

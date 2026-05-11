@@ -74,7 +74,26 @@ struct PairingSheet: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .listRowBackground(Color.clear)
-                    Text("Faster — open Splynek on your Mac, go to Settings → Web dashboard, and aim at the iPhone-pair QR.")
+                    // Counterpart to "Copy pair URL" on the Mac
+                    // (AgentsView.iPhonePairingRow): if the user
+                    // copied the link there, this PasteButton
+                    // pastes-and-pairs in one tap.  Routes through
+                    // the same applyComponents() the QR scanner uses.
+                    PasteButton(payloadType: String.self) { strings in
+                        guard let raw = strings.first,
+                              let c = SplynekPairURL.decode(from: raw) else {
+                            Task { @MainActor in
+                                lastError = "Clipboard doesn't contain a Splynek pairing link."
+                            }
+                            return
+                        }
+                        Task { @MainActor in await applyComponents(c) }
+                    }
+                    .labelStyle(.titleAndIcon)
+                    .buttonBorderShape(.capsule)
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
+                    Text("Faster — open Splynek on your Mac, go to Settings → Web dashboard, and either aim at the iPhone-pair QR or tap “Copy pair URL” and paste here.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
 
@@ -146,24 +165,26 @@ struct PairingSheet: View {
             .fullScreenCover(isPresented: $showingScanner) {
                 QRScannerView(
                     onPaired: { components in
-                        // Pre-fill the form from the scanned QR.
-                        host = components.host
-                        port = String(components.port)
-                        token = components.token
-                        if let n = components.name, !n.isEmpty {
-                            displayName = n
-                        }
                         showingScanner = false
-                        // Auto-submit — the user has already
-                        // expressed intent by scanning.  If the Mac
-                        // is unreachable the form re-appears with
-                        // the fields populated for retry.
-                        Task { await attempt() }
+                        Task { @MainActor in await applyComponents(components) }
                     },
                     onCancel: { showingScanner = false }
                 )
             }
         }
+    }
+
+    /// Apply parsed pairing components (from QR scan, pasted link, or
+    /// `splynek://pair?...` deep link) into the form and auto-submit.
+    /// The user has already expressed intent by scanning / pasting /
+    /// tapping a link, so we don't pause for a review step.
+    @MainActor
+    private func applyComponents(_ c: SplynekPairURL.Components) async {
+        host = c.host
+        port = String(c.port)
+        token = c.token
+        if let n = c.name, !n.isEmpty { displayName = n }
+        await attempt()
     }
 
     private var canSubmit: Bool {
