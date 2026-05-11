@@ -562,6 +562,13 @@ targets:
         # simulator install fails with MIInstallerErrorDomain code
         # 97 / InvalidCompanionAppBundleIdentifier.
         WKCompanionAppBundleIdentifier: app.splynek.companion
+        # Points watchOS at the AppIcon entry in Assets.xcassets so
+        # Springboard renders the Splynek logo instead of the blank
+        # placeholder.  Same pattern as the iOS Companion target
+        # (line 425).  Single 1024×1024 marketing icon is sufficient
+        # for watchOS 10+; image lives at
+        # iOS/SplynekWatch/Assets.xcassets/AppIcon.appiconset/.
+        CFBundleIconName: AppIcon
     settings:
       base:
         PRODUCT_NAME: Splynek Watch
@@ -572,6 +579,11 @@ targets:
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
         CODE_SIGN_STYLE: Automatic
+        # Override the project-level ASSETCATALOG_COMPILER_APPICON_NAME=""
+        # (which exists for the macOS Splynek target that ships
+        # Resources/Splynek.icns instead of an asset catalog) so the
+        # watchOS asset compiler binds the AppIcon set.
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
   # Sprint 3 (2026-05-10) — Watch face complications.  Same
   # WidgetKit shape as the iOS SplynekStatusWidget; subset of
