@@ -16,6 +16,10 @@ struct PairedMacsView: View {
     @State private var paired: [PairedMac] = []
     @State private var liveDiscoveries: [SplynekBonjourBrowser.Discovered] = []
     @State private var showingPairingSheet = false
+    /// When the user taps a discovered Mac in the list, we open the
+    /// PairingSheet with this prefill so the user only has to paste
+    /// the token (vs typing IP / port / name from scratch).
+    @State private var pendingPrefill: SplynekBonjourBrowser.Discovered?
     @State private var browser = SplynekBonjourBrowser()
 
     private var store: PairedMacStore? { PairedMacStore() }
@@ -38,13 +42,11 @@ struct PairedMacsView: View {
                 Section("Discovered on this network") {
                     ForEach(liveDiscoveries.filter { d in !paired.contains { $0.uuid == d.uuid } }) { d in
                         Button {
+                            // Tap-to-pair: open the sheet with the
+                            // discovered Mac's name + host + port
+                            // pre-filled.  User only enters the token.
+                            pendingPrefill = d
                             showingPairingSheet = true
-                            // PairingSheet will pre-fill with the
-                            // discovered device.  We surface this via
-                            // a lightweight environment value rather
-                            // than wiring up a coordinator — there's
-                            // only one entry point.
-                            UserDefaults.standard.set(d.uuid, forKey: "splynek.companion.preselectUUID")
                         } label: {
                             DiscoveredMacRow(d: d)
                         }
@@ -55,16 +57,19 @@ struct PairedMacsView: View {
         .navigationTitle("Splynek Companion")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button { showingPairingSheet = true } label: {
+                Button {
+                    pendingPrefill = nil  // manual entry, no prefill
+                    showingPairingSheet = true
+                } label: {
                     Image(systemName: "plus.circle")
                 }
             }
         }
-        .sheet(isPresented: $showingPairingSheet) {
-            PairingSheet(onPaired: { mac in
+        .sheet(isPresented: $showingPairingSheet, onDismiss: { pendingPrefill = nil }) {
+            PairingSheet(prefill: pendingPrefill) { mac in
                 store?.upsert(mac)
                 refresh()
-            })
+            }
         }
         .onAppear { startBrowsing() }
         .onDisappear { browser.stop() }

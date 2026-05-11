@@ -17,17 +17,54 @@ struct PairingSheet: View {
     var onPaired: (PairedMac) -> Void
     @Environment(\.dismiss) private var dismiss
 
-    @State private var displayName: String = "My Mac"
-    @State private var host: String = ""
-    @State private var port: String = "0"
+    @State private var displayName: String
+    @State private var host: String
+    @State private var port: String
     @State private var token: String = ""
     @State private var probing = false
     @State private var lastError: String?
     @State private var showingScanner = false
+    private let prefilled: Bool
+
+    /// `prefill` is set when the user tapped a Bonjour-discovered Mac
+    /// in PairedMacsView — we already know the name/host/port, so the
+    /// form opens with those populated and only the token remains.
+    init(
+        prefill: SplynekBonjourBrowser.Discovered? = nil,
+        onPaired: @escaping (PairedMac) -> Void
+    ) {
+        self.onPaired = onPaired
+        _displayName = State(initialValue: prefill?.displayName ?? "My Mac")
+        _host = State(initialValue: prefill?.host ?? "")
+        _port = State(initialValue: prefill.map { String($0.port) } ?? "0")
+        self.prefilled = (prefill != nil)
+    }
 
     var body: some View {
         NavigationStack {
             Form {
+                if prefilled {
+                    // Bonjour-discovered: the Mac's name + host + port
+                    // are already filled in; user only enters the
+                    // token.  Show a confirmation banner so they know
+                    // we found it for them.
+                    Section {
+                        Label {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Found \(displayName) on this Wi-Fi")
+                                    .font(.subheadline.weight(.semibold))
+                                Text("Just paste a token from the Mac to finish.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                        }
+                        .listRowBackground(Color.green.opacity(0.08))
+                    }
+                }
+
                 Section {
                     Button {
                         showingScanner = true
