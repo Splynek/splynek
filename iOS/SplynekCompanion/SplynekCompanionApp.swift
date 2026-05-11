@@ -46,6 +46,12 @@ struct SplynekCompanionApp: App {
                     if #available(iOS 16.0, *) {
                         GeoFenceCoordinator.shared.enable()
                     }
+                    // Sprint 9 / v2.0.1 polish (2026-05-11): activate
+                    // the WatchConnectivity sender so the Watch app
+                    // receives the current paired-Mac snapshot.  No-op
+                    // on devices without a paired Watch.
+                    PhoneWatchSync.shared.activate()
+                    PhoneWatchSync.shared.push()
                 }
         }
     }

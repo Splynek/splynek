@@ -19,6 +19,19 @@ import WatchKit
 
 @main
 struct SplynekWatchApp: App {
+    init() {
+        // Sprint 9 / v2.0.1 polish (2026-05-11): activate the
+        // WatchConnectivity receiver so the Watch ingests the
+        // PairedMacStore snapshot the iPhone Companion pushes via
+        // WCSession.updateApplicationContext.  Without this the
+        // Watch's PairedMacStore stays empty even on a paired
+        // physical Watch — App Group containers do not auto-sync
+        // across iPhone ↔ Watch.
+        #if canImport(WatchConnectivity)
+        PhoneWatchReceiver.shared.activate()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             SplynekWatchContentView()
@@ -50,6 +63,14 @@ struct SplynekWatchContentView: View {
         }
         .navigationTitle("Splynek")
         .task { await refresh() }
+        // Sprint 9 / v2.0.1 polish (2026-05-11): refresh whenever
+        // the iPhone Companion pushes a new paired-Mac snapshot via
+        // WatchConnectivity.
+        .onReceive(
+            NotificationCenter.default.publisher(for: .pairedMacsDidChange)
+        ) { _ in
+            Task { await refresh() }
+        }
     }
 
     // MARK: Sections
