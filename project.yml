@@ -556,6 +556,12 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSLocalNetworkUsageDescription: "Splynek Watch sends pause/resume commands to your Mac on the same Wi-Fi."
         WKApplication: true
+        # Required by watchOS 10+: a non-Watch-only app must declare
+        # its iPhone companion's bundle ID so Springboard knows
+        # which iOS app this Watch app belongs to.  Without this,
+        # simulator install fails with MIInstallerErrorDomain code
+        # 97 / InvalidCompanionAppBundleIdentifier.
+        WKCompanionAppBundleIdentifier: app.splynek.companion
     settings:
       base:
         PRODUCT_NAME: Splynek Watch

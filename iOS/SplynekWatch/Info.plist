@@ -24,5 +24,7 @@
 	<string>Splynek Watch sends pause/resume commands to your Mac on the same Wi-Fi.</string>
 	<key>WKApplication</key>
 	<true/>
+	<key>WKCompanionAppBundleIdentifier</key>
+	<string>app.splynek.companion</string>
 </dict>
 </plist>
