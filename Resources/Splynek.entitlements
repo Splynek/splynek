@@ -3,48 +3,53 @@
 <plist version="1.0">
 <dict>
     <!--
-      Enable the App Sandbox. Splynek only needs:
-        - Outgoing network access (client)
-        - Write access to files the user explicitly picked via NSOpenPanel
-          (security-scoped bookmarks are handled by AppKit)
-      Everything else stays denied.
+      Developer-ID DMG variant of Splynek's entitlements.  Distinct
+      from Resources/Splynek-MAS.entitlements which is what the App
+      Store build signs against.
 
-      To build with this entitlement file:
+      v2.0.1 release-blocker fix (2026-05-13):
+        The previous version of this file included iCloud entitlements
+        (com.apple.developer.icloud-services + container-identifiers)
+        alongside `com.apple.security.app-sandbox = true`.  That
+        combination is invalid for a Developer-ID build: a sandboxed
+        app that accesses an iCloud container needs an
+        `application-identifier` entitlement, which only ships inside
+        a provisioning profile — and Developer-ID signing has no
+        profile.  Launchd refused to spawn the resulting binary with
+        `RBSRequestErrorDomain Code=5 / POSIX 163` ("Launchd job spawn
+        failed") on every fresh user machine.  Notarisation passed
+        because signatures + executable validity check OK, but
+        runtime sandbox init failed.
+
+        Fix: drop iCloud from the DMG variant.  CloudKit over-cellular
+        relay (the only consumer) was already gated behind `#if MAS_BUILD`
+        in FleetCoordinator.swift + TrustWatchCloudKitNotifier.swift
+        (commit 276d6ec, 2026-05-10), so the DMG variant doesn't try
+        to use those entitlements at runtime anyway.  iPhone Companion
+        users who need over-cellular relay use the MAS variant.
+
+      Sandbox stays enabled for the DMG variant — it's a good security
+      posture for a download manager and notarisation expects it for
+      apps that ship with hardened runtime.  Splynek's needs:
+        - Outgoing network access (client) for HTTP downloads
+        - Incoming network access (server) for the LAN HTTP API + Bonjour
+        - Write access to ~/Downloads
+        - Write access to user-picked locations (NSOpenPanel)
+
+      To build the DMG variant with this entitlements file:
         SIGN_IDENTITY="Developer ID Application: …" \
           ENTITLEMENTS=Resources/Splynek.entitlements \
           ./Scripts/build.sh
-
-      Ad-hoc signing with an entitlement file works for local testing but
-      some sandbox features require a real identity for full enforcement.
     -->
     <key>com.apple.security.app-sandbox</key>
     <true/>
     <key>com.apple.security.network.client</key>
     <true/>
+    <key>com.apple.security.network.server</key>
+    <true/>
     <key>com.apple.security.files.user-selected.read-write</key>
     <true/>
     <key>com.apple.security.files.downloads.read-write</key>
     <true/>
-    <!--
-      S4 phase 3 (2026-05-07): CloudKit over-cellular relay.
-      Splynek macOS receives SplynekRelayJob CKRecords written by
-      iOS Splynek Companion when the iPhone wasn't on the same Wi-Fi
-      as the Mac.  Same container ID as the iOS app so writes from
-      one land in the database the other polls.
-
-      `iCloud.app.splynek.companion` must be created in App Store
-      Connect, with schema "SplynekRelayJob" published in both
-      Development + Production environments, before the receiver's
-      pollOnce() will return matching records.  Until then the
-      receiver runs but quietly returns 0 ingested per tick.
-    -->
-    <key>com.apple.developer.icloud-services</key>
-    <array>
-        <string>CloudKit</string>
-    </array>
-    <key>com.apple.developer.icloud-container-identifiers</key>
-    <array>
-        <string>iCloud.app.splynek.companion</string>
-    </array>
 </dict>
 </plist>

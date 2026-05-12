@@ -3,6 +3,73 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v2.0.1 — Launchable DMG + Watch polish + paste-to-pair (2026-05-13)
+
+**v2.0.0 was unlaunchable. This is the fix.**
+
+### Release-blocking fix
+
+The v2.0.0 Developer-ID DMG signed against an entitlements file
+that declared `com.apple.security.app-sandbox = true` alongside
+iCloud container access — a combination that requires an
+`application-identifier` entitlement, which only ships through a
+provisioning profile (the MAS distribution path).  Developer-ID
+signing doesn't include a profile, so Launchd refused to spawn
+the binary with `RBSRequestErrorDomain Code=5 / POSIX 163` on
+every fresh user machine.  Notarisation passed because signatures
+were valid; runtime sandbox init failed.
+
+`Resources/Splynek.entitlements` now drops iCloud entitlements
+from the DMG variant (CloudKit over-cellular relay is gated behind
+`#if MAS_BUILD` and was never exercised from the DMG variant
+anyway) and adds the missing `com.apple.security.network.server`
+entitlement for the LAN HTTP API + Bonjour listener.
+
+Test-launch is now a permanent step in the release runbook.
+
+### iOS Companion (paired-Mac UX)
+
+- **Paste-to-pair**: a SwiftUI `PasteButton` in the pairing sheet
+  consumes the Mac's "Copy pair URL" output in a single tap.  No
+  IP, no port, no token typing.
+- **`splynek://pair?…` deep links**: tap the same URL from
+  Messages, Mail, Notes, Universal Clipboard, or AirDrop, iOS
+  shows its standard "Abrir com Splynek?" gate, tap Abrir, paired.
+- **Tap-discovered-Mac actually prefills the form**: Bonjour
+  list entries previously wrote a UserDefaults hint that the
+  pairing sheet never read — fixed so the form opens with name,
+  host, and port populated; only the token remains.
+
+### Apple Watch
+
+- **Splynek logo on the home screen**: scaffolded the watchOS 10+
+  asset catalog so the installed Watch app shows the Splynek icon,
+  not the blank placeholder.
+- **WKCompanionAppBundleIdentifier declared**: lets the Watch app
+  install on simulator + paired hardware (previously rejected with
+  MIInstallerErrorDomain code 97 / InvalidCompanionAppBundleIdentifier).
+- **WatchConnectivity wired end-to-end**: the iPhone Companion
+  now pushes the paired-Mac snapshot to the Watch via
+  `WCSession.updateApplicationContext`, so the Watch's
+  PairedMacStore actually populates.  Without this the Watch
+  showed "No Mac paired" even on a paired physical Watch — App
+  Group containers are not auto-synced across iPhone ↔ Watch.
+
+### Mac + build
+
+- **App Intents metadata extraction now works under the Xcode
+  build path**.  Three Sprint 1 source files had unguarded
+  `import SplynekCompanionCore`; Xcode's `appintentsmetadataprocessor`
+  silently skipped the metadata step.  Imports are now gated on
+  `#if SWIFT_PACKAGE` + shared types are added to the Xcode
+  Splynek + Splynek-MAS target sources so Shortcuts.app sees the
+  five Mac App Intents in DMG builds.
+- **Bonjour TXT-record `ver` is dynamic**: was hardcoded to
+  "0.19", now reads `SplynekVersion.current`.
+- **iOS Companion L10n round 5**: 23 strings × 5 locales = 115
+  new translations.  Catalog now at zero audit gaps across 5
+  locales for both Mac (841 strings) AND iOS Companion.
+
 ## v2.0.0 — PRO-PLUS-IPHONE strategic arc (2026-05-10)
 
 Eight-sprint arc that pivots the Pro tier marquee from "AI Concierge"
