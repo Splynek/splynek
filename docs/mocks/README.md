@@ -21,8 +21,8 @@ described in `../IA-USER-TEST-SCRIPT.md`.
 | `download.html` | 04 | Download / Now + Active + Done |
 | `my-apps.html` | 05 + 06 + 09 | My Apps / Installed + Updates + Trust Watcher + (Concierge) |
 | `coordinate.html` | 07 + 08 | Coordinate / This LAN + Cloud relay + External |
-| `_shared.css` | – | Design tokens + components |
-| `_shared.js` | – | Subview chip switching + sheet open/close |
+| `shared.css` | – | Design tokens + components |
+| `shared.js` | – | Subview chip switching + sheet open/close |
 | Settings sheet | 10 | Available on every page via the gear icon |
 
 ---
