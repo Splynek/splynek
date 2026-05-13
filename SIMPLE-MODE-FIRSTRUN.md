@@ -1,5 +1,27 @@
 # SIMPLE-MODE-FIRSTRUN.md
 
+> **STATUS: SUPERSEDED** — by `IA-PROPOSAL.md` (2026-05-13 evening).
+>
+> This spec assumed Splynek had "two competing identities"
+> (download-manager vs Trust-Watcher) and tried to route users to a
+> tab subset via a 3-question first-run wizard.  The reframe that
+> followed showed the product is actually **one workflow in four
+> sequential phases** (Discover → Download → My Apps → Coordinate),
+> not two products fighting for the same screen.
+>
+> Under the lifecycle IA, no persona-based tab hiding is needed —
+> every user gets the same four tabs in the same order, and the
+> order itself teaches the mental model.  First-run reduces to a
+> single welcome card.
+>
+> Document kept here as a historical record of the earlier framing
+> + the reasoning that led to its replacement.  Read `IA-PROPOSAL.md`
+> for the current direction.
+
+---
+
+# Original spec follows
+
 Design spec for the first-run experience that turns Splynek from
 "power-user download manager" into "a thing for everyone".
 
