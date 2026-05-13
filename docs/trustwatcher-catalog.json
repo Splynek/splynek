@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "generated_from": "Sources/SplynekCore/TrustWatcher/TrustWatchCatalog.swift",
+  "apps": [
+    {
+      "name": "Spotify",
+      "bundleID": "com.spotify.client",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://www.spotify.com/legal/privacy-policy/"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://www.spotify.com/legal/end-user-agreement/"
+        }
+      ]
+    },
+    {
+      "name": "Netflix",
+      "bundleID": "com.netflix.Netflix",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://help.netflix.com/legal/privacy"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://help.netflix.com/legal/termsofuse"
+        }
+      ]
+    },
+    {
+      "name": "Slack",
+      "bundleID": "com.tinyspeck.slackmacgap",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://slack.com/trust/privacy/privacy-policy"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://slack.com/terms-of-service/user"
+        }
+      ]
+    },
+    {
+      "name": "Discord",
+      "bundleID": "com.hnc.Discord",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://discord.com/privacy"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://discord.com/terms"
+        }
+      ]
+    },
+    {
+      "name": "Zoom",
+      "bundleID": "us.zoom.xos",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://www.zoom.com/en/trust/privacy/"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://www.zoom.com/en/trust/terms/"
+        }
+      ]
+    },
+    {
+      "name": "Adobe Photoshop",
+      "bundleID": "com.adobe.Photoshop",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://www.adobe.com/privacy/policy.html"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://www.adobe.com/legal/terms.html"
+        }
+      ]
+    },
+    {
+      "name": "Notion",
+      "bundleID": "notion.id",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://www.notion.com/notion/privacy-policy"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://www.notion.com/notion/terms"
+        }
+      ]
+    },
+    {
+      "name": "Dropbox",
+      "bundleID": "com.getdropbox.dropbox",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://www.dropbox.com/privacy"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://www.dropbox.com/terms"
+        }
+      ]
+    },
+    {
+      "name": "Google Chrome",
+      "bundleID": "com.google.Chrome",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://policies.google.com/privacy"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://policies.google.com/terms"
+        }
+      ]
+    },
+    {
+      "name": "Mozilla Firefox",
+      "bundleID": "org.mozilla.firefox",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://www.mozilla.org/privacy/firefox/"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://www.mozilla.org/about/legal/terms/firefox/"
+        }
+      ]
+    },
+    {
+      "name": "ChatGPT",
+      "bundleID": "com.openai.chat",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://openai.com/policies/row-privacy-policy/"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://openai.com/policies/row-terms-of-use/"
+        }
+      ]
+    },
+    {
+      "name": "Claude",
+      "bundleID": "com.anthropic.claudefordesktop",
+      "urls": [
+        {
+          "kind": "privacyPolicy",
+          "url": "https://www.anthropic.com/legal/privacy"
+        },
+        {
+          "kind": "termsOfService",
+          "url": "https://www.anthropic.com/legal/consumer-terms"
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "apps": 12,
+    "urls": 24
+  }
+}
