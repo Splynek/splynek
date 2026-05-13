@@ -2,12 +2,15 @@
 # frozen_string_literal: true
 
 cask "splynek" do
-  version "2.0.0"
-  # SHA-256 of the notarized + stapled v2.0.0 DMG cut
-  # 2026-05-10 17:38.  Apple notarization submission ID
-  # c92dfa2c-9240-4b6b-b406-ae7a447af239 (Accepted).
+  version "2.0.1"
+  # SHA-256 of the notarized + stapled v2.0.1 DMG cut 2026-05-13.
+  # Apple notarization submission ID
+  # 3e3bef81-1aaa-42d3-9d19-adcdb4a41845 (Accepted).
+  # v2.0.1 is a launchable-DMG hotfix for v2.0.0 — v2.0.0 was signed
+  # with app-sandbox=true + iCloud entitlements without a provisioning
+  # profile, which made Launchd refuse to spawn it (POSIX 163).
   # Re-compute via: shasum -a 256 build/Splynek.dmg
-  sha256 "5404d86a7e069f5fc2ca6bf57f3760386e0a735309e944be0a4be76e3ebdd30f"
+  sha256 "56ec3c9957de801fd9646b883a2eb9b29a573a2fc45c1f1f69a9bacc350a5441"
 
   url "https://github.com/Splynek/splynek/releases/download/v#{version}/Splynek-#{version}.dmg",
       verified: "github.com/Splynek/"
