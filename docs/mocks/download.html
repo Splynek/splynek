@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280, initial-scale=1">
+<title>Splynek — Download (IA mock)</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../icon-256.png" alt="">
+      <span>Splynek</span>
+    </div>
+    <nav>
+      <a href="discover.html" class="tab"><span class="icon">✨</span> Discover</a>
+      <a href="download.html" class="tab active"><span class="icon">⬇</span> Download<span class="badge">2</span></a>
+      <a href="my-apps.html" class="tab"><span class="icon">📦</span> My Apps</a>
+      <a href="coordinate.html" class="tab"><span class="icon">🖥</span> Coordinate</a>
+    </nav>
+    <div class="footer">
+      <button class="gear" data-open-sheet="settings" title="Settings">⚙</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="toolbar">
+      <div class="chips">
+        <button class="chip active" data-subview="now">Now<span class="count">2</span></button>
+        <button class="chip" data-subview="active">Active</button>
+        <button class="chip" data-subview="done">Done</button>
+      </div>
+      <div class="spacer"></div>
+      <div class="right-actions">
+        <button class="btn secondary sm">Pause all</button>
+        <button class="btn secondary sm">Resume all</button>
+        <button class="btn primary sm">+ Add URL</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- Frame 04: Now (default) ─────────────────────────────── -->
+      <div class="subview active" data-subview="now">
+
+        <div class="dl-card">
+          <div class="head">
+            <span style="font-size: 24px;">💿</span>
+            <div class="title">Ubuntu-25.04-desktop.iso</div>
+            <div class="percent">43%</div>
+          </div>
+          <div class="progress" style="display: block; height: 8px; margin: 8px 0;">
+            <div class="fill" style="width: 43%; height: 100%;"></div>
+          </div>
+          <div class="interfaces">
+            <span class="lane eth">🔌 2.1 MB/s · Ethernet</span>
+            <span class="plus">+</span>
+            <span class="lane cell">📱 1.4 MB/s · iPhone hotspot</span>
+            <span class="total">= 3.5 MB/s</span>
+          </div>
+          <div class="meta">
+            <span>1.5 GB of 3.5 GB · ETA 8 min</span>
+            <span>From releases.ubuntu.com</span>
+          </div>
+        </div>
+
+        <div class="dl-card">
+          <div class="head">
+            <span style="font-size: 24px;">📦</span>
+            <div class="title">Notion-2.7-mac.dmg</div>
+            <div class="percent">8%</div>
+          </div>
+          <div class="progress" style="display: block; height: 8px; margin: 8px 0;">
+            <div class="fill warn" style="width: 8%; height: 100%;"></div>
+          </div>
+          <div class="interfaces">
+            <span class="lane lan">🖥 600 KB/s · LAN peer cache</span>
+            <span class="total">= 600 KB/s</span>
+          </div>
+          <div class="meta">
+            <span>12 MB of 145 MB · ETA 4 min</span>
+            <span>Served by Studio-iMac on this Wi-Fi</span>
+          </div>
+        </div>
+
+        <!-- Summary strip ─────────────────────────────────────── -->
+        <div style="margin-top: 24px; padding: 14px 18px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; gap: 18px; font-size: 13.5px; color: var(--text-dim);">
+          <span><b style="color: var(--accent);">Today:</b> 3 finished · 240 MB total</span>
+          <span style="color: var(--muted);">·</span>
+          <span>4 hours of waiting saved by multi-interface fetching</span>
+          <span style="margin-left: auto; color: var(--muted);">View detailed throughput →</span>
+        </div>
+
+      </div>
+
+      <!-- Active subview ─────────────────────────────────────── -->
+      <div class="subview" data-subview="active">
+        <section>
+          <h2>Active downloads</h2>
+          <p class="section-lede">In-progress, queued, or paused. Includes BitTorrent v2 transfers.</p>
+          <div class="card" style="padding: 0;">
+            <div class="list">
+              <div class="row">
+                <div class="icon">💿</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">Ubuntu-25.04-desktop.iso</div>
+                  <div class="secondary">In progress · 43% · 3.5 MB/s · ETA 8 min</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Pause</button>
+                  <button class="btn ghost sm">Cancel</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">📦</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">Notion-2.7-mac.dmg</div>
+                  <div class="secondary">In progress · 8% · 600 KB/s · ETA 4 min</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Pause</button>
+                  <button class="btn ghost sm">Cancel</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">🎵</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">Anytype-0.34-mac.dmg</div>
+                  <div class="secondary">Queued · waiting for slot</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Start now</button>
+                  <button class="btn ghost sm">Cancel</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">📺</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">debian-13.0.0-amd64-netinst.iso</div>
+                  <div class="secondary">Paused at 67% · resumes when Wi-Fi returns</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Resume</button>
+                  <button class="btn ghost sm">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Done subview ───────────────────────────────────────── -->
+      <div class="subview" data-subview="done">
+        <section>
+          <h2>Downloaded</h2>
+          <p class="section-lede">Everything Splynek has finished fetching. Searchable. Per-row Forget to clean up.</p>
+          <div class="search" style="margin-bottom: 16px; max-width: 400px;">
+            <span class="icon">🔍</span>
+            <input type="text" placeholder="Search by filename, source, or date…">
+          </div>
+          <div class="card" style="padding: 0;">
+            <div class="list">
+              <div class="row">
+                <div class="icon">📄</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">1Password-8.10.dmg</div>
+                  <div class="secondary">2026-05-12 · 240 MB · From 1password.com · ✓ SHA-256 verified</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Reveal</button>
+                  <button class="btn ghost sm">Forget</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">🌐</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">Firefox-128.0.esr.dmg</div>
+                  <div class="secondary">2026-05-11 · 110 MB · From mozilla.org · ✓ Notarized</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Reveal</button>
+                  <button class="btn ghost sm">Forget</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">📓</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">Anytype-0.33.0-aarch64.dmg</div>
+                  <div class="secondary">2026-05-10 · 142 MB · From anytype.io</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Reveal</button>
+                  <button class="btn ghost sm">Forget</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">🐧</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">ubuntu-24.04.2-desktop-amd64.iso</div>
+                  <div class="secondary">2026-05-09 · 6.5 GB · From releases.ubuntu.com · ✓ SHA-256 verified</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Reveal</button>
+                  <button class="btn ghost sm">Forget</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">🎵</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">VLC-3.0.20-arm64.dmg</div>
+                  <div class="secondary">2026-05-08 · 50 MB · From videolan.org · ✓ Notarized</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Reveal</button>
+                  <button class="btn ghost sm">Forget</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Settings sheet (same as other pages) -->
+<div id="sheet-settings" class="sheet-backdrop">
+  <div class="sheet" role="dialog" style="height: 600px;">
+    <div class="sheet-header"><h2>Settings</h2><button class="close" data-close-sheet aria-label="Close">×</button></div>
+    <div class="sheet-body" style="padding: 0;">
+      <div class="settings-grid" style="height: 100%;">
+        <div class="settings-nav">
+          <a href="#general" class="active">General</a>
+          <a href="#pro">Pro license</a>
+          <a href="#helpers">Helpers</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#advanced">Advanced</a>
+          <a href="#about">About</a>
+          <a href="#legal">Legal</a>
+        </div>
+        <div class="settings-pane">
+          <h2 style="margin: 0 0 12px; font-size: 18px;">General</h2>
+          <p class="section-lede">Splynek's core behavior on this Mac.</p>
+          <div class="row"><div><div class="label">Start at login</div><div class="help">Splynek opens automatically when you sign in.</div></div><div class="toggle on"></div></div>
+          <div class="row"><div><div class="label">Simple mode</div><div class="help">Hide power-user features behind a "Show more" toggle.</div></div><div class="toggle on"></div></div>
+          <div class="row"><div><div class="label">Default download folder</div><div class="help">~/Downloads</div></div><button class="btn secondary sm">Choose…</button></div>
+          <div class="row"><div><div class="label">Show in menu bar</div><div class="help">A compact menu-bar icon for quick access.</div></div><div class="toggle on"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn danger sm">Reset first-run experience</button>
+      <button class="btn primary" data-close-sheet>Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="test-banner">moderator mode · Download (Frame 04)</div>
+<script src="_shared.js"></script>
+</body>
+</html>

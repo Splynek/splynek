@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280, initial-scale=1">
+<title>Splynek — Discover (IA mock)</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../icon-256.png" alt="">
+      <span>Splynek</span>
+    </div>
+    <nav>
+      <a href="discover.html" class="tab active"><span class="icon">✨</span> Discover</a>
+      <a href="download.html" class="tab"><span class="icon">⬇</span> Download</a>
+      <a href="my-apps.html" class="tab"><span class="icon">📦</span> My Apps</a>
+      <a href="coordinate.html" class="tab"><span class="icon">🖥</span> Coordinate</a>
+    </nav>
+    <div class="footer">
+      <button class="gear" data-open-sheet="settings" title="Settings">⚙</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="toolbar">
+      <div class="chips">
+        <button class="chip active" data-subview="browse">Browse</button>
+        <button class="chip" data-subview="stacks">Stacks</button>
+        <button class="chip" data-open-sheet="concierge">Ask Splynek</button>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- Frame 02: Browse ─────────────────────────────────────── -->
+      <div class="subview active" data-subview="browse">
+
+        <div class="search" style="margin-bottom: 24px;">
+          <span class="icon">🔍</span>
+          <input type="text" placeholder="Search apps: Notes · Music · Cloud storage · Browser…">
+        </div>
+
+        <div class="hint-card">
+          <div class="icon">💡</div>
+          <div class="text">
+            Your installed stack costs <b>~$420/yr</b>. Switching the
+            three biggest spenders would save <b>$300/yr</b>.
+          </div>
+          <button class="btn secondary sm">Show me how →</button>
+        </div>
+
+        <section>
+          <h2>Categories</h2>
+          <p class="section-lede">
+            Curated by Splynek's Sovereignty + Trust catalogs.
+            Tap one to see candidates ranked by safety, openness,
+            and cost.
+          </p>
+          <div class="grid cols-4">
+            <div class="card lift">
+              <h3>📝 Notes</h3>
+              <p>Note-taking, journaling, second-brain tools.</p>
+              <div class="meta">12 apps · avg Sovereignty <b style="color:var(--accent)">78</b></div>
+            </div>
+            <div class="card lift">
+              <h3>🎵 Music</h3>
+              <p>Streaming, library, hi-fi.</p>
+              <div class="meta">8 apps · avg Sovereignty <b style="color:var(--gold)">65</b></div>
+            </div>
+            <div class="card lift">
+              <h3>☁️ Cloud storage</h3>
+              <p>Sync, backup, end-to-end encrypted.</p>
+              <div class="meta">6 apps · avg Sovereignty <b style="color:var(--accent)">71</b></div>
+            </div>
+            <div class="card lift">
+              <h3>🌐 Browsers</h3>
+              <p>Web access, privacy modes, extensions.</p>
+              <div class="meta">5 apps · avg Sovereignty <b style="color:var(--accent)">84</b></div>
+            </div>
+            <div class="card lift">
+              <h3>📧 Email</h3>
+              <p>End-to-end encrypted, EU-hosted, IMAP.</p>
+              <div class="meta">9 apps · avg Sovereignty <b style="color:var(--accent)">82</b></div>
+            </div>
+            <div class="card lift">
+              <h3>📅 Calendar</h3>
+              <p>Standalone clients, sync protocols.</p>
+              <div class="meta">5 apps · avg Sovereignty <b style="color:var(--accent)">74</b></div>
+            </div>
+            <div class="card lift">
+              <h3>🤖 AI assistants</h3>
+              <p>Local, hosted, EU-only options.</p>
+              <div class="meta">7 apps · avg Sovereignty <b style="color:var(--gold)">58</b></div>
+            </div>
+            <div class="card lift">
+              <h3>🔐 Password managers</h3>
+              <p>End-to-end encrypted vaults, FOSS, paid.</p>
+              <div class="meta">6 apps · avg Sovereignty <b style="color:var(--accent)">88</b></div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Frame 03: Stacks ────────────────────────────────────── -->
+      <div class="subview" data-subview="stacks">
+        <section>
+          <h2>Recipes for a setup</h2>
+          <p class="section-lede">
+            Hand-curated multi-app stacks for common use cases.
+            Each stack is a single click — Splynek queues every
+            install, in order.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card lift">
+              <div style="display: flex; gap: 18px; align-items: center;">
+                <div style="display: flex; gap: 4px;">
+                  <span style="font-size: 28px;">📷</span>
+                  <span style="font-size: 28px;">🎨</span>
+                  <span style="font-size: 28px;">📓</span>
+                  <span style="font-size: 28px;">💾</span>
+                  <span style="font-size: 28px;">🌐</span>
+                </div>
+                <div style="flex: 1;">
+                  <h3 style="margin: 0 0 4px;">Photographer's stack</h3>
+                  <p>RAW editor + lightweight catalog + portfolio + cloud
+                  backup + portfolio site. No subscriptions.</p>
+                  <div class="meta">5 apps · avg Sovereignty <b style="color:var(--accent)">82</b> · avg Trust <b style="color:var(--accent)">89</b> · <b>$0/mo</b></div>
+                </div>
+                <button class="btn primary">Install this stack</button>
+              </div>
+            </div>
+
+            <div class="card lift">
+              <div style="display: flex; gap: 18px; align-items: center;">
+                <div style="display: flex; gap: 4px;">
+                  <span style="font-size: 28px;">📝</span>
+                  <span style="font-size: 28px;">🗒</span>
+                  <span style="font-size: 28px;">🔐</span>
+                </div>
+                <div style="flex: 1;">
+                  <h3 style="margin: 0 0 4px;">Privacy-first writer</h3>
+                  <p>Local-first markdown editor + journal + encrypted
+                  vault. Everything stays on your devices.</p>
+                  <div class="meta">3 apps · avg Sovereignty <b style="color:var(--accent)">94</b> · avg Trust <b style="color:var(--accent)">92</b> · <b>$0/mo</b></div>
+                </div>
+                <button class="btn primary">Install this stack</button>
+              </div>
+            </div>
+
+            <div class="card lift">
+              <div style="display: flex; gap: 18px; align-items: center;">
+                <div style="display: flex; gap: 4px;">
+                  <span style="font-size: 28px;">📧</span>
+                  <span style="font-size: 28px;">📅</span>
+                  <span style="font-size: 28px;">☁️</span>
+                  <span style="font-size: 28px;">📝</span>
+                  <span style="font-size: 28px;">🔐</span>
+                  <span style="font-size: 28px;">🌐</span>
+                  <span style="font-size: 28px;">🗺</span>
+                  <span style="font-size: 28px;">💬</span>
+                </div>
+                <div style="flex: 1;">
+                  <h3 style="margin: 0 0 4px;">EU-only essentials</h3>
+                  <p>Eight everyday apps from EU-based vendors only.
+                  Replaces the big US-controlled defaults.</p>
+                  <div class="meta">8 apps · avg Sovereignty <b style="color:var(--accent)">97</b> · avg Trust <b style="color:var(--accent)">86</b> · <b>$12/mo</b> (vs. $58/mo replacing)</div>
+                </div>
+                <button class="btn primary">Install this stack</button>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Concierge sheet ──────────────────────────────────────────── -->
+<div id="sheet-concierge" class="sheet-backdrop">
+  <div class="sheet narrow" role="dialog" style="height: 600px; display: flex; flex-direction: column;">
+    <div class="sheet-header">
+      <h2>Ask Splynek</h2>
+      <button class="close" data-close-sheet aria-label="Close">×</button>
+    </div>
+    <div class="sheet-body" style="flex: 1; overflow-y: auto;">
+      <div class="concierge-thread">
+        <div class="bubble user">What's a privacy-respecting alternative to Notion?</div>
+        <div class="bubble bot">
+          Three candidates from your Sovereignty catalog, ordered by score:
+          <div class="candidate">
+            <span style="font-size: 18px;">📓</span>
+            <div class="name">Anytype</div>
+            <span class="pill good">Sov 95</span>
+            <span class="pill good">Trust 88</span>
+            <button class="btn primary sm">Add</button>
+          </div>
+          <div class="candidate">
+            <span style="font-size: 18px;">🪨</span>
+            <div class="name">Obsidian</div>
+            <span class="pill good">Sov 81</span>
+            <span class="pill good">Trust 92</span>
+            <button class="btn primary sm">Add</button>
+          </div>
+          <div class="candidate">
+            <span style="font-size: 18px;">📝</span>
+            <div class="name">Logseq</div>
+            <span class="pill good">Sov 88</span>
+            <span class="pill good">Trust 85</span>
+            <button class="btn primary sm">Add</button>
+          </div>
+        </div>
+        <div class="bubble user">Will Anytype sync to my iPad?</div>
+        <div class="bubble bot">
+          Yes — Anytype uses CRDT sync over local network. No cloud
+          required, no account needed. Your data stays on your devices.
+        </div>
+      </div>
+    </div>
+    <div class="concierge-input">
+      <input type="text" placeholder="Ask anything about your apps…">
+      <button class="btn primary sm">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings sheet ───────────────────────────────────────────── -->
+<div id="sheet-settings" class="sheet-backdrop">
+  <div class="sheet" role="dialog" style="height: 600px;">
+    <div class="sheet-header">
+      <h2>Settings</h2>
+      <button class="close" data-close-sheet aria-label="Close">×</button>
+    </div>
+    <div class="sheet-body" style="padding: 0;">
+      <div class="settings-grid" style="height: 100%;">
+        <div class="settings-nav">
+          <a href="#general" class="active">General</a>
+          <a href="#pro">Pro license</a>
+          <a href="#helpers">Helpers</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#advanced">Advanced</a>
+          <a href="#about">About</a>
+          <a href="#legal">Legal</a>
+        </div>
+        <div class="settings-pane">
+          <h2 style="margin: 0 0 12px; font-size: 18px;">General</h2>
+          <p class="section-lede">Splynek's core behavior on this Mac.</p>
+          <div class="row"><div><div class="label">Start at login</div><div class="help">Splynek opens automatically when you sign in.</div></div><div class="toggle on"></div></div>
+          <div class="row"><div><div class="label">Simple mode</div><div class="help">Hide power-user features behind a "Show more" toggle.</div></div><div class="toggle on"></div></div>
+          <div class="row"><div><div class="label">Default download folder</div><div class="help">~/Downloads</div></div><button class="btn secondary sm">Choose…</button></div>
+          <div class="row"><div><div class="label">Show in menu bar</div><div class="help">A compact menu-bar icon for quick access.</div></div><div class="toggle on"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn danger sm">Reset first-run experience</button>
+      <button class="btn primary" data-close-sheet>Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="test-banner">moderator mode · Discover (Frames 02–03)</div>
+<script src="_shared.js"></script>
+</body>
+</html>

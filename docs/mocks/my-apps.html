@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280, initial-scale=1">
+<title>Splynek — My Apps (IA mock)</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../icon-256.png" alt="">
+      <span>Splynek</span>
+    </div>
+    <nav>
+      <a href="discover.html" class="tab"><span class="icon">✨</span> Discover</a>
+      <a href="download.html" class="tab"><span class="icon">⬇</span> Download</a>
+      <a href="my-apps.html" class="tab active"><span class="icon">📦</span> My Apps<span class="badge">4</span></a>
+      <a href="coordinate.html" class="tab"><span class="icon">🖥</span> Coordinate</a>
+    </nav>
+    <div class="footer">
+      <button class="gear" data-open-sheet="settings" title="Settings">⚙</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="toolbar">
+      <div class="chips">
+        <button class="chip active" data-subview="installed">Installed<span class="count">47</span></button>
+        <button class="chip" data-subview="updates">Updates<span class="count warn">3</span></button>
+        <button class="chip" data-subview="trust-watcher">Trust Watcher<span class="count crit">1</span></button>
+      </div>
+      <div class="spacer"></div>
+      <div class="right-actions">
+        <button class="btn ghost sm" data-open-sheet="concierge">Ask Splynek</button>
+        <div class="search" style="width: 260px;">
+          <span class="icon">🔍</span>
+          <input type="text" placeholder="Find an app…">
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- Frame 05: Installed (the IA's marquee win) ─────────── -->
+      <div class="subview active" data-subview="installed">
+
+        <div class="stack-summary">
+          <div class="top">
+            <div class="gauge">
+              <div class="score">73</div>
+              <div class="progress" style="display: block; height: 8px;">
+                <div class="fill" style="width: 73%; height: 100%;"></div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 14px; align-items: center; flex: 1; justify-content: flex-end;">
+              <span><b>47</b> apps</span>
+              <span style="color: var(--muted);">·</span>
+              <span><b>3</b> updates ready</span>
+              <span style="color: var(--muted);">·</span>
+              <span><b style="color: var(--red);">1</b> alert</span>
+            </div>
+          </div>
+          <div class="bullets">
+            Top drag on your Sovereignty score:
+            <b style="color: var(--text);">Notion (-12)</b> ·
+            <a href="#">See alternatives →</a>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 0;">
+          <div class="list">
+
+            <div class="row">
+              <div class="icon">📓</div>
+              <div class="name">
+                <div class="primary">Notion</div>
+                <div class="secondary">notion.id · v2.7 installed · 2.1 GB</div>
+              </div>
+              <div class="scores">
+                <span class="pill warn">Sov 32</span>
+                <span class="pill good">Trust 71</span>
+                <span class="pill info">Update 2.8 available</span>
+              </div>
+              <div class="actions">
+                <button class="btn primary sm">Update</button>
+                <button class="btn secondary sm">See alternatives</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="icon">🎵</div>
+              <div class="name">
+                <div class="primary">Spotify</div>
+                <div class="secondary">com.spotify.client · v1.2.34 installed</div>
+              </div>
+              <div class="scores">
+                <span class="pill warn">Sov 54</span>
+                <span class="pill warn">Trust 62</span>
+                <span class="pill crit">⚠ ToS changed</span>
+              </div>
+              <div class="actions">
+                <button class="btn secondary sm">View diff</button>
+                <button class="btn ghost sm">…</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="icon">🔐</div>
+              <div class="name">
+                <div class="primary">1Password</div>
+                <div class="secondary">com.1password.1password · v8.10 · current</div>
+              </div>
+              <div class="scores">
+                <span class="pill good">Sov 89</span>
+                <span class="pill good">Trust 95</span>
+                <span style="color: var(--muted); font-size: 12.5px;">Up to date</span>
+              </div>
+              <div class="actions">
+                <button class="btn ghost sm">…</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="icon">🎨</div>
+              <div class="name">
+                <div class="primary">Adobe Photoshop</div>
+                <div class="secondary">com.adobe.Photoshop · v25.4 installed · 4.8 GB</div>
+              </div>
+              <div class="scores">
+                <span class="pill crit">Sov 21</span>
+                <span class="pill warn">Trust 64</span>
+                <span class="pill info">Update 25.5 available</span>
+              </div>
+              <div class="actions">
+                <button class="btn primary sm">Update</button>
+                <button class="btn secondary sm">Migrate → Affinity</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="icon">📓</div>
+              <div class="name">
+                <div class="primary">Anytype</div>
+                <div class="secondary">io.anytype.anytype · v0.33 installed · 180 MB</div>
+              </div>
+              <div class="scores">
+                <span class="pill good">Sov 95</span>
+                <span class="pill good">Trust 88</span>
+                <span style="color: var(--muted); font-size: 12.5px;">EU-based · open source</span>
+              </div>
+              <div class="actions">
+                <button class="btn ghost sm">…</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="icon">💻</div>
+              <div class="name">
+                <div class="primary">Visual Studio Code</div>
+                <div class="secondary">com.microsoft.VSCode · v1.95 installed</div>
+              </div>
+              <div class="scores">
+                <span class="pill warn">Sov 67</span>
+                <span class="pill good">Trust 78</span>
+                <span style="color: var(--muted); font-size: 12.5px;">Up to date</span>
+              </div>
+              <div class="actions">
+                <button class="btn secondary sm">See alternatives</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="icon">📷</div>
+              <div class="name">
+                <div class="primary">Affinity Photo</div>
+                <div class="secondary">com.seriflabs.affinityphoto · v2.5</div>
+              </div>
+              <div class="scores">
+                <span class="pill good">Sov 82</span>
+                <span class="pill good">Trust 91</span>
+                <span class="pill info">Update 2.6 available</span>
+              </div>
+              <div class="actions">
+                <button class="btn primary sm">Update</button>
+                <button class="btn ghost sm">…</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <p style="text-align: center; margin: 18px 0 0; color: var(--muted); font-size: 13.5px;">
+          Showing 7 of 47 installed · <a href="#">Show all</a>
+        </p>
+
+      </div>
+
+      <!-- Frame: Updates (filtered Installed) ─────────────────── -->
+      <div class="subview" data-subview="updates">
+        <section>
+          <h2>3 updates ready</h2>
+          <p class="section-lede">
+            Apps on this Mac with a newer version available, ranked
+            by how long they've been outdated.
+          </p>
+          <div class="card" style="padding: 0;">
+            <div class="list">
+              <div class="row">
+                <div class="icon">📓</div>
+                <div class="name">
+                  <div class="primary">Notion</div>
+                  <div class="secondary">v2.7 → 2.8 · changelog mentions privacy revisions</div>
+                </div>
+                <div class="actions">
+                  <button class="btn primary sm">Update</button>
+                  <button class="btn ghost sm">Changelog</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">🎨</div>
+                <div class="name">
+                  <div class="primary">Adobe Photoshop</div>
+                  <div class="secondary">v25.4 → 25.5 · security fixes</div>
+                </div>
+                <div class="actions">
+                  <button class="btn primary sm">Update</button>
+                  <button class="btn ghost sm">Changelog</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">📷</div>
+                <div class="name">
+                  <div class="primary">Affinity Photo</div>
+                  <div class="secondary">v2.5 → 2.6 · feature release</div>
+                </div>
+                <div class="actions">
+                  <button class="btn primary sm">Update</button>
+                  <button class="btn ghost sm">Changelog</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="margin-top: 18px; color: var(--text-dim);">
+            <button class="btn secondary" style="display: inline-flex;">Update all 3</button>
+          </p>
+        </section>
+      </div>
+
+      <!-- Frame 06: Trust Watcher ─────────────────────────────── -->
+      <div class="subview" data-subview="trust-watcher">
+        <section>
+          <h2>1 alert this week</h2>
+          <p class="section-lede">
+            Splynek watches 12 apps' Privacy Policies and Terms of
+            Service. When a vendor materially changes a document,
+            you find out here.
+          </p>
+
+          <div class="card" style="border-color: rgba(245,193,108,0.3); background: linear-gradient(180deg, rgba(245,193,108,0.04), transparent);">
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+              <div style="width: 48px; height: 48px; border-radius: 10px; background: var(--panel-lift); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">🎵</div>
+              <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+                  <h3 style="margin: 0;">Spotify</h3>
+                  <span class="pill crit">ToS changed</span>
+                  <span style="color: var(--muted); font-size: 12.5px;">2026-05-10</span>
+                </div>
+                <p style="margin: 0 0 12px;">
+                  Section 4.2 (User Content) gained a new clause:
+                </p>
+                <div class="mono" style="padding: 12px; background: var(--panel-lift); border-radius: 8px; font-size: 12.5px; color: var(--text-dim); line-height: 1.6;">
+                  <span style="color: var(--accent);">+ User-uploaded content may be used to train</span><br>
+                  <span style="color: var(--accent);">+ Spotify's AI models for recommendation features,</span><br>
+                  <span style="color: var(--accent);">+ unless the user opts out in Privacy Settings.</span>
+                </div>
+                <div style="margin-top: 12px; display: flex; gap: 8px;">
+                  <button class="btn primary sm">Read full diff</button>
+                  <button class="btn secondary sm">Open Spotify Privacy Settings</button>
+                  <button class="btn ghost sm">Forget this alert</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h2 style="margin-top: 32px;">11 other apps · stable since last week</h2>
+          <div class="card" style="padding: 0;">
+            <div class="list">
+              <div class="row"><div class="icon">📺</div><div class="name"><div class="primary">Netflix</div><div class="secondary">PP + ToS · ✓ stable since 2026-04-18</div></div></div>
+              <div class="row"><div class="icon">💬</div><div class="name"><div class="primary">Slack</div><div class="secondary">PP + ToS · ✓ stable since 2026-03-22</div></div></div>
+              <div class="row"><div class="icon">🎮</div><div class="name"><div class="primary">Discord</div><div class="secondary">PP + ToS · ✓ stable since 2026-04-01</div></div></div>
+              <div class="row"><div class="icon">🎥</div><div class="name"><div class="primary">Zoom</div><div class="secondary">PP + ToS · ✓ stable since 2026-02-15</div></div></div>
+              <div class="row"><div class="icon">🎨</div><div class="name"><div class="primary">Adobe</div><div class="secondary">PP + ToS · ✓ stable since 2026-04-30</div></div></div>
+              <div class="row"><div class="icon">📓</div><div class="name"><div class="primary">Notion</div><div class="secondary">PP + ToS · ✓ stable since 2026-05-04</div></div></div>
+              <div class="row"><div class="icon">☁️</div><div class="name"><div class="primary">Dropbox</div><div class="secondary">PP + ToS · ✓ stable since 2026-03-11</div></div></div>
+              <div class="row"><div class="icon">🌐</div><div class="name"><div class="primary">Google Chrome</div><div class="secondary">PP + ToS · ✓ stable since 2026-05-01</div></div></div>
+              <div class="row"><div class="icon">🦊</div><div class="name"><div class="primary">Mozilla Firefox</div><div class="secondary">PP + ToS · ✓ stable since 2026-04-19</div></div></div>
+              <div class="row"><div class="icon">🤖</div><div class="name"><div class="primary">ChatGPT</div><div class="secondary">PP + ToS · ✓ stable since 2026-05-07</div></div></div>
+              <div class="row"><div class="icon">🤖</div><div class="name"><div class="primary">Claude</div><div class="secondary">PP + ToS · ✓ stable since 2026-05-09</div></div></div>
+            </div>
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Concierge sheet -->
+<div id="sheet-concierge" class="sheet-backdrop">
+  <div class="sheet narrow" role="dialog" style="height: 600px; display: flex; flex-direction: column;">
+    <div class="sheet-header"><h2>Ask Splynek</h2><button class="close" data-close-sheet>×</button></div>
+    <div class="sheet-body" style="flex: 1;">
+      <div class="concierge-thread">
+        <div class="bubble user">What's a privacy-respecting alternative to Notion?</div>
+        <div class="bubble bot">
+          Three candidates from your Sovereignty catalog:
+          <div class="candidate"><span style="font-size: 18px;">📓</span><div class="name">Anytype</div><span class="pill good">Sov 95</span><button class="btn primary sm">Add</button></div>
+          <div class="candidate"><span style="font-size: 18px;">🪨</span><div class="name">Obsidian</div><span class="pill good">Sov 81</span><button class="btn primary sm">Add</button></div>
+          <div class="candidate"><span style="font-size: 18px;">📝</span><div class="name">Logseq</div><span class="pill good">Sov 88</span><button class="btn primary sm">Add</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="concierge-input">
+      <input type="text" placeholder="Ask anything about your apps…">
+      <button class="btn primary sm">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings sheet -->
+<div id="sheet-settings" class="sheet-backdrop">
+  <div class="sheet" role="dialog" style="height: 600px;">
+    <div class="sheet-header"><h2>Settings</h2><button class="close" data-close-sheet>×</button></div>
+    <div class="sheet-body" style="padding: 0;">
+      <div class="settings-grid" style="height: 100%;">
+        <div class="settings-nav">
+          <a href="#general" class="active">General</a>
+          <a href="#pro">Pro license</a>
+          <a href="#helpers">Helpers</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#advanced">Advanced</a>
+          <a href="#about">About</a>
+          <a href="#legal">Legal</a>
+        </div>
+        <div class="settings-pane">
+          <h2 style="margin: 0 0 12px; font-size: 18px;">General</h2>
+          <div class="row"><div><div class="label">Start at login</div><div class="help">Splynek opens automatically when you sign in.</div></div><div class="toggle on"></div></div>
+          <div class="row"><div><div class="label">Simple mode</div><div class="help">Hide power-user features.</div></div><div class="toggle on"></div></div>
+          <div class="row"><div><div class="label">Default download folder</div><div class="help">~/Downloads</div></div><button class="btn secondary sm">Choose…</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn primary" data-close-sheet>Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="test-banner">moderator mode · My Apps (Frames 05–06)</div>
+<script src="_shared.js"></script>
+</body>
+</html>

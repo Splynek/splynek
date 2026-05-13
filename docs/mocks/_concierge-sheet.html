@@ -1,0 +1,53 @@
+<!-- Concierge sheet — Frame 09.  Included on pages that surface it
+     (Discover, My Apps).  Toggled by data-open-sheet="concierge". -->
+<div id="sheet-concierge" class="sheet-backdrop">
+  <div class="sheet narrow" role="dialog" aria-labelledby="concierge-title" style="height: 600px; display: flex; flex-direction: column;">
+    <div class="sheet-header">
+      <h2 id="concierge-title">Ask Splynek</h2>
+      <button class="close" data-close-sheet aria-label="Close">×</button>
+    </div>
+    <div class="sheet-body" style="flex: 1; overflow-y: auto;">
+      <div class="concierge-thread">
+
+        <div class="bubble user">What's a privacy-respecting alternative to Notion?</div>
+
+        <div class="bubble bot">
+          Three candidates from your Sovereignty catalog, ordered by score:
+          <div class="candidate">
+            <span class="icon">📓</span>
+            <div class="name">Anytype</div>
+            <span class="pill good">Sov 95</span>
+            <span class="pill good">Trust 88</span>
+            <button class="btn primary sm">Add</button>
+          </div>
+          <div class="candidate">
+            <span class="icon">🪨</span>
+            <div class="name">Obsidian</div>
+            <span class="pill good">Sov 81</span>
+            <span class="pill good">Trust 92</span>
+            <button class="btn primary sm">Add</button>
+          </div>
+          <div class="candidate">
+            <span class="icon">📝</span>
+            <div class="name">Logseq</div>
+            <span class="pill good">Sov 88</span>
+            <span class="pill good">Trust 85</span>
+            <button class="btn primary sm">Add</button>
+          </div>
+        </div>
+
+        <div class="bubble user">Will Anytype sync to my iPad?</div>
+
+        <div class="bubble bot">
+          Yes — Anytype uses CRDT sync over local network. No cloud
+          required, no account needed. Your data stays on your devices.
+        </div>
+
+      </div>
+    </div>
+    <div class="concierge-input">
+      <input type="text" placeholder="Ask anything about your apps…">
+      <button class="btn primary sm">Send</button>
+    </div>
+  </div>
+</div>

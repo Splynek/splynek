@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280, initial-scale=1">
+<title>Splynek — Coordinate (IA mock)</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../icon-256.png" alt="">
+      <span>Splynek</span>
+    </div>
+    <nav>
+      <a href="discover.html" class="tab"><span class="icon">✨</span> Discover</a>
+      <a href="download.html" class="tab"><span class="icon">⬇</span> Download</a>
+      <a href="my-apps.html" class="tab"><span class="icon">📦</span> My Apps</a>
+      <a href="coordinate.html" class="tab active"><span class="icon">🖥</span> Coordinate</a>
+    </nav>
+    <div class="footer">
+      <button class="gear" data-open-sheet="settings" title="Settings">⚙</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="toolbar">
+      <div class="chips">
+        <button class="chip active" data-subview="this-lan">This LAN</button>
+        <button class="chip" data-subview="cloud-relay">Cloud relay</button>
+        <button class="chip" data-subview="external">External</button>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- Frame 07: This LAN ─────────────────────────────────── -->
+      <div class="subview active" data-subview="this-lan">
+
+        <section style="margin-bottom: 28px;">
+          <div class="card" style="background: linear-gradient(180deg, rgba(90,220,165,0.04), transparent);">
+            <h3 style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 22px;">🖥</span>
+              MacBook Pro de Paulo
+              <span class="pill good" style="margin-left: 8px;">This Mac</span>
+            </h3>
+            <p style="margin-bottom: 12px;">
+              <span class="mono">192.168.1.20</span> · port <span class="mono">58680</span>
+              · cache <b>4.2 GB / 50 GB</b> · uptime 24h
+            </p>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn secondary sm">View shared files</button>
+              <button class="btn ghost sm">Stop sharing this Mac</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="coord-section">
+          <div class="head">
+            <h3>Macs on your LAN</h3>
+            <span class="count">2 found via Bonjour</span>
+          </div>
+          <div class="card" style="padding: 0;">
+            <div class="list">
+              <div class="row">
+                <div class="icon">🖥</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">Studio-iMac</div>
+                  <div class="secondary"><span class="pill good">Reachable</span> · shares 2 hot files · 192.168.1.34</div>
+                </div>
+                <div class="actions">
+                  <button class="btn secondary sm">Connect</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">🖥</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">Mac-mini-AV</div>
+                  <div class="secondary"><span class="pill neutral">Asleep</span> · last seen 1h ago · 192.168.1.41</div>
+                </div>
+                <div class="actions">
+                  <button class="btn secondary sm">Wake</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="coord-section">
+          <div class="head">
+            <h3>iPhone Companions</h3>
+            <span class="count">1 paired · 1 available to pair</span>
+          </div>
+          <div class="card" style="padding: 0;">
+            <div class="list">
+              <div class="row">
+                <div class="icon">📱</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">iPhone 17 Pro</div>
+                  <div class="secondary"><span class="pill good">Paired</span> · CloudKit relay enabled · last seen 5 min ago</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Unpair</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">📱</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">iPad</div>
+                  <div class="secondary"><span class="pill neutral">Not paired</span> · detected on this Apple ID</div>
+                </div>
+                <div class="actions">
+                  <button class="btn primary sm">Pair via QR</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="coord-section">
+          <div class="head">
+            <h3>Apple Watch</h3>
+            <span class="count">via paired iPhone</span>
+          </div>
+          <div class="card" style="padding: 0;">
+            <div class="list">
+              <div class="row">
+                <div class="icon">⌚</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">Apple Watch Series 11</div>
+                  <div class="secondary"><span class="pill good">Paired</span> · via iPhone Companion · tap-to-pause active</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Test haptic</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Cloud relay subview ────────────────────────────────── -->
+      <div class="subview" data-subview="cloud-relay">
+        <section>
+          <h2>CloudKit relay</h2>
+          <p class="section-lede">
+            When your iPhone isn't on the same Wi-Fi as this Mac,
+            Splynek can use your <i>own</i> private iCloud database
+            as a relay. Apple is the transport; Splynek never sees
+            the records.
+          </p>
+
+          <div class="card">
+            <h3 style="display: flex; align-items: center; gap: 10px;">
+              CloudKit relay <span class="pill good">Active</span>
+            </h3>
+            <p>
+              Container: <span class="mono">iCloud.app.splynek.companion</span><br>
+              Last record delivered to iPhone 17 Pro: <b>2026-05-13 17:42</b><br>
+              This week: 14 records relayed · 0 errors
+            </p>
+          </div>
+
+          <div class="card" style="margin-top: 16px;">
+            <h3>Trust Watcher push subscription</h3>
+            <p>
+              When the Mac detects a policy change, it publishes a
+              CKQuerySubscription record. Your iPhone Companion picks
+              it up as a push notification.
+            </p>
+            <div class="meta">
+              Subscription registered · last triggered <b>3 days ago</b> (Spotify ToS)
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Frame 08: External ─────────────────────────────────── -->
+      <div class="subview" data-subview="external">
+        <section>
+          <h2>External tools that can talk to Splynek</h2>
+          <p class="section-lede">
+            Token-gated endpoints, opt-in MCP server, browser
+            extensions, and the web dashboard. Splynek's API is
+            yours — automate it however you like.
+          </p>
+        </section>
+
+        <section class="coord-section">
+          <div class="head">
+            <h3>API tokens</h3>
+            <span class="count">2 active</span>
+          </div>
+          <div class="card" style="padding: 0;">
+            <div class="list">
+              <div class="row">
+                <div class="icon">🔑</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">raycast-readonly</div>
+                  <div class="secondary"><span class="pill info">Read-only</span> · created 2026-04-12 · last used 2 min ago</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Show</button>
+                  <button class="btn ghost sm">Copy</button>
+                  <button class="btn danger sm">Revoke</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="icon">🔑</div>
+                <div class="name" style="flex: 1;">
+                  <div class="primary">shell-scripts</div>
+                  <div class="secondary"><span class="pill warn">Read + write</span> · created 2026-03-20 · last used 4 hours ago</div>
+                </div>
+                <div class="actions">
+                  <button class="btn ghost sm">Show</button>
+                  <button class="btn ghost sm">Copy</button>
+                  <button class="btn danger sm">Revoke</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 12px;">
+            <button class="btn primary sm">+ Mint a new token</button>
+          </div>
+        </section>
+
+        <section class="coord-section">
+          <div class="head">
+            <h3>Browser extensions</h3>
+            <span class="count">1 installed · 1 available</span>
+          </div>
+          <div class="grid cols-2">
+            <div class="card">
+              <h3 style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">🌐</span>
+                Chrome
+                <span class="pill good">Installed</span>
+              </h3>
+              <p>Intercepts ≥50 MB downloads + HLS/DASH manifest URLs.</p>
+              <div class="meta">v2.0.1 · this Mac</div>
+            </div>
+            <div class="card">
+              <h3 style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">🧭</span>
+                Safari
+                <span class="pill neutral">Not installed</span>
+              </h3>
+              <p>Web Extension — install from the Mac App Store.</p>
+              <button class="btn primary sm" style="margin-top: 10px;">Install</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="coord-section">
+          <div class="head"><h3>Raycast</h3></div>
+          <div class="card">
+            <p style="display: flex; align-items: center; gap: 10px;">
+              <span class="pill good">Extension detected</span>
+              5 commands available · token-aware via Raycast preferences.
+            </p>
+          </div>
+        </section>
+
+        <section class="coord-section">
+          <div class="head"><h3>MCP server</h3></div>
+          <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <p>Splynek speaks Model Context Protocol over JSON-RPC.
+              Wire it into Claude Desktop, opt-in only.</p>
+              <div class="meta">Off · 8 tools available when enabled</div>
+            </div>
+            <div class="toggle"></div>
+          </div>
+        </section>
+
+        <section class="coord-section">
+          <div class="head"><h3>Web dashboard</h3></div>
+          <div class="card" style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <p>A browser view of your queue + history, served from
+              this Mac to your LAN.</p>
+              <div class="mono" style="margin-top: 6px; color: var(--text-dim);">http://macbook-pro-de-paulo.local:58680/dashboard?t=…</div>
+            </div>
+            <button class="btn secondary sm">Copy link</button>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Settings sheet -->
+<div id="sheet-settings" class="sheet-backdrop">
+  <div class="sheet" role="dialog" style="height: 600px;">
+    <div class="sheet-header"><h2>Settings</h2><button class="close" data-close-sheet>×</button></div>
+    <div class="sheet-body" style="padding: 0;">
+      <div class="settings-grid" style="height: 100%;">
+        <div class="settings-nav">
+          <a href="#general" class="active">General</a>
+          <a href="#pro">Pro license</a>
+          <a href="#helpers">Helpers</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#advanced">Advanced</a>
+          <a href="#about">About</a>
+          <a href="#legal">Legal</a>
+        </div>
+        <div class="settings-pane">
+          <h2 style="margin: 0 0 12px; font-size: 18px;">General</h2>
+          <div class="row"><div><div class="label">Start at login</div></div><div class="toggle on"></div></div>
+          <div class="row"><div><div class="label">Simple mode</div></div><div class="toggle on"></div></div>
+          <div class="row"><div><div class="label">Default download folder</div><div class="help">~/Downloads</div></div><button class="btn secondary sm">Choose…</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn primary" data-close-sheet>Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="test-banner">moderator mode · Coordinate (Frames 07–08)</div>
+<script src="_shared.js"></script>
+</body>
+</html>

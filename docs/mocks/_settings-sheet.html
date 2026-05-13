@@ -1,0 +1,71 @@
+<!-- Settings sheet — Frame 10.  Included on every page; toggled by
+     the gear icon in the sidebar footer. -->
+<div id="sheet-settings" class="sheet-backdrop">
+  <div class="sheet" role="dialog" aria-labelledby="settings-title" style="height: 600px;">
+    <div class="sheet-header">
+      <h2 id="settings-title">Settings</h2>
+      <button class="close" data-close-sheet aria-label="Close">×</button>
+    </div>
+    <div class="sheet-body" style="padding: 0;">
+      <div class="settings-grid" style="height: 100%;">
+        <div class="settings-nav">
+          <a href="#general" class="active">General</a>
+          <a href="#pro">Pro license</a>
+          <a href="#helpers">Helpers</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#advanced">Advanced</a>
+          <a href="#about">About</a>
+          <a href="#legal">Legal</a>
+        </div>
+        <div class="settings-pane">
+          <h2 style="margin: 0 0 12px; font-size: 18px;">General</h2>
+          <p class="section-lede">Splynek's core behavior on this Mac.</p>
+
+          <div class="row">
+            <div>
+              <div class="label">Start at login</div>
+              <div class="help">Splynek opens automatically when you sign in.</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Simple mode</div>
+              <div class="help">Hide power-user features behind a "Show more" toggle.</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Default download folder</div>
+              <div class="help">~/Downloads</div>
+            </div>
+            <button class="btn secondary sm">Choose…</button>
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Show in menu bar</div>
+              <div class="help">A compact menu-bar icon for quick access.</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+
+          <div class="row">
+            <div>
+              <div class="label">Language</div>
+              <div class="help">Splynek picks up your system language.</div>
+            </div>
+            <span style="color: var(--text-dim); font-size: 13px;">English (system)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn danger sm">Reset first-run experience</button>
+      <button class="btn primary" data-close-sheet>Done</button>
+    </div>
+  </div>
+</div>

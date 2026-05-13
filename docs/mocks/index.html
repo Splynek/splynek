@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280, initial-scale=1">
+<title>Splynek — Welcome (IA mock)</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../icon-256.png" alt="">
+      <span>Splynek</span>
+    </div>
+    <nav>
+      <a href="index.html" class="tab active"><span class="icon">✨</span> Discover</a>
+      <a href="download.html" class="tab"><span class="icon">⬇</span> Download</a>
+      <a href="my-apps.html" class="tab"><span class="icon">📦</span> My Apps</a>
+      <a href="coordinate.html" class="tab"><span class="icon">🖥</span> Coordinate</a>
+    </nav>
+    <div class="footer">
+      <button class="gear" data-open-sheet="settings" title="Settings">⚙</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="toolbar">
+      <div class="chips">
+        <button class="chip active" data-subview="welcome">Welcome</button>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="content">
+
+      <div class="welcome subview active" data-subview="welcome">
+        <h1>Welcome to <span class="accent">Splynek</span>.</h1>
+        <p class="lede">
+          Splynek fixes the broken download lifecycle — from picking
+          the right app, to fetching it fast, to keeping your
+          installed stack safe.
+        </p>
+        <ul>
+          <li><span class="glyph">•</span> <span><b>Discover</b> — find apps worth installing</span></li>
+          <li><span class="glyph">•</span> <span><b>Download</b> — get them here, fast</span></li>
+          <li><span class="glyph">•</span> <span><b>My Apps</b> — keep what you have safe</span></li>
+          <li><span class="glyph">•</span> <span><b>Coordinate</b> — sync across your devices</span></li>
+        </ul>
+        <div class="actions">
+          <a href="discover.html" class="btn primary lg">Tap Discover to start →</a>
+          <a href="discover.html" class="btn ghost">Skip the welcome</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Settings sheet ───────────────────────────────────────────── -->
+<div id="sheet-settings" class="sheet-backdrop">
+  <div class="sheet" role="dialog" style="height: 600px;">
+    <div class="sheet-header">
+      <h2>Settings</h2>
+      <button class="close" data-close-sheet aria-label="Close">×</button>
+    </div>
+    <div class="sheet-body" style="padding: 0;">
+      <div class="settings-grid" style="height: 100%;">
+        <div class="settings-nav">
+          <a href="#general" class="active">General</a>
+          <a href="#pro">Pro license</a>
+          <a href="#helpers">Helpers</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#advanced">Advanced</a>
+          <a href="#about">About</a>
+          <a href="#legal">Legal</a>
+        </div>
+        <div class="settings-pane">
+          <h2 style="margin: 0 0 12px; font-size: 18px;">General</h2>
+          <p class="section-lede">Splynek's core behavior on this Mac.</p>
+          <div class="row">
+            <div>
+              <div class="label">Start at login</div>
+              <div class="help">Splynek opens automatically when you sign in.</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="row">
+            <div>
+              <div class="label">Simple mode</div>
+              <div class="help">Hide power-user features behind a "Show more" toggle.</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="row">
+            <div>
+              <div class="label">Default download folder</div>
+              <div class="help">~/Downloads</div>
+            </div>
+            <button class="btn secondary sm">Choose…</button>
+          </div>
+          <div class="row">
+            <div>
+              <div class="label">Show in menu bar</div>
+              <div class="help">A compact menu-bar icon for quick access.</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="btn danger sm">Reset first-run experience</button>
+      <button class="btn primary" data-close-sheet>Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="test-banner">moderator mode · Welcome (Frame 01)</div>
+<script src="_shared.js"></script>
+</body>
+</html>
