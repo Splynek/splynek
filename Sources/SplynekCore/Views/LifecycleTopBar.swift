@@ -70,13 +70,20 @@ struct LifecycleTopBar: View {
     @ViewBuilder
     private func chip(for sub: SidebarSection) -> some View {
         let isActive = (section == sub)
+        // Phase 7: the active indicator dot uses the parent tab's
+        // tintColor instead of the global accent — Discover dots are
+        // blue, Download dots are purple, etc.  Mirrors the sidebar
+        // icon tinting so the user reads the chip strip as "still in
+        // the same tab" at a glance.
+        let dotColor = LifecycleTabMapping.parent(of: sub)?.tintColor
+            ?? Color.accentColor
         Button {
             section = sub
         } label: {
             HStack(spacing: 6) {
                 if isActive {
                     Circle()
-                        .fill(Color.accentColor)
+                        .fill(dotColor)
                         .frame(width: 6, height: 6)
                 }
                 Text(LocalizedStringKey(sub.title))

@@ -74,10 +74,12 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
 }
 
 struct Sidebar: View {
-    /// IA v2 (2026-05-13): binding to LifecycleTab, not SidebarSection.
-    /// Sidebar now shows only the 4 lifecycle tabs; subview switching
-    /// happens in LifecycleTopBar inside the detail column.
-    @Binding var currentTab: LifecycleTab
+    /// IA v2 (2026-05-13) / Phase 7 (2026-05-23): optional binding —
+    /// `nil` means "no tab selected" so the first-run welcome splash
+    /// can render without highlighting any sidebar row.  Selecting
+    /// any row transitions nil → tab and RootView's `.onChange`
+    /// handler dismisses the welcome.
+    @Binding var currentTab: LifecycleTab?
     @ObservedObject var vm: SplynekViewModel
     @ObservedObject var torrent: TorrentProgress
 
@@ -101,6 +103,7 @@ struct Sidebar: View {
                             sidebarRow(
                                 title: tab.title,
                                 systemImage: tab.systemImage,
+                                iconTint: tab.tintColor,
                                 accessory: accessory(for: tab)
                             )
                         }
@@ -133,6 +136,27 @@ struct Sidebar: View {
             )
         default:
             return nil
+        }
+    }
+
+    @ViewBuilder
+    private func sidebarRow(title: String, systemImage: String,
+                            iconTint: Color,
+                            accessory: AnyView? = nil) -> some View {
+        // Phase 7: tint each row's SF Symbol with the tab's
+        // tintColor (blue/purple/pink/orange — the Splynek logo's
+        // rainbow).  Matches the macOS System Settings convention
+        // of coloured row icons and gives each lifecycle moment a
+        // memorable identity.  Label text stays primary-colored.
+        HStack {
+            Label {
+                Text(LocalizedStringKey(title))
+            } icon: {
+                Image(systemName: systemImage)
+                    .foregroundColor(iconTint)
+            }
+            Spacer()
+            accessory
         }
     }
 
@@ -211,25 +235,6 @@ struct Sidebar: View {
     }
 
     private func appVersion() -> String { SplynekVersion.current }
-
-    @ViewBuilder
-    private func sidebarRow(title: String, systemImage: String, accessory: AnyView? = nil) -> some View {
-        // v1.6.2: route the title String through LocalizedStringKey so
-        // the Localizable.xcstrings catalog gets a chance to resolve
-        // it.  `Label(_:systemImage:)`'s String overload uses
-        // verbatim text — bypasses localization entirely, which left
-        // every sidebar tab label in English even when the rest of
-        // the UI was rendering in pt-PT / fr / de / etc.
-        HStack {
-            Label {
-                Text(LocalizedStringKey(title))
-            } icon: {
-                Image(systemName: systemImage)
-            }
-            Spacer()
-            accessory
-        }
-    }
 
     /// Compact throughput string for the sidebar pill: "1.4 MB/s".
     /// Sidebar real-estate is tight; full-fat `formatRate` is too long.

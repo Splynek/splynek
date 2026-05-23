@@ -24,6 +24,7 @@
 // parents.  No view code moves in this commit.
 
 import Foundation
+import SwiftUI
 
 /// The four lifecycle tabs.  Stable serialization via `rawValue`
 /// (used by `splynek://` deep links + persisted UI state).
@@ -68,6 +69,36 @@ enum LifecycleTab: String, Hashable, CaseIterable, Identifiable, Sendable {
         case .download:   return "Get them here, fast"
         case .myApps:     return "Keep what you have safe"
         case .coordinate: return "Sync across your devices"
+        }
+    }
+
+    /// Per-tab accent colour drawn from the Splynek logo's rainbow
+    /// gradient (blue → purple → pink → orange).  Used to colour-code
+    /// the tab everywhere it surfaces — sidebar icon, chip-strip
+    /// indicator dot, welcome-card hero — so a user learns each tab's
+    /// identity by colour as well as by name.  System colours so they
+    /// adapt to light/dark mode automatically.
+    var tintColor: Color {
+        switch self {
+        case .discover:   return .blue
+        case .download:   return .purple
+        case .myApps:     return .pink
+        case .coordinate: return .orange
+        }
+    }
+
+    /// Short verb-phrase slogan used as the welcome-card card
+    /// subtitle.  Each one is a beat in the lifecycle story arc:
+    ///   Choose well → Get it home → Keep watch → All in sync.
+    /// Distinct from `.promise` (the canonical sidebar/tooltip line)
+    /// because the welcome card has more visual breathing room and
+    /// can afford a sharper, more memorable phrase.
+    var slogan: String {
+        switch self {
+        case .discover:   return "Choose well."
+        case .download:   return "Get it home."
+        case .myApps:     return "Keep watch."
+        case .coordinate: return "All in sync."
         }
     }
 }

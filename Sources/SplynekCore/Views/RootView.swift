@@ -4,9 +4,17 @@ import UniformTypeIdentifiers
 struct RootView: View {
     @ObservedObject var vm: SplynekViewModel
     @ObservedObject private var torrent: TorrentProgress
-    /// IA v2 (2026-05-13): the active LifecycleTab — set by the
-    /// sidebar, drives the chip strip in the detail column.
-    @State private var currentTab: LifecycleTab = .download
+    /// IA v2 (2026-05-13) / Phase 7 (2026-05-23): the active
+    /// LifecycleTab.  **Optional** so the first-run welcome screen
+    /// can render without any tab highlighted in the sidebar — the
+    /// welcome is a splash, not a tab destination.  A non-nil value
+    /// means "the user is in the app proper"; nil means "show the
+    /// welcome splash".  The sidebar's selection binding follows
+    /// this, so during welcome no row is highlighted; when the user
+    /// clicks a sidebar row (or any welcome-card story tile),
+    /// currentTab transitions nil → tab and the welcome dismisses
+    /// via `.onChange`.
+    @State private var currentTab: LifecycleTab? = .download
     /// The active subview within the current tab.  Set by either the
     /// chip strip (LifecycleTopBar) or by deep-link notifications
     /// from the menu bar / splynek:// URL handlers.
@@ -28,15 +36,15 @@ struct RootView: View {
     init(vm: SplynekViewModel) {
         self.vm = vm
         _torrent = ObservedObject(wrappedValue: vm.torrentProgress)
-        // IA v2 Phase 7 (2026-05-23): first-run users land on Discover
-        // so the welcome card greets them — the card replaces the
-        // detail content while `!hasCompletedOnboarding` and the
-        // active tab is `.discover`.  Returning users keep the
-        // pre-IA-v2 default of opening on Download (Queue) so a daily
-        // "what's downloading right now?" launch doesn't reroute them.
+        // IA v2 Phase 7 (2026-05-23): first-run users see the welcome
+        // splash with NO sidebar tab highlighted — currentTab = nil.
+        // Tapping any story tile or sidebar row transitions nil →
+        // that tab; the .onChange handler flips
+        // hasCompletedOnboarding so subsequent launches skip the
+        // splash.  Returning users default to Download (Queue) so a
+        // daily "what's downloading right now?" launch doesn't reroute.
         if !vm.hasCompletedOnboarding {
-            _currentTab = State(initialValue: .discover)
-            _section = State(initialValue: .sovereignty)
+            _currentTab = State(initialValue: nil)
         }
     }
 
@@ -46,42 +54,54 @@ struct RootView: View {
                 .navigationSplitViewColumnWidth(min: 190, ideal: 210, max: 260)
         } detail: {
             VStack(spacing: 0) {
-                // IA v2 Phase 7: first-run welcome card supersedes
-                // the normal Discover content while
-                // !hasCompletedOnboarding and currentTab == .discover.
-                // Tapping either CTA flips the flag and the chip strip
-                // + auto-scanning SovereigntyView take over.  Other
-                // lifecycle tabs render normally so a curious first-
-                // run user can still poke around.
-                if shouldShowWelcomeCard {
-                    DiscoverWelcomeCard(vm: vm)
-                } else {
+                if let tab = currentTab {
                     // IA v2: chip strip for subview switching.  Renders
                     // only when the current subview's parent tab matches
                     // currentTab — hides itself when the user is on a
                     // Settings/Legal/About route (those have no tab
                     // parent and live in a sheet long-term).
-                    if LifecycleTabMapping.parent(of: section) == currentTab {
+                    if LifecycleTabMapping.parent(of: section) == tab {
                         LifecycleTopBar(
-                            currentTab: currentTab,
+                            currentTab: tab,
                             section: $section,
                             accessory: { _ in nil },
                             trailing: askSplynekTrailing(for:)
                         )
                     }
                     detail
+                } else {
+                    // IA v2 Phase 7: welcome splash.  Active when
+                    // currentTab is nil (first-run).  Each story tile
+                    // is a button that sets currentTab to that tab,
+                    // which triggers .onChange below to flip
+                    // hasCompletedOnboarding + load the default
+                    // subview.  No tab is highlighted in the sidebar
+                    // because the welcome is a splash, not a tab.
+                    DiscoverWelcomeCard(
+                        vm: vm,
+                        onPick: { tab in
+                            currentTab = tab
+                        }
+                    )
                 }
             }
             .navigationSplitViewColumnWidth(min: 640, ideal: 880)
         }
         .navigationSplitViewStyle(.balanced)
-        // IA v2: when the user clicks a sidebar tab, drop into the
-        // tab's default subview.  Without this the chip strip would
-        // light up an arbitrary subview based on prior state.
-        // Older single-closure form for macOS 13 compatibility.
-        // The two-closure form `.onChange(of:initial:_:)` is 14+.
+        // IA v2: when the user clicks a sidebar tab (or a welcome-
+        // card story tile), drop into the tab's default subview.
+        // Phase 7: the same handler dismisses the welcome — flipping
+        // hasCompletedOnboarding once currentTab transitions from
+        // nil → a tab.  newTab being nil shouldn't happen in normal
+        // flow (only the welcome init can set it), so we just no-op.
+        // Older single-closure onChange form for macOS-13 compat;
+        // the two-closure form is macOS-14+.
         .onChange(of: currentTab) { newTab in
+            guard let newTab else { return }
             section = LifecycleTabMapping.defaultSubview(for: newTab)
+            if !vm.hasCompletedOnboarding {
+                vm.hasCompletedOnboarding = true
+            }
         }
         .task { await vm.refreshInterfaces() }
         // IA v2 Phase 7 (2026-05-23): the v1.6.1 OnboardingSheet was
@@ -145,6 +165,11 @@ struct RootView: View {
         // chip strip + sidebar both follow.
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowSovereignty)) { note in
             section = .sovereignty
+            // Phase 7: optional currentTab — Spotlight deep links to
+            // a Sovereignty bundle implicitly dismiss the welcome
+            // splash because currentTab transitions to a non-nil
+            // value (the .onChange handler above then flips
+            // hasCompletedOnboarding).
             if let parent = LifecycleTabMapping.parent(of: .sovereignty) {
                 currentTab = parent
             }
@@ -205,13 +230,4 @@ struct RootView: View {
         }
     }
 
-    /// IA v2 Phase 7: first-run welcome-card gate.  True only on the
-    /// initial launch (or after a user reset, if we ever add that
-    /// affordance) and only while the user is on the Discover tab.
-    /// If they navigate to Download / My Apps / Coordinate before
-    /// dismissing the card, those tabs render normally so a curious
-    /// user isn't trapped on the welcome screen.
-    private var shouldShowWelcomeCard: Bool {
-        !vm.hasCompletedOnboarding && currentTab == .discover
-    }
 }
