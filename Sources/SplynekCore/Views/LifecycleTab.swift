@@ -103,11 +103,16 @@ enum LifecycleTabMapping {
             return .download
 
         // ── My Apps ──────────────────────────────────────────────
-        // Post-install care: installed inventory + updates (Apps view
-        // already groups these).  Trust Watcher + Migrate surface
-        // INSIDE this tab as new subviews — they're not their own
-        // SidebarSection today.
-        case .apps:
+        // Post-install care:
+        //   .installedInventory — the unified row-per-app inventory
+        //                         (new Phase 3 view; the IA's marquee
+        //                         win combining Sov + Trust + Updates
+        //                         + Trust Watcher alerts)
+        //   .apps               — the legacy Install + Updates wrapper
+        //                         (kept as the "Updates" chip for now;
+        //                         Phase 5 will split it cleanly)
+        //   .trustWatcherInbox  — the alert feed (new Phase 3 view)
+        case .apps, .installedInventory, .trustWatcherInbox:
             return .myApps
 
         // ── Coordinate ───────────────────────────────────────────
@@ -135,10 +140,10 @@ enum LifecycleTabMapping {
     /// subview enum + this mapping becomes legacy-routing only.
     static func defaultSubview(for tab: LifecycleTab) -> SidebarSection {
         switch tab {
-        case .discover:   return .sovereignty   // Browse alternatives
-        case .download:   return .queue         // Current main download view
-        case .myApps:     return .apps          // Installed inventory
-        case .coordinate: return .fleet         // This LAN
+        case .discover:   return .sovereignty       // Browse alternatives
+        case .download:   return .queue             // Current main download view
+        case .myApps:     return .installedInventory // IA v2 Phase 3 — the new unified inventory
+        case .coordinate: return .fleet             // This LAN
         }
     }
 
@@ -155,9 +160,12 @@ enum LifecycleTabMapping {
         case .download:
             return [.queue, .live, .downloads, .torrents, .history, .benchmark]
         case .myApps:
-            return [.apps]
-            // Trust Watcher + Migrate land here as new chips in Phase 3
-            // (they don't have a SidebarSection case today).
+            // IA v2 Phase 3 (2026-05-23) — three My Apps chips:
+            //   Installed   → the unified row-per-app inventory (NEW)
+            //   Updates     → the legacy AppsView (Install + Updates
+            //                 segmented control today; Phase 5 splits)
+            //   Trust Watcher → the alert feed (NEW)
+            return [.installedInventory, .apps, .trustWatcherInbox]
         case .coordinate:
             return [.fleet, .agents]
         }

@@ -13,7 +13,14 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
     case downloads, live, torrents, concierge, recipes, sovereignty, trust,
          savings,
          queue, fleet, apps, agents, benchmark, history,
-         settings, legal, about
+         settings, legal, about,
+         // IA v2 Phase 3 (2026-05-23) — new My Apps subviews:
+         //   .installedInventory — unified row-per-app view combining
+         //     Sovereignty + Trust + Updates + Trust Watcher.  Default
+         //     subview of My Apps.
+         //   .trustWatcherInbox — alert feed for material policy
+         //     changes detected on the user's installed apps.
+         installedInventory, trustWatcherInbox
 
     var id: String { rawValue }
 
@@ -36,6 +43,8 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .settings:    return "Settings"
         case .legal:       return "Legal"
         case .about:       return "About"
+        case .installedInventory: return "Installed"
+        case .trustWatcherInbox:  return "Trust Watcher"
         }
     }
 
@@ -58,6 +67,8 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
         case .settings:    return "gearshape"
         case .legal:       return "doc.text"
         case .about:       return "info.circle"
+        case .installedInventory: return "shippingbox"
+        case .trustWatcherInbox:  return "bell.badge"
         }
     }
 }

@@ -141,6 +141,9 @@ struct RootView: View {
         case .settings:    SettingsView(vm: vm)
         case .legal:       LegalView(vm: vm)
         case .about:       AboutView(vm: vm)
+        // IA v2 Phase 3 — new My Apps subviews.
+        case .installedInventory: InstalledInventoryView(vm: vm)
+        case .trustWatcherInbox:  TrustWatcherInboxView(vm: vm)
         }
     }
 }
