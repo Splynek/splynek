@@ -135,6 +135,48 @@ enum LifecycleTabTests {
                                "Tab \(tab).subviews lists .concierge — Concierge is invoked as a sheet via .splynekShowConcierge, not as a chip.  See ConciergeSheetContainer.")
                 }
             }
+
+            // ── Phase 6 invariants ───────────────────────────────────
+            // Settings / Legal / About are no longer detail-column
+            // destinations.  They live in `SettingsSheet`, invoked
+            // from the gear-icon footer + the three legacy menu-bar
+            // notifications.  These tests keep the two enums in
+            // lockstep so a new "nil-parented" SidebarSection can't
+            // silently appear without a SettingsRoute case to host it.
+
+            TestHarness.test("Phase 6 — every SettingsRoute has a matching nil-parent SidebarSection") {
+                // Each sheet pane needs a SidebarSection peer with the
+                // same name; the section is what menu-bar deep links
+                // (legacy) still refer to via the SplynekVersion
+                // shortcut path.  Catches a typo or rename.
+                for route in SettingsRoute.allCases {
+                    let matching = SidebarSection.allCases.first {
+                        $0.rawValue == route.rawValue
+                    }
+                    try expect(matching != nil,
+                               "SettingsRoute.\(route) has no matching SidebarSection.\(route.rawValue) — add it back or rename to keep deep-link routing coherent.")
+                    if let section = matching {
+                        try expect(LifecycleTabMapping.parent(of: section) == nil,
+                                   "SettingsRoute.\(route) → SidebarSection.\(section) — section has a LifecycleTab parent, so it's a tab destination, not a sheet pane.  Sheet panes must have nil parent.")
+                    }
+                }
+            }
+
+            TestHarness.test("Phase 6 — every nil-parent SidebarSection has a SettingsRoute pane") {
+                // The other direction — a new SidebarSection with nil
+                // parent (= "sheet destination") that lacks a
+                // SettingsRoute case is unreachable from the gear sheet.
+                let sheetSections = SidebarSection.allCases.filter {
+                    LifecycleTabMapping.parent(of: $0) == nil
+                }
+                for section in sheetSections {
+                    let matching = SettingsRoute.allCases.first {
+                        $0.rawValue == section.rawValue
+                    }
+                    try expect(matching != nil,
+                               "SidebarSection.\(section) has nil LifecycleTab parent (= sheet destination) but no SettingsRoute pane to host it.  Add `case \(section.rawValue)` to SettingsRoute, or give the section a tab parent.")
+                }
+            }
         }
     }
 }

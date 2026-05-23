@@ -16,6 +16,13 @@ struct RootView: View {
     /// LifecycleTopBar (Discover + My Apps) and by the
     /// `.splynekShowConcierge` notification.
     @State private var showingConcierge: Bool = false
+    /// IA v2 Phase 6 (2026-05-23): the active Settings/Legal/About
+    /// sheet route.  `nil` means no sheet.  Set by the gear-icon
+    /// footer button and by the three legacy menu-bar notifications
+    /// (`.splynekShowSettings` / `.showLegal` / `.showAbout`) so the
+    /// menu items, Cmd+, shortcut, and the gear-icon footer all land
+    /// on the same sheet — sometimes pre-focused on a specific pane.
+    @State private var settingsRoute: SettingsRoute? = nil
 
     @MainActor
     init(vm: SplynekViewModel) {
@@ -75,6 +82,14 @@ struct RootView: View {
         .sheet(isPresented: $showingConcierge) {
             ConciergeSheetContainer(vm: vm)
         }
+        // IA v2 Phase 6: Settings/Legal/About as a sheet.  Bound to
+        // `settingsRoute` so the same sheet handles all three entry
+        // points — the route also determines which pane the sheet
+        // opens on.  Apple's Cmd+, convention says preferences are a
+        // panel, not a tab destination.
+        .sheet(item: $settingsRoute) { route in
+            SettingsSheet(initialPane: route, vm: vm)
+        }
         .onDrop(of: [.url, .fileURL, .plainText], isTargeted: nil) { providers in
             vm.handleDrop(providers: providers)
         }
@@ -92,25 +107,23 @@ struct RootView: View {
         } message: {
             Text("Today you've already used \(formatBytes(vm.hostCapAlertUsed)) from \(vm.hostCapAlertHost), past your \(formatBytes(vm.hostCapAlertLimit)) daily cap. Downloading anyway will clear today's cap for this host.")
         }
-        // v0.49: menu-bar → sidebar-routing. Apple menu → Settings…
-        // (⌘,) / About, Help menu → Legal… — each posts one of
-        // these notifications; here we route to the matching
-        // SidebarSection destination. Uses the splash route so
-        // users see the panels exactly like they would from the
-        // sidebar (no separate windows).
-        // IA v2: notification routing also updates currentTab via
-        // LifecycleTabMapping.parent so the sidebar highlight
-        // follows the deep link.  Settings / Legal / About have no
-        // tab parent (nil) — they leave currentTab unchanged so the
-        // sidebar stays on whatever tab the user was on.
+        // v0.49 / IA v2 Phase 6: menu-bar + gear-icon routing for
+        // Settings / Legal / About.  The Apple menu's "Settings…"
+        // (Cmd+,) and "About Splynek", and the Help menu's "Legal…",
+        // each post one of these three notifications.  Phase 6
+        // (2026-05-23) redirects them from a detail-column section
+        // assignment to the unified `SettingsSheet` — Apple's macOS
+        // convention says preferences are a panel, not a tab.  The
+        // sidebar tab stays on whatever LifecycleTab the user was
+        // on; the sheet floats over the active content.
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowSettings)) { _ in
-            section = .settings
+            settingsRoute = .settings
         }
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowLegal)) { _ in
-            section = .legal
+            settingsRoute = .legal
         }
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowAbout)) { _ in
-            section = .about
+            settingsRoute = .about
         }
         // v1.6: Spotlight deep-link routing.  Activating a Sovereignty
         // or Trust hit from the system search bar fires the matching
