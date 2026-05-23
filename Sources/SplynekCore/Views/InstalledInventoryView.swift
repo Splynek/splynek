@@ -83,30 +83,114 @@ struct InstalledInventoryView: View {
             .reduce(0) { $0 + $1.trustAlerts }
         let sovereignableCount = rows.filter { $0.hasAlternatives }.count
 
-        HStack(spacing: 16) {
-            stackPill(value: "\(totalApps)", label: "apps")
-            divider
-            stackPill(value: "\(updatesReady)",
-                      label: "update\(updatesReady == 1 ? "" : "s") ready",
-                      tint: updatesReady > 0 ? .accentColor : .secondary)
-            divider
-            stackPill(value: "\(alertCount)",
-                      label: "Trust Watcher alert\(alertCount == 1 ? "" : "s")",
-                      tint: alertCount > 0 ? .red : .secondary)
-            divider
-            stackPill(value: "\(sovereignableCount)",
-                      label: "have EU/OSS alternatives",
-                      tint: .orange)
+        VStack(alignment: .leading, spacing: 16) {
+            // Hero score row — the Phase-4 marquee.
+            sovereigntyHero
+
+            Divider().opacity(0.4)
+
+            // Compact 4-stat strip (the original Phase-3 row,
+            // demoted to secondary detail under the hero).
+            HStack(spacing: 16) {
+                stackPill(value: "\(totalApps)", label: "apps")
+                divider
+                stackPill(value: "\(updatesReady)",
+                          label: "update\(updatesReady == 1 ? "" : "s") ready",
+                          tint: updatesReady > 0 ? .accentColor : .secondary)
+                divider
+                stackPill(value: "\(alertCount)",
+                          label: "Trust Watcher alert\(alertCount == 1 ? "" : "s")",
+                          tint: alertCount > 0 ? .red : .secondary)
+                divider
+                stackPill(value: "\(sovereignableCount)",
+                          label: "EU/OSS replaceable",
+                          tint: sovereignableCount > 0 ? .orange : .secondary)
+            }
         }
-        .padding(16)
+        .padding(20)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 14)
                 .fill(Color(NSColor.controlBackgroundColor))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 14)
                 .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
         )
+    }
+
+    /// Phase-4 hero: a single big Sovereignty score for the
+    /// installed stack + a gauge + the "biggest drag" caption.
+    /// Computed once per render from
+    /// `SovereigntyStackSummary.live(...)` — pure compute, no I/O.
+    @ViewBuilder
+    private var sovereigntyHero: some View {
+        let summary = SovereigntyStackSummary.live(
+            installed: vm.sovereigntyScannerApps.map {
+                .init(bundleID: $0.id, displayName: $0.name)
+            }
+        )
+        HStack(alignment: .center, spacing: 20) {
+            // Big score
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text("\(summary.score)")
+                        .font(.system(size: 56, weight: .bold,
+                                      design: .rounded).monospacedDigit())
+                        .foregroundStyle(scoreColor(summary.level))
+                    Text("/ 100")
+                        .font(.title3.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+                Text(levelLabel(summary.level))
+                    .font(.system(size: 11, weight: .semibold))
+                    .textCase(.uppercase)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(
+                        Capsule().fill(scoreColor(summary.level).opacity(0.16))
+                    )
+                    .foregroundStyle(scoreColor(summary.level))
+            }
+
+            // Gauge bar
+            VStack(alignment: .leading, spacing: 6) {
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(Color.primary.opacity(0.08))
+                        Capsule()
+                            .fill(scoreColor(summary.level))
+                            .frame(width: max(8, geo.size.width *
+                                              CGFloat(summary.score) / 100))
+                    }
+                }
+                .frame(height: 10)
+
+                Text(summary.caption)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(2)
+            }
+        }
+    }
+
+    private func scoreColor(_ level: SovereigntyStackSummary.Level) -> Color {
+        switch level {
+        case .excellent: return .green
+        case .good:      return .accentColor
+        case .mixed:     return .orange
+        case .poor:      return .red
+        }
+    }
+
+    private func levelLabel(_ level: SovereigntyStackSummary.Level) -> String {
+        switch level {
+        case .excellent: return "Excellent"
+        case .good:      return "Good"
+        case .mixed:     return "Mixed"
+        case .poor:      return "Needs attention"
+        }
     }
 
     @ViewBuilder
