@@ -123,7 +123,18 @@ struct Sidebar: View {
             .scrollContentBackground(.hidden)
             brandFooter
         }
-        .background(.regularMaterial)
+        // Phase 7.v6 (2026-05-23): sidebar material extends UP under
+        // the title-bar area, matching Apple TV / Mail / Notes.
+        // Without this, the system paints its default toolbar band
+        // above the sidebar, creating the visible "system zone"
+        // across the top of the window.  The actual SidebarTileButton
+        // rows + brand footer stay in the safe area (so they don't
+        // overlap with the traffic lights).
+        .background(
+            Rectangle()
+                .fill(.regularMaterial)
+                .ignoresSafeArea(.container, edges: .top)
+        )
     }
 
     /// Per-tab accessory pill.  Phase 2 keeps this minimal — only

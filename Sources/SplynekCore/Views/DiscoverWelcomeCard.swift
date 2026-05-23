@@ -43,13 +43,14 @@ struct DiscoverWelcomeCard: View {
     let onPick: (LifecycleTab) -> Void
 
     var body: some View {
-        // Phase 7.v5 (2026-05-23): full-bleed splash inside a ZStack
-        // so the background can claim the FULL pane (including the
-        // title-bar area, thanks to the AppDelegate setting
-        // titlebarAppearsTransparent + fullSizeContentView).  The
-        // GeometryReader content uses BOTH a top Spacer and a bottom
-        // Spacer so vertical centring is mathematically balanced —
-        // equal whitespace above the hero and below the hint text.
+        // Phase 7.v6 (2026-05-23): full-bleed splash.  Both the
+        // background AND the GeometryReader ignore the safe area at
+        // the top, so the content is centred against the FULL window
+        // height (traffic-light strip included), not the smaller
+        // "below-toolbar" rectangle.  This matches Apple TV's layout
+        // — the visible content area extends from the very top of
+        // the window to the very bottom, and the Spacers above/below
+        // hero+grid+bottomStrip distribute the whitespace evenly.
         ZStack {
             backgroundGradient
                 .ignoresSafeArea()
@@ -75,13 +76,8 @@ struct DiscoverWelcomeCard: View {
                 .frame(width: geo.size.width, height: geo.size.height,
                        alignment: .center)
             }
+            .ignoresSafeArea(.container, edges: .top)
         }
-        // Empty title slot + hidden toolbar background.  The traffic
-        // lights stay visible because `.toolbarBackground(.hidden)`
-        // hides only the material, not the chrome — combined with
-        // the AppDelegate's transparent title bar, the splash
-        // gradient paints continuously top↔bottom with no visible
-        // seam at the title-bar boundary.
         .navigationTitle("")
         .toolbarBackground(.hidden, for: .windowToolbar)
     }

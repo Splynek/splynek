@@ -196,13 +196,20 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
     /// look — transparent title bar + full-size content view so any
     /// SwiftUI view's background paints all the way under the
     /// traffic-light strip.  Idempotent; safe to call on every
-    /// becomeKey notification.
+    /// becomeKey notification.  We do NOT touch `window.toolbar` —
+    /// the toolbar is what hosts the sidebar toggle button and the
+    /// per-tab toolbar items; removing it broke the NavigationSplitView
+    /// in Phase 7.v6 (sidebar disappeared).  On macOS 14+ we get the
+    /// proper API for hiding the toolbar's bottom separator; on
+    /// macOS 13 the `.unifiedCompact` toolbar style + transparent
+    /// title bar is the cleanest we can manage without breaking the
+    /// rest of the chrome.
     static func configureWindowChrome(_ window: NSWindow) {
         window.titlebarAppearsTransparent = true
         window.styleMask.insert(.fullSizeContentView)
-        // Don't change titleVisibility — RootView's per-tab toolbars
-        // still want to render their own titles when the splash is
-        // dismissed.
+        if #available(macOS 14.0, *) {
+            window.titlebarSeparatorStyle = .none
+        }
     }
 
     /// Dock menu (right-click / long-press on the Dock icon).
