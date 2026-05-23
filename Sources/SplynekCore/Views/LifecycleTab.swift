@@ -150,13 +150,20 @@ enum LifecycleTabMapping {
     /// All sibling subviews available within a given tab, ordered
     /// as they should appear in the chip strip (left to right).
     /// Used by the IA-v2 toolbar renderer in Phase 2.
+    ///
+    /// Note (Phase 5): `.concierge` is intentionally absent from the
+    /// `.discover` list even though it parents to Discover.  Concierge
+    /// is a verb ("ask Splynek") not a destination — it's surfaced as
+    /// a sheet via the "Ask Splynek" trailing pill on Discover + My
+    /// Apps and never as a chip.  `LifecycleTabTests` enforces both
+    /// halves of that invariant.
     static func subviews(of tab: LifecycleTab) -> [SidebarSection] {
         // Single source of truth — derived from `parent(of:)` so
         // the two stay in sync automatically.  Order follows the
         // semantic priority documented in IA-PROPOSAL.md.
         switch tab {
         case .discover:
-            return [.sovereignty, .trust, .recipes, .savings, .concierge]
+            return [.sovereignty, .trust, .recipes, .savings]
         case .download:
             return [.queue, .live, .downloads, .torrents, .history, .benchmark]
         case .myApps:

@@ -83,3 +83,64 @@ struct ConciergeView: View {
         }
     }
 }
+
+// MARK: - IA v2 Phase 5 — Concierge as a sheet
+
+/// Sheet wrapper around `ConciergeView`.  Phase 5 of the IA reorg
+/// (2026-05-23) — Concierge is a verb, not a destination, so it no
+/// longer lives in the Discover chip strip.  Instead it's invoked by
+/// the "Ask Splynek" pill on Discover + My Apps (and any future menu
+/// bar / Cmd+K caller) via a notification + `.sheet` presenter on
+/// RootView.
+///
+/// Adds a thin sheet chrome: title bar on top, embedded ConciergeView
+/// body, fixed sheet width so the modal doesn't stretch on wide
+/// displays.  Dismiss flips the parent's `@State showingConcierge`
+/// via the standard SwiftUI `.dismiss` env action.
+struct ConciergeSheetContainer: View {
+    @ObservedObject var vm: SplynekViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Label {
+                    Text("Ask Splynek")
+                        .font(.system(.headline, design: .rounded, weight: .semibold))
+                } icon: {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [.purple, .accentColor],
+                                startPoint: .top, endPoint: .bottom
+                            )
+                        )
+                }
+                Spacer()
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 12, weight: .semibold))
+                        .frame(width: 22, height: 22)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help("Close")
+                .accessibilityLabel("Close")
+                .keyboardShortcut(.cancelAction)
+            }
+            .padding(.horizontal, 18)
+            .padding(.vertical, 12)
+            .background(Color(nsColor: .windowBackgroundColor))
+            .overlay(
+                Divider().opacity(0.6),
+                alignment: .bottom
+            )
+
+            ConciergeView(vm: vm)
+        }
+        .frame(minWidth: 520, idealWidth: 620, maxWidth: 720,
+               minHeight: 460, idealHeight: 620, maxHeight: .infinity)
+    }
+}

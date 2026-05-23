@@ -31,21 +31,35 @@ struct LifecycleTopBar: View {
     /// doesn't need to know about VM state.
     let accessory: (SidebarSection) -> AnyView?
 
+    /// Optional trailing accessory shown right-aligned in the chip
+    /// strip.  Used by Phase 5 to surface the "Ask Splynek" pill on
+    /// Discover + My Apps without making Concierge a chip
+    /// destination.  Per-tab, not per-section — the closure is invoked
+    /// once with the current LifecycleTab and may return nil.
+    let trailing: (LifecycleTab) -> AnyView?
+
     var body: some View {
         let subviews = LifecycleTabMapping.subviews(of: currentTab)
+        let trailingView = trailing(currentTab)
 
-        // If the tab has only one subview, the chip strip is noise —
-        // hide it.  Single-subview tabs feel like they have content
-        // immediately rather than asking the user to make a choice
-        // they don't need to make.
-        if subviews.count <= 1 {
+        // Hide the bar entirely only if there's nothing to show on
+        // either side.  Single-subview tabs with a trailing action
+        // still render the bar (Phase 5 — My Apps would otherwise
+        // lose its "Ask Splynek" pill on tabs whose chip list
+        // collapses to one item later).
+        if subviews.count <= 1 && trailingView == nil {
             EmptyView()
         } else {
             HStack(spacing: 4) {
-                ForEach(subviews) { sub in
-                    chip(for: sub)
+                if subviews.count > 1 {
+                    ForEach(subviews) { sub in
+                        chip(for: sub)
+                    }
                 }
                 Spacer()
+                if let trailingView {
+                    trailingView
+                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
@@ -84,5 +98,57 @@ struct LifecycleTopBar: View {
         .buttonStyle(.plain)
         .foregroundStyle(isActive ? .primary : .secondary)
         .help(Text(LocalizedStringKey(sub.title)))
+    }
+}
+
+// MARK: - IA v2 Phase 5 — Ask Splynek trailing pill
+
+/// Trailing-accessory pill rendered on the right edge of the chip
+/// strip on Discover + My Apps.  Posts `.splynekShowConcierge`; the
+/// notification is caught by `RootView` which flips its
+/// `@State showingConcierge` so the `ConciergeSheetContainer` sheet
+/// presents.
+///
+/// Lives here (next to the chip strip) rather than as a SwiftUI
+/// `.toolbar` item so it visually anchors to the same material bar
+/// the chips sit on — matches `docs/mocks/discover.html` /
+/// `docs/mocks/my-apps.html`.
+struct AskSplynekPill: View {
+    var body: some View {
+        Button {
+            NotificationCenter.default.post(
+                name: .splynekShowConcierge, object: nil
+            )
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 11, weight: .semibold))
+                Text(LocalizedStringKey("Ask Splynek"))
+                    .font(.system(size: 12, weight: .semibold))
+            }
+            .padding(.horizontal, 11)
+            .padding(.vertical, 5)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.purple.opacity(0.18),
+                                Color.accentColor.opacity(0.18)
+                            ],
+                            startPoint: .leading, endPoint: .trailing
+                        )
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.primary.opacity(0.08), lineWidth: 0.5)
+            )
+            .foregroundStyle(.primary)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .help(Text(LocalizedStringKey("Ask Splynek — your local concierge")))
+        .accessibilityLabel("Ask Splynek")
     }
 }

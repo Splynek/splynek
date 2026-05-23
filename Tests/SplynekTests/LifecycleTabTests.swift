@@ -103,6 +103,38 @@ enum LifecycleTabTests {
                                "Tab raw value '\(raw)' contains URL-unsafe characters")
                 }
             }
+
+            // ── Phase 5 invariants ───────────────────────────────────
+            // Concierge moved from a chip-strip destination to a
+            // modal sheet ("Ask Splynek" pill on Discover + My Apps).
+            // Two halves of that invariant are tested here so a future
+            // refactor that re-adds Concierge as a chip — or that
+            // accidentally orphans the routing parent — fails fast.
+
+            TestHarness.test("Phase 5 — .concierge still parents to .discover (semantic anchor)") {
+                let parent = LifecycleTabMapping.parent(of: .concierge)
+                try expect(parent == .discover,
+                           "After Phase 5, .concierge must still parent to .discover so future deep links (splynek://concierge) route there even though it's a sheet, not a chip.  Got \(String(describing: parent)).")
+            }
+
+            TestHarness.test("Phase 5 — .concierge is NOT in subviews(of: .discover) (sheet, not chip)") {
+                let discoverChips = LifecycleTabMapping.subviews(of: .discover)
+                try expect(!discoverChips.contains(.concierge),
+                           "Phase 5 of the IA reorg removed Concierge from the chip strip — it's now the 'Ask Splynek' sheet pill.  subviews(.discover) must not list .concierge, but currently does: \(discoverChips).")
+            }
+
+            TestHarness.test("Phase 5 — .concierge is NOT in subviews(of:) for ANY tab") {
+                // Sheet destinations are never chip destinations; this
+                // invariant generalises to any future move.  Catches a
+                // regression where someone re-adds Concierge under a
+                // different tab thinking the .discover removal was the
+                // only blocker.
+                for tab in LifecycleTab.allCases {
+                    let listed = LifecycleTabMapping.subviews(of: tab)
+                    try expect(!listed.contains(.concierge),
+                               "Tab \(tab).subviews lists .concierge — Concierge is invoked as a sheet via .splynekShowConcierge, not as a chip.  See ConciergeSheetContainer.")
+                }
+            }
         }
     }
 }

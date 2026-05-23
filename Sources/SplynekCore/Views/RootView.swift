@@ -11,6 +11,11 @@ struct RootView: View {
     /// chip strip (LifecycleTopBar) or by deep-link notifications
     /// from the menu bar / splynek:// URL handlers.
     @State private var section: SidebarSection = .queue
+    /// IA v2 Phase 5 (2026-05-23): the Concierge sheet presentation
+    /// flag.  Flipped true by the "Ask Splynek" pill in
+    /// LifecycleTopBar (Discover + My Apps) and by the
+    /// `.splynekShowConcierge` notification.
+    @State private var showingConcierge: Bool = false
 
     @MainActor
     init(vm: SplynekViewModel) {
@@ -33,7 +38,8 @@ struct RootView: View {
                     LifecycleTopBar(
                         currentTab: currentTab,
                         section: $section,
-                        accessory: { _ in nil }
+                        accessory: { _ in nil },
+                        trailing: askSplynekTrailing(for:)
                     )
                 }
                 detail
@@ -62,6 +68,12 @@ struct RootView: View {
             }
         )) {
             OnboardingSheet(vm: vm)
+        }
+        // IA v2 Phase 5: Concierge as a sheet.  Visible from the
+        // "Ask Splynek" pill on Discover + My Apps and from any
+        // future caller that posts `.splynekShowConcierge`.
+        .sheet(isPresented: $showingConcierge) {
+            ConciergeSheetContainer(vm: vm)
         }
         .onDrop(of: [.url, .fileURL, .plainText], isTargeted: nil) { providers in
             vm.handleDrop(providers: providers)
@@ -118,6 +130,26 @@ struct RootView: View {
                 currentTab = parent
             }
             vm.trustFocusedBundleID = note.userInfo?["bundleID"] as? String
+        }
+        // IA v2 Phase 5: open the Concierge sheet from any caller.
+        // Posted by the "Ask Splynek" pill, the menu bar item, and
+        // any future `splynek://concierge` deep link.
+        .onReceive(NotificationCenter.default.publisher(for: .splynekShowConcierge)) { _ in
+            showingConcierge = true
+        }
+    }
+
+    /// IA v2 Phase 5: trailing-accessory builder for `LifecycleTopBar`.
+    /// Returns the "Ask Splynek" pill on tabs where the Concierge is
+    /// contextually useful — Discover (pre-install decisions) and My
+    /// Apps (post-install care).  Other tabs return nil so the
+    /// trailing slot stays empty.
+    private func askSplynekTrailing(for tab: LifecycleTab) -> AnyView? {
+        switch tab {
+        case .discover, .myApps:
+            return AnyView(AskSplynekPill())
+        case .download, .coordinate:
+            return nil
         }
     }
 

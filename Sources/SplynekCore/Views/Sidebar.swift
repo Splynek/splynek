@@ -262,4 +262,11 @@ extension Notification.Name {
     /// "Run audit + finish".  SovereigntyView's onReceive catches
     /// this and triggers its `@StateObject` scanner.scan().
     static let splynekRunSovereigntyScan = Notification.Name("splynek.runSovereigntyScan")
+
+    /// IA v2 Phase 5 (2026-05-23): open the Concierge as a modal
+    /// sheet.  Posted by the "Ask Splynek" pill in LifecycleTopBar
+    /// (Discover + My Apps) and any future caller (menu bar, Cmd+K,
+    /// `splynek://concierge` deep link).  RootView's onReceive flips
+    /// `@State showingConcierge` so `.sheet` presents.
+    static let splynekShowConcierge = Notification.Name("splynek.showConcierge")
 }
