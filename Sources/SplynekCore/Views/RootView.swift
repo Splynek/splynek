@@ -4,7 +4,13 @@ import UniformTypeIdentifiers
 struct RootView: View {
     @ObservedObject var vm: SplynekViewModel
     @ObservedObject private var torrent: TorrentProgress
-    @State private var section: SidebarSection = .downloads
+    /// IA v2 (2026-05-13): the active LifecycleTab — set by the
+    /// sidebar, drives the chip strip in the detail column.
+    @State private var currentTab: LifecycleTab = .download
+    /// The active subview within the current tab.  Set by either the
+    /// chip strip (LifecycleTopBar) or by deep-link notifications
+    /// from the menu bar / splynek:// URL handlers.
+    @State private var section: SidebarSection = .queue
 
     @MainActor
     init(vm: SplynekViewModel) {
@@ -14,13 +20,35 @@ struct RootView: View {
 
     var body: some View {
         NavigationSplitView {
-            Sidebar(selection: $section, vm: vm, torrent: torrent)
+            Sidebar(currentTab: $currentTab, vm: vm, torrent: torrent)
                 .navigationSplitViewColumnWidth(min: 190, ideal: 210, max: 260)
         } detail: {
-            detail
-                .navigationSplitViewColumnWidth(min: 640, ideal: 880)
+            VStack(spacing: 0) {
+                // IA v2: chip strip for subview switching.  Renders
+                // only when the current subview's parent tab matches
+                // currentTab — hides itself when the user is on a
+                // Settings/Legal/About route (those have no tab
+                // parent and live in a sheet long-term).
+                if LifecycleTabMapping.parent(of: section) == currentTab {
+                    LifecycleTopBar(
+                        currentTab: currentTab,
+                        section: $section,
+                        accessory: { _ in nil }
+                    )
+                }
+                detail
+            }
+            .navigationSplitViewColumnWidth(min: 640, ideal: 880)
         }
         .navigationSplitViewStyle(.balanced)
+        // IA v2: when the user clicks a sidebar tab, drop into the
+        // tab's default subview.  Without this the chip strip would
+        // light up an arbitrary subview based on prior state.
+        // Older single-closure form for macOS 13 compatibility.
+        // The two-closure form `.onChange(of:initial:_:)` is 14+.
+        .onChange(of: currentTab) { newTab in
+            section = LifecycleTabMapping.defaultSubview(for: newTab)
+        }
         .task { await vm.refreshInterfaces() }
         // v1.6.1: first-launch onboarding sheet.  Auto-presents when
         // the persisted flag is false; user dismisses (Skip / Finish)
@@ -58,6 +86,11 @@ struct RootView: View {
         // SidebarSection destination. Uses the splash route so
         // users see the panels exactly like they would from the
         // sidebar (no separate windows).
+        // IA v2: notification routing also updates currentTab via
+        // LifecycleTabMapping.parent so the sidebar highlight
+        // follows the deep link.  Settings / Legal / About have no
+        // tab parent (nil) — they leave currentTab unchanged so the
+        // sidebar stays on whatever tab the user was on.
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowSettings)) { _ in
             section = .settings
         }
@@ -70,14 +103,20 @@ struct RootView: View {
         // v1.6: Spotlight deep-link routing.  Activating a Sovereignty
         // or Trust hit from the system search bar fires the matching
         // `splynek://<tab>/<bundle-id>` URL, which posts these
-        // notifications.  We route the section + stash the focused
-        // bundle on the VM for the tab views to consume.
+        // notifications.  Update both section + currentTab so the
+        // chip strip + sidebar both follow.
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowSovereignty)) { note in
             section = .sovereignty
+            if let parent = LifecycleTabMapping.parent(of: .sovereignty) {
+                currentTab = parent
+            }
             vm.sovereigntyFocusedBundleID = note.userInfo?["bundleID"] as? String
         }
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowTrust)) { note in
             section = .trust
+            if let parent = LifecycleTabMapping.parent(of: .trust) {
+                currentTab = parent
+            }
             vm.trustFocusedBundleID = note.userInfo?["bundleID"] as? String
         }
     }
