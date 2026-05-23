@@ -18,6 +18,30 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
     weak var state: AppState?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Phase 7.v5 (2026-05-23): make every Splynek window's title
+        // bar transparent + opt into full-size content view, so the
+        // first-run welcome splash can flow edge-to-edge through the
+        // title bar area instead of stopping at a visible seam.  The
+        // traffic-light controls still render (no styleMask removal),
+        // and normal tabs that declare their own .toolbar items get
+        // the standard system treatment — the transparent title bar
+        // just lets the view's background paint through.
+        DispatchQueue.main.async {
+            for window in NSApp.windows {
+                Self.configureWindowChrome(window)
+            }
+            // Catch any windows created after launch (Pro upsell,
+            // sheets, etc.) — they all inherit the same treatment.
+            NotificationCenter.default.addObserver(
+                forName: NSWindow.didBecomeKeyNotification,
+                object: nil, queue: .main
+            ) { note in
+                if let window = note.object as? NSWindow {
+                    Self.configureWindowChrome(window)
+                }
+            }
+        }
+
         let menu = MenuBarController { [weak self] in
             guard let vm = self?.state?.vm else { return (0, 0, 0, 0) }
             let bps = vm.aggregateThroughputBps
@@ -168,6 +192,19 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    /// Phase 7.v5: configure a window for the edge-to-edge splash
+    /// look — transparent title bar + full-size content view so any
+    /// SwiftUI view's background paints all the way under the
+    /// traffic-light strip.  Idempotent; safe to call on every
+    /// becomeKey notification.
+    static func configureWindowChrome(_ window: NSWindow) {
+        window.titlebarAppearsTransparent = true
+        window.styleMask.insert(.fullSizeContentView)
+        // Don't change titleVisibility — RootView's per-tab toolbars
+        // still want to render their own titles when the splash is
+        // dismissed.
+    }
+
     /// Dock menu (right-click / long-press on the Dock icon).
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
         let menu = NSMenu()
@@ -250,7 +287,7 @@ public struct SplynekApp: App {
                 .onAppear { delegate.state = state }
                 .frame(minWidth: 900, minHeight: 640)
         }
-        // 2026-05-07 / 2026-05-23 (Phase 7.v3): defaultSize bumped
+        // 2026-05-07 / 2026-05-23 (Phase 7.v5): defaultSize bumped
         // from the (implicit) minimum so first-launch users land on
         // a window tall enough to show every sidebar row + the
         // full first-run welcome splash (4 lifecycle tiles + hero
@@ -260,7 +297,15 @@ public struct SplynekApp: App {
         // generous.
         .defaultSize(width: 1200, height: 880)
         .windowResizability(.contentSize)
-        .windowToolbarStyle(.unified(showsTitle: true))
+        // Phase 7.v5 (2026-05-23): hiddenTitleBar — the title bar
+        // becomes transparent, traffic lights stay in the top-left,
+        // and any SwiftUI view's background paints continuously from
+        // the very top of the window to the bottom.  Kills the seam
+        // the welcome splash was showing between the toolbar area
+        // and the gradient body.  unifiedCompact keeps per-tab
+        // toolbars (Sovereignty, Trust, etc.) lean.
+        .windowStyle(.hiddenTitleBar)
+        .windowToolbarStyle(.unifiedCompact(showsTitle: false))
         .commands {
             CommandGroup(replacing: .newItem) { }
 

@@ -43,49 +43,45 @@ struct DiscoverWelcomeCard: View {
     let onPick: (LifecycleTab) -> Void
 
     var body: some View {
-        // Phase 7.v3 (2026-05-23): full-bleed splash inside a
-        // GeometryReader so the four sections (hero / grid /
-        // bottom strip) distribute proportionally to whatever
-        // window height is available — no ScrollView, no Spacers
-        // misbehaving inside NavigationSplitView, no clipped
-        // content on smaller windows.
-        GeometryReader { geo in
-            VStack(spacing: 0) {
-                hero
-                    .padding(.top, max(20, geo.size.height * 0.04))
-
-                Spacer(minLength: 16)
-
-                lifecycleGrid
-
-                Spacer(minLength: 16)
-
-                bottomStrip
-                    .padding(.bottom, max(20, geo.size.height * 0.04))
-            }
-            .frame(maxWidth: 760)
-            .padding(.horizontal, 40)
-            .frame(width: geo.size.width, height: geo.size.height,
-                   alignment: .center)
-        }
-        // Phase 7.v4 (2026-05-23): the background extends UP into the
-        // title-bar / toolbar area via `.ignoresSafeArea(.top)` so
-        // the previously-visible white band above the splash content
-        // becomes part of the same gradient.  Content itself stays in
-        // the safe area (centred by the GeometryReader above), so the
-        // logo doesn't sit under any translucent material — but the
-        // RIGHT PANE reads as a single continuous splash now,
-        // top↔bottom-balanced.
-        //
-        // We DON'T use `.toolbar(.hidden, for: .windowToolbar)` here
-        // because that nukes the traffic-light controls (no way for
-        // the user to close/minimise the window).  Instead we hide
-        // only the toolbar's BACKGROUND material so the gradient
-        // bleeds through, and clear the title slot.
-        .background(
+        // Phase 7.v5 (2026-05-23): full-bleed splash inside a ZStack
+        // so the background can claim the FULL pane (including the
+        // title-bar area, thanks to the AppDelegate setting
+        // titlebarAppearsTransparent + fullSizeContentView).  The
+        // GeometryReader content uses BOTH a top Spacer and a bottom
+        // Spacer so vertical centring is mathematically balanced —
+        // equal whitespace above the hero and below the hint text.
+        ZStack {
             backgroundGradient
-                .ignoresSafeArea(.container, edges: .top)
-        )
+                .ignoresSafeArea()
+
+            GeometryReader { geo in
+                VStack(spacing: 0) {
+                    Spacer(minLength: 28)
+
+                    hero
+
+                    Spacer(minLength: 20)
+
+                    lifecycleGrid
+
+                    Spacer(minLength: 20)
+
+                    bottomStrip
+
+                    Spacer(minLength: 28)
+                }
+                .frame(maxWidth: 760)
+                .padding(.horizontal, 40)
+                .frame(width: geo.size.width, height: geo.size.height,
+                       alignment: .center)
+            }
+        }
+        // Empty title slot + hidden toolbar background.  The traffic
+        // lights stay visible because `.toolbarBackground(.hidden)`
+        // hides only the material, not the chrome — combined with
+        // the AppDelegate's transparent title bar, the splash
+        // gradient paints continuously top↔bottom with no visible
+        // seam at the title-bar boundary.
         .navigationTitle("")
         .toolbarBackground(.hidden, for: .windowToolbar)
     }
