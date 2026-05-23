@@ -1,5 +1,30 @@
 # Splynek handoff
 
+> **TODAY (2026-05-23): IA v2 lifecycle reorg in flight.**
+> v2.0.1 shipped (the entitlements-hotfix release after v2.0.0
+> was found unlaunchable).  On top of v2.0.1 tag, the 17-tab
+> sidebar is being collapsed to 4 lifecycle tabs (Discover /
+> Download / My Apps / Coordinate) per `IA-PROPOSAL.md`.
+> **Phases 1-4 of 9 shipped tonight; 5-9 pending.**  Read
+> **`IA-V2-MIGRATION-STATUS.md`** at the repo root for the
+> canonical state of the reorg — that's the single source of
+> truth for "what's done, what's next, what to test".
+>
+> Today's commits (post-v2.0.1):
+> ```
+> 8c10cb9  IA v2 Phase 1: LifecycleTab enum + mapping
+> d94ab61  IA v2 Phase 2: 4-tab sidebar + chip strip
+> 2aed5c2  IA v2 Phase 3: unified Installed inventory + Trust
+>          Watcher inbox in My Apps
+> a348d85  IA v2 Phase 4: stack-level Sovereignty score hero
+> ```
+>
+> Tests: **837 passing** (was 820 at v2.0.0; +17 for the IA
+> work: 7 LifecycleTab invariants + 10 SovereigntyStackSummary).
+> Apple v1.0 MAS re-review still pending day 28+; case
+> 20000113939741 (polite ping sent 2026-05-10, no human reply
+> yet).
+
 Native macOS multi-interface download aggregator. Pure Swift, zero
 third-party deps. Public free-tier repo (MIT) + private Pro-tier repo.
 ~12k LOC across ~55 files.

@@ -1,4 +1,4 @@
-# Splynek session log — v1.6.2 → v1.9.7 → v1.8.2 SMJobBless
+# Splynek session log — v1.6.2 → v1.9.7 → v2.0.1 → IA v2 reorg
 
 > Companion to `HANDOFF.md`.  HANDOFF is the **state**; this is the
 > **journey** — what was discussed, what was decided, what was tried
@@ -6,7 +6,208 @@
 > when picking up a session cold and the next move isn't obvious from
 > HANDOFF alone.
 >
-> Last updated 2026-05-04.
+> Last updated 2026-05-23.
+
+---
+
+## 2026-05-23 — v2.0.1 hotfix + IA v2 lifecycle reorg Phases 1-4
+
+### Why v2.0.1 happened
+
+v2.0.0 was tagged + notarized 2026-05-10 and uploaded to GitHub
+Releases.  On 2026-05-23, while trying to live-test the .app on
+the maintainer's Mac, we discovered Launchd refused to spawn it
+with `RBSRequestErrorDomain Code=5 / POSIX 163` ("Launchd job
+spawn failed").  The notarized DMG was unlaunchable on every
+fresh user machine.
+
+Root cause: `Resources/Splynek.entitlements` (applied during
+the v2.0.0 build via `ENTITLEMENTS=Resources/Splynek.entitlements
+./Scripts/build.sh`) declared `com.apple.security.app-sandbox =
+true` alongside iCloud container entitlements
+(`com.apple.developer.icloud-services` + `icloud-container-
+identifiers`).  That combination requires an
+`application-identifier` entitlement which only ships in a
+provisioning profile — and Developer-ID signing has no profile.
+Notarization passed (the signature is valid), but runtime
+sandbox initialisation failed.
+
+Fix (commit `ae54ad9`, then `148dabf` follow-up): drop iCloud
+entitlements from the DMG variant entirely (CloudKit relay was
+already gated `#if MAS_BUILD` per Sprint 8's CKContainer-init
+fix, so the DMG never actually used those entitlements at
+runtime).  Add the missing `network.server` entitlement that
+the Bonjour-advertised HTTP listener needs.  Codify a
+`Scripts/release-smoke.sh` step that mounts the DMG, copies to
+`/tmp/`, opens it, asserts the process spawns + binds a port +
+opens a window.  That step is now REQUIRED before every git
+tag.  Cost would have been zero if it had existed for v2.0.0.
+
+The fix shipped as v2.0.1 with 10 polish commits rolled in
+(Bonjour TXT-record version dynamic, iOS L10n round 5, App
+Intents metadata extraction fix, Watch icon + WKCompanionApp
+BundleIdentifier + WatchConnectivity wiring, Companion paste-to-
+pair + `splynek://pair?...` deep links, .nojekyll for the
+mocks/ subpath on GitHub Pages).
+
+### The reframe — "downloads are broken"
+
+Mid-afternoon, while reviewing the IA reorg plan, the
+maintainer pushed back on the original framing
+("Splynek has two competing identities — download manager and
+Trust Watcher fighting for the same screen").  The sharper
+reframe: **downloads are broken end-to-end**.  Discovery is
+broken (you don't know what you're installing, who makes it,
+or what better alternatives exist).  Active fetch is broken
+(bad Wi-Fi, slow speeds, you give up).  Post-install care is
+broken (apps drift, policies change, updates are missed).
+Stack coordination across multiple Macs + iPhone + Watch is
+broken (each device an island).
+
+Splynek isn't two products fighting for space.  It's ONE
+product fixing FOUR sequential moments in the lifecycle.  The
+UI just doesn't say so because the 17-tab sidebar uses NOUN
+labels (Sovereignty, Trust, Recipes) instead of VERB-moments
+(Discover, Download, My Apps, Coordinate).
+
+This reframe is the single most important architectural
+insight of the session.  Every existing feature already maps
+onto one of the four lifecycle moments — the proposed IA
+isn't adding capability, it's revealing the structure that's
+already there.
+
+### Documents written before any code
+
+To validate the reframe rigorously before committing
+engineering hours:
+
+  - `IA-PROPOSAL.md` (493 lines) — full 17→4 mapping table,
+    new view inventory, ASCII wireframes for each tab, three
+    falsifiable user-test claims, ~9 day implementation plan
+  - `IA-WIREFRAMES.md` (623 lines) — Figma-ready specs:
+    design tokens, component inventory, 10 frames at 1280×800,
+    all copy in English, click-through table
+  - `IA-USER-TEST-SCRIPT.md` (575 lines) — verbatim moderator
+    script for 3-non-techie validation sessions; recruiting
+    criteria; scoring sheet; decision protocol
+  - `docs/mocks/` — clickable HTML prototype rendering the
+    new IA at `splynek.app/mocks/` (separately fixed:
+    GitHub Pages was running Jekyll on `docs/` and stripping
+    the `_shared.css` file because of the underscore prefix;
+    added `docs/.nojekyll` + renamed the underscored files)
+
+Total 1,691 lines of structured design thinking + 7 working
+HTML mocks before any Swift code changed.
+
+### The Path-A vs Path-B fork
+
+The proposal explicitly gated engineering on user testing.
+After the maintainer walked the mocks visually and validated
+that everything looked right (Path-A's "mock validation
+passes"), I flagged that the test-against-non-techies hadn't
+happened yet, and offered:
+
+  Path A — Recruit 3 non-techies, run sessions, gate the
+           engineering on GO/ITERATE/REVISE
+  Path B — Skip testing, start engineering now; risk is
+           ~2-3 days of rework if a label later fails for
+           real users
+
+The maintainer chose **Path B**.  Reasoning: the lifecycle
+reframe was their insight, their gut says the labels will land
+for real users, and the press-wave + Apple-clearance bottleneck
+is downstream of engineering anyway — sitting idle for 4-5
+days isn't free either.  Documented decision so a future
+session understands why we didn't follow the proposal's own
+gate.
+
+### The 4 phases that shipped
+
+Implementation in order, each its own focused commit + tests:
+
+**Phase 1 — `LifecycleTab` enum + mapping** (`8c10cb9`, 0.5 d).
+  Pure additive type layer.  17-case `SidebarSection` stays
+  alongside.  `LifecycleTabMapping` provides `parent(of:)` /
+  `defaultSubview(for:)` / `subviews(of:)` so subsequent
+  phases have a stable resolver.  7 invariant tests:
+  every section has a tab parent (or explicit nil for
+  settings/legal/about); every tab's default subview
+  round-trips back to it; raw values URL-safe.
+
+**Phase 2 — 4-tab Sidebar + chip strip** (`d94ab61`, 2 d
+  estimated, ~1 d actual).  Visible UI flip.  Sidebar.swift
+  loses 250 lines of NavigationLink boilerplate, becomes a
+  4-row ForEach over `LifecycleTab.allCases`.  New
+  `LifecycleTopBar.swift` renders subview chips above the
+  detail column.  RootView gains `currentTab` state that
+  syncs with `section` via `onChange`.  Notification handlers
+  (splynekShowSovereignty, splynekShowTrust) now also set
+  currentTab so the sidebar highlight follows deep links.
+  Settings/Legal/About still render in detail (Phase 6 sheets
+  them).  Single regression caught + fixed: `onChange(of:
+  initial:_:)` is macOS 14+; switched to the macOS-13-compat
+  one-closure form.
+
+**Phase 3 — Installed inventory + Trust Watcher inbox**
+  (`2aed5c2`, 1 d estimated, ~0.5 d actual).  The MARQUEE
+  win.  Two new SidebarSection cases (`.installedInventory`,
+  `.trustWatcherInbox`) added to LifecycleTabMapping under
+  `.myApps`.  Default My Apps subview shifts from `.apps`
+  (legacy Install+Updates wrapper) to `.installedInventory`.
+  `InstalledInventoryView.swift` (270 lines) joins
+  `vm.sovereigntyScannerApps` + SovereigntyCatalog +
+  TrustCatalog + TrustScorer + `vm.trustWatchState.alerts`
+  into one InventoryRow per installed bundle ID.  Per row:
+  name + bundle/version + four status pills.  Sort
+  attention-first (alerts > concerning Trust > update >
+  alternative > alphabetical).  Sibling
+  `TrustWatcherInboxView.swift` (175 lines) renders the
+  alert feed with three states: Pro-gated upsell, all-clear,
+  populated.
+
+**Phase 4 — Sovereignty stack-level score** (`a348d85`, 1 d
+  estimated, ~0.5 d actual).  Hero block at the top of
+  Installed inventory.  `SovereigntyStackSummary.swift`
+  (new dir `Sources/SplynekCore/Sovereignty/`) is a pure
+  value type: input is installed-app list + alternatives-
+  counting closure; output is `score: Int (0-100)`, `level`
+  (excellent / good / mixed / poor), `biggestDrag` (the
+  flagged app with the most alternatives; alphabetical
+  tiebreaker), and a pre-rendered caption.  Production
+  uses `.live(installed:)` going through SovereigntyCatalog;
+  tests use `.compute(installed:alternativesFor:)` with
+  injected closure so they don't depend on catalog
+  contents.  10 invariant tests covering boundary
+  conditions, level mapping, tiebreaker determinism, and
+  caption copy.  View hero: a 56-pt score + gauge + caption
+  + traffic-light tint.
+
+### What remains
+
+5 phases pending; **`IA-V2-MIGRATION-STATUS.md`** at the
+repo root is the canonical state document.  Phase 5
+(Concierge as sheet) is the natural next-session start.
+
+### Test count + verification
+
+837/837 tests passing (was 820 at v2.0.0; +17 across the
+IA work).  Release build clean.  `.app` launches cleanly
+from `/Applications/`.  Visual verification via maintainer
+screenshots: all 4 tabs render, all chip strips switch,
+hero score visible.  Known cosmetic issues (English
+sidebar labels, loud pill colours, generic "Splynek"
+navigationTitle) documented in IA-V2-MIGRATION-STATUS.md
+for Phase 5+ cleanup.
+
+### Apple v1.0 — still pending
+
+Polite ping sent 2026-05-10 (case ID 20000113939741).  No
+human reply by 2026-05-23 — day 28+ of re-review.  The IA
+work is independent of Apple's queue, so this didn't block
+anything; but the MAS resubmit + press wave still wait on
+Cupertino.
+
+
 
 ## TL;DR
 
