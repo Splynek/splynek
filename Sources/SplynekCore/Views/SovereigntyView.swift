@@ -154,15 +154,6 @@ struct SovereigntyView: View {
                 .disabled(scanner.isScanning)
             }
         }
-        // v1.6.1: onboarding sheet posts this when the user clicks
-        // "Run audit + finish".  We catch it here (regardless of
-        // which tab is currently visible — NotificationCenter is
-        // global) and trigger the same scan() the toolbar button
-        // would.  Idempotent: scanner.scan() is a no-op if a scan
-        // is already in flight.
-        .onReceive(NotificationCenter.default.publisher(for: .splynekRunSovereigntyScan)) { _ in
-            scanner.scan()
-        }
         .alert("Export failed",
                isPresented: Binding(
                    get: { exportError != nil },

@@ -28,6 +28,16 @@ struct RootView: View {
     init(vm: SplynekViewModel) {
         self.vm = vm
         _torrent = ObservedObject(wrappedValue: vm.torrentProgress)
+        // IA v2 Phase 7 (2026-05-23): first-run users land on Discover
+        // so the welcome card greets them — the card replaces the
+        // detail content while `!hasCompletedOnboarding` and the
+        // active tab is `.discover`.  Returning users keep the
+        // pre-IA-v2 default of opening on Download (Queue) so a daily
+        // "what's downloading right now?" launch doesn't reroute them.
+        if !vm.hasCompletedOnboarding {
+            _currentTab = State(initialValue: .discover)
+            _section = State(initialValue: .sovereignty)
+        }
     }
 
     var body: some View {
@@ -36,20 +46,31 @@ struct RootView: View {
                 .navigationSplitViewColumnWidth(min: 190, ideal: 210, max: 260)
         } detail: {
             VStack(spacing: 0) {
-                // IA v2: chip strip for subview switching.  Renders
-                // only when the current subview's parent tab matches
-                // currentTab — hides itself when the user is on a
-                // Settings/Legal/About route (those have no tab
-                // parent and live in a sheet long-term).
-                if LifecycleTabMapping.parent(of: section) == currentTab {
-                    LifecycleTopBar(
-                        currentTab: currentTab,
-                        section: $section,
-                        accessory: { _ in nil },
-                        trailing: askSplynekTrailing(for:)
-                    )
+                // IA v2 Phase 7: first-run welcome card supersedes
+                // the normal Discover content while
+                // !hasCompletedOnboarding and currentTab == .discover.
+                // Tapping either CTA flips the flag and the chip strip
+                // + auto-scanning SovereigntyView take over.  Other
+                // lifecycle tabs render normally so a curious first-
+                // run user can still poke around.
+                if shouldShowWelcomeCard {
+                    DiscoverWelcomeCard(vm: vm)
+                } else {
+                    // IA v2: chip strip for subview switching.  Renders
+                    // only when the current subview's parent tab matches
+                    // currentTab — hides itself when the user is on a
+                    // Settings/Legal/About route (those have no tab
+                    // parent and live in a sheet long-term).
+                    if LifecycleTabMapping.parent(of: section) == currentTab {
+                        LifecycleTopBar(
+                            currentTab: currentTab,
+                            section: $section,
+                            accessory: { _ in nil },
+                            trailing: askSplynekTrailing(for:)
+                        )
+                    }
+                    detail
                 }
-                detail
             }
             .navigationSplitViewColumnWidth(min: 640, ideal: 880)
         }
@@ -63,19 +84,11 @@ struct RootView: View {
             section = LifecycleTabMapping.defaultSubview(for: newTab)
         }
         .task { await vm.refreshInterfaces() }
-        // v1.6.1: first-launch onboarding sheet.  Auto-presents when
-        // the persisted flag is false; user dismisses (Skip / Finish)
-        // and the flag flips so it never reappears.  Bound to a
-        // computed Binding so dismiss-by-X-button still flips the
-        // flag (otherwise the sheet would re-present on next launch).
-        .sheet(isPresented: Binding(
-            get: { !vm.hasCompletedOnboarding },
-            set: { newValue in
-                if !newValue { vm.hasCompletedOnboarding = true }
-            }
-        )) {
-            OnboardingSheet(vm: vm)
-        }
+        // IA v2 Phase 7 (2026-05-23): the v1.6.1 OnboardingSheet was
+        // retired here.  First-run UX is now the DiscoverWelcomeCard
+        // surfaced inside the detail column — see `shouldShowWelcomeCard`
+        // + the welcome branch in the `detail` VStack.
+        //
         // IA v2 Phase 5: Concierge as a sheet.  Visible from the
         // "Ask Splynek" pill on Discover + My Apps and from any
         // future caller that posts `.splynekShowConcierge`.
@@ -190,5 +203,15 @@ struct RootView: View {
         case .installedInventory: InstalledInventoryView(vm: vm)
         case .trustWatcherInbox:  TrustWatcherInboxView(vm: vm)
         }
+    }
+
+    /// IA v2 Phase 7: first-run welcome-card gate.  True only on the
+    /// initial launch (or after a user reset, if we ever add that
+    /// affordance) and only while the user is on the Discover tab.
+    /// If they navigate to Download / My Apps / Coordinate before
+    /// dismissing the card, those tabs render normally so a curious
+    /// user isn't trapped on the welcome screen.
+    private var shouldShowWelcomeCard: Bool {
+        !vm.hasCompletedOnboarding && currentTab == .discover
     }
 }

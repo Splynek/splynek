@@ -970,10 +970,16 @@ final class SplynekViewModel: ObservableObject {
     private var torrentEngine: TorrentEngine?
     private var torrentTask: Task<Void, Never>?
 
-    /// v1.6.1: first-launch onboarding flag.  Flipped to true when
-    /// the user finishes (or skips) `OnboardingSheet`, which then
-    /// never appears again.  Persisted so re-launching doesn't
-    /// re-prompt.  Default false → onboarding shows on first run.
+    /// v1.6.1 → IA v2 Phase 7 (2026-05-23): first-launch onboarding
+    /// flag.  Flipped to true when the user taps either CTA on
+    /// `DiscoverWelcomeCard` ("Tap Discover to start →" or "Skip the
+    /// welcome"), which then never appears again.  Persisted so
+    /// re-launching doesn't re-prompt.  Default false → welcome card
+    /// shows on first run.  Phase 7 retired the v1.6.1 three-step
+    /// `OnboardingSheet`; the persistence key is unchanged so existing
+    /// installs that already completed onboarding don't see the new
+    /// welcome card either (intentional — we only want to greet
+    /// genuinely-new users).
     @Published var hasCompletedOnboarding: Bool {
         didSet {
             UserDefaults.standard.set(hasCompletedOnboarding,

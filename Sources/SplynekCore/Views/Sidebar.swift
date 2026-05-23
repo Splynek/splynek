@@ -258,11 +258,6 @@ extension Notification.Name {
     static let splynekShowSovereignty = Notification.Name("splynek.showSovereignty")
     static let splynekShowTrust       = Notification.Name("splynek.showTrust")
 
-    /// v1.6.1: posted by `OnboardingSheet` when the user clicks
-    /// "Run audit + finish".  SovereigntyView's onReceive catches
-    /// this and triggers its `@StateObject` scanner.scan().
-    static let splynekRunSovereigntyScan = Notification.Name("splynek.runSovereigntyScan")
-
     /// IA v2 Phase 5 (2026-05-23): open the Concierge as a modal
     /// sheet.  Posted by the "Ask Splynek" pill in LifecycleTopBar
     /// (Discover + My Apps) and any future caller (menu bar, Cmd+K,
