@@ -50,16 +50,29 @@ struct RootView: View {
 
     var body: some View {
         NavigationSplitView {
-            Sidebar(currentTab: $currentTab, vm: vm, torrent: torrent)
+            Sidebar(currentTab: sidebarTabBinding,
+                    vm: vm, torrent: torrent)
                 .navigationSplitViewColumnWidth(min: 190, ideal: 210, max: 260)
         } detail: {
             VStack(spacing: 0) {
-                if let tab = currentTab {
-                    // IA v2: chip strip for subview switching.  Renders
-                    // only when the current subview's parent tab matches
-                    // currentTab — hides itself when the user is on a
-                    // Settings/Legal/About route (those have no tab
-                    // parent and live in a sheet long-term).
+                // Phase 7.v3 (2026-05-23): the splash gate is now the
+                // persisted flag directly, not currentTab.  macOS
+                // state restoration / SwiftUI auto-selection can set
+                // currentTab to a non-nil value at launch — we don't
+                // want that to silently dismiss a splash the user
+                // hasn't seen yet.  The sidebar gets a custom binding
+                // (sidebarTabBinding) so during splash it always reads
+                // nil (= no row highlighted) regardless of what
+                // currentTab carries underneath.
+                if !vm.hasCompletedOnboarding {
+                    DiscoverWelcomeCard(
+                        vm: vm,
+                        onPick: { tab in
+                            pickTab(tab)
+                        }
+                    )
+                } else if let tab = currentTab {
+                    // Normal app — chip strip + detail.
                     if LifecycleTabMapping.parent(of: section) == tab {
                         LifecycleTopBar(
                             currentTab: tab,
@@ -69,39 +82,25 @@ struct RootView: View {
                         )
                     }
                     detail
-                } else {
-                    // IA v2 Phase 7: welcome splash.  Active when
-                    // currentTab is nil (first-run).  Each story tile
-                    // is a button that sets currentTab to that tab,
-                    // which triggers .onChange below to flip
-                    // hasCompletedOnboarding + load the default
-                    // subview.  No tab is highlighted in the sidebar
-                    // because the welcome is a splash, not a tab.
-                    DiscoverWelcomeCard(
-                        vm: vm,
-                        onPick: { tab in
-                            currentTab = tab
-                        }
-                    )
                 }
             }
             .navigationSplitViewColumnWidth(min: 640, ideal: 880)
         }
         .navigationSplitViewStyle(.balanced)
-        // IA v2: when the user clicks a sidebar tab (or a welcome-
-        // card story tile), drop into the tab's default subview.
-        // Phase 7: the same handler dismisses the welcome — flipping
-        // hasCompletedOnboarding once currentTab transitions from
-        // nil → a tab.  newTab being nil shouldn't happen in normal
-        // flow (only the welcome init can set it), so we just no-op.
-        // Older single-closure onChange form for macOS-13 compat;
-        // the two-closure form is macOS-14+.
+        // IA v2: when currentTab changes (sidebar click via the
+        // sidebarTabBinding, welcome tile via onPick, or a Spotlight
+        // deep-link), sync the section to the tab's default subview.
+        //
+        // Phase 7.v3 (2026-05-23): NO auto-flip of
+        // hasCompletedOnboarding here.  macOS state restoration /
+        // SwiftUI auto-selection can fire .onChange with a tab value
+        // during launch; we don't want that to silently dismiss the
+        // splash.  Dismissal is now explicit — either via `pickTab`
+        // (called by the welcome tile or the sidebarTabBinding) or
+        // by the deep-link notification handlers below.
         .onChange(of: currentTab) { newTab in
             guard let newTab else { return }
             section = LifecycleTabMapping.defaultSubview(for: newTab)
-            if !vm.hasCompletedOnboarding {
-                vm.hasCompletedOnboarding = true
-            }
         }
         .task { await vm.refreshInterfaces() }
         // IA v2 Phase 7 (2026-05-23): the v1.6.1 OnboardingSheet was
@@ -164,18 +163,23 @@ struct RootView: View {
         // notifications.  Update both section + currentTab so the
         // chip strip + sidebar both follow.
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowSovereignty)) { note in
+            // Spotlight deep-link to a Sovereignty bundle: dismiss
+            // any active splash explicitly (Phase 7.v3 — splash gate
+            // is now hasCompletedOnboarding, not currentTab), then
+            // route to the Sovereignty subview.
+            if !vm.hasCompletedOnboarding {
+                vm.hasCompletedOnboarding = true
+            }
             section = .sovereignty
-            // Phase 7: optional currentTab — Spotlight deep links to
-            // a Sovereignty bundle implicitly dismiss the welcome
-            // splash because currentTab transitions to a non-nil
-            // value (the .onChange handler above then flips
-            // hasCompletedOnboarding).
             if let parent = LifecycleTabMapping.parent(of: .sovereignty) {
                 currentTab = parent
             }
             vm.sovereigntyFocusedBundleID = note.userInfo?["bundleID"] as? String
         }
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowTrust)) { note in
+            if !vm.hasCompletedOnboarding {
+                vm.hasCompletedOnboarding = true
+            }
             section = .trust
             if let parent = LifecycleTabMapping.parent(of: .trust) {
                 currentTab = parent
@@ -187,6 +191,41 @@ struct RootView: View {
         // any future `splynek://concierge` deep link.
         .onReceive(NotificationCenter.default.publisher(for: .splynekShowConcierge)) { _ in
             showingConcierge = true
+        }
+    }
+
+    /// Phase 7.v3 (2026-05-23): the sidebar's selection binding.
+    /// During the welcome splash (!hasCompletedOnboarding) it
+    /// always reads `nil` so no row is highlighted, regardless of
+    /// what `currentTab` carries underneath (which macOS state
+    /// restoration likes to set to whatever was selected last
+    /// session).  The setter routes through `pickTab(_:)`, which is
+    /// the single dismissal path that flips `hasCompletedOnboarding`.
+    private var sidebarTabBinding: Binding<LifecycleTab?> {
+        Binding(
+            get: {
+                vm.hasCompletedOnboarding ? currentTab : nil
+            },
+            set: { newValue in
+                if let newValue {
+                    pickTab(newValue)
+                } else {
+                    currentTab = nil
+                }
+            }
+        )
+    }
+
+    /// The single "user picked a tab" entry point.  Called by the
+    /// welcome tiles and by the sidebar's setter when the user
+    /// clicks a row.  Flips `hasCompletedOnboarding` so the splash
+    /// dismisses on next render, sets `currentTab` so the chosen
+    /// tab becomes active, and loads its default subview.
+    private func pickTab(_ tab: LifecycleTab) {
+        currentTab = tab
+        section = LifecycleTabMapping.defaultSubview(for: tab)
+        if !vm.hasCompletedOnboarding {
+            vm.hasCompletedOnboarding = true
         }
     }
 
