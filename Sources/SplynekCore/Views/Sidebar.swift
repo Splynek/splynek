@@ -96,25 +96,34 @@ struct Sidebar: View {
         // footer) → notification → RootView routing.  Phase 6 of
         // the IA migration converts them to a sheet.
         VStack(spacing: 0) {
-            List(selection: $currentTab) {
-                Section {
+            // Phase 7.v4 (2026-05-23): custom sidebar — dropped
+            // List(selection:) in favour of a VStack of
+            // SidebarTileButton views.  The macOS List's default
+            // selection style is a system-blue rectangle that
+            // overwrites the tab's tinted slogan and tints any custom
+            // background we set; with custom buttons each tile owns
+            // its own hover / active state in its own colour and
+            // stays readable.  Sidebar background uses the standard
+            // sidebar material via .background(.regularMaterial).
+            ScrollView {
+                VStack(spacing: 10) {
                     ForEach(LifecycleTab.allCases) { tab in
-                        NavigationLink(value: tab) {
-                            sidebarTile(
-                                tab: tab,
-                                accessory: accessory(for: tab)
-                            )
+                        SidebarTileButton(
+                            tab: tab,
+                            isActive: currentTab == tab,
+                            accessory: accessory(for: tab)
+                        ) {
+                            currentTab = tab
                         }
                     }
                 }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 14)
             }
+            .scrollContentBackground(.hidden)
             brandFooter
         }
-        // Phase 7.v3 (2026-05-23): the right-pane navigationTitle
-        // "Splynek" inherited from this label was just decoration
-        // (the app name is already in the menu bar + dock).
-        // Removing it cleans up the welcome splash and gives every
-        // tab's own toolbar the full title slot.
+        .background(.regularMaterial)
     }
 
     /// Per-tab accessory pill.  Phase 2 keeps this minimal — only
@@ -139,60 +148,6 @@ struct Sidebar: View {
         default:
             return nil
         }
-    }
-
-    /// Phase 7.v3 (2026-05-23): each sidebar row is now a two-line
-    /// "tile" — tinted gradient icon well + tab title + tab slogan in
-    /// the tab's own color.  Same visual vocabulary as the welcome
-    /// splash tiles, so the lifecycle story keeps telling itself
-    /// after the splash dismisses.  Rows are taller (~48pt content
-    /// plus list padding) which gives the four-row sidebar real
-    /// presence rather than looking like an afterthought.
-    @ViewBuilder
-    private func sidebarTile(tab: LifecycleTab,
-                             accessory: AnyView? = nil) -> some View {
-        HStack(spacing: 11) {
-            iconWell(for: tab)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(LocalizedStringKey(tab.title))
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(.primary)
-                Text(LocalizedStringKey(tab.slogan))
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(tab.tintColor)
-                    .lineLimit(1)
-            }
-            Spacer(minLength: 0)
-            accessory
-        }
-        .padding(.vertical, 3)
-    }
-
-    /// 30pt circular icon well, tinted with the tab's color.  Mirrors
-    /// the larger 44pt wells on the welcome splash tiles so the
-    /// sidebar reads as "the same product, smaller".
-    private func iconWell(for tab: LifecycleTab) -> some View {
-        Image(systemName: tab.systemImage)
-            .font(.system(size: 13, weight: .semibold))
-            .foregroundColor(tab.tintColor)
-            .frame(width: 30, height: 30)
-            .background(
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                tab.tintColor.opacity(0.22),
-                                tab.tintColor.opacity(0.08)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-            )
-            .overlay(
-                Circle()
-                    .stroke(tab.tintColor.opacity(0.25), lineWidth: 0.5)
-            )
     }
 
     /// Small 28 pt logo + version at the foot of the sidebar, with
@@ -281,6 +236,105 @@ struct Sidebar: View {
             return String(format: "%.1f%@", bps / threshold, unit)
         }
         return String(format: "%.0fB/s", bps)
+    }
+}
+
+// MARK: - SidebarTileButton
+
+/// Phase 7.v4 (2026-05-23): a sidebar row built as a custom Button
+/// rather than a NavigationLink-in-List.  Drops macOS's default
+/// system-blue selection rectangle (which fights the tab's own tint)
+/// in favour of three states all anchored to the tab's `tintColor`:
+///
+///   • idle    — soft tinted background (4%) + no border
+///   • hover   — slightly stronger background (8%) + tinted outline
+///               (35%) + faint scale-up (1.01) for tactile feedback
+///   • active  — strongest background (16%) + bold tinted outline
+///               (55%) — matches the tab's identity, keeps the
+///               slogan readable (no blue-on-blue collision)
+///
+/// Same visual vocabulary as the welcome-splash tiles, so the
+/// sidebar reads as the same product, scaled down.
+struct SidebarTileButton: View {
+    let tab: LifecycleTab
+    let isActive: Bool
+    let accessory: AnyView?
+    let onTap: () -> Void
+    @State private var isHovered: Bool = false
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 11) {
+                iconWell
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(LocalizedStringKey(tab.title))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.primary)
+                    Text(LocalizedStringKey(tab.slogan))
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(tab.tintColor)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 0)
+                accessory
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(rowBackground)
+            .overlay(rowBorder)
+            .contentShape(Rectangle())
+            .scaleEffect(isHovered && !isActive ? 1.01 : 1.0)
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+            withAnimation(.easeOut(duration: 0.12)) {
+                isHovered = hovering
+            }
+        }
+        .help(Text(LocalizedStringKey(tab.title)) +
+              Text(verbatim: " — ") +
+              Text(LocalizedStringKey(tab.promise)))
+    }
+
+    private var rowBackground: some View {
+        RoundedRectangle(cornerRadius: 10)
+            .fill(tab.tintColor.opacity(
+                isActive ? 0.16 : (isHovered ? 0.08 : 0.04)
+            ))
+    }
+
+    private var rowBorder: some View {
+        RoundedRectangle(cornerRadius: 10)
+            .stroke(
+                tab.tintColor.opacity(
+                    isActive ? 0.55 : (isHovered ? 0.35 : 0)
+                ),
+                lineWidth: isActive ? 1.0 : 0.8
+            )
+    }
+
+    private var iconWell: some View {
+        Image(systemName: tab.systemImage)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundColor(tab.tintColor)
+            .frame(width: 30, height: 30)
+            .background(
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                tab.tintColor.opacity(0.22),
+                                tab.tintColor.opacity(0.08)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
+            .overlay(
+                Circle()
+                    .stroke(tab.tintColor.opacity(0.25), lineWidth: 0.5)
+            )
     }
 }
 

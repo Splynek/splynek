@@ -68,12 +68,26 @@ struct DiscoverWelcomeCard: View {
             .frame(width: geo.size.width, height: geo.size.height,
                    alignment: .center)
         }
-        .background(backgroundGradient)
-        // Hide the right-pane navigation title during the splash;
-        // an explicit empty title collapses the toolbar's title slot
-        // without nuking the toolbar itself (which broke sidebar +
-        // hero rendering in the previous attempt).
+        // Phase 7.v4 (2026-05-23): the background extends UP into the
+        // title-bar / toolbar area via `.ignoresSafeArea(.top)` so
+        // the previously-visible white band above the splash content
+        // becomes part of the same gradient.  Content itself stays in
+        // the safe area (centred by the GeometryReader above), so the
+        // logo doesn't sit under any translucent material — but the
+        // RIGHT PANE reads as a single continuous splash now,
+        // top↔bottom-balanced.
+        //
+        // We DON'T use `.toolbar(.hidden, for: .windowToolbar)` here
+        // because that nukes the traffic-light controls (no way for
+        // the user to close/minimise the window).  Instead we hide
+        // only the toolbar's BACKGROUND material so the gradient
+        // bleeds through, and clear the title slot.
+        .background(
+            backgroundGradient
+                .ignoresSafeArea(.container, edges: .top)
+        )
         .navigationTitle("")
+        .toolbarBackground(.hidden, for: .windowToolbar)
     }
 
     /// Solid window-background wash, with a very faint vertical tint
