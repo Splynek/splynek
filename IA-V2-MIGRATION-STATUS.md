@@ -18,15 +18,15 @@ Phase 2  4-tab Sidebar + chip bar DONE     d94ab61   2026-05-23
 Phase 3  Installed inventory      DONE     2aed5c2   2026-05-23
 Phase 4  Stack-level Sovereignty  DONE     a348d85   2026-05-23
 Phase 5  Concierge as sheet       DONE     c162c09   2026-05-23
-Phase 6  Settings as gear-sheet   PENDING
+Phase 6  Settings as gear-sheet   DONE     e921e1d   2026-05-23
 Phase 7  First-run welcome card   PENDING
 Phase 8  L10n round 6             PENDING
 Phase 9  Tests + smoke + docs     PENDING
 ```
 
-**5 of 9 phases shipped (≈5 of 7 planned days).**  All
+**6 of 9 phases shipped (≈5.5 of 7 planned days).**  All
 implementation visible in the running `/Applications/Splynek.app`
-locally + on local `main` (1 commit ahead of `origin/main`).
+locally + on local `main` (3 commits ahead of `origin/main`).
 
 ---
 
@@ -49,23 +49,6 @@ row-per-app inventory, with a Phase-4 hero score at the top.
 ---
 
 ## What's NOT done yet
-
-### Phase 6 — Settings/Legal/About as sheet (~0.5 d)
-
-Currently `.settings` / `.legal` / `.about` are SidebarSection
-cases rendered in the detail column when triggered by menu-bar
-notifications.  The proposal makes them a sheet invoked from the
-sidebar's gear icon (already exists in `brandFooter`).
-
-Touch points:
-- New `SettingsSheet.swift` — wraps `SettingsView`/`LegalView`/
-  `AboutView` in a navigation-split sheet
-- `RootView.detail` switch keeps the cases (for menu-bar deep
-  links that go directly) but ALSO presents the sheet via
-  `.sheet(item: $settingsRoute)` where `settingsRoute` is set by
-  the brandFooter's notification handler
-- Or just: the brandFooter's gear button sets a `@State
-  showingSettings = true` and presents the sheet inline
 
 ### Phase 7 — First-run welcome card (~0.25 d)
 
@@ -108,7 +91,7 @@ New strings introduced in Phases 1-4:
 
 ---
 
-## Files added or substantially changed by Phases 1-5
+## Files added or substantially changed by Phases 1-6
 
 ```
 Sources/SplynekCore/Views/LifecycleTab.swift            NEW    Phase 1
@@ -116,14 +99,15 @@ Sources/SplynekCore/Views/LifecycleTopBar.swift         NEW    Phase 2
 Sources/SplynekCore/Views/InstalledInventoryView.swift  NEW    Phase 3
 Sources/SplynekCore/Views/TrustWatcherInboxView.swift   NEW    Phase 3
 Sources/SplynekCore/Sovereignty/SovereigntyStackSummary.swift  NEW  Phase 4
+Sources/SplynekCore/Views/SettingsSheet.swift           NEW    Phase 6
 
 Sources/SplynekCore/Views/Sidebar.swift                 MODIFIED  Phase 2 + 5 (.splynekShowConcierge)
-Sources/SplynekCore/Views/RootView.swift                MODIFIED  Phase 2 + 3 + 5 (sheet presenter + trailing builder)
+Sources/SplynekCore/Views/RootView.swift                MODIFIED  Phase 2 + 3 + 5 + 6 (two sheet presenters + reroute)
 Sources/SplynekCore/Views/LifecycleTopBar.swift         MODIFIED  Phase 5 (trailing accessory + AskSplynekPill)
 Sources/SplynekCore/Views/ConciergeView.swift           MODIFIED  Phase 5 (ConciergeSheetContainer)
 Sources/SplynekCore/Views/LifecycleTab.swift            MODIFIED  Phase 5 (.concierge out of subviews(.discover))
 
-Tests/SplynekTests/LifecycleTabTests.swift              NEW    Phase 1 (+7 tests) + Phase 5 (+3 invariants)
+Tests/SplynekTests/LifecycleTabTests.swift              NEW    Phase 1 (+7) + Phase 5 (+3) + Phase 6 (+2)
 Tests/SplynekTests/SovereigntyStackSummaryTests.swift   NEW    Phase 4 (+10 tests)
 Tests/SplynekTests/main.swift                           MODIFIED  Phase 1 + 4
 ```
@@ -169,18 +153,21 @@ These are real but not blocking the architectural arc:
 2. **Verify the running app.**  `open /Applications/Splynek.app`
    — confirm the 4-tab sidebar, the Phase-3 unified Installed
    inventory + Trust Watcher inbox, the Phase-4 hero Sovereignty
-   score, and the Phase-5 "Ask Splynek" pill (Discover + My Apps
-   only) all render correctly.  Click the pill — the Concierge
-   sheet should slide up with a titled header + close button.
+   score, the Phase-5 "Ask Splynek" pill (Discover + My Apps
+   only), and the Phase-6 gear-icon sheet all render correctly.
+   Test the three sheet entry points: gear icon in the sidebar
+   footer → opens on Settings; brand-area click → opens on About;
+   Help menu "Legal…" → opens on Legal.  Cmd+, should also open
+   the sheet (Settings pane).
 
 3. **Run the test suite.**  `swift run splynek-test` should
-   report **840 passing** (was 837 before Phase 5; +3 invariants
-   live in `LifecycleTabTests`).
+   report **842 passing** (was 837 before Phase 5; +3 Phase-5
+   invariants + 2 Phase-6 invariants live in `LifecycleTabTests`).
 
-4. **Start Phase 6 (Settings/Legal/About as sheet).**  Per the
-   touch-points list above.  ~0.5 day.
+4. **Start Phase 7 (First-run welcome card).**  Per the
+   touch-points list above.  ~0.25 day.
 
-5. **Commit per phase.**  Same pattern as Phases 1-5: one
+5. **Commit per phase.**  Same pattern as Phases 1-6: one
    focused commit per phase, with a verbose body explaining the
    what + why + verification.
 
