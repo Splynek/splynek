@@ -250,12 +250,15 @@ public struct SplynekApp: App {
                 .onAppear { delegate.state = state }
                 .frame(minWidth: 900, minHeight: 640)
         }
-        // 2026-05-07: defaultSize bumped from the (implicit) minimum
-        // so first-launch users land on a window tall enough to show
-        // every sidebar row without clipping.  The minimum frame is
-        // still 900×640 — anyone who shrinks the window keeps the
-        // Pro layout — but the *initial* frame is now generous.
-        .defaultSize(width: 1180, height: 820)
+        // 2026-05-07 / 2026-05-23 (Phase 7.v3): defaultSize bumped
+        // from the (implicit) minimum so first-launch users land on
+        // a window tall enough to show every sidebar row + the
+        // full first-run welcome splash (4 lifecycle tiles + hero
+        // + trust strip) without clipping or scrolling.  The minimum
+        // frame is still 900×640 — anyone who shrinks the window
+        // keeps the Pro layout — but the *initial* frame is now
+        // generous.
+        .defaultSize(width: 1200, height: 880)
         .windowResizability(.contentSize)
         .windowToolbarStyle(.unified(showsTitle: true))
         .commands {

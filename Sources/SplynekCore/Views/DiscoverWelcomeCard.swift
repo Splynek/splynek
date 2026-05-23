@@ -43,29 +43,50 @@ struct DiscoverWelcomeCard: View {
     let onPick: (LifecycleTab) -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 26) {
+        // Phase 7.v3 (2026-05-23): full-bleed splash inside a
+        // GeometryReader so the four sections (hero / grid /
+        // bottom strip) distribute proportionally to whatever
+        // window height is available — no ScrollView, no Spacers
+        // misbehaving inside NavigationSplitView, no clipped
+        // content on smaller windows.
+        GeometryReader { geo in
+            VStack(spacing: 0) {
                 hero
+                    .padding(.top, max(20, geo.size.height * 0.04))
+
+                Spacer(minLength: 16)
+
                 lifecycleGrid
+
+                Spacer(minLength: 16)
+
                 bottomStrip
+                    .padding(.bottom, max(20, geo.size.height * 0.04))
             }
-            // Balanced top / bottom — the splash breathes evenly,
-            // no primary CTA bar competes with the rest.
             .frame(maxWidth: 760)
             .padding(.horizontal, 40)
-            .padding(.vertical, 30)
-            .frame(maxWidth: .infinity)
+            .frame(width: geo.size.width, height: geo.size.height,
+                   alignment: .center)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(backgroundGradient.ignoresSafeArea())
+        .background(backgroundGradient)
+        // Hide the right-pane navigation title during the splash;
+        // an explicit empty title collapses the toolbar's title slot
+        // without nuking the toolbar itself (which broke sidebar +
+        // hero rendering in the previous attempt).
+        .navigationTitle("")
     }
 
-    /// Soft vertical wash from window bg → faint accent → window bg.
+    /// Solid window-background wash, with a very faint vertical tint
+    /// so the splash has a hair of dimension without looking like a
+    /// gradient.  Note: NO `.ignoresSafeArea` — extending the
+    /// background under the title bar would make the logo sit
+    /// beneath a translucent toolbar material (what looked like
+    /// "transparency on the logo" in the previous build).
     private var backgroundGradient: some View {
         LinearGradient(
             colors: [
                 Color(nsColor: .windowBackgroundColor),
-                Color.accentColor.opacity(0.05),
+                Color.accentColor.opacity(0.04),
                 Color(nsColor: .windowBackgroundColor)
             ],
             startPoint: .top,

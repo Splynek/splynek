@@ -100,10 +100,8 @@ struct Sidebar: View {
                 Section {
                     ForEach(LifecycleTab.allCases) { tab in
                         NavigationLink(value: tab) {
-                            sidebarRow(
-                                title: tab.title,
-                                systemImage: tab.systemImage,
-                                iconTint: tab.tintColor,
+                            sidebarTile(
+                                tab: tab,
                                 accessory: accessory(for: tab)
                             )
                         }
@@ -112,7 +110,11 @@ struct Sidebar: View {
             }
             brandFooter
         }
-        .navigationTitle("Splynek")
+        // Phase 7.v3 (2026-05-23): the right-pane navigationTitle
+        // "Splynek" inherited from this label was just decoration
+        // (the app name is already in the menu bar + dock).
+        // Removing it cleans up the welcome splash and gives every
+        // tab's own toolbar the full title slot.
     }
 
     /// Per-tab accessory pill.  Phase 2 keeps this minimal — only
@@ -139,25 +141,58 @@ struct Sidebar: View {
         }
     }
 
+    /// Phase 7.v3 (2026-05-23): each sidebar row is now a two-line
+    /// "tile" — tinted gradient icon well + tab title + tab slogan in
+    /// the tab's own color.  Same visual vocabulary as the welcome
+    /// splash tiles, so the lifecycle story keeps telling itself
+    /// after the splash dismisses.  Rows are taller (~48pt content
+    /// plus list padding) which gives the four-row sidebar real
+    /// presence rather than looking like an afterthought.
     @ViewBuilder
-    private func sidebarRow(title: String, systemImage: String,
-                            iconTint: Color,
-                            accessory: AnyView? = nil) -> some View {
-        // Phase 7: tint each row's SF Symbol with the tab's
-        // tintColor (blue/purple/pink/orange — the Splynek logo's
-        // rainbow).  Matches the macOS System Settings convention
-        // of coloured row icons and gives each lifecycle moment a
-        // memorable identity.  Label text stays primary-colored.
-        HStack {
-            Label {
-                Text(LocalizedStringKey(title))
-            } icon: {
-                Image(systemName: systemImage)
-                    .foregroundColor(iconTint)
+    private func sidebarTile(tab: LifecycleTab,
+                             accessory: AnyView? = nil) -> some View {
+        HStack(spacing: 11) {
+            iconWell(for: tab)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(LocalizedStringKey(tab.title))
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.primary)
+                Text(LocalizedStringKey(tab.slogan))
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(tab.tintColor)
+                    .lineLimit(1)
             }
-            Spacer()
+            Spacer(minLength: 0)
             accessory
         }
+        .padding(.vertical, 3)
+    }
+
+    /// 30pt circular icon well, tinted with the tab's color.  Mirrors
+    /// the larger 44pt wells on the welcome splash tiles so the
+    /// sidebar reads as "the same product, smaller".
+    private func iconWell(for tab: LifecycleTab) -> some View {
+        Image(systemName: tab.systemImage)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundColor(tab.tintColor)
+            .frame(width: 30, height: 30)
+            .background(
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                tab.tintColor.opacity(0.22),
+                                tab.tintColor.opacity(0.08)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
+            .overlay(
+                Circle()
+                    .stroke(tab.tintColor.opacity(0.25), lineWidth: 0.5)
+            )
     }
 
     /// Small 28 pt logo + version at the foot of the sidebar, with
