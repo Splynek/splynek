@@ -17,16 +17,16 @@ Phase 1  LifecycleTab enum        DONE     8c10cb9   2026-05-23
 Phase 2  4-tab Sidebar + chip bar DONE     d94ab61   2026-05-23
 Phase 3  Installed inventory      DONE     2aed5c2   2026-05-23
 Phase 4  Stack-level Sovereignty  DONE     a348d85   2026-05-23
-Phase 5  Concierge as sheet       PENDING
+Phase 5  Concierge as sheet       DONE     c162c09   2026-05-23
 Phase 6  Settings as gear-sheet   PENDING
 Phase 7  First-run welcome card   PENDING
 Phase 8  L10n round 6             PENDING
 Phase 9  Tests + smoke + docs     PENDING
 ```
 
-**4 of 9 phases shipped (≈4.5 of 7 planned days).**  All
+**5 of 9 phases shipped (≈5 of 7 planned days).**  All
 implementation visible in the running `/Applications/Splynek.app`
-locally + on `origin/main`.
+locally + on local `main` (1 commit ahead of `origin/main`).
 
 ---
 
@@ -49,22 +49,6 @@ row-per-app inventory, with a Phase-4 hero score at the top.
 ---
 
 ## What's NOT done yet
-
-### Phase 5 — Concierge as sheet (~0.5 d)
-
-Currently `.concierge` is a SidebarSection rendered in the detail
-column (parented to Discover, surfaced as the rightmost chip).
-The proposal makes it invokable from anywhere as a sheet.
-
-Touch points:
-- `Sources/SplynekCore/Views/ConciergeView.swift` — wrap in a
-  sheet container
-- Remove `.concierge` from `LifecycleTabMapping.subviews(of:
-  .discover)` (it's a verb, not a destination)
-- Add an "Ask Splynek" button to Discover's toolbar that opens
-  the sheet; mirror in My Apps's right-actions
-- Update `LifecycleTabTests` to allow `.concierge` to have a
-  parent (`.discover`) but no longer appear in the chip strip
 
 ### Phase 6 — Settings/Legal/About as sheet (~0.5 d)
 
@@ -124,7 +108,7 @@ New strings introduced in Phases 1-4:
 
 ---
 
-## Files added or substantially changed by Phases 1-4
+## Files added or substantially changed by Phases 1-5
 
 ```
 Sources/SplynekCore/Views/LifecycleTab.swift            NEW    Phase 1
@@ -133,10 +117,13 @@ Sources/SplynekCore/Views/InstalledInventoryView.swift  NEW    Phase 3
 Sources/SplynekCore/Views/TrustWatcherInboxView.swift   NEW    Phase 3
 Sources/SplynekCore/Sovereignty/SovereigntyStackSummary.swift  NEW  Phase 4
 
-Sources/SplynekCore/Views/Sidebar.swift                 MODIFIED  Phase 2 (-250 lines)
-Sources/SplynekCore/Views/RootView.swift                MODIFIED  Phase 2 + 3
+Sources/SplynekCore/Views/Sidebar.swift                 MODIFIED  Phase 2 + 5 (.splynekShowConcierge)
+Sources/SplynekCore/Views/RootView.swift                MODIFIED  Phase 2 + 3 + 5 (sheet presenter + trailing builder)
+Sources/SplynekCore/Views/LifecycleTopBar.swift         MODIFIED  Phase 5 (trailing accessory + AskSplynekPill)
+Sources/SplynekCore/Views/ConciergeView.swift           MODIFIED  Phase 5 (ConciergeSheetContainer)
+Sources/SplynekCore/Views/LifecycleTab.swift            MODIFIED  Phase 5 (.concierge out of subviews(.discover))
 
-Tests/SplynekTests/LifecycleTabTests.swift              NEW    Phase 1 (+7 tests)
+Tests/SplynekTests/LifecycleTabTests.swift              NEW    Phase 1 (+7 tests) + Phase 5 (+3 invariants)
 Tests/SplynekTests/SovereigntyStackSummaryTests.swift   NEW    Phase 4 (+10 tests)
 Tests/SplynekTests/main.swift                           MODIFIED  Phase 1 + 4
 ```
@@ -180,17 +167,20 @@ These are real but not blocking the architectural arc:
    you need design rationale.
 
 2. **Verify the running app.**  `open /Applications/Splynek.app`
-   — confirm the 4-tab sidebar + new My Apps hero score render
-   correctly.  If anything is broken in the running v2.0.1+IA
-   build, fix it before continuing to Phase 5.
+   — confirm the 4-tab sidebar, the Phase-3 unified Installed
+   inventory + Trust Watcher inbox, the Phase-4 hero Sovereignty
+   score, and the Phase-5 "Ask Splynek" pill (Discover + My Apps
+   only) all render correctly.  Click the pill — the Concierge
+   sheet should slide up with a titled header + close button.
 
 3. **Run the test suite.**  `swift run splynek-test` should
-   report 837 passing.  If not, fix regressions.
+   report **840 passing** (was 837 before Phase 5; +3 invariants
+   live in `LifecycleTabTests`).
 
-4. **Start Phase 5 (Concierge as sheet).**  Per the touch-points
-   list above.  ~0.5 day.
+4. **Start Phase 6 (Settings/Legal/About as sheet).**  Per the
+   touch-points list above.  ~0.5 day.
 
-5. **Commit per phase.**  Same pattern as Phases 1-4: one
+5. **Commit per phase.**  Same pattern as Phases 1-5: one
    focused commit per phase, with a verbose body explaining the
    what + why + verification.
 
