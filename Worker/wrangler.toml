@@ -1,0 +1,33 @@
+# Cloudflare Worker config for the Splynek licence-server.
+#
+# 2026-06 direct-sale launch — see LAUNCH-WITHOUT-APPLE.md.
+#
+# Deployment (maintainer):
+#   npm install -g wrangler
+#   cd Worker/
+#   wrangler login
+#   wrangler secret put LICENSE_SIGNING_PRIVATE_KEY  # paste base64 Ed25519 priv key
+#   wrangler secret put LEMONSQUEEZY_WEBHOOK_SECRET  # paste from LemonSqueezy dashboard
+#   wrangler secret put RESEND_API_KEY               # email-sender API key
+#   wrangler deploy
+
+name = "splynek-license-server"
+main = "worker.js"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Custom route — bind splynek.app/api/license/* to this worker.
+# Maintainer configures this in the Cloudflare dashboard (Workers
+# Routes) since the splynek.app zone may live in a separate account.
+# Until then, the *.workers.dev URL works for testing.
+# routes = [
+#   { pattern = "splynek.app/api/license/*", zone_name = "splynek.app" }
+# ]
+
+# Plain-text variables (not secrets — these are public-knowledge).
+[vars]
+PRODUCT_SLUG     = "splynek-pro"
+SUPPORT_EMAIL    = "support@splynek.app"
+FROM_EMAIL       = "licenses@splynek.app"
+FROM_NAME        = "Splynek"
+APP_DOWNLOAD_URL = "https://splynek.app/download"
