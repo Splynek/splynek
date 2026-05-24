@@ -120,8 +120,8 @@ struct Sidebar: View {
                     .tag(tab)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 4, leading: 8,
-                                              bottom: 4, trailing: 8))
+                    .listRowInsets(EdgeInsets(top: 7, leading: 10,
+                                              bottom: 7, trailing: 10))
                 }
             }
             .listStyle(.sidebar)
@@ -283,24 +283,27 @@ struct SidebarTileButton: View {
         Button(action: onTap) {
             HStack(spacing: 11) {
                 iconWell
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(LocalizedStringKey(tab.title))
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.85)
                     Text(LocalizedStringKey(tab.slogan))
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.system(size: 12, weight: .medium))
                         .foregroundColor(tab.tintColor)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.85)
                 }
                 Spacer(minLength: 0)
                 accessory
             }
             .padding(.horizontal, 10)
-            .padding(.vertical, 8)
+            .padding(.vertical, 11)
             .background(rowBackground)
             .overlay(rowBorder)
             .contentShape(Rectangle())
-            .scaleEffect(isHovered && !isActive ? 1.01 : 1.0)
+            .scaleEffect(isHovered && !isActive ? 1.015 : 1.0)
         }
         .buttonStyle(.plain)
         .onHover { hovering in
@@ -314,34 +317,34 @@ struct SidebarTileButton: View {
     }
 
     private var rowBackground: some View {
-        RoundedRectangle(cornerRadius: 10)
+        RoundedRectangle(cornerRadius: 12)
             .fill(tab.tintColor.opacity(
-                isActive ? 0.16 : (isHovered ? 0.08 : 0.04)
+                isActive ? 0.22 : (isHovered ? 0.12 : 0.06)
             ))
     }
 
     private var rowBorder: some View {
-        RoundedRectangle(cornerRadius: 10)
+        RoundedRectangle(cornerRadius: 12)
             .stroke(
                 tab.tintColor.opacity(
-                    isActive ? 0.55 : (isHovered ? 0.35 : 0)
+                    isActive ? 0.65 : (isHovered ? 0.50 : 0)
                 ),
-                lineWidth: isActive ? 1.0 : 0.8
+                lineWidth: isActive ? 1.4 : 1.0
             )
     }
 
     private var iconWell: some View {
         Image(systemName: tab.systemImage)
-            .font(.system(size: 13, weight: .semibold))
+            .font(.system(size: 14, weight: .semibold))
             .foregroundColor(tab.tintColor)
-            .frame(width: 30, height: 30)
+            .frame(width: 32, height: 32)
             .background(
                 Circle()
                     .fill(
                         LinearGradient(
                             colors: [
-                                tab.tintColor.opacity(0.22),
-                                tab.tintColor.opacity(0.08)
+                                tab.tintColor.opacity(0.28),
+                                tab.tintColor.opacity(0.10)
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -350,7 +353,7 @@ struct SidebarTileButton: View {
             )
             .overlay(
                 Circle()
-                    .stroke(tab.tintColor.opacity(0.25), lineWidth: 0.5)
+                    .stroke(tab.tintColor.opacity(0.32), lineWidth: 0.5)
             )
     }
 }

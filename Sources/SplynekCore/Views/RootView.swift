@@ -52,7 +52,7 @@ struct RootView: View {
         NavigationSplitView {
             Sidebar(currentTab: sidebarTabBinding,
                     vm: vm, torrent: torrent)
-                .navigationSplitViewColumnWidth(min: 190, ideal: 210, max: 260)
+                .navigationSplitViewColumnWidth(min: 210, ideal: 230, max: 280)
         } detail: {
             VStack(spacing: 0) {
                 // Phase 7.v3 (2026-05-23): the splash gate is now the
