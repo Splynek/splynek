@@ -1690,6 +1690,40 @@
         }
       }
     },
+    "100% local": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 % lokal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100% local"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100 % local"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100% locale"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100% local"
+          }
+        }
+      }
+    },
     "100% local LLM (LM Studio or Ollama) — no cloud, no account": {
       "localizations": {
         "de": {
@@ -2313,6 +2347,40 @@
         }
       }
     },
+    "Acknowledge": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestätigen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conferma"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmar"
+          }
+        }
+      }
+    },
     "Active": {
       "localizations": {
         "de": {
@@ -2858,6 +2926,40 @@
         }
       }
     },
+    "Alerts when an app's policy changes": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hinweise, wenn sich App-Richtlinien ändern"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alertas cuando cambia la política de una app"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alertes quand la politique d'une app change"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvisi quando cambia la politica di un'app"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alertas quando uma política de app muda"
+          }
+        }
+      }
+    },
     "All %lld auto-updating apps are current.": {
       "localizations": {
         "de": {
@@ -2994,6 +3096,40 @@
         }
       }
     },
+    "All clear.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles in Ordnung."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo en orden."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rien à signaler."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto a posto."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tudo limpo."
+          }
+        }
+      }
+    },
     "All downloads": {
       "extractionState": "stale",
       "localizations": {
@@ -3025,6 +3161,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todas as transferências"
+          }
+        }
+      }
+    },
+    "All in sync.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles synchron."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo en sincronía."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout synchronisé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto sincronizzato."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tudo em sincronia."
           }
         }
       }
@@ -3439,6 +3609,74 @@
         }
       }
     },
+    "Ask Splynek": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek fragen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregunta a Splynek"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demander à Splynek"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiedi a Splynek"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perguntar ao Splynek"
+          }
+        }
+      }
+    },
+    "Ask Splynek — your local concierge": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek fragen — dein lokaler Concierge"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregunta a Splynek — tu conserje local"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demander à Splynek — votre concierge local"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiedi a Splynek — il tuo concierge locale"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perguntar ao Splynek — o teu concierge local"
+          }
+        }
+      }
+    },
     "Ask again": {
       "localizations": {
         "de": {
@@ -3607,6 +3845,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Atividade de atualização automática"
+          }
+        }
+      }
+    },
+    "Auto-updates without nagging": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto-Updates ohne Nervfaktor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualizaciones automáticas sin molestar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mises à jour auto sans harceler"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamenti automatici senza assillare"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atualizações automáticas sem chatear"
           }
         }
       }
@@ -5117,6 +5389,40 @@
         }
       }
     },
+    "Choose well.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gut wählen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige bien."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bien choisir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli bene."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escolhe bem."
+          }
+        }
+      }
+    },
     "Claude Desktop's MCP transport is currently stdio-only. Use a small HTTP-bridge shim like mcp-proxy to bridge to Splynek's HTTP endpoint. When Claude Desktop ships HTTP transport, drop the snippet into ~/Library/Application Support/Claude/claude_desktop_config.json directly.": {
       "localizations": {
         "de": {
@@ -5595,6 +5901,40 @@
         }
       }
     },
+    "Compare with free alternatives": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vergleiche mit kostenlosen Alternativen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compara con alternativas gratuitas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparez avec des alternatives gratuites"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confronta con alternative gratuite"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compara com alternativas gratuitas"
+          }
+        }
+      }
+    },
     "Complete": {
       "extractionState": "manual",
       "localizations": {
@@ -6038,6 +6378,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Controlos sobre o que a rede local consegue ver e quem pode enviar transferências para este Mac."
+          }
+        }
+      }
+    },
+    "Coordinate": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koordinieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coordinar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coordonner"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coordina"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coordenar"
           }
         }
       }
@@ -6932,6 +7306,40 @@
         }
       }
     },
+    "Daily SHA-256 diff of Privacy Policy + Terms-of-Service URLs for installed apps Splynek's catalog tracks. Material changes show up here.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Täglicher SHA-256-Vergleich der URLs für Datenschutzerklärung und AGB installierter Apps, die der Splynek-Katalog kennt. Wesentliche Änderungen erscheinen hier."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparación diaria SHA-256 de las URL de Política de Privacidad y Términos de Servicio de las apps instaladas que el catálogo de Splynek rastrea. Los cambios materiales aparecen aquí."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparaison quotidienne SHA-256 des URL de Politique de confidentialité et CGU des applications installées suivies par le catalogue Splynek. Les changements importants apparaissent ici."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confronto giornaliero SHA-256 degli URL di Informativa sulla privacy e Termini di servizio delle app installate che il catalogo di Splynek monitora. Le modifiche sostanziali compaiono qui."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparação diária SHA-256 dos URLs de Política de Privacidade e Termos de Serviço das apps instaladas seguidas pelo catálogo do Splynek. Alterações materiais aparecem aqui."
+          }
+        }
+      }
+    },
     "Daily cap": {
       "localizations": {
         "de": {
@@ -6996,6 +7404,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diferença diária de Políticas de Privacidade + Termos de Serviço para apps populares. O Splynek calcula o hash da página pública; quando o hash muda, vês o alerta aqui. Cada alerta tem ligação para a página atual para leres o que mudou."
+          }
+        }
+      }
+    },
+    "Daily diffs of Privacy Policies and Terms of Service for popular apps you have installed. Push notifications on your iPhone the moment something changes. Unlocked with Splynek Pro.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tägliche Vergleiche von Datenschutzerklärungen und AGB beliebter installierter Apps. Push-Mitteilungen auf deinem iPhone, sobald sich etwas ändert. Mit Splynek Pro freigeschaltet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparaciones diarias de políticas de privacidad y términos de servicio de las apps populares que tienes instaladas. Notificaciones push en tu iPhone en cuanto algo cambia. Se desbloquea con Splynek Pro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparaisons quotidiennes des politiques de confidentialité et CGU des applications populaires que vous avez installées. Notifications push sur votre iPhone dès qu'un changement survient. Débloqué avec Splynek Pro."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confronti giornalieri di Informative sulla privacy e Termini di servizio delle app popolari che hai installato. Notifiche push sull'iPhone non appena qualcosa cambia. Sbloccato con Splynek Pro."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparações diárias das Políticas de Privacidade e Termos de Serviço das apps populares que tens instaladas. Notificações push no iPhone assim que algo muda. Desbloqueado com o Splynek Pro."
           }
         }
       }
@@ -7443,6 +7885,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Desligado"
+          }
+        }
+      }
+    },
+    "Discover": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entdecken"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descubrir"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Découvrir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scopri"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descobrir"
           }
         }
       }
@@ -9230,6 +9706,40 @@
         }
       }
     },
+    "Every installed app, with the four signals Splynek tracks: Sovereignty alternatives, Trust score, available update, and Trust Watcher alerts.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jede installierte App mit den vier Signalen, die Splynek verfolgt: Souveränitäts-Alternativen, Trust-Score, verfügbare Updates und Trust-Watcher-Warnungen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas las apps instaladas, con las cuatro señales que Splynek rastrea: alternativas de soberanía, puntuación Trust, actualizaciones disponibles y alertas del Vigía de Confianza."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toutes les applications installées, avec les quatre signaux que Splynek suit : alternatives de souveraineté, score Trust, mise à jour disponible et alertes Sentinelle de confiance."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni app installata, con i quattro segnali che Splynek monitora: alternative di Sovranità, punteggio Trust, aggiornamenti disponibili e avvisi della Sentinella di fiducia."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas as apps instaladas, com os quatro sinais que o Splynek acompanha: alternativas de Soberania, pontuação Trust, atualização disponível e alertas do Vigia de Confiança."
+          }
+        }
+      }
+    },
     "Example": {
       "extractionState": "manual",
       "localizations": {
@@ -9261,6 +9771,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Exemplo"
+          }
+        }
+      }
+    },
+    "Explore curated app stacks": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entdecke kuratierte App-Sammlungen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explora colecciones de apps curadas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explorez des sélections d'applications"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esplora raccolte di app curate"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explora coleções de apps recomendadas"
           }
         }
       }
@@ -10084,6 +10628,40 @@
         }
       }
     },
+    "Find apps worth installing": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finde Apps, die sich lohnen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encuentra apps que vale la pena instalar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trouvez les applications qui valent la peine"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trova app che vale la pena installare"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encontra apps que valem a pena instalar"
+          }
+        }
+      }
+    },
     "Finished downloads will show up here.": {
       "extractionState": "manual",
       "localizations": {
@@ -10633,6 +11211,40 @@
         }
       }
     },
+    "Get it home.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hol's nach Hause."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tráelo a casa."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ramenez-le."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Portalo a casa."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trá-lo a casa."
+          }
+        }
+      }
+    },
     "Get notified when an app you have installed materially changes its Privacy Policy or Terms of Service. Daily check, fully local — we just hash the public policy page and tell you when the hash changes. Splynek Pro.": {
       "localizations": {
         "de": {
@@ -10732,6 +11344,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Começar"
+          }
+        }
+      }
+    },
+    "Get them here, fast": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hol sie schnell hierher"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tráelas aquí, rápido"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récupérez-les ici, vite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Portale qui, velocemente"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trá-las cá depressa"
           }
         }
       }
@@ -10837,6 +11483,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "HASHED"
+          }
+        }
+      }
+    },
+    "Hand off downloads between Macs": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads zwischen Macs übergeben"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasa descargas entre Macs"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transférez les téléchargements entre Macs"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passa download tra Mac"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passa transferências entre Macs"
           }
         }
       }
@@ -12348,6 +13028,74 @@
         }
       }
     },
+    "Keep watch.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bleib wachsam."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantente alerta."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restez vigilant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resta vigile."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fica atento."
+          }
+        }
+      }
+    },
+    "Keep what you have safe": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halte sicher, was du hast"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén seguro lo que tienes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gardez en sécurité ce que vous avez"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tieni al sicuro ciò che hai"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantém seguro o que tens"
+          }
+        }
+      }
+    },
     "Known CVE": {
       "localizations": {
         "de": {
@@ -13783,6 +14531,40 @@
         }
       }
     },
+    "Mark all as read": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle als gelesen markieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marcar todo como leído"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout marquer comme lu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segna tutto come letto"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marcar tudo como lido"
+          }
+        }
+      }
+    },
     "Marked %@.": {
       "localizations": {
         "de": {
@@ -14300,6 +15082,40 @@
         }
       }
     },
+    "Most tools stop at \"file saved\".  Splynek fixes all four moments — pick the right app, fetch it reliably, keep installed apps safe, coordinate across devices.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die meisten Tools hören bei \"Datei gespeichert\" auf.  Splynek löst alle vier Momente — die richtige App wählen, sie zuverlässig holen, installierte Apps sicher halten, zwischen Geräten koordinieren."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La mayoría de las herramientas se quedan en \"archivo guardado\".  Splynek resuelve los cuatro momentos: elige la app correcta, descárgala de forma fiable, mantén seguras las apps instaladas, coordina entre dispositivos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La plupart des outils s'arrêtent à \"fichier enregistré\".  Splynek prend en charge les quatre moments : choisir la bonne app, la récupérer de façon fiable, garder les apps installées en sécurité, coordonner entre appareils."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La maggior parte degli strumenti si ferma a \"file salvato\".  Splynek risolve tutti e quattro i momenti — scegli l'app giusta, scaricala in modo affidabile, tieni al sicuro le app installate, coordina tra dispositivi."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A maioria das ferramentas pára em \"ficheiro guardado\".  O Splynek resolve os quatro momentos — escolhe a app certa, recebe-a de forma fiável, mantém as apps instaladas seguras, coordena entre dispositivos."
+          }
+        }
+      }
+    },
     "Move the file to the Trash and remove it from Splynek's history.": {
       "localizations": {
         "de": {
@@ -14432,6 +15248,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ferramentas que modificam estado (transferir / enfileirar / cancelar) seguem o mesmo caminho de ingestão que o arrastar-e-largar e a extensão do navegador. Todas as proteções de esquema, confirmações de tamanho e limites por servidor continuam a disparar."
+          }
+        }
+      }
+    },
+    "My Apps": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meine Apps"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mis apps"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mes apps"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le mie app"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps"
           }
         }
       }
@@ -14877,6 +15727,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sem atividade móvel"
+          }
+        }
+      }
+    },
+    "No cloud, no account": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Cloud, kein Konto"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin nube, sin cuenta"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sans cloud, sans compte"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niente cloud, niente account"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem nuvem, sem conta"
           }
         }
       }
@@ -15391,6 +16275,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sem preocupações de registo público para as tuas apps instaladas"
+          }
+        }
+      }
+    },
+    "No scan yet": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch keine Prüfung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin análisis"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune analyse encore"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna scansione ancora"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ainda sem análise"
           }
         }
       }
@@ -16768,6 +17686,40 @@
         }
       }
     },
+    "Open-source free tier": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kostenlose Open-Source-Stufe"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edición gratuita de código abierto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version gratuite open source"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versione gratuita open source"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versão gratuita open-source"
+          }
+        }
+      }
+    },
     "Open-source only": {
       "localizations": {
         "de": {
@@ -17285,6 +18237,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Emparelhar Splynek Companion (iPhone)"
+          }
+        }
+      }
+    },
+    "Pair iPhone + Watch": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone + Watch koppeln"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empareja iPhone + Watch"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Associer iPhone + Watch"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbina iPhone + Watch"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emparelhar iPhone + Watch"
           }
         }
       }
@@ -17902,6 +18888,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Escolhe um URL servido por CDN com `Accept-Ranges: bytes`. A predefinição é o ficheiro de teste de 100 MB da Hetzner."
+          }
+        }
+      }
+    },
+    "Pick a tile above to begin →": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle oben eine Kachel, um zu beginnen →"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige un mosaico arriba para empezar →"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez une tuile ci-dessus pour commencer →"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli un riquadro sopra per iniziare →"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escolhe um cartão acima para começar →"
           }
         }
       }
@@ -20578,6 +21598,40 @@
         }
       }
     },
+    "Resumes across networks": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setzt netzwerkübergreifend fort"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reanuda entre redes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reprend d'un réseau à l'autre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprende tra reti diverse"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retoma entre redes"
+          }
+        }
+      }
+    },
     "Retry": {
       "localizations": {
         "de": {
@@ -22083,6 +23137,40 @@
         }
       }
     },
+    "See privacy + spending scores": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sieh Datenschutz- und Kosten-Scores"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira puntuaciones de privacidad y gasto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voyez les scores de confidentialité + coûts"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda punteggi di privacy e spesa"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vê pontuações de privacidade e gastos"
+          }
+        }
+      }
+    },
     "See what public records say about your installed apps — App Store privacy labels, regulatory rulings, confirmed breaches, vendor security advisories. Every claim cites its primary source. Everything stays local.": {
       "localizations": {
         "de": {
@@ -22696,6 +23784,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risco severo"
+          }
+        }
+      }
+    },
+    "Share over your LAN": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über dein LAN teilen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparte por tu LAN"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partagez via votre réseau local"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condividi sulla tua LAN"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partilha pela tua LAN"
           }
         }
       }
@@ -24106,6 +25228,74 @@
         }
       }
     },
+    "Splynek hasn't scanned your installed apps. Run a scan from the Sovereignty tab to populate this inventory.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek hat deine installierten Apps noch nicht geprüft. Starte eine Prüfung im Souveränitäts-Tab, um diese Übersicht zu füllen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek aún no ha analizado tus apps instaladas. Ejecuta un análisis desde la pestaña Soberanía para rellenar este inventario."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek n'a pas encore analysé vos applications. Lancez une analyse depuis l'onglet Souveraineté pour remplir cet inventaire."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek non ha ancora analizzato le app installate. Avvia una scansione dalla scheda Sovranità per popolare questo inventario."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek ainda não analisou as tuas apps instaladas. Executa uma análise no separador Soberania para preencher este inventário."
+          }
+        }
+      }
+    },
+    "Splynek is watching %lld URLs across %lld installed apps. No material changes since the last sweep.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek überwacht %lld URLs in %lld installierten Apps. Keine wesentlichen Änderungen seit dem letzten Durchlauf."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek vigila %lld URL en %lld apps instaladas. Sin cambios materiales desde la última revisión."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek surveille %lld URL réparties sur %lld applications installées. Aucun changement important depuis le dernier passage."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek sta monitorando %lld URL in %lld app installate. Nessuna modifica sostanziale dall'ultima verifica."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Splynek está a vigiar %lld URLs em %lld apps instaladas. Sem alterações materiais desde a última verificação."
+          }
+        }
+      }
+    },
     "Splynek looks up hostnames over Cloudflare's encrypted DNS (DNS-over-HTTPS, port 443). Stops your internet provider from seeing which sites you download from. Tiny latency cost on the first request to each hostname.": {
       "localizations": {
         "de": {
@@ -25070,6 +26260,40 @@
         }
       }
     },
+    "Survives bad Wi-Fi": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersteht schlechtes WLAN"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobrevive al Wi-Fi malo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Survit au mauvais Wi-Fi"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sopravvive al Wi-Fi instabile"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobrevive a Wi-Fi mau"
+          }
+        }
+      }
+    },
     "Switched · +$%@/yr counted in your savings": {
       "localizations": {
         "de": {
@@ -25135,6 +26359,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trocado · +$\\(Int(annualised))/ano contabilizado nas tuas poupanças"
+          }
+        }
+      }
+    },
+    "Sync across your devices": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronisiere zwischen deinen Geräten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincroniza entre tus dispositivos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Synchronisez entre vos appareils"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizza tra i tuoi dispositivi"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincroniza entre os teus dispositivos"
           }
         }
       }
@@ -26763,6 +28021,40 @@
         }
       }
     },
+    "Trust Watcher is a Pro feature.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trust Watcher ist eine Pro-Funktion."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Vigía de Confianza es una función Pro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La Sentinelle de confiance est une fonctionnalité Pro."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La Sentinella di fiducia è una funzione Pro."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Vigia de Confiança é uma funcionalidade Pro."
+          }
+        }
+      }
+    },
     "Trust audit": {
       "extractionState": "stale",
       "localizations": {
@@ -27621,6 +28913,40 @@
         }
       }
     },
+    "Unlock Splynek Pro — $29 one-time": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Splynek Pro freischalten — 29 $ (Einmalkauf)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear Splynek Pro — 29 USD (pago único)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Débloquer Splynek Pro — 29 $ (paiement unique)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sblocca Splynek Pro — 29 $ (pagamento unico)"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desbloquear Splynek Pro — 29 USD (pagamento único)"
+          }
+        }
+      }
+    },
     "Unlock the AI Concierge, AI-powered history search, scheduled downloads, and phone-accessible LAN dashboard. One-time $29; lifetime 0.x updates.": {
       "localizations": {
         "de": {
@@ -28038,6 +29364,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verificado — o Splynek vai confirmar que o ficheiro corresponde à soma de controlo do editor"
+          }
+        }
+      }
+    },
+    "Verifies every byte": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüft jedes Byte"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica cada byte"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifie chaque octet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica ogni byte"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica cada byte"
           }
         }
       }
@@ -28933,6 +30293,40 @@
         }
       }
     },
+    "Welcome to ": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen bei "
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Te damos la bienvenida a "
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenue dans "
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benvenuto in "
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bem-vindo ao "
+          }
+        }
+      }
+    },
     "Welcome to Splynek": {
       "localizations": {
         "de": {
@@ -29239,6 +30633,40 @@
         }
       }
     },
+    "Yearly spending breakdown": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jährliche Ausgaben-Übersicht"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desglose anual de gastos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilan annuel des dépenses"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riepilogo annuale delle spese"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Análise anual de gastos"
+          }
+        }
+      }
+    },
     "Yesterday": {
       "extractionState": "stale",
       "localizations": {
@@ -29446,6 +30874,40 @@
         }
       }
     },
+    "Your download lifecycle, fixed.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Download-Lebenszyklus, gelöst."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu ciclo de descargas, resuelto."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre cycle de téléchargement, enfin maîtrisé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tuo ciclo di download, risolto."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O teu ciclo de transferências, resolvido."
+          }
+        }
+      }
+    },
     "Your engagement (read-only)": {
       "localizations": {
         "de": {
@@ -29579,6 +31041,40 @@
           "stringUnit": {
             "state": "translated",
             "value": "A tua cadeia de software"
+          }
+        }
+      }
+    },
+    "Your stack": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Stack"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pila"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre stack"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tuo stack"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A tua pilha"
           }
         }
       }

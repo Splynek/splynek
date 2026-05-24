@@ -4292,6 +4292,344 @@ PRO_PLUS_IPHONE_STRINGS = {
 }
 
 
+# IA v2 strings (2026-05-23 → 2026-05-24).  Phases 1-7 of the
+# lifecycle-based information-architecture migration introduced
+# the 4-tab sidebar (Discover / Download / My Apps / Coordinate),
+# the first-run welcome card, the Concierge-as-sheet pattern,
+# Settings-as-gear-sheet, the Installed inventory + Trust Watcher
+# inbox under My Apps, and the rich sidebar tile design.  Same dict
+# shape as NEW_V16_STRINGS / PRO_PLUS_IPHONE_STRINGS — applied
+# identically by main().  Phase 8 of the IA v2 migration.
+IA_V2_STRINGS = {
+
+    # ── Lifecycle tab titles (Phase 1) ───────────────────────────
+    "Discover": {
+        "pt-PT": "Descobrir",
+        "es": "Descubrir",
+        "fr": "Découvrir",
+        "de": "Entdecken",
+        "it": "Scopri",
+    },
+    "My Apps": {
+        "pt-PT": "Apps",
+        "es": "Mis apps",
+        "fr": "Mes apps",
+        "de": "Meine Apps",
+        "it": "Le mie app",
+    },
+    "Coordinate": {
+        "pt-PT": "Coordenar",
+        "es": "Coordinar",
+        "fr": "Coordonner",
+        "de": "Koordinieren",
+        "it": "Coordina",
+    },
+
+    # ── Lifecycle tab promises (Phase 1, sidebar tooltip + welcome) ─
+    "Find apps worth installing": {
+        "pt-PT": "Encontra apps que valem a pena instalar",
+        "es": "Encuentra apps que vale la pena instalar",
+        "fr": "Trouvez les applications qui valent la peine",
+        "de": "Finde Apps, die sich lohnen",
+        "it": "Trova app che vale la pena installare",
+    },
+    "Get them here, fast": {
+        "pt-PT": "Trá-las cá depressa",
+        "es": "Tráelas aquí, rápido",
+        "fr": "Récupérez-les ici, vite",
+        "de": "Hol sie schnell hierher",
+        "it": "Portale qui, velocemente",
+    },
+    "Keep what you have safe": {
+        "pt-PT": "Mantém seguro o que tens",
+        "es": "Mantén seguro lo que tienes",
+        "fr": "Gardez en sécurité ce que vous avez",
+        "de": "Halte sicher, was du hast",
+        "it": "Tieni al sicuro ciò che hai",
+    },
+    "Sync across your devices": {
+        "pt-PT": "Sincroniza entre os teus dispositivos",
+        "es": "Sincroniza entre tus dispositivos",
+        "fr": "Synchronisez entre vos appareils",
+        "de": "Synchronisiere zwischen deinen Geräten",
+        "it": "Sincronizza tra i tuoi dispositivi",
+    },
+
+    # ── Lifecycle tab slogans (Phase 7, welcome tile + sidebar) ──
+    "Choose well.": {
+        "pt-PT": "Escolhe bem.",
+        "es": "Elige bien.",
+        "fr": "Bien choisir.",
+        "de": "Gut wählen.",
+        "it": "Scegli bene.",
+    },
+    "Get it home.": {
+        "pt-PT": "Trá-lo a casa.",
+        "es": "Tráelo a casa.",
+        "fr": "Ramenez-le.",
+        "de": "Hol's nach Hause.",
+        "it": "Portalo a casa.",
+    },
+    "Keep watch.": {
+        "pt-PT": "Fica atento.",
+        "es": "Mantente alerta.",
+        "fr": "Restez vigilant.",
+        "de": "Bleib wachsam.",
+        "it": "Resta vigile.",
+    },
+    "All in sync.": {
+        "pt-PT": "Tudo em sincronia.",
+        "es": "Todo en sincronía.",
+        "fr": "Tout synchronisé.",
+        "de": "Alles synchron.",
+        "it": "Tutto sincronizzato.",
+    },
+
+    # ── Welcome card hero (Phase 7) ──────────────────────────────
+    "Welcome to ": {
+        "pt-PT": "Bem-vindo ao ",
+        "es": "Te damos la bienvenida a ",
+        "fr": "Bienvenue dans ",
+        "de": "Willkommen bei ",
+        "it": "Benvenuto in ",
+    },
+    "Your download lifecycle, fixed.": {
+        "pt-PT": "O teu ciclo de transferências, resolvido.",
+        "es": "Tu ciclo de descargas, resuelto.",
+        "fr": "Votre cycle de téléchargement, enfin maîtrisé.",
+        "de": "Dein Download-Lebenszyklus, gelöst.",
+        "it": "Il tuo ciclo di download, risolto.",
+    },
+    "Most tools stop at \"file saved\".  Splynek fixes all four moments — pick the right app, fetch it reliably, keep installed apps safe, coordinate across devices.": {
+        "pt-PT": "A maioria das ferramentas pára em \"ficheiro guardado\".  O Splynek resolve os quatro momentos — escolhe a app certa, recebe-a de forma fiável, mantém as apps instaladas seguras, coordena entre dispositivos.",
+        "es": "La mayoría de las herramientas se quedan en \"archivo guardado\".  Splynek resuelve los cuatro momentos: elige la app correcta, descárgala de forma fiable, mantén seguras las apps instaladas, coordina entre dispositivos.",
+        "fr": "La plupart des outils s'arrêtent à \"fichier enregistré\".  Splynek prend en charge les quatre moments : choisir la bonne app, la récupérer de façon fiable, garder les apps installées en sécurité, coordonner entre appareils.",
+        "de": "Die meisten Tools hören bei \"Datei gespeichert\" auf.  Splynek löst alle vier Momente — die richtige App wählen, sie zuverlässig holen, installierte Apps sicher halten, zwischen Geräten koordinieren.",
+        "it": "La maggior parte degli strumenti si ferma a \"file salvato\".  Splynek risolve tutti e quattro i momenti — scegli l'app giusta, scaricala in modo affidabile, tieni al sicuro le app installate, coordina tra dispositivi.",
+    },
+    "Pick a tile above to begin →": {
+        "pt-PT": "Escolhe um cartão acima para começar →",
+        "es": "Elige un mosaico arriba para empezar →",
+        "fr": "Choisissez une tuile ci-dessus pour commencer →",
+        "de": "Wähle oben eine Kachel, um zu beginnen →",
+        "it": "Scegli un riquadro sopra per iniziare →",
+    },
+
+    # ── Welcome card story-tile bullets (Phase 7) ────────────────
+    "See privacy + spending scores": {
+        "pt-PT": "Vê pontuações de privacidade e gastos",
+        "es": "Mira puntuaciones de privacidad y gasto",
+        "fr": "Voyez les scores de confidentialité + coûts",
+        "de": "Sieh Datenschutz- und Kosten-Scores",
+        "it": "Guarda punteggi di privacy e spesa",
+    },
+    "Compare with free alternatives": {
+        "pt-PT": "Compara com alternativas gratuitas",
+        "es": "Compara con alternativas gratuitas",
+        "fr": "Comparez avec des alternatives gratuites",
+        "de": "Vergleiche mit kostenlosen Alternativen",
+        "it": "Confronta con alternative gratuite",
+    },
+    "Explore curated app stacks": {
+        "pt-PT": "Explora coleções de apps recomendadas",
+        "es": "Explora colecciones de apps curadas",
+        "fr": "Explorez des sélections d'applications",
+        "de": "Entdecke kuratierte App-Sammlungen",
+        "it": "Esplora raccolte di app curate",
+    },
+    "Survives bad Wi-Fi": {
+        "pt-PT": "Sobrevive a Wi-Fi mau",
+        "es": "Sobrevive al Wi-Fi malo",
+        "fr": "Survit au mauvais Wi-Fi",
+        "de": "Übersteht schlechtes WLAN",
+        "it": "Sopravvive al Wi-Fi instabile",
+    },
+    "Resumes across networks": {
+        "pt-PT": "Retoma entre redes",
+        "es": "Reanuda entre redes",
+        "fr": "Reprend d'un réseau à l'autre",
+        "de": "Setzt netzwerkübergreifend fort",
+        "it": "Riprende tra reti diverse",
+    },
+    "Verifies every byte": {
+        "pt-PT": "Verifica cada byte",
+        "es": "Verifica cada byte",
+        "fr": "Vérifie chaque octet",
+        "de": "Prüft jedes Byte",
+        "it": "Verifica ogni byte",
+    },
+    "Auto-updates without nagging": {
+        "pt-PT": "Atualizações automáticas sem chatear",
+        "es": "Actualizaciones automáticas sin molestar",
+        "fr": "Mises à jour auto sans harceler",
+        "de": "Auto-Updates ohne Nervfaktor",
+        "it": "Aggiornamenti automatici senza assillare",
+    },
+    "Alerts when an app's policy changes": {
+        "pt-PT": "Alertas quando uma política de app muda",
+        "es": "Alertas cuando cambia la política de una app",
+        "fr": "Alertes quand la politique d'une app change",
+        "de": "Hinweise, wenn sich App-Richtlinien ändern",
+        "it": "Avvisi quando cambia la politica di un'app",
+    },
+    "Yearly spending breakdown": {
+        "pt-PT": "Análise anual de gastos",
+        "es": "Desglose anual de gastos",
+        "fr": "Bilan annuel des dépenses",
+        "de": "Jährliche Ausgaben-Übersicht",
+        "it": "Riepilogo annuale delle spese",
+    },
+    "Pair iPhone + Watch": {
+        "pt-PT": "Emparelhar iPhone + Watch",
+        "es": "Empareja iPhone + Watch",
+        "fr": "Associer iPhone + Watch",
+        "de": "iPhone + Watch koppeln",
+        "it": "Abbina iPhone + Watch",
+    },
+    "Share over your LAN": {
+        "pt-PT": "Partilha pela tua LAN",
+        "es": "Comparte por tu LAN",
+        "fr": "Partagez via votre réseau local",
+        "de": "Über dein LAN teilen",
+        "it": "Condividi sulla tua LAN",
+    },
+    "Hand off downloads between Macs": {
+        "pt-PT": "Passa transferências entre Macs",
+        "es": "Pasa descargas entre Macs",
+        "fr": "Transférez les téléchargements entre Macs",
+        "de": "Downloads zwischen Macs übergeben",
+        "it": "Passa download tra Mac",
+    },
+
+    # ── Welcome card trust-strip badges (Phase 7) ────────────────
+    "100% local": {
+        "pt-PT": "100% local",
+        "es": "100% local",
+        "fr": "100 % local",
+        "de": "100 % lokal",
+        "it": "100% locale",
+    },
+    "No cloud, no account": {
+        "pt-PT": "Sem nuvem, sem conta",
+        "es": "Sin nube, sin cuenta",
+        "fr": "Sans cloud, sans compte",
+        "de": "Keine Cloud, kein Konto",
+        "it": "Niente cloud, niente account",
+    },
+    "Open-source free tier": {
+        "pt-PT": "Versão gratuita open-source",
+        "es": "Edición gratuita de código abierto",
+        "fr": "Version gratuite open source",
+        "de": "Kostenlose Open-Source-Stufe",
+        "it": "Versione gratuita open source",
+    },
+
+    # ── Concierge-as-sheet pill (Phase 5) ────────────────────────
+    "Ask Splynek": {
+        "pt-PT": "Perguntar ao Splynek",
+        "es": "Pregunta a Splynek",
+        "fr": "Demander à Splynek",
+        "de": "Splynek fragen",
+        "it": "Chiedi a Splynek",
+    },
+    "Ask Splynek — your local concierge": {
+        "pt-PT": "Perguntar ao Splynek — o teu concierge local",
+        "es": "Pregunta a Splynek — tu conserje local",
+        "fr": "Demander à Splynek — votre concierge local",
+        "de": "Splynek fragen — dein lokaler Concierge",
+        "it": "Chiedi a Splynek — il tuo concierge locale",
+    },
+
+    # ── Installed inventory (Phase 3) ────────────────────────────
+    "Your stack": {
+        "pt-PT": "A tua pilha",
+        "es": "Tu pila",
+        "fr": "Votre stack",
+        "de": "Dein Stack",
+        "it": "Il tuo stack",
+    },
+    "Every installed app, with the four signals Splynek tracks: Sovereignty alternatives, Trust score, available update, and Trust Watcher alerts.": {
+        "pt-PT": "Todas as apps instaladas, com os quatro sinais que o Splynek acompanha: alternativas de Soberania, pontuação Trust, atualização disponível e alertas do Vigia de Confiança.",
+        "es": "Todas las apps instaladas, con las cuatro señales que Splynek rastrea: alternativas de soberanía, puntuación Trust, actualizaciones disponibles y alertas del Vigía de Confianza.",
+        "fr": "Toutes les applications installées, avec les quatre signaux que Splynek suit : alternatives de souveraineté, score Trust, mise à jour disponible et alertes Sentinelle de confiance.",
+        "de": "Jede installierte App mit den vier Signalen, die Splynek verfolgt: Souveränitäts-Alternativen, Trust-Score, verfügbare Updates und Trust-Watcher-Warnungen.",
+        "it": "Ogni app installata, con i quattro segnali che Splynek monitora: alternative di Sovranità, punteggio Trust, aggiornamenti disponibili e avvisi della Sentinella di fiducia.",
+    },
+    "No scan yet": {
+        "pt-PT": "Ainda sem análise",
+        "es": "Aún sin análisis",
+        "fr": "Aucune analyse encore",
+        "de": "Noch keine Prüfung",
+        "it": "Nessuna scansione ancora",
+    },
+    "Splynek hasn't scanned your installed apps. Run a scan from the Sovereignty tab to populate this inventory.": {
+        "pt-PT": "O Splynek ainda não analisou as tuas apps instaladas. Executa uma análise no separador Soberania para preencher este inventário.",
+        "es": "Splynek aún no ha analizado tus apps instaladas. Ejecuta un análisis desde la pestaña Soberanía para rellenar este inventario.",
+        "fr": "Splynek n'a pas encore analysé vos applications. Lancez une analyse depuis l'onglet Souveraineté pour remplir cet inventaire.",
+        "de": "Splynek hat deine installierten Apps noch nicht geprüft. Starte eine Prüfung im Souveränitäts-Tab, um diese Übersicht zu füllen.",
+        "it": "Splynek non ha ancora analizzato le app installate. Avvia una scansione dalla scheda Sovranità per popolare questo inventario.",
+    },
+
+    # ── Trust Watcher inbox (Phase 3) ────────────────────────────
+    "Trust Watcher is a Pro feature.": {
+        "pt-PT": "O Vigia de Confiança é uma funcionalidade Pro.",
+        "es": "El Vigía de Confianza es una función Pro.",
+        "fr": "La Sentinelle de confiance est une fonctionnalité Pro.",
+        "de": "Trust Watcher ist eine Pro-Funktion.",
+        "it": "La Sentinella di fiducia è una funzione Pro.",
+    },
+    "Daily diffs of Privacy Policies and Terms of Service for popular apps you have installed. Push notifications on your iPhone the moment something changes. Unlocked with Splynek Pro.": {
+        "pt-PT": "Comparações diárias das Políticas de Privacidade e Termos de Serviço das apps populares que tens instaladas. Notificações push no iPhone assim que algo muda. Desbloqueado com o Splynek Pro.",
+        "es": "Comparaciones diarias de políticas de privacidad y términos de servicio de las apps populares que tienes instaladas. Notificaciones push en tu iPhone en cuanto algo cambia. Se desbloquea con Splynek Pro.",
+        "fr": "Comparaisons quotidiennes des politiques de confidentialité et CGU des applications populaires que vous avez installées. Notifications push sur votre iPhone dès qu'un changement survient. Débloqué avec Splynek Pro.",
+        "de": "Tägliche Vergleiche von Datenschutzerklärungen und AGB beliebter installierter Apps. Push-Mitteilungen auf deinem iPhone, sobald sich etwas ändert. Mit Splynek Pro freigeschaltet.",
+        "it": "Confronti giornalieri di Informative sulla privacy e Termini di servizio delle app popolari che hai installato. Notifiche push sull'iPhone non appena qualcosa cambia. Sbloccato con Splynek Pro.",
+    },
+    "Daily SHA-256 diff of Privacy Policy + Terms-of-Service URLs for installed apps Splynek's catalog tracks. Material changes show up here.": {
+        "pt-PT": "Comparação diária SHA-256 dos URLs de Política de Privacidade e Termos de Serviço das apps instaladas seguidas pelo catálogo do Splynek. Alterações materiais aparecem aqui.",
+        "es": "Comparación diaria SHA-256 de las URL de Política de Privacidad y Términos de Servicio de las apps instaladas que el catálogo de Splynek rastrea. Los cambios materiales aparecen aquí.",
+        "fr": "Comparaison quotidienne SHA-256 des URL de Politique de confidentialité et CGU des applications installées suivies par le catalogue Splynek. Les changements importants apparaissent ici.",
+        "de": "Täglicher SHA-256-Vergleich der URLs für Datenschutzerklärung und AGB installierter Apps, die der Splynek-Katalog kennt. Wesentliche Änderungen erscheinen hier.",
+        "it": "Confronto giornaliero SHA-256 degli URL di Informativa sulla privacy e Termini di servizio delle app installate che il catalogo di Splynek monitora. Le modifiche sostanziali compaiono qui.",
+    },
+    "All clear.": {
+        "pt-PT": "Tudo limpo.",
+        "es": "Todo en orden.",
+        "fr": "Rien à signaler.",
+        "de": "Alles in Ordnung.",
+        "it": "Tutto a posto.",
+    },
+    "Splynek is watching %lld URLs across %lld installed apps. No material changes since the last sweep.": {
+        "pt-PT": "O Splynek está a vigiar %lld URLs em %lld apps instaladas. Sem alterações materiais desde a última verificação.",
+        "es": "Splynek vigila %lld URL en %lld apps instaladas. Sin cambios materiales desde la última revisión.",
+        "fr": "Splynek surveille %lld URL réparties sur %lld applications installées. Aucun changement important depuis le dernier passage.",
+        "de": "Splynek überwacht %lld URLs in %lld installierten Apps. Keine wesentlichen Änderungen seit dem letzten Durchlauf.",
+        "it": "Splynek sta monitorando %lld URL in %lld app installate. Nessuna modifica sostanziale dall'ultima verifica.",
+    },
+    "Acknowledge": {
+        "pt-PT": "Confirmar",
+        "es": "Confirmar",
+        "fr": "Confirmer",
+        "de": "Bestätigen",
+        "it": "Conferma",
+    },
+    "Mark all as read": {
+        "pt-PT": "Marcar tudo como lido",
+        "es": "Marcar todo como leído",
+        "fr": "Tout marquer comme lu",
+        "de": "Alle als gelesen markieren",
+        "it": "Segna tutto come letto",
+    },
+    "Unlock Splynek Pro — $29 one-time": {
+        "pt-PT": "Desbloquear Splynek Pro — 29 USD (pagamento único)",
+        "es": "Desbloquear Splynek Pro — 29 USD (pago único)",
+        "fr": "Débloquer Splynek Pro — 29 $ (paiement unique)",
+        "de": "Splynek Pro freischalten — 29 $ (Einmalkauf)",
+        "it": "Sblocca Splynek Pro — 29 $ (pagamento unico)",
+    },
+}
+
+
 def main():
     # Load existing catalog (preserves the de/es/fr/it work already done
     # on the original 56 strings).
@@ -4333,7 +4671,20 @@ def main():
                 "stringUnit": {"state": "translated", "value": value}
             }
 
-    # 3. Sort strings alphabetically by key for stable diffs.
+    # 4. Add IA v2 strings (Phases 1-7 of the 2026-05-23/24 lifecycle
+    # reorg).  Tab titles, sidebar slogans, welcome card hero +
+    # bullets + trust badges, Concierge pill, Installed inventory,
+    # Trust Watcher inbox.  Same propagation rules as above.
+    for key, locales in IA_V2_STRINGS.items():
+        if key not in catalog["strings"]:
+            catalog["strings"][key] = {"localizations": {}}
+        loc = catalog["strings"][key].setdefault("localizations", {})
+        for locale, value in locales.items():
+            loc[locale] = {
+                "stringUnit": {"state": "translated", "value": value}
+            }
+
+    # 5. Sort strings alphabetically by key for stable diffs.
     catalog["strings"] = dict(sorted(catalog["strings"].items()))
 
     # 4. Write back with Apple's pretty-print conventions
