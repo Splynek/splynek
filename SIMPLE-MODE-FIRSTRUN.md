@@ -1,22 +1,27 @@
 # SIMPLE-MODE-FIRSTRUN.md
 
-> **STATUS: SUPERSEDED** — by `IA-PROPOSAL.md` (2026-05-13 evening).
+> **STATUS: ARCHIVED 2026-05-24** — fully obsolete.  Phase 7 of the
+> IA v2 migration shipped `DiscoverWelcomeCard.swift` as the live
+> first-run experience, replacing every behaviour described in this
+> doc.  See `IA-V2-MIGRATION-STATUS.md` for the migration outcome,
+> and `Sources/SplynekCore/Views/DiscoverWelcomeCard.swift` for the
+> live implementation.
 >
-> This spec assumed Splynek had "two competing identities"
-> (download-manager vs Trust-Watcher) and tried to route users to a
-> tab subset via a 3-question first-run wizard.  The reframe that
-> followed showed the product is actually **one workflow in four
-> sequential phases** (Discover → Download → My Apps → Coordinate),
-> not two products fighting for the same screen.
+> Original framing (kept for the historical record): the spec
+> assumed Splynek had "two competing identities" (download-manager
+> vs Trust-Watcher) and tried to route users to a tab subset via a
+> 3-question first-run wizard.  The reframe (IA v2, 2026-05-13)
+> showed the product is actually **one workflow in four sequential
+> phases** (Discover → Download → My Apps → Coordinate), not two
+> products fighting for the same screen.
 >
 > Under the lifecycle IA, no persona-based tab hiding is needed —
 > every user gets the same four tabs in the same order, and the
 > order itself teaches the mental model.  First-run reduces to a
-> single welcome card.
+> single welcome card with four colored story tiles (one per tab).
 >
-> Document kept here as a historical record of the earlier framing
-> + the reasoning that led to its replacement.  Read `IA-PROPOSAL.md`
-> for the current direction.
+> Safe to delete at any time; this doc is no longer referenced by
+> any other file.
 
 ---
 

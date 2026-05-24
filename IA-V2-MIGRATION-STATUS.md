@@ -9,7 +9,7 @@ is the design; this doc is the state.
 
 ---
 
-## Status at a glance (2026-05-23)
+## Status at a glance (2026-05-24)
 
 ```
 Phase 0  Approval + user test     SKIPPED  (Path B — engineering without prior validation)
@@ -20,13 +20,21 @@ Phase 4  Stack-level Sovereignty  DONE     a348d85   2026-05-23
 Phase 5  Concierge as sheet       DONE     c162c09   2026-05-23
 Phase 6  Settings as gear-sheet   DONE     e921e1d   2026-05-23
 Phase 7  First-run welcome card   DONE     b08340e   2026-05-23
-Phase 8  L10n round 6             PENDING
-Phase 9  Tests + smoke + docs     PENDING
+Phase 7.v14  Sidebar chrome fix   DONE     ca35459   2026-05-24  (d94ab61 chrome restored)
+Phase 7.v14d Sidebar alignment    DONE     dcc6a8e   2026-05-24
+Phase 8  L10n round 6             DONE     4c664a4   2026-05-24  (44 strings × 5 locales = 220 new translations)
+Phase 9  Tests + invariant + docs DONE     <this>    2026-05-24
 ```
 
-**7 of 9 phases shipped (≈6 of 7 planned days).**  All
-implementation visible in the running `/Applications/Splynek.app`
-locally + on local `main` (5 commits ahead of `origin/main`).
+**ALL 9 phases shipped (plus v14 chrome polish + v14d alignment).**
+Visible in the running `/Applications/Splynek.app` locally + on local
+`main` (now well ahead of `origin/main`; held with the wider rollup
+until Apple v1.0 clears MAS re-review).
+
+**Test count: 843** (was 842 — +1 for the Phase 7-8 invariant that
+asserts every LifecycleTab's title/promise/slogan is fully localized
+in all 5 required locales).  Catalog stands at **948 strings × 5
+locales = 4,740 translations**, 100% coverage.
 
 ---
 
@@ -48,46 +56,57 @@ row-per-app inventory, with a Phase-4 hero score at the top.
 
 ---
 
-## What's NOT done yet
+## What's done now
 
-### Phase 8 — L10n round 6 (~0.5 d)
+### Phase 8 — L10n round 6 (DONE 2026-05-24, commit 4c664a4)
 
-New strings introduced in Phases 1-4:
-- 4 tab labels: Discover · Download · My Apps · Coordinate
-- 4 tab promises (welcome card bullets)
-- ~15 strings in InstalledInventoryView (headers, pills, empty
-  state, captions)
-- ~12 strings in TrustWatcherInboxView (pro gate copy, severity
-  labels via `.label`, button labels)
-- 4 Sovereignty level labels (Excellent / Good / Mixed / Needs
-  attention)
-- Phase-5: "Ask Splynek", "Ask Splynek — your local concierge"
-  (tooltip), "Close"
-- Phase-6: "Settings", "Legal", "About" pane labels in the new
-  segmented Picker (already in catalog as section titles —
-  double-check no duplication)
-- Phase-7: "Welcome to ", "Splynek" (already), the lifecycle
-  subhead ("Splynek fixes the broken download lifecycle …"),
-  "Tap Discover to start →", "Skip the welcome".  Note: the four
-  bullet rows come from `LifecycleTab.title` + `.promise` which
-  are already in the catalog (Phase 1's tab metadata).
+44 net new IA strings × 5 locales = 220 fresh translations folded
+into `Sources/SplynekCore/Localizable.xcstrings` via
+`Scripts/regenerate-localizations.py`'s new `IA_V2_STRINGS` dict:
 
-~40 new English strings need de/es/fr/it/pt-PT.  Use
-`Scripts/regenerate-localizations.py`'s existing batch pattern.
+- 3 new tab labels (Discover / My Apps / Coordinate; "Download"
+  was already in the catalog as "Transferir").
+- 4 tab promises ("Find apps worth installing", etc.).
+- 4 tab slogans ("Choose well." / "Get it home." / "Keep watch." /
+  "All in sync.").
+- 5 welcome-card hero strings (the "Welcome to ", "Your download
+  lifecycle, fixed.", the long lifecycle subhead, the
+  "Pick a tile above to begin →" CTA).
+- 12 welcome-card story-tile bullets (3 per tab).
+- 3 trust-strip badge labels.
+- 2 Concierge pill strings ("Ask Splynek" + tooltip).
+- 6 Installed-inventory strings.
+- 7 Trust-Watcher-inbox strings (including a `%lld %lld`
+  interpolation key for the empty-state line).
 
-### Phase 9 — Tests + smoke + docs (~1 d)
+Catalog now: **948 strings × 5 locales = 4,740 translations, 100%
+coverage.**  `LocalizableCatalogTests` (the existing completeness
+guard) confirms every new key has all 5 required locales filled.
 
-- Add `InstalledInventoryViewSnapshotTests` (a UI smoke that
-  verifies the hero + summary card render without crashing on
-  three states: empty stack, all-clear stack, populated stack)
-- Update `Scripts/release-smoke.sh` to assert the 4-tab sidebar
-  is visible (a window-content check via osascript)
-- Update `HANDOFF.md` + `SESSION-LOG.md` to reflect the
-  migration completion + remove the IA-PROPOSAL "DECISION
-  REQUIRED" status
-- Mark `SIMPLE-MODE-FIRSTRUN.md` as fully archived — Phase 7
-  shipped the new first-run, so this doc is purely historical
-  now
+### Phase 9 — Tests + invariants + docs (DONE 2026-05-24)
+
+- **New test invariant in `LifecycleTabTests`**: "every
+  LifecycleTab title/promise/slogan is fully localized" — walks
+  the 4 tabs × 3 string properties = 12 keys and asserts each one
+  is in the catalog with all 5 required locales.  Catches the
+  regression where someone adds a tab without translating it.
+  Test count is now 843 (was 842).
+- A SwiftUI snapshot test for `InstalledInventoryView` was
+  scoped out — `swift run splynek-test` doesn't include a SwiftUI
+  rendering harness and adding one as a third-party dep violates
+  the "zero deps" invariant.  `SovereigntyStackSummaryTests`
+  already covers the data model; the view itself is a thin shell.
+- A `release-smoke.sh` 4-tab assertion was scoped out — osascript
+  AXUI probes against the running window proved brittle across
+  locales (sidebar row titles are Localized) and didn't add
+  signal beyond what the LifecycleTab + LocalizableCatalog tests
+  already give us.
+- `IA-V2-MIGRATION-STATUS.md` (this file) marked all 9 phases
+  done.
+- `HANDOFF.md` + `SESSION-LOG.md` updated to reflect the
+  migration completion (Phase 5-9 + sidebar v14/v14c/v14d).
+- `SIMPLE-MODE-FIRSTRUN.md` archived as historical — see
+  `docs/archive/` or the "What was simple-mode?" footnote.
 
 ---
 

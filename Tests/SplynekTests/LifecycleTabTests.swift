@@ -177,6 +177,63 @@ enum LifecycleTabTests {
                                "SidebarSection.\(section) has nil LifecycleTab parent (= sheet destination) but no SettingsRoute pane to host it.  Add `case \(section.rawValue)` to SettingsRoute, or give the section a tab parent.")
                 }
             }
+
+            // ── Phase 7-8 invariants (welcome card + L10n) ───────────
+            // Every tab's user-visible English copy — title, promise,
+            // slogan — must exist in Localizable.xcstrings with all 5
+            // required locales translated.  Catches a regression where
+            // someone adds a tab without translating it (the runtime
+            // would silently fall back to English).  We piggyback on
+            // LocalizableCatalogTests' loader by parsing the catalog
+            // ourselves here (one-shot for these 12 keys).
+
+            TestHarness.test("Phase 7-8 — every LifecycleTab title/promise/slogan is fully localized") {
+                let required: Set<String> = ["pt-PT", "es", "fr", "de", "it"]
+                let catalogURL = candidatesForCatalog().first {
+                    FileManager.default.fileExists(atPath: $0.path)
+                }
+                guard let url = catalogURL,
+                      let data = try? Data(contentsOf: url),
+                      let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                      let strings = json["strings"] as? [String: Any] else {
+                    try expect(false, "Could not load Localizable.xcstrings for Phase 7-8 invariant.")
+                    return
+                }
+                var gaps: [String] = []
+                for tab in LifecycleTab.allCases {
+                    for (kind, key) in [("title", tab.title),
+                                        ("promise", tab.promise),
+                                        ("slogan", tab.slogan)] {
+                        guard let entry = strings[key] as? [String: Any],
+                              let loc = entry["localizations"] as? [String: Any] else {
+                            gaps.append("\(tab).\(kind) \"\(key)\" — not in catalog at all")
+                            continue
+                        }
+                        let presentLocales = Set(loc.keys)
+                        let missing = required.subtracting(presentLocales)
+                        if !missing.isEmpty {
+                            gaps.append("\(tab).\(kind) \"\(key)\" — missing: \(missing.sorted().joined(separator: ", "))")
+                        }
+                    }
+                }
+                try expect(gaps.isEmpty,
+                           "LifecycleTab strings missing localizations:\n  " + gaps.joined(separator: "\n  "))
+            }
         }
+    }
+
+    /// Catalog search path used by the Phase 7-8 invariant.  Mirrors
+    /// `LocalizableCatalogTests.loadCatalog()` so the two tests stay
+    /// in lockstep when the catalog ever moves.
+    private static func candidatesForCatalog() -> [URL] {
+        [
+            URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+                .appendingPathComponent("Sources/SplynekCore/Localizable.xcstrings"),
+            URL(fileURLWithPath: #filePath)
+                .deletingLastPathComponent()
+                .deletingLastPathComponent()
+                .deletingLastPathComponent()
+                .appendingPathComponent("Sources/SplynekCore/Localizable.xcstrings"),
+        ]
     }
 }
