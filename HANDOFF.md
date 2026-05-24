@@ -1,29 +1,46 @@
 # Splynek handoff
 
-> **TODAY (2026-05-23): IA v2 lifecycle reorg in flight.**
-> v2.0.1 shipped (the entitlements-hotfix release after v2.0.0
-> was found unlaunchable).  On top of v2.0.1 tag, the 17-tab
-> sidebar is being collapsed to 4 lifecycle tabs (Discover /
-> Download / My Apps / Coordinate) per `IA-PROPOSAL.md`.
-> **Phases 1-4 of 9 shipped tonight; 5-9 pending.**  Read
+> **TODAY (2026-05-24): IA v2 lifecycle reorg COMPLETE.**
+> All 9 phases of the lifecycle-based information-architecture
+> migration shipped end-to-end across 2026-05-23 → 2026-05-24.
+> The 17-tab sidebar is now 4 lifecycle tabs (Discover / Download /
+> My Apps / Coordinate) with rich colored tile buttons, a per-tab
+> chip strip, the floating-card sidebar chrome with traffic-lights
+> visually inside the pane (the Apple TV.app look), a welcome
+> splash for first-run users, Concierge as a sheet,
+> Settings/Legal/About as a gear-sheet, and the Installed inventory
+> + Trust Watcher inbox under My Apps.  Read
 > **`IA-V2-MIGRATION-STATUS.md`** at the repo root for the
-> canonical state of the reorg — that's the single source of
-> truth for "what's done, what's next, what to test".
+> migration outcome.
 >
-> Today's commits (post-v2.0.1):
+> IA v2 commits (post-v2.0.1):
 > ```
-> 8c10cb9  IA v2 Phase 1: LifecycleTab enum + mapping
-> d94ab61  IA v2 Phase 2: 4-tab sidebar + chip strip
-> 2aed5c2  IA v2 Phase 3: unified Installed inventory + Trust
+> 8c10cb9  Phase 1: LifecycleTab enum + mapping
+> d94ab61  Phase 2: 4-tab sidebar + chip strip
+> 2aed5c2  Phase 3: unified Installed inventory + Trust
 >          Watcher inbox in My Apps
-> a348d85  IA v2 Phase 4: stack-level Sovereignty score hero
+> a348d85  Phase 4: stack-level Sovereignty score hero
+> c162c09  Phase 5: Concierge as sheet ("Ask Splynek" pill)
+> e921e1d  Phase 6: Settings/Legal/About as gear-sheet
+> b08340e  Phase 7: First-run welcome card on Discover
+> 0e48de5  Phase 7.v2: rainbow tab identity + welcome card v2
+> ca35459  Phase 7.v14: traffic-lights inside the sidebar pane
+>          (d94ab61 chrome restored after long quest)
+> 5e6cf1e  Phase 7.v14c: bigger spaced tiles, stronger tints
+> dcc6a8e  Phase 7.v14d: align tiles to traffic-lights-left +
+>          dongle-right exterior edges
+> 4c664a4  Phase 8: L10n round 6 — 44 IA strings × 5 locales
+> 7a6f5f7  Phase 9: tests + status doc + SIMPLE-MODE archive
 > ```
 >
-> Tests: **837 passing** (was 820 at v2.0.0; +17 for the IA
-> work: 7 LifecycleTab invariants + 10 SovereigntyStackSummary).
-> Apple v1.0 MAS re-review still pending day 28+; case
+> Tests: **843 passing** (was 820 at v2.0.0; +23 across the IA
+> arc: 7 LifecycleTab invariants + 10 SovereigntyStackSummary +
+> 5 Phase 5/6/7-8 lifecycle invariants + 1 catalog cross-check).
+> Catalog: **948 strings × 5 locales = 4,740 translations**, 100%
+> coverage.  Apple v1.0 MAS re-review still pending; case
 > 20000113939741 (polite ping sent 2026-05-10, no human reply
-> yet).
+> yet).  IA v2 is held with the wider rollup until Apple v1.0
+> clears.
 
 Native macOS multi-interface download aggregator. Pure Swift, zero
 third-party deps. Public free-tier repo (MIT) + private Pro-tier repo.

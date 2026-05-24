@@ -6,7 +6,171 @@
 > when picking up a session cold and the next move isn't obvious from
 > HANDOFF alone.
 >
-> Last updated 2026-05-23.
+> Last updated 2026-05-24.
+
+---
+
+## 2026-05-23 / 2026-05-24 — IA v2 lifecycle reorg Phases 5-9 + sidebar polish
+
+The IA v2 migration shipped end-to-end across two overlapping
+sessions.  Phases 1-4 (sidebar collapse, chip strip, Installed
+inventory, stack-level Sovereignty hero) were done 2026-05-23 in
+the v2.0.1 hotfix session above.  Phases 5-9 + the sidebar chrome
+polish below shipped 2026-05-23 evening through 2026-05-24
+afternoon.
+
+### Phase 5 — Concierge as a sheet (c162c09)
+
+Removed `.concierge` from the Discover chip strip.  Concierge now
+lives behind an "Ask Splynek" pill on Discover + My Apps (the two
+tabs where pre/post-install advice makes sense).  Pill posts
+`.splynekShowConcierge`; RootView catches it and flips
+`showingConcierge`, presenting `ConciergeSheetContainer` over the
+active tab.  Mental model: Discover/My Apps = "where I am",
+Concierge = "what I'm asking for help with right now."  Lives on
+top, doesn't replace the surrounding context.
+
+`LifecycleTabTests` gained three Phase 5 invariants: .concierge
+must still parent to .discover (deep-link anchor), must NOT
+appear in `subviews(of:)` for any tab (sheet, not chip), and the
+two halves keep the routing coherent if someone refactors.
+
+### Phase 6 — Settings/Legal/About as gear-sheet (e921e1d)
+
+Apple's macOS convention: preferences are a panel, not a tab
+destination.  Phase 6 introduced `SettingsRoute` + `SettingsSheet`
+and rerouted the three legacy menu-bar notifications
+(`.splynekShowSettings` / `.showLegal` / `.showAbout`) plus the
+gear-icon footer to flip a `settingsRoute: SettingsRoute?` on
+RootView, which `.sheet(item:)` presents over whatever tab is
+active.  The three SidebarSection cases stay as routing
+destinations (so old deep links don't break) but no longer have
+a LifecycleTab parent — `LifecycleTabMapping.parent(of: .settings)`
+now returns nil.
+
+`LifecycleTabTests` gained two Phase 6 invariants keeping
+`SettingsRoute.allCases` ⟷ nil-parent `SidebarSection.allCases`
+in lockstep.
+
+### Phase 7 — First-run welcome card (b08340e, then v2 → v18 polish)
+
+Replaced the v1.6.1 `OnboardingSheet` (a 3-step wizard) with a
+single first-run **welcome splash** in the detail column.
+`DiscoverWelcomeCard.swift`:
+
+- Hero: Splynek "S" logomark + "Welcome to Splynek." + the
+  lifecycle subhead.
+- 2×2 grid of colored story tiles, one per lifecycle tab.  Each
+  tile has a tinted iconWell (rainbow: blue / purple / pink /
+  orange — drawn from the Splynek logo), the tab title, its
+  slogan (e.g. "Choose well." / "Get it home."), and three
+  proof-point bullets.  Clicking a tile = pick that tab + dismiss
+  the splash.
+- Trust strip at the bottom: "100% local", "No cloud, no
+  account", "Open-source free tier" — the three positioning
+  pillars Splynek leads with.
+
+The splash gate is `vm.hasCompletedOnboarding` (persisted),
+decoupled from `currentTab` so macOS state restoration can't
+silently dismiss the splash by auto-selecting a tab at launch.
+A bespoke `sidebarTabBinding` makes the sidebar always read nil
+during splash so no row is highlighted; clicking any row routes
+through `pickTab(_:)`, the single dismissal path.
+
+### Phase 7.v2 → v18 — sidebar chrome quest
+
+Phase 7 was rolled forward many times across one long iteration
+trying to get the **sidebar pane** + **traffic-lights** + **welcome
+splash** to all look right together.  The user's reference was
+Apple TV.app: "floating-card sidebar with rounded corners
+floating inside the window, not edge-to-edge, AND traffic-lights
+visually inside the pane."
+
+Root-cause walk: Phase 7.v4 (commit 23fcb07) had dropped
+`List(selection:)` in favour of a custom `VStack` of
+`SidebarTileButton` views — solving a default-blue-selection
+rectangle that overwrote tile tints, but in doing so **killed the
+macOS 14+ NavigationSplitView auto floating-card** styling.  Phase
+7.v5 (cc3bc14) added `.windowStyle(.hiddenTitleBar)` +
+`titlebarAppearsTransparent` + `fullSizeContentView` to make the
+splash flow edge-to-edge — and inadvertently pushed the (now
+custom-painted) sidebar BELOW the traffic-lights area.  Phases v6
+through v9 (including a brief AppKit re-implementation in 1655e3e)
+tried to compensate, never matched the since-the-start look, and
+v9 was reverted (51bcabe).
+
+The fix in Phase 7.v14 (ca35459, 2026-05-24): walked back through
+the history, built each candidate commit in a worktree, and
+confirmed by screenshot that **d94ab61** had the look the user
+wanted — `List(selection:)` sidebar + `.navigationTitle("Splynek")`
++ `.windowToolbarStyle(.unified(showsTitle: true))` + no
+hiddenTitleBar + no configureWindowChrome.  Reverted to that
+chrome.  Kept `SidebarTileButton` (the rich tile design) but
+wrapped each instance INSIDE a List row with
+`.listRowBackground(Color.clear)` + `.listRowSeparator(.hidden)`.
+Floating-card chrome from the List, rich tile visuals from the
+button, no system-blue selection fighting the tint.
+
+Phase 7.v14b/c (5e6cf1e): bumped tile dimensions per user
+feedback "they were bigger and more spaced": iconWell 30 → 32,
+title font 13 → 14, slogan font 11 → 12, vertical padding 8 → 11,
+background tint stronger at every state.  Sidebar column width
+190/210/260 → 210/230/280.  Added `.lineLimit(1) +
+.minimumScaleFactor(0.85)` on titles + slogans as a graceful
+truncation safety net.
+
+Phase 7.v14d (dcc6a8e): user noted the tiles weren't horizontally
+aligned with the traffic-light cluster on the left and the
+sidebar-toggle "dongle" on the right.  Adjusted
+`.listRowInsets` leading/trailing 10 → 2.  Zoomed verification:
+tile left edges flush with the close-button outer left, tile
+right edges flush with the dongle outer right.
+
+### Phase 8 — L10n round 6 (4c664a4)
+
+44 new IA strings × 5 locales (pt-PT / es / fr / de / it) = 220
+fresh translations folded into the catalog via a new
+`IA_V2_STRINGS` dict in `Scripts/regenerate-localizations.py`.
+Catalog now: 948 strings × 5 locales = 4,740 translations, 100%
+coverage.  `LocalizableCatalogTests` (existing completeness
+guard) confirmed every new key has all 5 locales filled.
+
+### Phase 9 — Test invariant + status doc + archive (7a6f5f7)
+
+`LifecycleTabTests` gained a Phase 7-8 invariant: every tab's
+title/promise/slogan must exist in the catalog with all 5
+required locales.  Catches the regression where someone adds a
+tab without translating it.  Test count is now 843 (was 842).
+
+`IA-V2-MIGRATION-STATUS.md` marked all 9 phases DONE; doc now
+opens with "What's done now" instead of "What's NOT done yet".
+`SIMPLE-MODE-FIRSTRUN.md` banner flipped from SUPERSEDED to
+ARCHIVED 2026-05-24; doc declares itself safe to delete.
+
+A SwiftUI snapshot test for InstalledInventoryView was scoped out
+(no rendering harness; zero-deps invariant).  A release-smoke
+4-tab assertion was scoped out (osascript AXUI probes too
+brittle across locales).  The Phase 7-8 catalog invariant + the
+existing LocalizableCatalogTests + LifecycleTabTests give us the
+deterministic coverage we need without those.
+
+### Result
+
+All 9 phases of the IA v2 migration shipped end-to-end:
+- 17-tab sidebar → 4 lifecycle tabs (Discover / Download / My
+  Apps / Coordinate) with rich colored tile buttons
+- Per-tab chip strip for sub-section navigation
+- Floating-card sidebar with traffic-lights visually inside the
+  pane (the Apple TV.app look)
+- Welcome splash with 4 colored story tiles for first-run users
+- Concierge as a sheet (Ask Splynek pill on Discover + My Apps)
+- Settings/Legal/About as a gear-sheet (Apple convention)
+- Installed inventory + Trust Watcher inbox under My Apps
+- Stack-level Sovereignty hero score
+- 220 new translations, catalog at 100%
+- 843 tests pass
+
+Held with the wider rollup until Apple v1.0 clears MAS re-review.
 
 ---
 
