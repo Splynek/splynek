@@ -116,10 +116,10 @@ struct GetDownloadProgressIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         let summary: String = await MainActor.run {
-            guard let delegate = NSApp.delegate as? SplynekAppDelegate else {
+            guard let delegate = NSApp.delegate as? SplynekAppDelegate,
+                  let vm = delegate.state?.vm else {
                 return "Splynek is not running."
             }
-            let vm = delegate.state.vm
             let running = vm.activeJobs.filter { $0.lifecycle == .running }
             let paused  = vm.activeJobs.filter { $0.lifecycle == .paused }.count
             let queued  = vm.queue.filter { $0.status == .pending }.count
@@ -152,10 +152,10 @@ struct CancelAllDownloadsIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         let summary: String = await MainActor.run {
-            guard let delegate = NSApp.delegate as? SplynekAppDelegate else {
+            guard let delegate = NSApp.delegate as? SplynekAppDelegate,
+                  let vm = delegate.state?.vm else {
                 return "Splynek is not running."
             }
-            let vm = delegate.state.vm
             let before = vm.activeJobs.filter { $0.lifecycle == .running }.count
             vm.cancelAll()
             return "Cancelled \(before) downloads."
@@ -174,10 +174,10 @@ struct PauseAllDownloadsIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         let summary: String = await MainActor.run {
-            guard let delegate = NSApp.delegate as? SplynekAppDelegate else {
+            guard let delegate = NSApp.delegate as? SplynekAppDelegate,
+                  let vm = delegate.state?.vm else {
                 return "Splynek is not running."
             }
-            let vm = delegate.state.vm
             let running = vm.activeJobs.filter { $0.lifecycle == .running }
             for job in running { vm.pauseJob(job) }
             return "Paused \(running.count) downloads."
@@ -202,10 +202,10 @@ struct ListRecentHistoryIntent: AppIntent {
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
         let cap = max(1, min(500, limit))
         let summary: String = await MainActor.run {
-            guard let delegate = NSApp.delegate as? SplynekAppDelegate else {
+            guard let delegate = NSApp.delegate as? SplynekAppDelegate,
+                  let vm = delegate.state?.vm else {
                 return "Splynek is not running."
             }
-            let vm = delegate.state.vm
             if vm.history.isEmpty { return "No history yet." }
             return vm.history.suffix(cap).reversed()
                 .map { "\($0.filename)  \(ByteCountFormatter.string(fromByteCount: $0.totalBytes, countStyle: .binary))" }
@@ -270,10 +270,10 @@ struct LookupTrustIntent: AppIntent {
         // Pull current weights from the running VM so the score
         // matches what the user sees in the in-app Trust tab.
         let weights: TrustScorer.Weights = await MainActor.run {
-            guard let delegate = NSApp.delegate as? SplynekAppDelegate else {
-                return TrustScorer.Weights.default
-            }
-            return delegate.state.vm.trustWeights
+            guard let delegate = NSApp.delegate as? SplynekAppDelegate,
+                  let vm = delegate.state?.vm
+            else { return TrustScorer.Weights.default }
+            return vm.trustWeights
         }
         guard let hit = MCPBridgeBuilder.lookupTrust(query: q, weights: weights) else {
             return .result(value: "No Trust catalog entry for `\(q)`.")

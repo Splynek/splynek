@@ -11,52 +11,39 @@ extension Notification.Name {
 final class AppState: ObservableObject {
     let vm = SplynekViewModel()
     let background = BackgroundModeController()
-    let ui: AppUIState
-
-    init() {
-        // Phase 7.v9 (2026-05-23): first-run users see the welcome
-        // splash with no sidebar selection — currentTab starts nil.
-        // Returning users default to Download (Queue) so a daily
-        // "what's downloading right now?" launch doesn't reroute.
-        let initial: LifecycleTab? = vm.hasCompletedOnboarding ? .download : nil
-        ui = AppUIState(initialTab: initial)
-    }
 }
 
-@MainActor
 final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
     var menuBar: MenuBarController?
-    /// Phase 7.v9 (2026-05-23): AppState is now OWNED by the delegate,
-    /// not bridged in via SwiftUI's @StateObject.  Reason: the main
-    /// window is now created in `applicationDidFinishLaunching`
-    /// (so we can use an NSWindow with `fullSizeContentView` +
-    /// `MainSplitViewController` as contentViewController), which
-    /// runs BEFORE any SwiftUI scene's body — there's no
-    /// `@StateObject` to read at that point.  Strong reference,
-    /// lifetime = process lifetime.
-    let state = AppState()
-    /// The main window's controller.  Strong reference here keeps
-    /// the controller and its window alive for the process lifetime
-    /// (the window has `isReleasedWhenClosed = false` so a close
-    /// just hides it; clicking the dock icon re-opens via
-    /// `applicationShouldHandleReopen`).
-    var mainWindowController: MainWindowController?
+    weak var state: AppState?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Phase 7.v9 (2026-05-23): the main window is created here in
-        // pure AppKit (MainWindowController) so we can use
-        // NSSplitViewController + `NSSplitViewItem.allowsFullHeightLayout`
-        // for the Apple-TV-style chrome.  See MainSplitViewController.swift.
-        let mainController = MainWindowController(
-            vm: state.vm,
-            ui: state.ui,
-            background: state.background
-        )
-        mainController.window?.makeKeyAndOrderFront(nil)
-        mainWindowController = mainController
+        // Phase 7.v5 (2026-05-23): make every Splynek window's title
+        // bar transparent + opt into full-size content view, so the
+        // first-run welcome splash can flow edge-to-edge through the
+        // title bar area instead of stopping at a visible seam.  The
+        // traffic-light controls still render (no styleMask removal),
+        // and normal tabs that declare their own .toolbar items get
+        // the standard system treatment — the transparent title bar
+        // just lets the view's background paint through.
+        DispatchQueue.main.async {
+            for window in NSApp.windows {
+                Self.configureWindowChrome(window)
+            }
+            // Catch any windows created after launch (Pro upsell,
+            // sheets, etc.) — they all inherit the same treatment.
+            NotificationCenter.default.addObserver(
+                forName: NSWindow.didBecomeKeyNotification,
+                object: nil, queue: .main
+            ) { note in
+                if let window = note.object as? NSWindow {
+                    Self.configureWindowChrome(window)
+                }
+            }
+        }
 
         let menu = MenuBarController { [weak self] in
-            guard let vm = self?.state.vm else { return (0, 0, 0, 0) }
+            guard let vm = self?.state?.vm else { return (0, 0, 0, 0) }
             let bps = vm.aggregateThroughputBps
             let active = vm.activeJobs.filter { $0.lifecycle == .running }.count
                 + (vm.isTorrenting ? 1 : 0)
@@ -66,7 +53,7 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
         // Popover / drag-drop ingestion on the menu bar item — same
         // path the Drop handler on the main window uses.
         menu.onIngest = { [weak self] raw in
-            guard let vm = self?.state.vm else { return }
+            guard let vm = self?.state?.vm else { return }
             let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmed.hasPrefix("magnet:") {
                 vm.magnetText = trimmed
@@ -77,7 +64,7 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
                 vm.start()
             }
         }
-        menu.onCancelAll = { [weak self] in self?.state.vm.cancelAll() }
+        menu.onCancelAll = { [weak self] in self?.state?.vm.cancelAll() }
         menuBar = menu
         // Global ⌘⇧D — bring main window forward (and surface the dock
         // icon if we're in menu-bar-only mode).
@@ -87,38 +74,24 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
         // Restore any in-flight jobs the previous session was carrying.
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 500_000_000)
-            self?.state.vm.restoreSession()
+            self?.state?.vm.restoreSession()
             // Apply background-mode preferences AFTER session restore so
             // any window brought up during restore can be ordered out.
-            self?.state.background.apply()
+            self?.state?.background.apply()
             // 2026-05-08: warm the Apps-row badge so the user sees an
             // accurate "↑ N" count without ever opening the Updates
             // tab.  Fires ~3 s after launch (1.5 s after restore) so
             // the boot path stays fast — the network fan-out happens
             // off the main thread via UpdateSweep.run.
             try? await Task.sleep(nanoseconds: 1_500_000_000)
-            self?.state.vm.warmUpdateCount()
+            self?.state?.vm.warmUpdateCount()
         }
-    }
-
-    /// Re-open the main window when the user clicks the dock icon
-    /// (which doesn't fire `applicationDidFinishLaunching`).  The
-    /// window is kept around (`isReleasedWhenClosed = false`) so
-    /// this just orders it back to the front.
-    func applicationShouldHandleReopen(
-        _ sender: NSApplication,
-        hasVisibleWindows: Bool
-    ) -> Bool {
-        if !hasVisibleWindows {
-            showMainWindow()
-        }
-        return true
     }
 
     func applicationWillTerminate(_ notification: Notification) {
         // Persist any non-terminal jobs so they come back on relaunch.
         Task { @MainActor [weak self] in
-            self?.state.vm.saveSession()
+            self?.state?.vm.saveSession()
         }
         // Take a short moment for the save to flush.
         Thread.sleep(forTimeInterval: 0.1)
@@ -126,7 +99,7 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
 
     /// File → Open Recent / Finder double-click / dock drop routes here.
     func application(_ sender: NSApplication, openFiles filenames: [String]) {
-        let vm = state.vm
+        guard let vm = state?.vm else { return }
         Task { @MainActor in
             for path in filenames {
                 let url = URL(fileURLWithPath: path)
@@ -139,7 +112,7 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
     /// Handle `splynek://download?url=<encoded>&sha256=<hex>&start=1`
     /// invocations. Registered as scheme owner via Info.plist.
     func application(_ application: NSApplication, open urls: [URL]) {
-        let vm = state.vm
+        guard let vm = state?.vm else { return }
         Task { @MainActor in
             for url in urls {
                 guard url.scheme?.lowercased() == "splynek" else {
@@ -228,32 +201,44 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
     /// per-tab toolbar items; removing it broke the NavigationSplitView
     /// in Phase 7.v6 (sidebar disappeared).  On macOS 14+ we get the
     /// proper API for hiding the toolbar's bottom separator; on
+    /// macOS 13 the `.unifiedCompact` toolbar style + transparent
+    /// title bar is the cleanest we can manage without breaking the
+    /// rest of the chrome.
+    static func configureWindowChrome(_ window: NSWindow) {
+        window.titlebarAppearsTransparent = true
+        window.styleMask.insert(.fullSizeContentView)
+        if #available(macOS 14.0, *) {
+            window.titlebarSeparatorStyle = .none
+        }
+    }
+
     /// Dock menu (right-click / long-press on the Dock icon).
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
         let menu = NSMenu()
         menu.addItem(makeItem("Show Splynek", selector: #selector(showMainWindow)))
         menu.addItem(.separator())
-        let vm = state.vm
-        let running = vm.activeJobs.filter { $0.lifecycle == .running }
-        if running.isEmpty {
-            let idle = NSMenuItem(title: "No active downloads", action: nil, keyEquivalent: "")
-            idle.isEnabled = false
-            menu.addItem(idle)
-        } else {
-            for job in running {
-                let name = job.outputURL.lastPathComponent
-                let pct = Int(job.progress.fraction * 100)
-                let item = NSMenuItem(title: "\(name) — \(pct)%", action: nil, keyEquivalent: "")
-                item.isEnabled = false
-                menu.addItem(item)
+        if let vm = state?.vm {
+            let running = vm.activeJobs.filter { $0.lifecycle == .running }
+            if running.isEmpty {
+                let idle = NSMenuItem(title: "No active downloads", action: nil, keyEquivalent: "")
+                idle.isEnabled = false
+                menu.addItem(idle)
+            } else {
+                for job in running {
+                    let name = job.outputURL.lastPathComponent
+                    let pct = Int(job.progress.fraction * 100)
+                    let item = NSMenuItem(title: "\(name) — \(pct)%", action: nil, keyEquivalent: "")
+                    item.isEnabled = false
+                    menu.addItem(item)
+                }
             }
-        }
-        if vm.isRunning {
-            menu.addItem(.separator())
-            menu.addItem(makeItem("Cancel All", selector: #selector(cancelAll)))
-        }
-        if vm.activeJobs.contains(where: { $0.lifecycle == .paused }) {
-            menu.addItem(makeItem("Resume All", selector: #selector(resumeAll)))
+            if vm.isRunning {
+                menu.addItem(.separator())
+                menu.addItem(makeItem("Cancel All", selector: #selector(cancelAll)))
+            }
+            if vm.activeJobs.contains(where: { $0.lifecycle == .paused }) {
+                menu.addItem(makeItem("Resume All", selector: #selector(resumeAll)))
+            }
         }
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit Splynek",
@@ -272,16 +257,17 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
             NSApp.setActivationPolicy(.regular)
         }
         NSApp.activate(ignoringOtherApps: true)
-        mainWindowController?.window?.makeKeyAndOrderFront(nil)
+        (NSApp.windows.first { $0.canBecomeMain && !$0.isVisible } ?? NSApp.windows.first)?
+            .makeKeyAndOrderFront(nil)
     }
 
     @objc private func cancelAll() {
-        Task { @MainActor in self.state.vm.cancelAll() }
+        Task { @MainActor in self.state?.vm.cancelAll() }
     }
 
     @objc private func resumeAll() {
         Task { @MainActor in
-            let vm = self.state.vm
+            guard let vm = self.state?.vm else { return }
             for job in vm.activeJobs where job.lifecycle == .paused {
                 vm.resumeJob(job)
             }
@@ -299,23 +285,34 @@ public struct SplynekApp: App {
     public init() {}
 
     @NSApplicationDelegateAdaptor(SplynekAppDelegate.self) var delegate
+    @StateObject private var state = AppState()
 
     public var body: some Scene {
-        // Phase 7.v9 (2026-05-23): the main window is NOT defined by
-        // a SwiftUI `WindowGroup` anymore — `SplynekAppDelegate`
-        // creates an AppKit-driven `NSWindow` + `MainSplitViewController`
-        // so we can use `NSSplitViewItem.allowsFullHeightLayout = true`
-        // for the Apple-TV-style chrome (sidebar material + detail
-        // gradient extend under the title bar; SwiftUI's
-        // NavigationSplitView doesn't expose this).
-        //
-        // We keep a `Settings` scene as the home of `.commands`
-        // because SwiftUI menu bar items are global — they apply to
-        // whatever window happens to be key — and need *some* scene
-        // to attach to.  The Settings window itself never appears
-        // because the user reaches Settings via our custom in-app
-        // sheet (`SettingsSheet`).
-        Settings { EmptyView() }
+        WindowGroup {
+            ContentView(vm: state.vm)
+                .environmentObject(state.background)
+                .onAppear { delegate.state = state }
+                .frame(minWidth: 900, minHeight: 640)
+        }
+        // 2026-05-07 / 2026-05-23 (Phase 7.v5): defaultSize bumped
+        // from the (implicit) minimum so first-launch users land on
+        // a window tall enough to show every sidebar row + the
+        // full first-run welcome splash (4 lifecycle tiles + hero
+        // + trust strip) without clipping or scrolling.  The minimum
+        // frame is still 900×640 — anyone who shrinks the window
+        // keeps the Pro layout — but the *initial* frame is now
+        // generous.
+        .defaultSize(width: 1200, height: 880)
+        .windowResizability(.contentSize)
+        // Phase 7.v5 (2026-05-23): hiddenTitleBar — the title bar
+        // becomes transparent, traffic lights stay in the top-left,
+        // and any SwiftUI view's background paints continuously from
+        // the very top of the window to the bottom.  Kills the seam
+        // the welcome splash was showing between the toolbar area
+        // and the gradient body.  unifiedCompact keeps per-tab
+        // toolbars (Sovereignty, Trust, etc.) lean.
+        .windowStyle(.hiddenTitleBar)
+        .windowToolbarStyle(.unifiedCompact(showsTitle: false))
         .commands {
             CommandGroup(replacing: .newItem) { }
 
@@ -366,7 +363,7 @@ public struct SplynekApp: App {
             }
             CommandMenu("Tools") {
                 Button("Publish Splynek Manifest…") {
-                    if let vm = (NSApp.delegate as? SplynekAppDelegate)?.state.vm {
+                    if let vm = (NSApp.delegate as? SplynekAppDelegate)?.state?.vm {
                         vm.publishManifest()
                     }
                 }

@@ -96,7 +96,15 @@ struct Sidebar: View {
         // footer) → notification → RootView routing.  Phase 6 of
         // the IA migration converts them to a sheet.
         VStack(spacing: 0) {
-            sidebarHeader
+            // Phase 7.v4 (2026-05-23): custom sidebar — dropped
+            // List(selection:) in favour of a VStack of
+            // SidebarTileButton views.  The macOS List's default
+            // selection style is a system-blue rectangle that
+            // overwrites the tab's tinted slogan and tints any custom
+            // background we set; with custom buttons each tile owns
+            // its own hover / active state in its own colour and
+            // stays readable.  Sidebar background uses the standard
+            // sidebar material via .background(.regularMaterial).
             ScrollView {
                 VStack(spacing: 10) {
                     ForEach(LifecycleTab.allCases) { tab in
@@ -109,54 +117,24 @@ struct Sidebar: View {
                         }
                     }
                 }
-                // Phase 7.v9 (2026-05-23): top padding gives the
-                // tiles breathing room below the title-bar y-row
-                // (where traffic lights + the toggle button live),
-                // restoring the visual rhythm we lost when content
-                // was pushed flush to the column edges.
                 .padding(.horizontal, 8)
-                .padding(.top, 14)
-                .padding(.bottom, 14)
+                .padding(.vertical, 14)
             }
             .scrollContentBackground(.hidden)
             brandFooter
-                .padding(.bottom, 10)
         }
-        .background(.regularMaterial)
-    }
-
-    /// Phase 7.v9 (2026-05-23): top-of-sidebar header.  Sits at the
-    /// title-bar y-level inside the sidebar pane — only possible
-    /// because the AppKit split-view container opts the sidebar
-    /// item into `allowsFullHeightLayout`.  The left 72 pt is empty
-    /// space reserved for the macOS traffic-light strip to float
-    /// over; the right side hosts the custom sidebar-toggle button.
-    @ViewBuilder
-    private var sidebarHeader: some View {
-        HStack(spacing: 0) {
-            Color.clear
-                .frame(width: 72, height: 1)
-                .accessibilityHidden(true)
-
-            Spacer(minLength: 0)
-
-            Button {
-                NotificationCenter.default.post(
-                    name: .splynekToggleSidebar, object: nil
-                )
-            } label: {
-                Image(systemName: "sidebar.left")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.secondary)
-                    .frame(width: 26, height: 26)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .help("Toggle sidebar (⌃⌘S)")
-            .keyboardShortcut("s", modifiers: [.command, .control])
-        }
-        .padding(.horizontal, 10)
-        .frame(height: 38)
+        // Phase 7.v6 (2026-05-23): sidebar material extends UP under
+        // the title-bar area, matching Apple TV / Mail / Notes.
+        // Without this, the system paints its default toolbar band
+        // above the sidebar, creating the visible "system zone"
+        // across the top of the window.  The actual SidebarTileButton
+        // rows + brand footer stay in the safe area (so they don't
+        // overlap with the traffic lights).
+        .background(
+            Rectangle()
+                .fill(.regularMaterial)
+                .ignoresSafeArea(.container, edges: .top)
+        )
     }
 
     /// Per-tab accessory pill.  Phase 2 keeps this minimal — only
