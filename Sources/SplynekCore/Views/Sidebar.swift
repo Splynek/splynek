@@ -120,8 +120,17 @@ struct Sidebar: View {
                     .tag(tab)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 7, leading: 10,
-                                              bottom: 7, trailing: 10))
+                    // Phase 7.v14d (2026-05-24): horizontal insets
+                    // chosen so each tile's leading edge lines up with
+                    // the LEFT exterior of the traffic-light cluster
+                    // (close-button red circle) and the trailing edge
+                    // lines up with the RIGHT exterior of the sidebar-
+                    // toggle "dongle" in the top-right of the sidebar.
+                    // The List's `.sidebar` style adds ~8pt baseline
+                    // padding on each side; we hand back just enough
+                    // (2/2) to land flush with the system controls.
+                    .listRowInsets(EdgeInsets(top: 7, leading: 2,
+                                              bottom: 7, trailing: 2))
                 }
             }
             .listStyle(.sidebar)
