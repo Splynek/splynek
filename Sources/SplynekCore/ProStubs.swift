@@ -27,28 +27,173 @@ import Combine
 /// source exclusion. See the MAS Xcode project for how the swap
 /// is wired.
 
-// MARK: - LicenseManager (stub)
+// MARK: - LicenseManager (file-based for the 2026-06 direct-sale launch)
 
-/// Free-tier license gate. Always reports `isPro = false`. Unlock
-/// attempts always fail with a "Pro is on the Mac App Store" message.
-/// The MAS build substitutes a `StoreKit`-backed manager.
+/// License manager for the direct-sale Mac DMG path.
+///
+/// 2026-06-08 launch — see `LAUNCH-WITHOUT-APPLE.md` for the full
+/// strategy.  Splynek Pro licenses are Ed25519-signed `.splynekkey`
+/// JSON files issued by the LemonSqueezy → Cloudflare Worker
+/// pipeline.  Verification is offline against the public key baked
+/// into this file at build time.
+///
+/// State machine:
+/// - Init: try to load a persisted license from Application Support;
+///   verify its signature; set `isPro = true` if valid, else `false`.
+/// - `activate(fileURL:)`: read + verify a user-supplied license
+///   file (double-clicked from email).  On success, copy to
+///   Application Support and flip `isPro = true`.
+/// - `deactivate()`: delete the persisted license and flip `isPro =
+///   false` (used by the user-side "switch to free" Settings action;
+///   not used by any anti-piracy path).
+///
+/// The MAS build substitutes a separate StoreKit-backed manager
+/// (lives in the private splynek-pro target) via target-level source
+/// exclusion.  Both builds expose the same public API (`isPro`,
+/// `licensedEmail`, `lastUnlockError`, `deactivate()`) so the rest of
+/// SplynekCore + Views compile against either.
 final class LicenseManager: ObservableObject {
+
+    /// The public Ed25519 key (base64-encoded raw 32 bytes) that the
+    /// Cloudflare Worker signs licenses with.  Baked in at build time.
+    ///
+    /// **PLACEHOLDER** — the maintainer must replace this constant
+    /// with the actual public key before the launch build.  See
+    /// `LAUNCH-WITHOUT-APPLE.md` § 5.2 + the `D6 — Maintainer
+    /// checklist` task.  Generation:
+    ///
+    /// ```bash
+    /// swift -e '
+    ///   import CryptoKit
+    ///   let k = Curve25519.Signing.PrivateKey()
+    ///   let priv = k.rawRepresentation.base64EncodedString()
+    ///   let pub = k.publicKey.rawRepresentation.base64EncodedString()
+    ///   print("PRIVATE (Worker secret):", priv)
+    ///   print("PUBLIC  (this constant):", pub)
+    /// '
+    /// ```
+    ///
+    /// Until replaced, every license verification will fail with
+    /// `Signature does not match the licence payload`, which is the
+    /// correct safe-default (no fake Pro grants).
+    static let publicKeyBase64 = "REPLACE_ME_WITH_LAUNCH_PUBLIC_KEY"
 
     @Published private(set) var isPro: Bool = false
     @Published private(set) var licensedEmail: String? = nil
     @Published var lastUnlockError: String?
 
-    init() {}
+    /// Override for tests + the splynek-pro MAS substitution.  Defaults
+    /// to the build-time embedded public key.
+    private let publicKeyBase64Override: String?
 
-    /// No-op stub. Surfaces a CTA-friendly error that views can show.
+    /// On-disk location of the persisted license file.  Application
+    /// Support / Splynek / license.splynekkey.
+    private let licenseStoreURL: URL = {
+        let base = FileManager.default
+            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first ?? URL(fileURLWithPath: NSTemporaryDirectory())
+        let dir = base.appendingPathComponent("Splynek", isDirectory: true)
+        try? FileManager.default.createDirectory(
+            at: dir, withIntermediateDirectories: true
+        )
+        return dir.appendingPathComponent("license.splynekkey")
+    }()
+
+    init(publicKeyOverride: String? = nil) {
+        self.publicKeyBase64Override = publicKeyOverride
+        loadPersistedLicense()
+    }
+
+    private var effectivePublicKey: String {
+        publicKeyBase64Override ?? Self.publicKeyBase64
+    }
+
+    /// Try to load + verify the persisted license on launch.  If
+    /// verification fails (signature mismatch, file corrupted, key
+    /// rotated), `isPro` stays `false` and the file remains on disk
+    /// — we don't delete it automatically because the user can
+    /// always re-import a corrected version, and a transient
+    /// CryptoKit failure shouldn't punish a legitimate Pro buyer.
+    private func loadPersistedLicense() {
+        guard FileManager.default.fileExists(atPath: licenseStoreURL.path) else {
+            return
+        }
+        do {
+            let file = try LicenseFile.read(from: licenseStoreURL)
+            if file.verify(againstPublicKeyBase64: effectivePublicKey).isValid {
+                isPro = true
+                licensedEmail = file.email
+            }
+        } catch {
+            // Persisted file unreadable — surface in error string but
+            // don't crash.  Most likely "user manually edited the
+            // file" or "key rotation in a future version."
+            lastUnlockError = "Could not read persisted license: \(error.localizedDescription)"
+        }
+    }
+
+    /// Verify + persist a user-supplied license file.  Called from
+    /// `SplynekApp.application(_:open:)` when macOS routes a
+    /// `.splynekkey` double-click to us.
+    ///
+    /// Returns `true` on a clean activation (`isPro` is now `true`).
+    /// Returns `false` on any failure; `lastUnlockError` carries the
+    /// human-readable reason for views to surface.
+    @discardableResult
+    func activate(fileURL: URL) -> Bool {
+        let file: LicenseFile
+        do {
+            file = try LicenseFile.read(from: fileURL)
+        } catch {
+            lastUnlockError = "That doesn't look like a Splynek licence file: "
+                            + error.localizedDescription
+            return false
+        }
+        switch file.verify(againstPublicKeyBase64: effectivePublicKey) {
+        case .valid:
+            // Copy to canonical location.  Overwrite any existing
+            // file — re-activation with a fresh license is fine
+            // (e.g. tier upgrade).
+            do {
+                if FileManager.default.fileExists(atPath: licenseStoreURL.path) {
+                    try FileManager.default.removeItem(at: licenseStoreURL)
+                }
+                try FileManager.default.copyItem(at: fileURL, to: licenseStoreURL)
+            } catch {
+                lastUnlockError = "Could not save licence: \(error.localizedDescription)"
+                return false
+            }
+            isPro = true
+            licensedEmail = file.email
+            lastUnlockError = nil
+            return true
+
+        case .invalid(let reason):
+            lastUnlockError = "Licence signature didn't verify: \(reason).  "
+                            + "Re-download from your purchase email, or contact support@splynek.app."
+            return false
+        }
+    }
+
+    /// Legacy stub kept for API compatibility with the older "email +
+    /// key" path some Settings views still call.  Surfaces a polite
+    /// CTA pointing at splynek.app/pro.  Real activation is via
+    /// `activate(fileURL:)` (double-click flow).
     @discardableResult
     func unlock(email: String, key: String) -> Bool {
-        lastUnlockError = "Splynek Pro features are only available in the "
-                        + "Mac App Store build of Splynek."
+        lastUnlockError = "Splynek Pro is now activated by double-clicking the "
+                        + "licence file from your purchase email — there's no "
+                        + "manual code to enter.  If you've lost the email, "
+                        + "visit splynek.app/support."
         return false
     }
 
+    /// Delete the persisted license + flip back to free tier.  No
+    /// network call, no anti-piracy phone-home — the user keeps a
+    /// copy of the licence file and can re-activate any time.
     func deactivate() {
+        try? FileManager.default.removeItem(at: licenseStoreURL)
+        isPro = false
         licensedEmail = nil
         lastUnlockError = nil
     }
