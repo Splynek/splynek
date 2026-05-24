@@ -3,10 +3,17 @@
 > **Strategic plan for shipping Splynek 1.0 outside the Mac App Store
 > while Apple's review queue stalls past day 30.**
 >
-> Drafted 2026-05-24.  Decision pending maintainer approval.
-> If approved, this doc becomes the canonical reference for the
-> direct-sale launch and `IA-V2-MIGRATION-STATUS.md` style updates
-> roll into it.
+> Drafted 2026-05-24.  **APPROVED 2026-05-24** by maintainer.
+> All five decisions in Section 13 locked.  This doc is now the
+> canonical reference for the direct-sale launch; the technical
+> execution starts immediately.
+>
+> **Locked decisions:**
+>   1. Direction — APPROVED.  Ship Mac direct; iPhone follows.
+>   2. Merchant — LemonSqueezy (merchant-of-record).
+>   3. Pricing — $24 launch-window for first 30 days, then $29.
+>   4. Ship dates — **Soft launch Mon 2026-06-08, Show HN Wed 2026-06-10.**
+>   5. Public iPhone-delay messaging — APPROVED as drafted.
 
 ---
 
