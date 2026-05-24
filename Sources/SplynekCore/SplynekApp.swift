@@ -18,29 +18,16 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
     weak var state: AppState?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Phase 7.v5 (2026-05-23): make every Splynek window's title
-        // bar transparent + opt into full-size content view, so the
-        // first-run welcome splash can flow edge-to-edge through the
-        // title bar area instead of stopping at a visible seam.  The
-        // traffic-light controls still render (no styleMask removal),
-        // and normal tabs that declare their own .toolbar items get
-        // the standard system treatment — the transparent title bar
-        // just lets the view's background paint through.
-        DispatchQueue.main.async {
-            for window in NSApp.windows {
-                Self.configureWindowChrome(window)
-            }
-            // Catch any windows created after launch (Pro upsell,
-            // sheets, etc.) — they all inherit the same treatment.
-            NotificationCenter.default.addObserver(
-                forName: NSWindow.didBecomeKeyNotification,
-                object: nil, queue: .main
-            ) { note in
-                if let window = note.object as? NSWindow {
-                    Self.configureWindowChrome(window)
-                }
-            }
-        }
+        // Phase 7.v14 (2026-05-24): the Phase 7.v5 "transparent
+        // titlebar + fullSizeContentView" hack was reverted.  It was
+        // making the floating-card sidebar drop BELOW the traffic-
+        // lights area (the macOS 14+ NavigationSplitView auto-styling
+        // expects a normal unified toolbar to align against).  Without
+        // it — and with `.windowToolbarStyle(.unified)` below — the
+        // sidebar's material naturally extends UP under the title bar
+        // and the traffic lights + sidebar toggle visually live INSIDE
+        // the sidebar pane (the Apple TV.app look the user asked for,
+        // and the look Splynek had since d94ab61 / IA v2 Phase 2).
 
         let menu = MenuBarController { [weak self] in
             guard let vm = self?.state?.vm else { return (0, 0, 0, 0) }
@@ -192,26 +179,6 @@ final class SplynekAppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// Phase 7.v5: configure a window for the edge-to-edge splash
-    /// look — transparent title bar + full-size content view so any
-    /// SwiftUI view's background paints all the way under the
-    /// traffic-light strip.  Idempotent; safe to call on every
-    /// becomeKey notification.  We do NOT touch `window.toolbar` —
-    /// the toolbar is what hosts the sidebar toggle button and the
-    /// per-tab toolbar items; removing it broke the NavigationSplitView
-    /// in Phase 7.v6 (sidebar disappeared).  On macOS 14+ we get the
-    /// proper API for hiding the toolbar's bottom separator; on
-    /// macOS 13 the `.unifiedCompact` toolbar style + transparent
-    /// title bar is the cleanest we can manage without breaking the
-    /// rest of the chrome.
-    static func configureWindowChrome(_ window: NSWindow) {
-        window.titlebarAppearsTransparent = true
-        window.styleMask.insert(.fullSizeContentView)
-        if #available(macOS 14.0, *) {
-            window.titlebarSeparatorStyle = .none
-        }
-    }
-
     /// Dock menu (right-click / long-press on the Dock icon).
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
         let menu = NSMenu()
@@ -304,15 +271,14 @@ public struct SplynekApp: App {
         // generous.
         .defaultSize(width: 1200, height: 880)
         .windowResizability(.contentSize)
-        // Phase 7.v5 (2026-05-23): hiddenTitleBar — the title bar
-        // becomes transparent, traffic lights stay in the top-left,
-        // and any SwiftUI view's background paints continuously from
-        // the very top of the window to the bottom.  Kills the seam
-        // the welcome splash was showing between the toolbar area
-        // and the gradient body.  unifiedCompact keeps per-tab
-        // toolbars (Sovereignty, Trust, etc.) lean.
-        .windowStyle(.hiddenTitleBar)
-        .windowToolbarStyle(.unifiedCompact(showsTitle: false))
+        // Phase 7.v14 (2026-05-24): back to the d94ab61 chrome —
+        // standard unified toolbar, no `.hiddenTitleBar`, no
+        // titlebar-transparency hack.  This is the configuration that
+        // lets macOS 14+ NavigationSplitView render its floating-card
+        // sidebar with material extending UP under the title bar, so
+        // the traffic lights + sidebar toggle visually live INSIDE
+        // the sidebar pane (the Apple TV.app / Mail / Notes look).
+        .windowToolbarStyle(.unified(showsTitle: true))
         .commands {
             CommandGroup(replacing: .newItem) { }
 

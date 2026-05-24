@@ -74,67 +74,67 @@ enum SidebarSection: String, Hashable, CaseIterable, Identifiable {
 }
 
 struct Sidebar: View {
-    /// IA v2 (2026-05-13) / Phase 7 (2026-05-23): optional binding —
-    /// `nil` means "no tab selected" so the first-run welcome splash
-    /// can render without highlighting any sidebar row.  Selecting
-    /// any row transitions nil → tab and RootView's `.onChange`
-    /// handler dismisses the welcome.
+    /// IA v2 Phase 7 (2026-05-23): optional binding so the first-run
+    /// welcome splash can render with no row highlighted.  Selecting
+    /// any row transitions nil → tab; RootView's `.onChange` dismisses
+    /// the splash by flipping `hasCompletedOnboarding`.
     @Binding var currentTab: LifecycleTab?
     @ObservedObject var vm: SplynekViewModel
     @ObservedObject var torrent: TorrentProgress
 
     var body: some View {
-        // IA v2 layout — 4 lifecycle tabs:
-        //   Discover   — find apps worth installing
-        //   Download   — get them here, fast
-        //   My Apps    — keep what you have safe
-        //   Coordinate — sync across your devices
+        // Phase 7.v13 (2026-05-24): back to SwiftUI's standard
+        // `List(selection:)` sidebar.  This is the trigger for the
+        // macOS 14+ NavigationSplitView auto floating-card styling —
+        // rounded corners, inset from window edges, material that
+        // extends up to cover the title-bar area.  The "since the
+        // start" look the user kept asking for.  The fact that I
+        // ever moved away from List(selection:) (Phase 7.v4 commit
+        // 23fcb07) was the original mistake.
         //
-        // Settings / Legal / About are NOT sidebar destinations.
-        // They still exist as SidebarSection cases (RootView's detail
-        // switch handles them) but reach via gear icon (sidebar
-        // footer) → notification → RootView routing.  Phase 6 of
-        // the IA migration converts them to a sheet.
+        // Each row's content carries the tab's tintColor + slogan —
+        // the colored richness the user wants — but they live INSIDE
+        // a standard List row so we get the auto-styling for free.
+        // When a row is selected, the slogan switches to white so it
+        // stays readable on the system blue selection highlight.
         VStack(spacing: 0) {
-            // Phase 7.v4 (2026-05-23): custom sidebar — dropped
-            // List(selection:) in favour of a VStack of
-            // SidebarTileButton views.  The macOS List's default
-            // selection style is a system-blue rectangle that
-            // overwrites the tab's tinted slogan and tints any custom
-            // background we set; with custom buttons each tile owns
-            // its own hover / active state in its own colour and
-            // stays readable.  Sidebar background uses the standard
-            // sidebar material via .background(.regularMaterial).
-            ScrollView {
-                VStack(spacing: 10) {
-                    ForEach(LifecycleTab.allCases) { tab in
-                        SidebarTileButton(
-                            tab: tab,
-                            isActive: currentTab == tab,
-                            accessory: accessory(for: tab)
-                        ) {
-                            currentTab = tab
-                        }
+            // Phase 7.v14b (2026-05-24): rich `SidebarTileButton`
+            // tiles wrapped inside `List(selection:)` rows.  The List
+            // keeps the macOS 14+ NavigationSplitView auto floating-
+            // card styling alive (so traffic lights stay INSIDE the
+            // sidebar pane); the tile owns its OWN colored
+            // background + iconWell + slogan, and the default List
+            // selection chrome is neutralised via clear listRow
+            // background + hidden separators + plain list style.
+            // Result: the rich tile look the user wants AND the
+            // floating-card chrome they want, in one view.
+            List(selection: $currentTab) {
+                ForEach(LifecycleTab.allCases) { tab in
+                    SidebarTileButton(
+                        tab: tab,
+                        isActive: currentTab == tab,
+                        accessory: accessory(for: tab)
+                    ) {
+                        currentTab = tab
                     }
+                    .tag(tab)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 8,
+                                              bottom: 4, trailing: 8))
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 14)
             }
+            .listStyle(.sidebar)
             .scrollContentBackground(.hidden)
             brandFooter
         }
-        // Phase 7.v6 (2026-05-23): sidebar material extends UP under
-        // the title-bar area, matching Apple TV / Mail / Notes.
-        // Without this, the system paints its default toolbar band
-        // above the sidebar, creating the visible "system zone"
-        // across the top of the window.  The actual SidebarTileButton
-        // rows + brand footer stay in the safe area (so they don't
-        // overlap with the traffic lights).
-        .background(
-            Rectangle()
-                .fill(.regularMaterial)
-                .ignoresSafeArea(.container, edges: .top)
-        )
+        // Phase 7.v14 (2026-05-24): the navigationTitle was load-bearing
+        // for the d94ab61 chrome — without it the unified toolbar paints
+        // a separator strip and the floating-card sidebar gets pushed
+        // below the traffic lights.  With it, macOS knows the sidebar
+        // owns the leading column and lets its material continue up
+        // under the title bar (the look the user has been pointing at).
+        .navigationTitle("Splynek")
     }
 
     /// Per-tab accessory pill.  Phase 2 keeps this minimal — only
@@ -252,20 +252,26 @@ struct Sidebar: View {
 
 // MARK: - SidebarTileButton
 
-/// Phase 7.v4 (2026-05-23): a sidebar row built as a custom Button
-/// rather than a NavigationLink-in-List.  Drops macOS's default
-/// system-blue selection rectangle (which fights the tab's own tint)
-/// in favour of three states all anchored to the tab's `tintColor`:
+/// Phase 7.v4 (2026-05-23) / restored in v14b (2026-05-24): the
+/// rich sidebar row.  Each tab gets a tinted iconWell + title +
+/// slogan + colored hover/active background — all anchored to the
+/// tab's own `tintColor` so the sidebar reads as the same visual
+/// vocabulary as the welcome-splash story tiles, scaled down.
 ///
+/// Lives INSIDE a `List(selection:)` row (Phase 7.v14b) so the
+/// macOS 14+ NavigationSplitView auto floating-card chrome (rounded
+/// corners, material extending up under the title bar) stays alive.
+/// The List's default selection rectangle is neutralised in the
+/// parent view via `.listRowBackground(Color.clear)`, leaving the
+/// tile's own tinted background as the only selection signal.
+///
+/// Three states, all anchored to `tab.tintColor`:
 ///   • idle    — soft tinted background (4%) + no border
 ///   • hover   — slightly stronger background (8%) + tinted outline
 ///               (35%) + faint scale-up (1.01) for tactile feedback
 ///   • active  — strongest background (16%) + bold tinted outline
 ///               (55%) — matches the tab's identity, keeps the
-///               slogan readable (no blue-on-blue collision)
-///
-/// Same visual vocabulary as the welcome-splash tiles, so the
-/// sidebar reads as the same product, scaled down.
+///               slogan readable (no blue-on-blue collision).
 struct SidebarTileButton: View {
     let tab: LifecycleTab
     let isActive: Bool
@@ -363,10 +369,13 @@ extension Notification.Name {
     static let splynekShowSovereignty = Notification.Name("splynek.showSovereignty")
     static let splynekShowTrust       = Notification.Name("splynek.showTrust")
 
+    /// v1.6.1: posted by `OnboardingSheet` when the user clicks
+    /// "Run audit + finish".  SovereigntyView's onReceive catches
+    /// this and triggers its `@StateObject` scanner.scan().
+    static let splynekRunSovereigntyScan = Notification.Name("splynek.runSovereigntyScan")
+
     /// IA v2 Phase 5 (2026-05-23): open the Concierge as a modal
-    /// sheet.  Posted by the "Ask Splynek" pill in LifecycleTopBar
-    /// (Discover + My Apps) and any future caller (menu bar, Cmd+K,
-    /// `splynek://concierge` deep link).  RootView's onReceive flips
-    /// `@State showingConcierge` so `.sheet` presents.
+    /// sheet.  Posted by the "Ask Splynek" pill on Discover + My
+    /// Apps; RootView catches it and flips a sheet-presentation flag.
     static let splynekShowConcierge = Notification.Name("splynek.showConcierge")
 }

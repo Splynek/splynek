@@ -43,17 +43,16 @@ struct DiscoverWelcomeCard: View {
     let onPick: (LifecycleTab) -> Void
 
     var body: some View {
-        // Phase 7.v6 (2026-05-23): full-bleed splash.  Both the
-        // background AND the GeometryReader ignore the safe area at
-        // the top, so the content is centred against the FULL window
-        // height (traffic-light strip included), not the smaller
-        // "below-toolbar" rectangle.  This matches Apple TV's layout
-        // — the visible content area extends from the very top of
-        // the window to the very bottom, and the Spacers above/below
-        // hero+grid+bottomStrip distribute the whitespace evenly.
+        // Phase 7.v14 (2026-05-24): the full-bleed `.ignoresSafeArea`
+        // hacks that paired with the Phase 7.v5 transparent-titlebar
+        // chrome are gone — the standard unified toolbar is back, so
+        // the welcome content lives in the normal safe area (no longer
+        // sliding under the title bar).  Visually the splash now reads
+        // as a centred card on the standard window background, with
+        // the floating-card sidebar continuous up through the title
+        // bar on the leading edge.
         ZStack {
             backgroundGradient
-                .ignoresSafeArea()
 
             GeometryReader { geo in
                 VStack(spacing: 0) {
@@ -76,10 +75,7 @@ struct DiscoverWelcomeCard: View {
                 .frame(width: geo.size.width, height: geo.size.height,
                        alignment: .center)
             }
-            .ignoresSafeArea(.container, edges: .top)
         }
-        .navigationTitle("")
-        .toolbarBackground(.hidden, for: .windowToolbar)
     }
 
     /// Solid window-background wash, with a very faint vertical tint
