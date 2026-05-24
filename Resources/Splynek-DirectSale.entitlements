@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      Direct-sale (LemonSqueezy / website-download) variant of
+      Splynek's entitlements.  Used for the 2026-06 launch outside
+      the Mac App Store while Apple's v1.0 MAS re-review queue
+      stays stalled past day 30.  See LAUNCH-WITHOUT-APPLE.md at
+      the repo root for the strategy doc.
+
+      Identical in capability to Resources/Splynek.entitlements
+      (the existing Developer-ID DMG variant): sandboxed,
+      hardened-runtime-friendly, no iCloud.  This file exists as a
+      distinct named target so the launch build path is explicit:
+
+        SIGN_IDENTITY="Developer ID Application: …" \
+        ENTITLEMENTS="Resources/Splynek-DirectSale.entitlements" \
+          ./Scripts/build.sh release
+
+      …and so when MAS clears, the parallel-MAS build picks
+      Splynek-MAS.entitlements without ambiguity.
+
+      Sandbox stays enabled — it's a good security posture for a
+      download manager and lets us keep the same hardened runtime
+      gates that protect the existing v0.x DMG users.  Sparkle 2.x
+      auto-update works inside this sandbox via its
+      `XPCInstallerService` path; no extra entitlements needed.
+
+      License file double-click activation works via the
+      `.splynekkey` file association declared in Resources/Info.plist
+      (CFBundleDocumentTypes).  When the user opens a license file,
+      macOS routes it to Splynek.app via the standard
+      `application(_:open:)` path; we verify the Ed25519 signature
+      against the public key embedded at build time, then store the
+      license in ~/Library/Application Support/Splynek/.
+
+      NOT entitled:
+        - iCloud container access (only the MAS variant uses CloudKit,
+          and only for the iPhone Companion's cellular relay).
+        - JIT / unsigned-executable-memory (we don't ship a JIT).
+        - Camera / mic / location (Splynek doesn't use them).
+        - Apple Events (Splynek doesn't drive other apps).
+    -->
+
+    <!-- Sandbox — same posture as the existing DMG variant. -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+
+    <!-- Outgoing network — HTTP downloads, torrent peers, DoH,
+         appcast fetch for Sparkle, license-server activation. -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- Incoming network — LAN HTTP API server, Bonjour responder,
+         peer-to-peer Fleet. -->
+    <key>com.apple.security.network.server</key>
+    <true/>
+
+    <!-- User-picked file/folder access — NSOpenPanel destinations
+         for downloads, license-file imports. -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+
+    <!-- ~/Downloads write access — default save location. -->
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+</dict>
+</plist>

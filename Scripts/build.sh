@@ -8,6 +8,19 @@
 #                      SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)"
 #   ENTITLEMENTS   — optional path to an entitlements plist
 #
+# Three entitlement variants live in Resources/:
+#   Splynek.entitlements            — legacy DMG variant (v0.x users)
+#   Splynek-DirectSale.entitlements — 2026-06 direct-sale launch
+#                                     (see LAUNCH-WITHOUT-APPLE.md)
+#   Splynek-MAS.entitlements        — Mac App Store build (used by
+#                                     Scripts/build-mas.sh, not here)
+#
+# Typical direct-sale launch invocation:
+#
+#   SIGN_IDENTITY="Developer ID Application: Paulo Moura (58C6YC5GB5)" \
+#   ENTITLEMENTS="Resources/Splynek-DirectSale.entitlements" \
+#     ./Scripts/build.sh release
+#
 # Produces ./build/Splynek.app
 set -euo pipefail
 

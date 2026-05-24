@@ -87,6 +87,63 @@
                 <string>meta4</string>
             </array>
         </dict>
+        <!--
+          Splynek Pro license file (.splynekkey) — 2026-06 direct-sale
+          launch.  Issued by the LemonSqueezy webhook → Cloudflare
+          Worker pipeline, signed with Ed25519, delivered as an email
+          attachment.  User double-clicks the file; macOS routes it
+          to Splynek.app, which verifies the signature against the
+          public key embedded at build time and stores the license in
+          ~/Library/Application Support/Splynek/.  See
+          LAUNCH-WITHOUT-APPLE.md § 5.3 for the activation flow.
+        -->
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>Splynek Pro License</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>LSHandlerRank</key>
+            <string>Owner</string>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>splynekkey</string>
+            </array>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>app.splynek.license</string>
+            </array>
+        </dict>
+    </array>
+    <!--
+      Exported UTI for the .splynekkey license-file type so Spotlight,
+      Finder, and Mail know about the format.  Conforms to public.json
+      because the file is a JSON envelope (license metadata + Ed25519
+      signature).
+    -->
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>app.splynek.license</string>
+            <key>UTTypeDescription</key>
+            <string>Splynek Pro License</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.json</string>
+                <string>public.data</string>
+            </array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>splynekkey</string>
+                </array>
+                <key>public.mime-type</key>
+                <array>
+                    <string>application/x-splynek-license</string>
+                </array>
+            </dict>
+        </dict>
     </array>
 </dict>
 </plist>
