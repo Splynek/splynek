@@ -13,4 +13,19 @@
 import SplynekCore
 #endif
 
+// 2026-06 direct-sale launch: instantiate the Sparkle singleton
+// BEFORE SwiftUI's App.main() takes over.  The SPUStandardUpdaterController
+// constructor runs the auto-check timer immediately, so referencing
+// the singleton here kicks it off.  See Sources/Splynek/SparkleBridge.swift
+// for the bridge + the maintainer prerequisites (SUFeedURL + SUPublicEDKey
+// in Resources/Info.plist).
+//
+// A "Check for Updates…" menu item lives in SparkleBridge but is
+// surfaced via NSMenu hooks rather than SwiftUI .commands — the
+// SwiftUI .commands wiring lives in SplynekCore which intentionally
+// doesn't import Sparkle (to keep the test target lean).  v1.0 ships
+// with the auto-prompt timer only; manual "Check for Updates…"
+// surfaces in v1.0.1 via the menu-bar bridge.
+_ = SparkleBridge.shared
+
 SplynekBootstrap.run()

@@ -115,6 +115,39 @@
         </dict>
     </array>
     <!--
+      Sparkle 2.x auto-update configuration — DMG distribution only.
+      See LAUNCH-WITHOUT-APPLE.md § 6 and Sources/Splynek/SparkleBridge.swift.
+
+      SUFeedURL — the appcast.xml URL.  Sparkle polls this on the
+      schedule the user controls (default: ~once a day) and prompts
+      when a newer build is available.
+
+      SUPublicEDKey — Sparkle's EdDSA public key.  DIFFERENT from
+      the licence-server Ed25519 key in LicenseManager.publicKeyBase64.
+      Sparkle generates its own keypair via `generate_keys` from the
+      Sparkle dev tools.  Maintainer replaces the placeholder below
+      with the real key before the launch build.
+
+      SUEnableInstallerLauncherService — required for installs that
+      need elevated permissions (we don't, but Sparkle 2.x expects
+      the key to be present).
+
+      Until the maintainer wires both URLs + the public key,
+      Sparkle silently no-ops — auto-update is just disabled.  That's
+      the safe fail mode for dev builds.
+    -->
+    <key>SUFeedURL</key>
+    <string>https://splynek.app/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>REPLACE_ME_WITH_SPARKLE_EDDSA_PUBLIC_KEY</string>
+    <key>SUEnableInstallerLauncherService</key>
+    <false/>
+    <key>SUAutomaticallyUpdate</key>
+    <false/>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
+
+    <!--
       Exported UTI for the .splynekkey license-file type so Spotlight,
       Finder, and Mail know about the format.  Conforms to public.json
       because the file is a JSON envelope (license metadata + Ed25519

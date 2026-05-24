@@ -34,6 +34,19 @@ let package = Package(
         // compiled by the Xcode iOS targets only.
         .library(name: "SplynekCompanionCore", targets: ["SplynekCompanionCore"]),
     ],
+    // 2026-06 direct-sale launch (LAUNCH-WITHOUT-APPLE.md § 6):
+    // Sparkle 2.x handles auto-update for the DMG distribution
+    // channel.  The MAS build path doesn't need this — App Store
+    // updates flow through Apple's own mechanism.  We use Sparkle's
+    // SPM integration; the binary framework is fetched at resolve
+    // time and ends up inside Splynek.app/Contents/Frameworks/ via
+    // the executable target's link step.
+    dependencies: [
+        .package(
+            url: "https://github.com/sparkle-project/Sparkle",
+            from: "2.6.0"
+        ),
+    ],
     targets: [
         .target(
             name: "SplynekCore",
@@ -55,7 +68,15 @@ let package = Package(
         ),
         .executableTarget(
             name: "Splynek",
-            dependencies: ["SplynekCore"],
+            dependencies: [
+                "SplynekCore",
+                // Sparkle for DMG auto-update.  The dependency is
+                // pulled in unconditionally; the Swift bridge in
+                // Sources/Splynek/SparkleBridge.swift is what wires
+                // it into the SwiftUI lifecycle.  No-op on builds
+                // where the Info.plist SUFeedURL isn't configured.
+                .product(name: "Sparkle", package: "Sparkle"),
+            ],
             path: "Sources/Splynek"
         ),
         .executableTarget(

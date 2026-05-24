@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="yes"?>
+<!--
+  Splynek Sparkle appcast — TEMPLATE.
+
+  Lives at https://splynek.app/appcast.xml in production.  Hosted as
+  a static file via Cloudflare Pages.  Each release the maintainer:
+
+    1. Runs ./Scripts/build.sh release + ./Scripts/dmg.sh + notarize.
+    2. Computes the Sparkle EdDSA signature for the new DMG:
+
+         /path/to/Sparkle/bin/sign_update build/Splynek-1.0.dmg
+         # → prints: sparkle:edSignature="<base64>" length="<bytes>"
+
+    3. Adds an <item> block at the TOP of the <channel> list with
+       the new version + the sparkle:edSignature attributes.
+
+    4. Commits + deploys to splynek.app (Cloudflare Pages auto-
+       deploys from the `splynek-landing` repo's main branch).
+
+  See LAUNCH-WITHOUT-APPLE.md § 6 + Sparkle docs at:
+  https://sparkle-project.org/documentation/publishing/
+-->
+<rss version="2.0"
+     xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Splynek</title>
+        <link>https://splynek.app/appcast.xml</link>
+        <description>Splynek Mac updates</description>
+        <language>en</language>
+
+        <!-- ──────────────────────────────────────────────────────
+             ITEM TEMPLATE — copy + fill in for each new release.
+             Order matters: newest at the TOP.
+             ────────────────────────────────────────────────────── -->
+        <item>
+            <title>Splynek 1.0</title>
+            <pubDate>Mon, 08 Jun 2026 12:00:00 +0000</pubDate>
+            <sparkle:version>1.0</sparkle:version>
+            <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[
+                <h2>Splynek 1.0 — Direct ship</h2>
+                <p>The big one.  Four lifecycle tabs.  Trust Watcher.
+                Fleet 2.0.  Browser Accelerator.  File Witness signed
+                receipts.  yt-dlp swallow.  Unbreakable Resume.
+                Whole-window IA refresh.</p>
+                <p><a href="https://splynek.app/blog/v1">Full release
+                notes</a></p>
+            ]]></description>
+            <enclosure
+                url="https://splynek.app/download/Splynek-1.0.dmg"
+                length="REPLACE_WITH_DMG_BYTE_COUNT"
+                type="application/octet-stream"
+                sparkle:edSignature="REPLACE_WITH_EDDSA_BASE64" />
+        </item>
+
+        <!--
+          Future items go above this comment, NOT below — Sparkle
+          treats the first <item> as the newest available release.
+          The DMG file itself stays at /download/Splynek-<v>.dmg and
+          the link from the landing page +download CTA always points
+          at the latest tag's stable URL.
+        -->
+    </channel>
+</rss>
