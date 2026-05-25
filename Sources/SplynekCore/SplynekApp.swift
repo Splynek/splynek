@@ -297,6 +297,17 @@ public struct SplynekApp: App {
                     NSApp.windows.first?.makeKeyAndOrderFront(nil)
                     NotificationCenter.default.post(name: .splynekShowAbout, object: nil)
                 }
+                // 2026-06 direct-sale launch: "Check for Updates…"
+                // sits directly under About — the standard macOS
+                // convention.  SplynekCore intentionally doesn't
+                // import Sparkle (keeps the test target lean), so
+                // we post a notification here and Sources/Splynek/
+                // main.swift's observer bridges to SparkleBridge.
+                Button("Check for Updates…") {
+                    NotificationCenter.default.post(
+                        name: .splynekCheckForUpdates, object: nil
+                    )
+                }
             }
             CommandGroup(replacing: .appSettings) {
                 Button("Settings…") {

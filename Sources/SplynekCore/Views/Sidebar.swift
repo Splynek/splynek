@@ -374,6 +374,15 @@ extension Notification.Name {
     static let splynekShowLegal    = Notification.Name("splynek.showLegal")
     static let splynekShowAbout    = Notification.Name("splynek.showAbout")
 
+    /// 2026-06 direct-sale launch: posted from the "Check for
+    /// Updates…" menu command (under About).  Sources/Splynek/
+    /// main.swift's observer bridges to SparkleBridge.checkForUpdates().
+    /// SplynekCore doesn't import Sparkle directly so the bridge
+    /// pattern keeps the test target lean.  `public` because the
+    /// Splynek executable target lives in a different SPM module
+    /// and needs to reach this constant.
+    public static let splynekCheckForUpdates = Notification.Name("splynek.checkForUpdates")
+
     /// v1.6: Spotlight deep-link routing.  `userInfo["bundleID"]`
     /// carries the focused bundle, when present.  Posted from
     /// `SplynekApp.handleSplynekURL` for `splynek://sovereignty/<id>`

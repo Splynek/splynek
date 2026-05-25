@@ -1,17 +1,35 @@
 # Splynek handoff
 
-> **TODAY (2026-05-24): IA v2 lifecycle reorg COMPLETE.**
-> All 9 phases of the lifecycle-based information-architecture
-> migration shipped end-to-end across 2026-05-23 → 2026-05-24.
-> The 17-tab sidebar is now 4 lifecycle tabs (Discover / Download /
-> My Apps / Coordinate) with rich colored tile buttons, a per-tab
-> chip strip, the floating-card sidebar chrome with traffic-lights
-> visually inside the pane (the Apple TV.app look), a welcome
-> splash for first-run users, Concierge as a sheet,
-> Settings/Legal/About as a gear-sheet, and the Installed inventory
-> + Trust Watcher inbox under My Apps.  Read
-> **`IA-V2-MIGRATION-STATUS.md`** at the repo root for the
-> migration outcome.
+> **TODAY (2026-05-24): IA v2 COMPLETE + direct-sale launch staged.**
+>
+> Two coordinated outcomes today:
+>
+> 1. **IA v2 lifecycle reorg shipped end-to-end.**  All 9 phases of
+>    the lifecycle-based information-architecture migration ran
+>    across 2026-05-23 → 2026-05-24.  Sidebar is now 4 lifecycle
+>    tabs (Discover / Download / My Apps / Coordinate) with rich
+>    colored tile buttons, traffic-lights visually inside the pane
+>    (Apple TV.app chrome), welcome splash for first-run users,
+>    Concierge as a sheet, Settings as a gear-sheet, Installed
+>    inventory + Trust Watcher inbox.  See
+>    **`IA-V2-MIGRATION-STATUS.md`**.
+>
+> 2. **Direct-sale launch package staged.**  Apple's MAS queue
+>    crossed 30+ days with no human reply, so the strategic
+>    decision was made (with maintainer approval) to ship Splynek
+>    1.0 direct from splynek.app — LemonSqueezy checkout, signed
+>    `.splynekkey` licence files, Sparkle auto-update, Cloudflare
+>    Worker for the LemonSqueezy → email pipeline.  MAS becomes a
+>    parallel channel when Apple clears.  iPhone Companion ships
+>    as a free v1.1 upgrade when iOS App Store clears.  See the
+>    launch package: **`LAUNCH-WITHOUT-APPLE.md`** (strategy),
+>    **`LAUNCH-1.0-COPY.md`** (public copy), **`RELEASE-NOTES-1.0.md`**
+>    (release notes), and **`MAINTAINER-LAUNCH-CHECKLIST.md`**
+>    (the out-of-codebase runbook for D-14 → D+30).
+>
+>    **Target ship dates**:
+>      - **D-2** = Mon 2026-06-08 (soft launch)
+>      - **D-0** = Wed 2026-06-10 (Show HN at 06:00 PT)
 >
 > IA v2 commits (post-v2.0.1):
 > ```
@@ -33,14 +51,41 @@
 > 7a6f5f7  Phase 9: tests + status doc + SIMPLE-MODE archive
 > ```
 >
-> Tests: **843 passing** (was 820 at v2.0.0; +23 across the IA
-> arc: 7 LifecycleTab invariants + 10 SovereigntyStackSummary +
-> 5 Phase 5/6/7-8 lifecycle invariants + 1 catalog cross-check).
-> Catalog: **948 strings × 5 locales = 4,740 translations**, 100%
-> coverage.  Apple v1.0 MAS re-review still pending; case
-> 20000113939741 (polite ping sent 2026-05-10, no human reply
-> yet).  IA v2 is held with the wider rollup until Apple v1.0
-> clears.
+> Direct-sale launch commits (post-IA-v2):
+> ```
+> 0673cb5  Strategy: LAUNCH-WITHOUT-APPLE.md
+> 7773d5b  Lock maintainer decisions + ship dates
+> 9cb0455  D1 — DirectSale entitlements + .splynekkey UTI
+> 0a3bdda  D2 — LicenseFile.swift (Ed25519) + LicenseManager activation
+> c559772  D3 — Cloudflare Worker — webhook → signed-license email
+> 0f5ff6e  D4 — Sparkle 2.x auto-update
+> b8c643c  D5 — LAUNCH-1.0-COPY.md
+> 07b1c75  D6 — MAINTAINER-LAUNCH-CHECKLIST.md
+> ```
+>
+> Tests: **852 passing** (was 820 at v2.0.0; +32 across the arc:
+> 7 LifecycleTab invariants + 10 SovereigntyStackSummary + 5 Phase
+> 5/6/7-8 lifecycle invariants + 1 catalog cross-check + **9
+> LicenseFile Ed25519 invariants**).  Catalog: **948 strings × 5
+> locales = 4,740 translations**, 100% coverage.  Apple v1.0 MAS
+> re-review still pending; case 20000113939741 (polite ping sent
+> 2026-05-10, no human reply yet).  Direct-sale ship goes ahead
+> without waiting for them.
+>
+> **What the maintainer must do next** (from MAINTAINER-LAUNCH-CHECKLIST.md):
+> ```
+> D-14 → D-7:  Phase A — LemonSqueezy signup + KYC, Resend setup
+> D-10:        Phase B — Generate Ed25519 + Sparkle EdDSA keypairs;
+>              paste public keys into ProStubs.swift + Info.plist;
+>              deploy Worker via wrangler
+> D-5  → D-3:  Phase C — Build, notarize, sign appcast, smoke,
+>              Homebrew Cask PR, git tag v1.0
+> D-3  → D-2:  Phase D — splynek-landing repo update + test
+>              purchase end-to-end
+> D-2 (Mon):   Phase E — soft launch (Twitter / Bluesky / Discord
+>              / email)
+> D-0 (Wed):   Phase F — Show HN at 06:00 PT
+> ```
 
 Native macOS multi-interface download aggregator. Pure Swift, zero
 third-party deps. Public free-tier repo (MIT) + private Pro-tier repo.

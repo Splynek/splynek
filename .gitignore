@@ -46,3 +46,8 @@ Extensions/Raycast/dist/
 
 ## Claude Code harness state (session-local, never committed)
 .claude/
+
+# Outreach — launch-day recipient CSV + blast logs hold PII; never committed.
+Outreach/*.csv
+Outreach/*.log
+Outreach/unsubscribed.txt
