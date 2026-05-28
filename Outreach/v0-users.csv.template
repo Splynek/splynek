@@ -1,0 +1,6 @@
+email,first_name,consent_date,notes
+# Copy this file to Outreach/v0-users.csv (gitignored) and fill in real rows.
+# Only rows with a non-empty consent_date get a send (see Scripts/email-blast-launch.py).
+# Delete this comment line + the header stays. Example rows:
+alice@example.com,Alice,2026-04-10,GitHub Sponsors backer since v0.49
+bob@example.com,,2026-05-02,splynek.app newsletter signup

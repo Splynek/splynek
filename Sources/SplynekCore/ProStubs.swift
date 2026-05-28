@@ -73,10 +73,19 @@ final class LicenseManager: ObservableObject {
     /// '
     /// ```
     ///
-    /// Until replaced, every license verification will fail with
-    /// `Signature does not match the licence payload`, which is the
-    /// correct safe-default (no fake Pro grants).
-    static let publicKeyBase64 = "REPLACE_ME_WITH_LAUNCH_PUBLIC_KEY"
+    /// Generated 2026-05-28 via `swift Scripts/generate-launch-keypair.swift
+    /// licence`.  The matching private key lives in 1Password
+    /// ("Splynek Pro — Licence signing private key") + is pasted into
+    /// the Cloudflare Worker secret `LICENSE_SIGNING_PRIVATE_KEY`.
+    /// The private key was written straight to `.secrets/licence-private.txt`
+    /// by the generator (never echoed to the dev tooling), so it's
+    /// safe for production.
+    ///
+    /// If the key is ever compromised, regenerate with the script,
+    /// repaste here, redeploy the Worker, and ship a Mac point
+    /// release.  Old licences keep verifying on older app versions;
+    /// new licences only verify on the post-rotation app.
+    static let publicKeyBase64 = "2ovxwnGbgrO/6n9ExGhbzcG6oFwN7KX0LkPLW+hE4DA="
 
     @Published private(set) var isPro: Bool = false
     @Published private(set) var licensedEmail: String? = nil

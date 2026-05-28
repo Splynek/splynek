@@ -139,7 +139,7 @@
     <key>SUFeedURL</key>
     <string>https://splynek.app/appcast.xml</string>
     <key>SUPublicEDKey</key>
-    <string>REPLACE_ME_WITH_SPARKLE_EDDSA_PUBLIC_KEY</string>
+    <string>JKW2F/5HCxHr6Ze5wiBgYrlRixAwlt3AeUpC81t6gP8=</string>
     <key>SUEnableInstallerLauncherService</key>
     <false/>
     <key>SUAutomaticallyUpdate</key>

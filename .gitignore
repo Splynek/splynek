@@ -51,3 +51,6 @@ Extensions/Raycast/dist/
 Outreach/*.csv
 Outreach/*.log
 Outreach/unsubscribed.txt
+
+# Direct-sale launch private keys (gitignored — must never be committed)
+.secrets/

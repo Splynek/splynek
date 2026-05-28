@@ -159,13 +159,75 @@ if [[ -d Resources/Legal ]]; then
     cp Resources/Legal/*.md "$APP/Contents/Resources/Legal/"
 fi
 
+# 2026-06 direct-sale launch: bundle Sparkle.framework.  SwiftPM
+# links Sparkle (the binary has an @rpath/Sparkle.framework load
+# command) but does NOT copy the framework into the .app bundle, and
+# the SPM-produced binary has no @executable_path/../Frameworks
+# rpath.  Without this step the app crashes on launch with
+# "Library not loaded: @rpath/Sparkle.framework".  We copy the
+# framework + add the rpath BEFORE signing so codesign --deep signs
+# the framework too.  No-op on builds where Sparkle isn't linked
+# (e.g. a future MAS variant that excludes it).
+SPARKLE_FW="$BIN_PATH/Sparkle.framework"
+if [[ -d "$SPARKLE_FW" ]]; then
+    echo "• Bundling Sparkle.framework"
+    mkdir -p "$APP/Contents/Frameworks"
+    cp -R "$SPARKLE_FW" "$APP/Contents/Frameworks/"
+    # Add the loader path (idempotent — ignore "would duplicate" errors).
+    install_name_tool -add_rpath "@executable_path/../Frameworks" \
+        "$APP/Contents/MacOS/Splynek" 2>/dev/null || true
+fi
+
 echo "• Signing (identity: $SIGN_IDENTITY)"
-SIGN_ARGS=(--force --deep --options runtime --sign "$SIGN_IDENTITY")
+# Sparkle must be signed INSIDE-OUT with the same identity as the
+# app, or dyld rejects it at launch with "different Team IDs" (the
+# framework ships pre-signed by the Sparkle project; `codesign
+# --deep` does NOT reliably re-sign an already-valid nested
+# framework, so we force-sign each component explicitly first).
+# Order matters: nested XPC + helper executables → framework → app.
+SPARKLE_BUNDLE="$APP/Contents/Frameworks/Sparkle.framework"
+if [[ -d "$SPARKLE_BUNDLE" ]]; then
+    echo "• Signing Sparkle.framework (inside-out)"
+    SPV="$SPARKLE_BUNDLE/Versions/B"
+    for component in \
+        "$SPV/XPCServices/Downloader.xpc" \
+        "$SPV/XPCServices/Installer.xpc" \
+        "$SPV/Updater.app" \
+        "$SPV/Autoupdate" ; do
+        [[ -e "$component" ]] && codesign --force --options runtime \
+            --sign "$SIGN_IDENTITY" "$component"
+    done
+    codesign --force --options runtime --sign "$SIGN_IDENTITY" "$SPARKLE_BUNDLE"
+fi
+
+# Sign the app itself.  NOT --deep — we've already signed the nested
+# Sparkle framework above with the correct (matching) identity, and a
+# second --deep pass can re-stamp it in a way that re-introduces the
+# mismatch.  The app-level sign + the explicit framework sign together
+# cover the whole bundle.
+SIGN_ARGS=(--force --options runtime --sign "$SIGN_IDENTITY")
 if [[ -n "$ENTITLEMENTS" ]]; then
     SIGN_ARGS+=(--entitlements "$ENTITLEMENTS")
 fi
 codesign "${SIGN_ARGS[@]}" "$APP"
 codesign --verify --deep --strict "$APP"
+
+# Heads-up: an AD-HOC signed build (SIGN_IDENTITY="-") that bundles
+# Sparkle will NOT launch — dyld's hardened-runtime library
+# validation rejects the ad-hoc framework with a misleading
+# "different Team IDs" error (both are ad-hoc = no team ID, which
+# library validation treats as untrusted).  This is EXPECTED.  A
+# real Developer ID build stamps the app + the Sparkle framework
+# with the SAME team ID, library validation passes, and the app
+# launches normally.  To smoke-test an ad-hoc build locally, re-sign
+# everything ad-hoc WITHOUT --options runtime; for the real release,
+# always use the Developer ID identity (which notarization requires
+# anyway).
+if [[ "$SIGN_IDENTITY" == "-" && -d "$APP/Contents/Frameworks/Sparkle.framework" ]]; then
+    echo "  ⚠  ad-hoc + bundled Sparkle: this build won't launch under hardened"
+    echo "     runtime (library validation). Use a Developer ID for a launchable"
+    echo "     build. See the note in Scripts/build.sh above this line."
+fi
 
 echo "• Done: $APP"
 echo
