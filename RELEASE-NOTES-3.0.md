@@ -1,12 +1,12 @@
-# Splynek 1.0 — release notes
+# Splynek 3.0 — release notes
 
 > **Released 2026-06-08.**  Direct from splynek.app.  Mac App Store
 > version coming when Apple's review queue clears.  iPhone
-> Companion coming as a free v1.1 update with the iOS App Store
+> Companion coming as a free v3.1 update with the iOS App Store
 > approval.
 >
 > One-time **$24 launch week** ($29 thereafter).  Lifetime updates
-> for the v1.x line.  No account.  No subscription.
+> for the v3.x line.  No account.  No subscription.
 
 ---
 
@@ -20,7 +20,7 @@ page; when the hash changes, the inbox flags it for you to read.
 
 ---
 
-## Everything in v1.0
+## Everything in v3.0
 
 ### The download engine (free + open source — MIT)
 

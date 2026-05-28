@@ -1,12 +1,12 @@
 # MAINTAINER-LAUNCH-CHECKLIST.md
 
 > Everything the maintainer must do **outside the codebase** to
-> launch Splynek 1.0 direct-sale on Mon 2026-06-08.  Items here are
+> launch Splynek 3.0 direct-sale on Mon 2026-06-08.  Items here are
 > tasks Claude can't do — account signups, KYC, secret pasting,
 > domain DNS, payment-card test, press emails.
 >
 > Pair this with `LAUNCH-WITHOUT-APPLE.md` (the strategy doc) and
-> `LAUNCH-1.0-COPY.md` (the public copy).
+> `LAUNCH-3.0-COPY.md` (the public copy).
 >
 > **Target ship dates**:
 >   - **D-2** = Mon 2026-06-08 (soft launch via splynek.app + Twitter
@@ -38,13 +38,13 @@ dependencies on others, marked with `→`.
 2. Name: **Splynek Pro**
 3. Tagline: "Daily privacy-policy diffs for the apps you have
    installed.  Lifetime."
-4. Description: copy from `LAUNCH-1.0-COPY.md` § Section 1 + 4
+4. Description: copy from `LAUNCH-3.0-COPY.md` § Section 1 + 4
 5. Pricing model: **One-time payment**
 6. Price: **$29 USD** (we'll discount to $24 via a launch-week
    coupon — see A3)
 7. Upload a 1200×1200 product image (use the Trust Watcher hero
    screenshot from the press kit)
-8. Variants: optional — leave a single "Lifetime" variant for v1.0
+8. Variants: optional — leave a single "Lifetime" variant for v3.0
 9. Inventory: Unlimited
 10. Customer note: "Your licence file will arrive by email within 1
     minute.  Double-click the `.splynekkey` attachment to activate
@@ -52,7 +52,7 @@ dependencies on others, marked with `→`.
 
 → Output: Live product URL (e.g.
   `https://splynek.lemonsqueezy.com/checkout/buy/<uuid>`).  Paste
-  this into `LAUNCH-1.0-COPY.md`'s "Buy Splynek Pro" CTA target.
+  this into `LAUNCH-3.0-COPY.md`'s "Buy Splynek Pro" CTA target.
 
 ### A3. Launch-week coupon
 
@@ -211,23 +211,23 @@ ENTITLEMENTS="Resources/Splynek-DirectSale.entitlements" \
 
 ```bash
 ./Scripts/dmg.sh
-# → build/Splynek.dmg (rename to Splynek-1.0.dmg)
-mv build/Splynek.dmg build/Splynek-1.0.dmg
+# → build/Splynek.dmg (rename to Splynek-3.0.0.dmg)
+mv build/Splynek.dmg build/Splynek-3.0.0.dmg
 ```
 
 ### C4. Notarize + staple
 
 ```bash
-xcrun notarytool submit build/Splynek-1.0.dmg \
+xcrun notarytool submit build/Splynek-3.0.0.dmg \
     --keychain-profile AC_PASSWORD --wait
-xcrun stapler staple build/Splynek-1.0.dmg
+xcrun stapler staple build/Splynek-3.0.0.dmg
 ```
 
 ### C5. Sign the appcast entry
 
 ```bash
 # From Sparkle's tools directory:
-./bin/sign_update build/Splynek-1.0.dmg
+./bin/sign_update build/Splynek-3.0.0.dmg
 # → Prints: sparkle:edSignature="<base64>" length="<bytes>"
 ```
 
@@ -247,13 +247,13 @@ Must report `✓✓✓ release-smoke PASSED` before tagging.
 ### C7. SHA-256 + Homebrew Cask
 
 ```bash
-shasum -a 256 build/Splynek-1.0.dmg
+shasum -a 256 build/Splynek-3.0.0.dmg
 ```
 
 Update `Packaging/splynek.rb`:
 - `version "1.0"`
 - `sha256 "<from above>"`
-- `url "https://splynek.app/download/Splynek-1.0.dmg"`
+- `url "https://splynek.app/download/Splynek-3.0.0.dmg"`
 
 Open a PR against `homebrew/homebrew-cask`.  Allow 1-2 days for
 review + merge.
@@ -261,18 +261,18 @@ review + merge.
 ### C8. Tag + GitHub Release
 
 ```bash
-git tag -a v1.0 -m "Splynek 1.0 — direct-sale ship"
-git push origin v1.0
+git tag -a v3.0.0 -m "Splynek 3.0 — direct-sale ship"
+git push origin v3.0.0
 
 # Create GitHub Release:
-gh release create v1.0 \
-    --title "Splynek 1.0" \
-    --notes-file RELEASE-NOTES-1.0.md \
-    build/Splynek-1.0.dmg
+gh release create v3.0.0 \
+    --title "Splynek 3.0" \
+    --notes-file RELEASE-NOTES-3.0.md \
+    build/Splynek-3.0.0.dmg
 ```
 
-(Maintainer drafts `RELEASE-NOTES-1.0.md` from the
-`LAUNCH-1.0-COPY.md` § 4 list.)
+(Maintainer drafts `RELEASE-NOTES-3.0.md` from the
+`LAUNCH-3.0-COPY.md` § 4 list.)
 
 ---
 
@@ -280,13 +280,13 @@ gh release create v1.0 \
 
 ### D1. Update splynek.app via the splynek-landing repo
 
-Copy from `LAUNCH-1.0-COPY.md` into the Hugo site's hero / pricing /
+Copy from `LAUNCH-3.0-COPY.md` into the Hugo site's hero / pricing /
 FAQ blocks.  Replace existing v0.x copy.
 
 - Hero CTA → LemonSqueezy checkout URL from A2 (with the
   `?coupon=LAUNCH1` parameter from A3 baked in for the first 30
   days)
-- Secondary CTA → `https://splynek.app/download/Splynek-1.0.dmg`
+- Secondary CTA → `https://splynek.app/download/Splynek-3.0.0.dmg`
 - FAQ updates as written in the copy doc
 - Privacy / refund / support footer links
 
@@ -297,7 +297,7 @@ Verify:
 - https://splynek.app/ shows the new hero + the launch-window
   banner
 - https://splynek.app/pro CTA opens LemonSqueezy checkout
-- https://splynek.app/download/Splynek-1.0.dmg redirects to the
+- https://splynek.app/download/Splynek-3.0.0.dmg redirects to the
   GitHub Release asset
 - https://splynek.app/appcast.xml returns the signed appcast XML
 
@@ -327,12 +327,12 @@ If any step fails, fix before launch.  Common issues:
 
 ### E1. Twitter / Bluesky / Discord posts
 
-Post the threads from `LAUNCH-1.0-COPY.md` § "Twitter / Bluesky
+Post the threads from `LAUNCH-3.0-COPY.md` § "Twitter / Bluesky
 launch thread" at 09:00 your local time.
 
 ### E2. Email the v0.x users
 
-Send the email template from `LAUNCH-1.0-COPY.md` § "Email to
+Send the email template from `LAUNCH-3.0-COPY.md` § "Email to
 existing v0.x DMG users" to the consent-based list.  Use Resend
 (reuses the API key from A5).
 
@@ -344,7 +344,7 @@ Personal note + press kit URL to:
 - Bradley Chambers (Sweet Setup)
 - Jason Snell (Six Colors)
 
-Subject line template: "Splynek 1.0 — privacy-policy auditor for
+Subject line template: "Splynek 3.0 — privacy-policy auditor for
 Mac, shipped direct from splynek.app today"
 
 ---
@@ -353,7 +353,7 @@ Mac, shipped direct from splynek.app today"
 
 ### F1. Post at 06:00 PT (= 14:00 BST = 13:00 UTC)
 
-Use the title + body from `LAUNCH-1.0-COPY.md` § "Show HN draft".
+Use the title + body from `LAUNCH-3.0-COPY.md` § "Show HN draft".
 
 ### F2. Engage all day
 
@@ -382,14 +382,14 @@ Post a thread later that night with:
 
 ### G1. Daily Sparkle update on errors
 
-If anyone reports a bug, fix → bump to v1.0.1 → notarize → sign
+If anyone reports a bug, fix → bump to v3.0.1 → notarize → sign
 appcast entry → push appcast.xml.  Sparkle will distribute within
 the user's auto-check interval.
 
 ### G2. Weekly recap (D+7, D+14, D+21, D+28)
 
 Blog post.  Numbers (purchases, refunds, support load).  Lessons.
-Plans for v1.1 (the iPhone Companion when Apple eventually clears
+Plans for v3.1 (the iPhone Companion when Apple eventually clears
 + the Concierge LLM wiring).
 
 ### G3. Coupon sunset (D+30 = Wed 2026-07-08)
@@ -407,7 +407,7 @@ text from "Launch week" to "Lifetime $29 once."
    same price.  If you'd prefer auto-update via Apple instead of
    Sparkle, here's a free MAS promo code."
 4. iPhone Companion: submit to iOS App Store the same week.  When
-   approved, push out the v1.1 announcement.
+   approved, push out the v3.1 announcement.
 
 ---
 
@@ -461,7 +461,7 @@ in a 1.0.1+ update.
 Same root cause class as H2 but for Sparkle's EdDSA key.  Verify
 the SUPublicEDKey in Info.plist matches the key
 `sign_update` used.  If you regenerated, the user has to manually
-download Splynek-1.0.1.dmg from splynek.app.
+download Splynek-3.0.0.1.dmg from splynek.app.
 
 ### H4. LemonSqueezy account is restricted
 
@@ -493,12 +493,12 @@ Tick items as you complete them:
 - [ ] B5. (Optional) splynek.app/api/license/* routed to Worker
 - [ ] C1. `grep REPLACE_ME` returns zero matches
 - [ ] C2. Release DMG built
-- [ ] C3. DMG bundled + renamed Splynek-1.0.dmg
+- [ ] C3. DMG bundled + renamed Splynek-3.0.0.dmg
 - [ ] C4. Notarized + stapled
 - [ ] C5. appcast.xml signed + deployed to splynek.app
 - [ ] C6. release-smoke.sh passes
 - [ ] C7. Homebrew Cask PR opened
-- [ ] C8. Git tag v1.0 pushed + GitHub Release published
+- [ ] C8. Git tag v3.0.0 pushed + GitHub Release published
 - [ ] D1. splynek-landing repo updated with launch copy
 - [ ] D2. splynek.app deployment verified
 - [ ] D3. Test purchase end-to-end passes

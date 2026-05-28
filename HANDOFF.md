@@ -23,7 +23,7 @@
 >    parallel channel when Apple clears.  iPhone Companion ships
 >    as a free v1.1 upgrade when iOS App Store clears.  See the
 >    launch package: **`LAUNCH-WITHOUT-APPLE.md`** (strategy),
->    **`LAUNCH-1.0-COPY.md`** (public copy), **`RELEASE-NOTES-1.0.md`**
+>    **`LAUNCH-3.0-COPY.md`** (public copy), **`RELEASE-NOTES-3.0.md`**
 >    (release notes), and **`MAINTAINER-LAUNCH-CHECKLIST.md`**
 >    (the out-of-codebase runbook for D-14 → D+30).
 >
@@ -59,7 +59,7 @@
 > 0a3bdda  D2 — LicenseFile.swift (Ed25519) + LicenseManager activation
 > c559772  D3 — Cloudflare Worker — webhook → signed-license email
 > 0f5ff6e  D4 — Sparkle 2.x auto-update
-> b8c643c  D5 — LAUNCH-1.0-COPY.md
+> b8c643c  D5 — LAUNCH-3.0-COPY.md
 > 07b1c75  D6 — MAINTAINER-LAUNCH-CHECKLIST.md
 > ```
 >
@@ -79,7 +79,7 @@
 >              paste public keys into ProStubs.swift + Info.plist;
 >              deploy Worker via wrangler
 > D-5  → D-3:  Phase C — Build, notarize, sign appcast, smoke,
->              Homebrew Cask PR, git tag v1.0
+>              Homebrew Cask PR, git tag v3.0.0
 > D-3  → D-2:  Phase D — splynek-landing repo update + test
 >              purchase end-to-end
 > D-2 (Mon):   Phase E — soft launch (Twitter / Bluesky / Discord

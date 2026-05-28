@@ -3,6 +3,45 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
+## v3.0.0 — Direct ship: IA v2 + Trust Watcher + bonded download (2026-06-08)
+
+**The biggest Splynek ever — and the first shipped direct, outside
+the Mac App Store.**  Apple's MAS re-review queue crossed 30+ days
+with no human reply; the product was finished, so v3.0.0 ships from
+splynek.app via notarized DMG + Sparkle auto-update + LemonSqueezy
+for Pro.  MAS becomes a parallel channel when Apple clears.  See
+LAUNCH-WITHOUT-APPLE.md.
+
+### Information architecture v2
+- 17-tab sidebar collapsed to 4 lifecycle tabs (Discover / Download /
+  My Apps / Coordinate) with rich colored tile buttons + per-tab chip
+  strip.
+- Floating-card sidebar chrome with traffic-lights visually inside
+  the pane (the Apple TV.app look).
+- First-run welcome card with 4 colored story tiles.
+- Concierge as a sheet ("Ask Splynek" pill); Settings/Legal/About as
+  a gear-sheet.
+- Installed inventory + Trust Watcher inbox under My Apps.
+
+### Direct-sale infrastructure
+- Ed25519-signed `.splynekkey` licence files; offline verification,
+  no account, no phone-home.
+- Sparkle 2.x auto-update from splynek.app/appcast.xml.
+- Cloudflare Worker: LemonSqueezy webhook → signed-licence email.
+- "Check for Updates…" menu command.
+
+### Carried from the 2026 Bets rollup
+- Unbreakable Resume, yt-dlp swallow, Browser Accelerator, File
+  Witness signed receipts, Fleet 2.0.
+
+### L10n
+- 220 new translations across pt-PT / es / fr / de / it; catalog at
+  948 strings × 5 locales, 100% coverage.
+
+### Pricing
+- $24 launch-week (first 30 days) / $29 lifetime.  One-time, no
+  subscription.
+
 ## v2.0.1 — Launchable DMG + Watch polish + paste-to-pair (2026-05-13)
 
 **v2.0.0 was unlaunchable. This is the fix.**

@@ -1,4 +1,4 @@
-# LAUNCH-1.0-COPY.md
+# LAUNCH-3.0-COPY.md
 
 > Public-facing copy for the 2026-06 direct-sale launch.  Adapted
 > from `LANDING-V2-DRAFT.md` (which assumed MAS-first) to the
@@ -113,7 +113,7 @@ Three cards linking to:
 
 ---
 
-## Section 4 — "What's in Splynek 1.0"
+## Section 4 — "What's in Splynek 3.0"
 
 A compact list:
 
@@ -139,7 +139,7 @@ Plus reaffirmation:
 
 - **100% local detection** (no LLM in the diff path)
 - **One-time $24** (launch week) / **$29** thereafter
-- **No subscription**, lifetime updates for the v1.x line
+- **No subscription**, lifetime updates for the v3.x line
 - **No account** — Pro licence is a file you double-click
 - **MIT free tier** — full multi-interface download is open source
 
@@ -229,12 +229,12 @@ downloads.
 
 **Title (under 80 chars; HN trims long ones):**
 
-> Show HN: Splynek 1.0 – Mac download manager that audits your apps' privacy policies daily
+> Show HN: Splynek 3.0 – Mac download manager that audits your apps' privacy policies daily
 
 **Body** (4 paragraphs, no marketing-speak):
 
 > I've been building Splynek as a multi-interface download manager
-> for two years.  v1.0 ships today as a direct DMG download —
+> for two years.  v3.0 ships today as a direct DMG download —
 > Apple's MAS re-review queue went silent past day 30 and the
 > product is finished, so we're shipping without them.  When MAS
 > clears we'll add it as a parallel channel, but not before.
@@ -263,7 +263,7 @@ downloads.
 
 ## Twitter / Bluesky launch thread (≤ 10 posts)
 
-> 1. Splynek 1.0 ships today.  Mac download manager that aggregates
+> 1. Splynek 3.0 ships today.  Mac download manager that aggregates
 >    Wi-Fi + Ethernet + hotspot, audits your apps' privacy policies
 >    daily, and verifies every byte with a signed receipt.  $24
 >    launch week.  Direct download — Apple MAS still pending.
@@ -296,12 +296,12 @@ downloads.
 
 ## Email to existing v0.x DMG users (consent-based list)
 
-**Subject:** Splynek 1.0 — and a $24 launch-week price
+**Subject:** Splynek 3.0 — and a $24 launch-week price
 
 > Hi,
 >
 > You installed an early version of Splynek some time in the last
-> year or so.  We just shipped v1.0 and wanted to give you the
+> year or so.  We just shipped v3.0 and wanted to give you the
 > heads-up before everyone else.
 >
 > What changed: the Pro tier is now anchored on Trust Watcher — a
@@ -372,7 +372,7 @@ All artifacts ready before D-2:
 - [ ] LemonSqueezy product + checkout URL live
 - [ ] splynek.app/pro page updated with this copy
 - [ ] `splynek.app/appcast.xml` deployed + signed
-- [ ] Splynek-1.0.dmg notarized + uploaded to GitHub Releases
+- [ ] Splynek-3.0.0.dmg notarized + uploaded to GitHub Releases
 - [ ] Homebrew Cask PR submitted
 - [ ] Test purchase end-to-end with a real card
 - [ ] `Scripts/release-smoke.sh` passes on the final DMG

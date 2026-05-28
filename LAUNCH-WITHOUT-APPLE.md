@@ -1,6 +1,6 @@
 # LAUNCH-WITHOUT-APPLE.md
 
-> **Strategic plan for shipping Splynek 1.0 outside the Mac App Store
+> **Strategic plan for shipping Splynek 3.0 outside the Mac App Store
 > while Apple's review queue stalls past day 30.**
 >
 > Drafted 2026-05-24.  **APPROVED 2026-05-24** by maintainer.
@@ -19,7 +19,7 @@
 
 ## 1. The TL;DR
 
-We have **everything we need** to ship Splynek 1.0 today via direct
+We have **everything we need** to ship Splynek 3.0 today via direct
 download + Stripe (or LemonSqueezy) for Pro purchases, with two
 caveats:
 
@@ -130,7 +130,7 @@ for EU customers, which a solo dev should not be doing.
 ### 4.4 iPhone Companion (deferred)
 
 - Cannot sideload on iOS for general users.
-- Pre-announce as "iPhone Companion coming with v1.1 — free for
+- Pre-announce as "iPhone Companion coming with v3.1 — free for
   every Pro user — pending Apple's iOS App Store approval."
 - TestFlight beta for early adopters once the MAS Mac side clears
   (the two reviews are independent but the iCloud-container
@@ -264,7 +264,7 @@ Recommended:
   schedule.
 - **Future**: Splynek Pro+ — Concierge LLM (when the
   splynek-pro/Concierge LLM wiring lands), priced at +$10/year
-  subscription for the AI infra costs.  NOT in the v1.0 direct
+  subscription for the AI infra costs.  NOT in the v3.0 direct
   launch.
 
 Match the MAS price exactly ($29) so when MAS clears we don't
@@ -284,7 +284,7 @@ Honesty wins here.
 
 **Public-facing message** (landing page + Show HN + press):
 
-> "Splynek 1.0 ships for Mac today.  The iPhone Companion (Share
+> "Splynek 3.0 ships for Mac today.  The iPhone Companion (Share
 > Extension + Live Activity download progress + Trust Watcher push
 > notifications) is built, tested, and waiting on Apple's iOS App
 > Store queue.  When it ships, every existing Pro user gets it as a
@@ -297,7 +297,7 @@ can't distribute) and frames the Apple delay as Apple's fault, not
 ours.
 
 **Internally:** the iPhone Companion code stays in the rollup,
-gets tagged as `v1.1-iphone-pending`, and ships as soon as iOS
+gets tagged as `v3.1-iphone-pending`, and ships as soon as iOS
 review clears.
 
 ---
@@ -386,7 +386,7 @@ If approved this week:
   flavor.  Free for MAS buyers; Direct-Sale buyers can optionally
   redeem a free MAS code if they want auto-update via Apple
   instead of Sparkle.
-- **iPhone Companion** ships as v1.1 with the iOS App Store
+- **iPhone Companion** ships as v3.1 with the iOS App Store
   approval as the trigger.  Code already complete + tested in
   simulator.
 - **CloudKit-fallback over cellular** re-enables when iPhone
