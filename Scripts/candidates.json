@@ -1,0 +1,16 @@
+{
+  "candidates": [
+    {
+      "bundleID": "com.example.target",
+      "category": "chat-personal",
+      "displayName": "Example Sovereignty Target",
+      "note": "If discover.swift sees this, the pipeline is wired correctly.",
+      "origin": "unitedStates",
+      "source": "example-batch-2026-04"
+    }
+  ],
+  "generatedAt": "2026-06-01T09:10:39Z",
+  "totalInputs": 1,
+  "totalKnown": 1155,
+  "version": 1
+}
