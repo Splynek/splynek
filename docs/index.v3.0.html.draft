@@ -1,0 +1,592 @@
+<!--
+  STAGED DRAFT — splynek.app v3.0 landing.
+  =========================================
+  Generated 2026-05-28 alongside the direct-sale launch package.
+  NOT YET DEPLOYED.
+
+  Before deploying:
+    1. Maintainer completes Phase A2 of MAINTAINER-LAUNCH-CHECKLIST.md
+       (LemonSqueezy product setup).
+    2. Search this file for `LEMONSQUEEZY_CHECKOUT_URL` and replace
+       with the live checkout URL (with ?coupon=LAUNCH1 for the
+       first 30 days).
+    3. Swap into place:
+         mv docs/index.html docs/index.v2.0.1.html.archived
+         mv docs/index.v3.0.html.draft docs/index.html
+         git add docs/ && git commit -m "Landing → v3.0"
+         git push        # GitHub Pages / Cloudflare auto-deploys
+    4. Verify https://splynek.app/ shows the new hero + v3.0 badge.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Splynek — Trust Watcher for your Mac</title>
+<meta name="description" content="Splynek tells you when the apps you use change their privacy policies or terms. Daily diff of Privacy Policies + ToS. Push notifications on your iPhone. 100% local detection.">
+<meta property="og:title" content="Splynek — Trust Watcher for your Mac">
+<meta property="og:description" content="Daily diff of Privacy Policies + Terms of Service for popular apps. 100% local. Push to your iPhone the moment something changes.">
+<meta property="og:image" content="https://splynek.app/icon-1024.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://splynek.app/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B1128">
+<link rel="icon" type="image/png" href="icon-256.png">
+<link rel="apple-touch-icon" href="icon-256.png">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg:         #0B1128;
+    --bg2:        #11183A;
+    --panel:      #151C36;
+    --panel-lift: #1A2145;
+    --border:     rgba(255,255,255,0.08);
+    --border-lift: rgba(255,255,255,0.14);
+    --text:       #ECEFF9;
+    --text-dim:   #C9CEE3;
+    --muted:      #8891B0;
+    --accent:     #5ADCA5;
+    --accent-dk:  #2FBC85;
+    --gold:       #F5C16C;
+    --purple:     #B48CFF;
+    --pink:       #FF9BD2;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                 system-ui, "Segoe UI", Roboto, sans-serif;
+    background:
+      radial-gradient(ellipse 1100px 700px at 50% -10%, rgba(90, 220, 165, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 900px 600px at 10% 40%,   rgba(180, 140, 255, 0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 900px 600px at 90% 70%,   rgba(255, 155, 210, 0.06) 0%, transparent 55%),
+      linear-gradient(180deg, var(--bg2) 0%, var(--bg) 50%, var(--bg) 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+    background: rgba(255,255,255,0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  nav.top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0 12px;
+  }
+  nav.top .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 16px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  nav.top .logo img { width: 28px; height: 28px; border-radius: 6px; }
+  nav.top .links { display: flex; gap: 22px; font-size: 14px; }
+  nav.top .links a { color: var(--text-dim); }
+  nav.top .links a:hover { color: var(--accent); text-decoration: none; }
+
+  header.hero {
+    padding: 72px 0 56px;
+    text-align: center;
+  }
+  header.hero .badge {
+    display: inline-block;
+    background: rgba(245, 193, 108, 0.12);
+    color: var(--gold);
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  header.hero h1 {
+    font-size: clamp(40px, 6.5vw, 68px);
+    margin: 0 0 18px;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    font-weight: 700;
+  }
+  header.hero h1 .accent { color: var(--accent); }
+  header.hero p.lede {
+    font-size: 20px;
+    color: var(--text-dim);
+    max-width: 680px;
+    margin: 0 auto 28px;
+  }
+  header.hero .cta-row {
+    display: inline-flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  header.hero .note {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent);
+    color: #0B1128;
+    border: none;
+    padding: 13px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14.5px;
+    transition: background 100ms ease, transform 80ms ease;
+  }
+  .btn:hover { background: var(--accent-dk); text-decoration: none; transform: translateY(-1px); }
+  .btn.ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-lift);
+  }
+  .btn.ghost:hover { background: rgba(255,255,255,0.04); }
+
+  section {
+    padding: 56px 0;
+    border-top: 1px solid var(--border);
+  }
+  section:first-of-type { border-top: 0; }
+  section h2 {
+    font-size: 30px;
+    letter-spacing: -0.022em;
+    margin: 0 0 10px;
+    line-height: 1.15;
+  }
+  section h2 .accent { color: var(--accent); }
+  section p.section-lede {
+    font-size: 16.5px;
+    color: var(--text-dim);
+    max-width: 640px;
+    margin: 0 0 32px;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .three-col .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 22px 24px;
+    transition: border-color 120ms ease, transform 120ms ease;
+  }
+  .three-col .card:hover {
+    border-color: var(--border-lift);
+    transform: translateY(-2px);
+  }
+  .three-col .card .icon {
+    width: 36px; height: 36px;
+    background: rgba(90, 220, 165, 0.12);
+    color: var(--accent);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .three-col .card .icon.gold   { background: rgba(245, 193, 108, 0.12); color: var(--gold); }
+  .three-col .card .icon.purple { background: rgba(180, 140, 255, 0.12); color: var(--purple); }
+  .three-col .card .icon.pink   { background: rgba(255, 155, 210, 0.12); color: var(--pink); }
+  .three-col .card h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+  }
+  .three-col .card p {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 14px;
+  }
+  .tile-grid .tile {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .tile-grid .tile h4 {
+    margin: 0 0 6px;
+    font-size: 14.5px;
+  }
+  .tile-grid .tile p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .tile-grid .tile .pill {
+    display: inline-block;
+    background: rgba(180, 140, 255, 0.14);
+    color: var(--purple);
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  pre.code {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+    font-size: 12.5px;
+    color: var(--text-dim);
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 0 0 20px;
+  }
+  pre.code .c { color: var(--muted); }
+  pre.code .k { color: var(--accent); }
+
+  ul.changelog {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+  }
+  ul.changelog li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+  ul.changelog li .badge {
+    flex-shrink: 0;
+    background: rgba(90, 220, 165, 0.14);
+    color: var(--accent);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    margin-top: 1px;
+  }
+  ul.changelog li .badge.fix { background: rgba(245, 193, 108, 0.14); color: var(--gold); }
+
+  .privacy-note {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 28px;
+  }
+  .privacy-note p { margin: 0 0 10px; color: var(--text-dim); font-size: 15px; }
+  .privacy-note p:last-child { margin-bottom: 0; }
+  .privacy-note p strong { color: var(--text); }
+
+  details.faq {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  details.faq summary {
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text);
+    list-style: none;
+  }
+  details.faq summary::-webkit-details-marker { display: none; }
+  details.faq summary::after {
+    content: "+";
+    float: right;
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 18px;
+  }
+  details.faq[open] summary::after { content: "−"; }
+  details.faq .a {
+    padding: 0 20px 16px;
+    color: var(--text-dim);
+    font-size: 14.5px;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 28px 0 56px;
+    margin-top: 24px;
+  }
+  footer .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px; margin-bottom: 10px; }
+  footer a { color: var(--text-dim); }
+  footer a:hover { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 720px) {
+    .three-col { grid-template-columns: 1fr; }
+    ul.changelog { grid-template-columns: 1fr; }
+    header.hero { padding-top: 48px; }
+    section { padding: 40px 0; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <nav class="top">
+    <a class="logo" href="/">
+      <img src="icon-256.png" alt="Splynek">
+      <span>Splynek</span>
+    </a>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="/trustwatcher/">Trust catalog</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/Splynek/splynek">GitHub</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="badge">v3.0 — out today</span>
+    <h1>
+      Splynek tells you when the apps you use<br>
+      <span class="accent">change their privacy policies.</span>
+    </h1>
+    <p class="lede">
+      Daily diff of Privacy Policies + Terms of Service for the
+      apps you have installed. Push to your iPhone the moment
+      something changes. 100% local — no servers, no accounts,
+      no telemetry.
+    </p>
+    <div class="cta-row" id="download">
+      <a class="btn" href="https://github.com/Splynek/splynek/releases/latest">
+        Download for Mac → v3.0
+      </a>
+      <a class="btn ghost" href="/trustwatcher/">
+        See what's watched
+      </a>
+    </div>
+    <p class="note">macOS 13.0+ · ~32 MB · Free tier MIT. Pro <strong>$24 launch week</strong> · $29 thereafter · lifetime. Buy at <a href="/pro/">splynek.app/pro</a>.</p>
+  </header>
+
+  <section id="features">
+    <h2>A whole product. <span class="accent">$24 launch week. $29 lifetime.</span></h2>
+    <p class="section-lede">
+      Splynek Pro is one purchase that covers every Mac you own.
+      No account. No subscription. The licence is a signed file
+      you double-click — we never see your email.
+      No "Premium Plus" tier, no seat counting, no annual
+      renewal.
+    </p>
+    <div class="three-col">
+      <div class="card">
+        <div class="icon">🔔</div>
+        <h3>Trust Watcher</h3>
+        <p>
+          Daily SHA-256 diff of public Privacy Policies and Terms
+          of Service for 12 seeded popular apps (and growing via
+          community PR). Material changes become alerts on your
+          Mac and push notifications on your iPhone.
+        </p>
+      </div>
+      <div class="card">
+        <div class="icon gold">🛡</div>
+        <h3>Sovereignty Migrate</h3>
+        <p>
+          Guided one-click swap from a US-controlled app to a
+          European or open-source alternative. Per-step
+          confirmation; the original app stays put unless you
+          uninstall it manually.
+        </p>
+      </div>
+      <div class="card">
+        <div class="icon purple">🔑</div>
+        <h3>API tokens for power users</h3>
+        <p>
+          Mint persistent named tokens for Raycast, Alfred,
+          BetterTouchTool, shell scripts. Two scopes (read-only
+          / read+write). Revoke any time.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Every Pro feature, on your <span class="accent">iPhone too.</span></h2>
+    <p class="section-lede">
+      The free Splynek Companion app on the App Store pairs with
+      your Mac and surfaces every Pro feature on the phone. Same
+      purchase covers both — same licence file activates Pro on the iPhone Companion when Apple clears that queue.
+    </p>
+    <div class="tile-grid">
+      <div class="tile">
+        <span class="pill">App Intent</span>
+        <h4>Hey Siri, send to Splynek</h4>
+        <p>Hands-free URL submission from anywhere on iOS.</p>
+      </div>
+      <div class="tile">
+        <span class="pill">Live data</span>
+        <h4>Insights tab</h4>
+        <p>Sovereignty, Trust, Trust Watcher + Recent History from your default Mac.</p>
+      </div>
+      <div class="tile">
+        <span class="pill">Glance</span>
+        <h4>Home-screen Widget</h4>
+        <p>Sovereignty score as a hero number, traffic-light tinted.</p>
+      </div>
+      <div class="tile">
+        <span class="pill">Automate</span>
+        <h4>Geo-fence</h4>
+        <p>Auto-pause downloads when you leave home, auto-resume when you arrive.</p>
+      </div>
+      <div class="tile">
+        <span class="pill">Watch</span>
+        <h4>Apple Watch</h4>
+        <p>Tap-to-pause complications and quick-actions for the paired Mac.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>If you can write a <span class="accent">curl</span>, you can drive Splynek.</h2>
+    <p class="section-lede">
+      Splynek's HTTP API is token-gated and runs on your LAN.
+      The same surface that powers the Raycast extension,
+      Alfred workflow, and bash cookbook is open to every
+      shell script you'll ever write.
+    </p>
+<pre class="code"><span class="c"># Queue a URL from anywhere on your LAN</span>
+curl -X POST -d '{"url":"https://example.com/file.iso"}' \
+  "http://mac.local:<span class="k">PORT</span>/splynek/v1/api/queue?t=$SPLYNEK_TOKEN"
+
+<span class="c"># Read your Sovereignty score</span>
+curl -s "http://mac.local:<span class="k">PORT</span>/splynek/v1/api/sovereignty/summary?t=$SPLYNEK_TOKEN" \
+  | jq '.score'</pre>
+    <div class="three-col">
+      <div class="card">
+        <div class="icon purple">⚡</div>
+        <h3>Raycast</h3>
+        <p>5 commands (Submit URL, Active Downloads, Sovereignty Score, Pause All, Resume All). Token-aware via Raycast preferences.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🖥</div>
+        <h3>CLI cookbook</h3>
+        <p>Bash wrapper with 9 subcommands plus a curl/jq recipe book — pause-on-DND, daily-Sovereignty-cron, geo-trigger-via-iOS-Shortcut.</p>
+      </div>
+      <div class="card">
+        <div class="icon pink">🤖</div>
+        <h3>MCP server</h3>
+        <p>Splynek speaks Model Context Protocol over JSON-RPC. Wire it into Claude Desktop, opt-in via Settings.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What's new in <span class="accent">v3.0</span></h2>
+    <p class="section-lede">
+      The biggest Splynek ever — and the first shipped direct,
+      outside the Mac App Store.  Apple's MAS re-review queue
+      crossed 30+ days with no human reply; the product was
+      finished, so v3.0 ships from splynek.app via notarized DMG +
+      Sparkle auto-update + LemonSqueezy for Pro.
+    </p>
+    <ul class="changelog">
+      <li><span class="badge">New</span><span><strong>Four lifecycle tabs.</strong> Discover · Download · My Apps · Coordinate. Floating-card sidebar with traffic-lights inside the pane (the Apple TV.app look).</span></li>
+      <li><span class="badge">New</span><span><strong>Trust Watcher</strong> (Pro) — daily SHA-256 diff of Privacy Policies + ToS for installed apps. Material changes show up in a dedicated inbox.</span></li>
+      <li><span class="badge">New</span><span><strong>Sovereignty Migrate Wizard</strong> (Pro) — guided one-click swap from a paid US-controlled app to an EU or open-source alternative, with per-step confirmation.</span></li>
+      <li><span class="badge">New</span><span><strong>Browser Accelerator.</strong> Chrome + Safari WebExtensions redirect large downloads + HLS manifests through Splynek's bonded multi-interface fetch.</span></li>
+      <li><span class="badge">New</span><span><strong>yt-dlp swallow.</strong> Splynek dispatches to your installed yt-dlp for YouTube / Twitch / Instagram / TikTok / X / Vimeo / Bilibili.</span></li>
+      <li><span class="badge">New</span><span><strong>File Witness</strong> — every completed download gets an Ed25519-signed receipt. Standalone CLI verifier ships alongside.</span></li>
+      <li><span class="badge">New</span><span><strong>Unbreakable Resume.</strong> Path-flip pause/resume with sidecar continuity. Curated mirror failover for the major Linux distros.</span></li>
+      <li><span class="badge">New</span><span><strong>Fleet 2.0.</strong> LAN peer cache with auto-join + household swarm token.</span></li>
+      <li><span class="badge">New</span><span><strong>Direct-sale activation:</strong> buy → email <code>.splynekkey</code> → double-click → done. No phone-home, no account, Ed25519-signed offline verification.</span></li>
+      <li><span class="badge">New</span><span><strong>Sparkle auto-update</strong> from splynek.app/appcast.xml. "Check for Updates…" in the application menu.</span></li>
+      <li><span class="badge">New</span><span><strong>L10n:</strong> 948 strings × 5 locales (pt-PT · es · fr · de · it), 100% coverage.</span></li>
+    </ul>
+    <p class="section-lede" style="margin-top: 1.2em;">
+      <strong>iPhone Companion is built, tested, and waiting on
+      Apple's iOS App Store queue.</strong>  Same bottleneck.  When
+      it clears, every Pro buyer gets it as a free v3.1 update —
+      Share Extension, Live Activity download progress, Trust
+      Watcher push notifications, home-screen widget, App Intents.
+    </p>
+  </section>
+
+  <section>
+    <h2>One screenshot. <span class="accent">Three lines.</span></h2>
+    <p class="section-lede">Privacy through transparency.</p>
+    <div class="privacy-note">
+      <p>
+        We don't know how much you use Splynek. We know you use
+        it because we shipped a thing. The local engagement
+        counters live in
+        <code>~/Library/Application Support/Splynek/engagement.json</code>
+        — you read the same file we'd read. We don't aggregate it.
+        We don't transmit it. We don't have a server.
+      </p>
+      <p><strong>No telemetry.</strong> Ever.</p>
+      <p><strong>No accounts.</strong> Pro is a signed <code>.splynekkey</code> file you double-click; we never see your email except via the LemonSqueezy purchase record (which they manage, not us).</p>
+      <p><strong>No cloud sync of your downloads.</strong> Everything stays on your Macs + your iPhone.</p>
+      <p><strong>CloudKit relay</strong> uses your <em>own</em> private iCloud database. Apple is the transport; Splynek never sees the records.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>FAQ</h2>
+    <details class="faq">
+      <summary>Does Splynek work on macOS 13?</summary>
+      <div class="a">Yes. Minimum target is macOS 13.0. Some optional features (widget container backgrounds, certain App Intents) need macOS 14+.</div>
+    </details>
+    <details class="faq">
+      <summary>What's the difference between Splynek (free) and Splynek Pro?</summary>
+      <div class="a">Free includes the full download engine — multi-interface HTTP, BitTorrent v2, browser extension, App Intents. Pro adds Trust Watcher, Sovereignty Migrate Wizard, AI Concierge, AI history search, scheduled downloads, mobile dashboard, API tokens, and fleet beyond 2 devices.</div>
+    </details>
+    <details class="faq">
+      <summary>How can I trust the Trust Watcher catalog?</summary>
+      <div class="a">The catalog is hand-curated, MIT-licensed, and grows via public pull request. Every URL points to the vendor's <em>own</em> canonical Privacy Policy or ToS page — linked from their site footer or App Store listing. See <a href="/trustwatcher/">the public catalog</a> for the current list.</div>
+    </details>
+    <details class="faq">
+      <summary>Will my downloads be visible to anyone else on my Wi-Fi?</summary>
+      <div class="a">Only via the LAN HTTP API, which is token-gated. The token lives in your keychain; you choose who has it. Free tier defaults to loopback-only (the HTTP server only binds to 127.0.0.1). Pro opens it to the LAN so the iPhone Companion can reach it.</div>
+    </details>
+    <details class="faq">
+      <summary>Is Trust+ a thing yet?</summary>
+      <div class="a">Not yet. We're collecting interest via the in-app Engagement gate. If 90+ days of local engagement counters show real demand we may launch a $9/yr Trust+ tier with weekly catalog refreshes and an acquisition radar. Your existing Pro license keeps everything you have today.</div>
+    </details>
+    <details class="faq">
+      <summary>How do I revoke API tokens?</summary>
+      <div class="a">Settings → API tokens → Revoke. External clients using that token immediately get 401.</div>
+    </details>
+  </section>
+
+  <footer>
+    <div class="links">
+      <a href="/trustwatcher/">Trust catalog</a>
+      <a href="https://github.com/Splynek/splynek/releases">All releases</a>
+      <a href="https://github.com/Splynek/splynek">GitHub</a>
+      <a href="https://github.com/Splynek/splynek/blob/main/MCP_SETUP.md">MCP setup</a>
+      <a href="/privacy.html">Privacy policy</a>
+    </div>
+    <p>Splynek · MIT-licensed free tier · Pro at <a href="/pro/">splynek.app/pro</a> · Mac App Store version coming when Apple's queue clears</p>
+  </footer>
+
+</main>
+</body>
+</html>

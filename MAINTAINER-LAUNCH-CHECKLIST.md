@@ -233,7 +233,7 @@ xcrun stapler staple build/Splynek-3.0.0.dmg
 
 Paste those two attributes + the `<enclosure url>`'s byte count
 into `Worker/appcast.template.xml`'s placeholder fields.  Commit
-the resulting `appcast.xml` to the `splynek-landing` repo
+the resulting `appcast.xml` into docs/ in this repo
 (Cloudflare Pages auto-deploys to `splynek.app/appcast.xml`).
 
 ### C6. Verify the DMG launches
@@ -278,21 +278,46 @@ gh release create v3.0.0 \
 
 ## Phase D — Landing page (D-3 to D-2)
 
-### D1. Update splynek.app via the splynek-landing repo
+### D1. Update splynek.app (in-repo `docs/`)
 
-Copy from `LAUNCH-3.0-COPY.md` into the Hugo site's hero / pricing /
-FAQ blocks.  Replace existing v0.x copy.
+The landing page is **`docs/` in THIS repo** (GitHub Pages with
+`docs/CNAME`).  No separate `splynek-landing` repo exists.
 
-- Hero CTA → LemonSqueezy checkout URL from A2 (with the
-  `?coupon=LAUNCH1` parameter from A3 baked in for the first 30
-  days)
-- Secondary CTA → `https://splynek.app/download/Splynek-3.0.0.dmg`
-- FAQ updates as written in the copy doc
-- Privacy / refund / support footer links
+Two v3.0 drafts are pre-staged:
+  - `docs/index.v3.0.html.draft`   (main landing — hero, features,
+    privacy posture, FAQ; ~590 lines, adapted from index.html)
+  - `docs/pro.v3.0.html.draft`     (Splynek Pro page — 3
+    `LEMONSQUEEZY_CHECKOUT_URL_GOES_HERE` placeholders for the Buy
+    CTA)
+
+Steps:
+
+```bash
+# 1. Fill in the LemonSqueezy checkout URL (from Phase A2).
+#    Use the URL with ?coupon=LAUNCH1 for the first 30 days; drop
+#    the coupon parameter on 2026-07-08.
+sed -i '' \
+    "s|LEMONSQUEEZY_CHECKOUT_URL_GOES_HERE|https://YOUR-CHECKOUT-URL?coupon=LAUNCH1|g" \
+    docs/pro.v3.0.html.draft
+
+# 2. Sanity-check: zero placeholders remain.
+grep -n "LEMONSQUEEZY_CHECKOUT_URL" docs/pro.v3.0.html.draft  # must print nothing
+
+# 3. Swap into place.
+mv docs/index.html  docs/index.v2.0.1.html.archived
+mv docs/pro.html    docs/pro.v2.0.1.html.archived
+mv docs/index.v3.0.html.draft docs/index.html
+mv docs/pro.v3.0.html.draft   docs/pro.html
+
+# 4. Commit + push.  GitHub Pages auto-deploys (allow ~60 s).
+git add docs/
+git commit -m "Landing → v3.0 direct-sale launch"
+git push
+```
 
 ### D2. Deploy + verify
 
-Cloudflare Pages auto-deploys on push to `splynek-landing/main`.
+GitHub Pages auto-deploys on push to `main`.
 Verify:
 - https://splynek.app/ shows the new hero + the launch-window
   banner
@@ -499,7 +524,7 @@ Tick items as you complete them:
 - [ ] C6. release-smoke.sh passes
 - [ ] C7. Homebrew Cask PR opened
 - [ ] C8. Git tag v3.0.0 pushed + GitHub Release published
-- [ ] D1. splynek-landing repo updated with launch copy
+- [ ] D1. docs/index.v3.0.html.draft + docs/pro.v3.0.html.draft swapped + pushed
 - [ ] D2. splynek.app deployment verified
 - [ ] D3. Test purchase end-to-end passes
 - [ ] E1. Twitter / Bluesky / Discord soft launch

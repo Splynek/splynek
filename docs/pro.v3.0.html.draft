@@ -1,0 +1,333 @@
+<!--
+  STAGED DRAFT — splynek.app/pro v3.0 landing.
+  ============================================
+  Generated 2026-05-28 alongside the direct-sale launch package.
+  NOT YET DEPLOYED.
+
+  Before deploying:
+    1. Maintainer completes Phase A2 of MAINTAINER-LAUNCH-CHECKLIST.md
+       (LemonSqueezy product setup → checkout URL).
+    2. grep -n "LEMONSQUEEZY_CHECKOUT_URL_GOES_HERE" docs/pro.v3.0.html.draft
+       and replace ALL occurrences with the live URL.  Append
+       `?coupon=LAUNCH1` for the first 30 days; drop it on 2026-07-08.
+    3. Swap:
+         mv docs/pro.html docs/pro.v2.0.1.html.archived
+         mv docs/pro.v3.0.html.draft docs/pro.html
+         git add docs/ && git commit -m "Landing /pro → v3.0"
+         git push        # GitHub Pages / Cloudflare auto-deploys
+    4. Verify https://splynek.app/pro shows "Buy Splynek Pro — $24"
+       and the link actually opens LemonSqueezy checkout.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Splynek Pro — $24 launch week. $29 lifetime. No account.</title>
+  <meta name="description" content="Splynek Pro unlocks Trust Watcher (daily Privacy Policy diffs), Sovereignty Migrate Wizard, API tokens, scheduled downloads. $24 launch week / $29 lifetime. No account, no subscription — the licence is a signed file you double-click.">
+  <meta property="og:title" content="Splynek Pro">
+  <meta property="og:description" content="Trust Watcher + the rest of Splynek Pro. $24 launch week. One-time. No account.">
+  <meta property="og:image" content="https://splynek.app/icon-1024.png">
+  <meta name="theme-color" content="#0B1128">
+  <link rel="icon" type="image/png" href="icon-256.png">
+  <link rel="stylesheet" href="splynek.css">
+  <style>
+    /* Pro-specific layout on top of the shared system */
+    .pro-hero {
+      text-align: center;
+      padding: 40px 0 30px;
+    }
+    .pro-hero .mark {
+      display: block;
+      width: 96px; height: 96px;
+      margin: 0 auto 14px;
+      filter: drop-shadow(0 14px 36px rgba(90, 220, 165, 0.22))
+              drop-shadow(0 4px 12px rgba(0, 0, 0, 0.35));
+    }
+    .pro-hero .eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(90deg, rgba(245,193,108,0.18), rgba(245,193,108,0.08));
+      color: var(--gold);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      padding: 6px 12px; border-radius: 999px;
+      border: 1px solid rgba(245,193,108,0.35);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .pro-hero h1 {
+      font-size: 54px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0 0 10px;
+      line-height: 1.06;
+      background: linear-gradient(180deg, #ffffff 0%, #CEC0FF 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .pro-hero .lede {
+      font-size: 20px; color: var(--text-dim);
+      max-width: 560px; margin: 0 auto 22px;
+    }
+    .pro-hero .price {
+      font-size: 16px; color: var(--muted);
+      margin-bottom: 30px;
+    }
+    .pro-hero .price strong {
+      color: var(--accent); font-size: 18px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 10px 0 40px;
+    }
+    .feature {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+    .feature:hover { border-color: var(--border-lift); transform: translateY(-2px); }
+    .feature h3 {
+      margin: 0 0 4px; display: flex; align-items: center; gap: 8px;
+      color: var(--text);
+    }
+    .feature h3 .tag {
+      font-size: 10px; font-weight: 800; letter-spacing: 0.1em;
+      padding: 3px 7px; border-radius: 6px; text-transform: uppercase;
+    }
+    .feature .tag.local { background: rgba(90,220,165,0.16); color: var(--accent); }
+    .feature .tag.lan   { background: rgba(180,140,255,0.2); color: var(--purple); }
+    .feature .tag.quiet { background: rgba(245,193,108,0.2); color: var(--gold); }
+    .feature p { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+
+    .reasons {
+      background: linear-gradient(180deg, var(--panel-lift), var(--panel));
+      border: 1px solid var(--border-lift);
+      border-radius: 20px;
+      padding: 30px 32px;
+      margin: 44px 0;
+    }
+    .reasons h2 {
+      margin-top: 0; font-size: 22px; letter-spacing: -0.01em;
+    }
+    .reasons .reason {
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+    }
+    .reasons .reason:first-of-type { border-top: none; padding-top: 4px; }
+    .reasons .reason strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+    .reasons .reason p { margin: 0; font-size: 14px; }
+
+    .faq-item {
+      border-top: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .faq-item:last-child { border-bottom: 1px solid var(--border); }
+    .faq-item h3 { margin: 0; font-size: 15px; font-weight: 600; color: var(--text); }
+    .faq-item p { margin: 6px 0 0; font-size: 14px; }
+
+    .close-cta {
+      text-align: center;
+      margin: 60px 0 30px;
+      padding: 40px 24px;
+      background: linear-gradient(180deg, var(--panel-lift), var(--panel));
+      border: 1px solid var(--border-lift);
+      border-radius: 20px;
+    }
+    .close-cta h2 {
+      font-size: 28px; margin: 0 0 10px;
+    }
+    .close-cta p { margin: 0 0 22px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <nav class="top">
+      <a href="/" class="logo">
+        <img src="icon-256.png" alt="Splynek">
+        Splynek
+      </a>
+      <div class="links">
+        <a href="/#features">Features</a>
+        <a href="/#pro">Pro</a>
+        <a href="/support">Support</a>
+        <a href="https://github.com/Splynek/splynek">GitHub</a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="pro-hero">
+      <img class="mark" src="logo-transparent.png" alt="Splynek Pro">
+      <span class="eyebrow">★ Splynek Pro</span>
+      <h1>Splynek Pro.<br>Your apps, audited.</h1>
+      <p class="lede">
+        Daily SHA-256 diff of the Privacy Policies + Terms of
+        Service for the apps you have installed.  Sovereignty
+        Migrate Wizard.  API tokens.  Scheduled downloads.  Fleet
+        beyond 2 devices.  One purchase, every Mac you own.
+      </p>
+      <p class="price">
+        <strong>$24 launch week</strong> · $29 lifetime · No account · No subscription
+      </p>
+      <div class="cta" style="justify-content: center;">
+        <a class="btn primary" href="LEMONSQUEEZY_CHECKOUT_URL_GOES_HERE">
+          Buy Splynek Pro — $24
+        </a>
+        <a class="btn" href="https://github.com/Splynek/splynek/releases">
+          Download free tier
+        </a>
+      </div>
+    </header>
+
+    <!-- What's inside -->
+    <h2 style="text-align: center; font-size: 28px; margin-top: 60px;">What's in Splynek Pro</h2>
+
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>AI Concierge <span class="tag local">Local</span></h3>
+        <p>
+          Chat-first control for Splynek. Type <em>"download the latest
+          Firefox,"</em> or <em>"find that iOS SDK I grabbed in Jan,"</em>
+          or <em>"cancel everything."</em> The local LLM routes each
+          utterance to the right action. No cloud, no tokens, no
+          telemetry. Your data stays on your Mac.
+        </p>
+      </div>
+      <div class="feature">
+        <h3>Agentic Recipes <span class="tag local">Local</span></h3>
+        <p>
+          One goal, full plan. Type <em>"Set up my Mac for iOS dev"</em>
+          → review a proposed multi-step download batch → queue
+          everything in one click. Six themed starter libraries (Dev,
+          Linux, Media, AI, Games, Writing) surface 22 one-click
+          goals for inspiration.
+        </p>
+      </div>
+      <div class="feature">
+        <h3>Scheduled Downloads <span class="tag quiet">Quiet</span></h3>
+        <p>
+          Restrict queue starts to a time window — overnight on home
+          Wi-Fi, weekday rules, cellular-pause. Running downloads keep
+          going; the schedule only gates new starts. Ideal for
+          sensitive mobile data plans or "not during my meetings"
+          workflows.
+        </p>
+      </div>
+      <div class="feature">
+        <h3>Phone Pairing <span class="tag lan">LAN</span></h3>
+        <p>
+          Opens the mobile web dashboard to your LAN (free tier is
+          loopback-only). Scan the QR on your iPhone, paste URLs from
+          its share sheet, watch throughput live. Your phone stays
+          fast; the download lives on your Mac.
+        </p>
+      </div>
+    </div>
+
+    <!-- Why charge anything -->
+    <div class="reasons">
+      <h2>Why $24 / $29 and not free-everything?</h2>
+
+      <div class="reason">
+        <strong>Because it funds the local-only stance.</strong>
+        <p>Pro's AI features run entirely on your Mac via Ollama or
+           LM Studio. No cloud API costs, no account, no data
+           collection. The one-time fee pays for the engineering, not for server
+           bills we never wanted.</p>
+      </div>
+
+      <div class="reason">
+        <strong>Because it's one-time, not subscription.</strong>
+        <p>Not $5/month. Not $29/year. One purchase — you keep what
+           you bought forever. New 0.x releases are free. Apple
+           doesn't revoke purchased apps.</p>
+      </div>
+
+      <div class="reason">
+        <strong>Because the free tier is still generous.</strong>
+        <p>Every byte of the free tier is MIT-licensed and
+           open-source. Multi-interface downloads, torrents, queue,
+           history, Live dashboard, Benchmark — all free forever.
+           You pay only for the AI layer that sits on top.</p>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <h2>Questions people actually ask</h2>
+
+    <div class="faq-item">
+      <h3>Does Splynek Pro phone home?</h3>
+      <p>No. All AI features run locally via Ollama or LM Studio on
+         your machine. The only network calls are (1) the downloads
+         you explicitly request and (2) LAN Bonjour + peer fetches.
+         No telemetry, no analytics, no crash reports. See the
+         <a href="/privacy">privacy policy</a>.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Do I need Ollama? I'm not comfortable with the terminal.</h3>
+      <p>v0.50+ auto-detects <strong>LM Studio</strong> too — a
+         GUI-first Mac-native alternative that doesn't need a
+         terminal. Either provider works; Splynek picks whichever is
+         running. If neither is installed, the Concierge tab shows
+         two install buttons.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Is this a subscription?</h3>
+      <p>No. The licence is a signed `.splynekkey` file you double-click.
+         One-time $29 ($24 launch week), no Apple ID, usable on every Mac you own — keep
+         it. Stops working never.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>What if I want a refund?</h3>
+      <p>Open App Store → your profile → Purchased → Report a Problem
+         next to Splynek. Apple handles refunds usually within 24 h.
+         We don't see your purchase data, so we can't do it for you.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Do the old HMAC keys from v0.33–v0.43 still work?</h3>
+      <p>Pro is now activated via a signed licence file (Ed25519, offline verification).  If you had
+         an early-tester HMAC key and end up buying the MAS version,
+         email <a href="mailto:info@splynek.app">info@splynek.app</a>
+         and we'll send you a complimentary licence.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Family Sharing?</h3>
+      <p>Not in v1. One key per Apple ID. Will revisit if asked.</p>
+    </div>
+
+    <!-- Closing CTA -->
+    <section class="close-cta">
+      <h2>One-time. Nothing recurring.</h2>
+      <p>Ed25519-signed <code>.splynekkey</code> licence file.  Offline verification.  No account, no phone-home.  Lifetime updates on the v3.x line.</p>
+      <a class="btn primary" href="LEMONSQUEEZY_CHECKOUT_URL_GOES_HERE">
+        Buy Splynek Pro — $24
+      </a>
+    </section>
+
+    <footer>
+      <div class="row">
+        <a href="/">Home</a>
+        <a href="https://github.com/Splynek/splynek">GitHub</a>
+        <a href="/support">Support</a>
+        <a href="/privacy">Privacy</a>
+      </div>
+      <div class="row" style="margin-top: 14px; color: var(--muted);">
+        © 2026 Splynek. Free-tier source is MIT-licensed.
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

@@ -80,8 +80,9 @@
 >              deploy Worker via wrangler
 > D-5  → D-3:  Phase C — Build, notarize, sign appcast, smoke,
 >              Homebrew Cask PR, git tag v3.0.0
-> D-3  → D-2:  Phase D — splynek-landing repo update + test
->              purchase end-to-end
+> D-3  → D-2:  Phase D — swap docs/index.v3.0.html.draft +
+>              docs/pro.v3.0.html.draft into place; test purchase
+>              end-to-end
 > D-2 (Mon):   Phase E — soft launch (Twitter / Bluesky / Discord
 >              / email)
 > D-0 (Wed):   Phase F — Show HN at 06:00 PT
