@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-email-blast-launch.py — send the Splynek 1.0 launch announcement to
+email-blast-launch.py — send the Splynek 3.0 launch announcement to
 the consent-based v0.x user list via Resend's batch API.
 
 2026-06 direct-sale launch (LAUNCH-WITHOUT-APPLE.md § E2).
@@ -10,7 +10,7 @@ What this script does
 1. Reads a maintainer-curated CSV of v0.x user emails (default:
    `Outreach/v0-users.csv` — gitignored; see
    `Outreach/README.md` for the schema + the consent rules).
-2. Reads the email body template from `LAUNCH-1.0-COPY.md` §
+2. Reads the email body template from `LAUNCH-3.0-COPY.md` §
    "Email to existing v0.x DMG users" (between the visible
    markers; the template is the canonical source of truth so it
    stays in sync with the public Show HN copy).
@@ -45,7 +45,7 @@ Usage
     # 4.  Real send:
     #         python3 Scripts/email-blast-launch.py
     # 5.  Audit the log:
-    #         tail -50 Outreach/blast.2026-06-08.log
+    #         tail -50 Outreach/blast.2026-07-20.log
 
 Exit codes
     0   - all sends succeeded
@@ -69,13 +69,13 @@ from urllib import request, error
 
 ROOT = Path(__file__).parent.parent
 CSV_DEFAULT = ROOT / "Outreach" / "v0-users.csv"
-TEMPLATE_PATH = ROOT / "LAUNCH-1.0-COPY.md"
+TEMPLATE_PATH = ROOT / "LAUNCH-3.0-COPY.md"
 LOG_DIR = ROOT / "Outreach"
 LOG_DIR.mkdir(exist_ok=True)
 
 RESEND_ENDPOINT = "https://api.resend.com/emails"
 FROM_ADDR = "Splynek <hello@splynek.app>"
-SUBJECT = "Splynek 1.0 — and a $24 launch-week price"
+SUBJECT = "Splynek 3.0 — and a $24 launch-week price"
 
 # Batch / rate-limit knobs.  Resend allows 10 req/sec on the free
 # tier and 100 req/sec on paid.  We default to 5 req/sec to leave
@@ -89,7 +89,7 @@ SENDS_PER_SECOND = 5
 
 def extract_email_template() -> str:
     """
-    Pull the email body out of LAUNCH-1.0-COPY.md so the launch copy
+    Pull the email body out of LAUNCH-3.0-COPY.md so the launch copy
     + the blast stay in lockstep.  The template lives between the
     visible markers:
 

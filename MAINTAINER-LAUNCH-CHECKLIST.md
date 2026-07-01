@@ -1,7 +1,7 @@
 # MAINTAINER-LAUNCH-CHECKLIST.md
 
 > Everything the maintainer must do **outside the codebase** to
-> launch Splynek 3.0 direct-sale on Mon 2026-06-08.  Items here are
+> launch Splynek 3.0 direct-sale on Mon 2026-07-20.  Items here are
 > tasks Claude can't do — account signups, KYC, secret pasting,
 > domain DNS, payment-card test, press emails.
 >
@@ -9,9 +9,9 @@
 > `LAUNCH-3.0-COPY.md` (the public copy).
 >
 > **Target ship dates**:
->   - **D-2** = Mon 2026-06-08 (soft launch via splynek.app + Twitter
+>   - **D-2** = Mon 2026-07-20 (soft launch via splynek.app + Twitter
 >     + Bluesky + Discord + email list)
->   - **D-0** = Wed 2026-06-10 (Show HN drops at 06:00 PT)
+>   - **D-0** = Wed 2026-07-22 (Show HN drops at 06:00 PT)
 
 ---
 
@@ -61,14 +61,14 @@ dependencies on others, marked with `→`.
 3. Type: **Fixed amount**, **$5 off**
 4. Applies to: Splynek Pro
 5. Max redemptions: **1000**
-6. Expires: 2026-07-08 (30 days post-launch)
+6. Expires: 2026-08-19 (30 days post-launch)
 7. Optional: auto-apply via URL parameter `?coupon=LAUNCH1` so the
    landing-page CTA passes it directly without users having to type
    the code
 
 → Output: Checkout URL with `?coupon=LAUNCH1` parameter.  Use that
   as the actual landing-page CTA target for the first 30 days; swap
-  back to the bare checkout URL on 2026-07-08.
+  back to the bare checkout URL on 2026-08-19.
 
 ### A4. Webhook secret
 
@@ -295,7 +295,7 @@ Steps:
 ```bash
 # 1. Fill in the LemonSqueezy checkout URL (from Phase A2).
 #    Use the URL with ?coupon=LAUNCH1 for the first 30 days; drop
-#    the coupon parameter on 2026-07-08.
+#    the coupon parameter on 2026-08-19.
 sed -i '' \
     "s|LEMONSQUEEZY_CHECKOUT_URL_GOES_HERE|https://YOUR-CHECKOUT-URL?coupon=LAUNCH1|g" \
     docs/pro.v3.0.html.draft
@@ -348,7 +348,7 @@ If any step fails, fix before launch.  Common issues:
 
 ---
 
-## Phase E — Soft launch (D-2 = Mon 2026-06-08)
+## Phase E — Soft launch (D-2 = Mon 2026-07-20)
 
 ### E1. Twitter / Bluesky / Discord posts
 
@@ -374,7 +374,7 @@ Mac, shipped direct from splynek.app today"
 
 ---
 
-## Phase F — Show HN (D-0 = Wed 2026-06-10)
+## Phase F — Show HN (D-0 = Wed 2026-07-22)
 
 ### F1. Post at 06:00 PT (= 14:00 BST = 13:00 UTC)
 
@@ -417,7 +417,7 @@ Blog post.  Numbers (purchases, refunds, support load).  Lessons.
 Plans for v3.1 (the iPhone Companion when Apple eventually clears
 + the Concierge LLM wiring).
 
-### G3. Coupon sunset (D+30 = Wed 2026-07-08)
+### G3. Coupon sunset (D+30 = Wed 2026-08-19)
 
 Coupon expires automatically.  Update splynek.app/pro CTA to drop
 the `?coupon=LAUNCH1` parameter.  Update the landing-page banner

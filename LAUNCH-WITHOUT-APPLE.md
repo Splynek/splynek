@@ -12,7 +12,7 @@
 >   1. Direction — APPROVED.  Ship Mac direct; iPhone follows.
 >   2. Merchant — LemonSqueezy (merchant-of-record).
 >   3. Pricing — $24 launch-window for first 30 days, then $29.
->   4. Ship dates — **Soft launch Mon 2026-06-08, Show HN Wed 2026-06-10.**
+>   4. Ship dates — **Soft launch Mon 2026-07-20, Show HN Wed 2026-07-22.**
 >   5. Public iPhone-delay messaging — APPROVED as drafted.
 
 ---
@@ -358,7 +358,7 @@ If approved this week:
 | **D+7-14** | Monitor.  Bug fixes via Sparkle.  Reply to Show HN. |
 | **D+21** | First weekly recap blog post: "Week 1 numbers." |
 
-**Ship date target: 2026-06-02 (Monday after Memorial Day).**
+**Ship dates: soft launch Mon 2026-07-20, Show HN Wed 2026-07-22.**
 
 ---
 
@@ -406,7 +406,7 @@ Before D+1:
    Paddle / other]
 3. **Confirm the launch-window pricing.** [$29 flat / $24
    launch-window / other]
-4. **Pick the launch date.** [2026-06-02 / earlier / later]
+4. **Pick the launch date.** [2026-07-20 soft / 2026-07-22 Show HN — LOCKED]
 5. **Approve the public messaging on the iPhone delay.** [as
    drafted above / variant]
 

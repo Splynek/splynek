@@ -3,7 +3,7 @@
 A condensed one-line-per-release log. For details, see the relevant
 `## What's new in v0.N` section in [README.md](README.md).
 
-## v3.0.0 — Direct ship: IA v2 + Trust Watcher + bonded download (2026-06-08)
+## v3.0.0 — Direct ship: IA v2 + Trust Watcher + bonded download (2026-07-20)
 
 **The biggest Splynek ever — and the first shipped direct, outside
 the Mac App Store.**  Apple's MAS re-review queue crossed 30+ days

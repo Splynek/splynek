@@ -4,7 +4,7 @@
 > from `LANDING-V2-DRAFT.md` (which assumed MAS-first) to the
 > direct-DMG path described in `LAUNCH-WITHOUT-APPLE.md`.
 >
-> **Launch window**: 2026-06-08 soft launch → 2026-06-10 Show HN.
+> **Launch window**: 2026-07-20 soft launch → 2026-07-22 Show HN.
 > **Pricing**: $24 for the first 30 days, then $29 lifetime.
 >
 > All copy below is final-draft.  Maintainer adapts to the splynek-
@@ -44,7 +44,7 @@ Side-by-side mock:
 ## Launch-window banner (top strip, dismissable)
 
 > **Launch week: $24 for the first 1,000 buyers.**  Lifetime.  No
-> account.  No renewals.  After 2026-07-08 the price returns to $29.
+> account.  No renewals.  After 2026-08-19 the price returns to $29.
 > [Buy now →]
 
 ---
@@ -150,7 +150,7 @@ Plus reaffirmation:
 > **One screenshot, three lines.**
 
 Screenshot of the **Engagement viewer** in Settings — "Recording
-since 2026-06-08.  Show JSON file."
+since 2026-07-20.  Show JSON file."
 
 > "We don't know how much you use Splynek.  We know you use it
 > because we shipped a thing.  The local engagement counters live in
@@ -354,14 +354,14 @@ a 24-hour embargo offer if it's a slow news week.
 
 ## When to publish
 
-**D-day = Wednesday 2026-06-10** (Show HN target day)
+**D-day = Wednesday 2026-07-22** (Show HN target day)
 
-- D-2 (Mon 2026-06-08): soft launch via splynek.app, Twitter,
+- D-2 (Mon 2026-07-20): soft launch via splynek.app, Twitter,
   Bluesky, Discord, email list above.  Press tier-1 cold emails go
   out.
 - D-1 (Tue 2026-06-09): monitor.  Reply to early feedback.  Fix
   any landing-page bugs.
-- D-0 (Wed 2026-06-10): Show HN goes live at 06:00 PT.  Engage
+- D-0 (Wed 2026-07-22): Show HN goes live at 06:00 PT.  Engage
   thread all day.  Post to r/macapps + r/selfhosted at 08:00 PT.
 - D+1: thank-you replies + bug-fix point release if needed.
 - D+7: first weekly recap blog post: "Week 1 numbers."

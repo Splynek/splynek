@@ -28,8 +28,8 @@
 >    (the out-of-codebase runbook for D-14 → D+30).
 >
 >    **Target ship dates**:
->      - **D-2** = Mon 2026-06-08 (soft launch)
->      - **D-0** = Wed 2026-06-10 (Show HN at 06:00 PT)
+>      - **D-2** = Mon 2026-07-20 (soft launch)
+>      - **D-0** = Wed 2026-07-22 (Show HN at 06:00 PT)
 >
 > IA v2 commits (post-v2.0.1):
 > ```

@@ -1,6 +1,6 @@
 # Outreach — launch-day email blast
 
-> Working directory for the 2026-06-08 launch email send.  The CSV
+> Working directory for the 2026-07-20 launch email send.  The CSV
 > of recipient emails is **gitignored** (PII).  This README + the
 > script are committed.
 
@@ -69,7 +69,7 @@ export RESEND_API_KEY=re_…
 python3 Scripts/email-blast-launch.py
 
 # 4. Audit
-cat Outreach/blast.2026-06-08.log | grep FAIL    # any errors?
+cat Outreach/blast.2026-07-20.log | grep FAIL    # any errors?
 ```
 
 The script throttles to 5 sends/sec and logs every attempt.  Retry

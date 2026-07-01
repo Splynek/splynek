@@ -1,6 +1,6 @@
 # Splynek 3.0 — release notes
 
-> **Released 2026-06-08.**  Direct from splynek.app.  Mac App Store
+> **Released 2026-07-20.**  Direct from splynek.app.  Mac App Store
 > version coming when Apple's review queue clears.  iPhone
 > Companion coming as a free v3.1 update with the iOS App Store
 > approval.
