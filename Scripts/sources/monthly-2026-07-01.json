@@ -1,0 +1,55 @@
+{
+  "source": "monthly-batch-2026-07-01",
+  "license": "CC0",
+  "url": "https://splynek.app",
+  "entries": [
+    {
+      "displayName": "GarageBand",
+      "bundleID": "com.apple.garageband10",
+      "origin": "unitedStates",
+      "category": "creative"
+    },
+    {
+      "displayName": "Sublime Merge",
+      "bundleID": "com.sublimehq.SublimeMerge",
+      "origin": "other",
+      "category": "dev"
+    },
+    {
+      "displayName": "DaVinci Resolve",
+      "bundleID": "com.blackmagicdesign.DaVinciResolve",
+      "origin": "other",
+      "category": "creative"
+    },
+    {
+      "displayName": "Spark",
+      "bundleID": "com.readdle.Spark",
+      "origin": "other",
+      "category": "communication"
+    },
+    {
+      "displayName": "RingCentral",
+      "bundleID": "com.ringcentral.RingCentral",
+      "origin": "unitedStates",
+      "category": "communication"
+    },
+    {
+      "displayName": "TunnelBear VPN",
+      "bundleID": "com.tunnelbear.mac.TunnelBear",
+      "origin": "other",
+      "category": "security"
+    },
+    {
+      "displayName": "Adobe Bridge",
+      "bundleID": "com.adobe.Bridge",
+      "origin": "unitedStates",
+      "category": "creative"
+    },
+    {
+      "displayName": "1Password 8",
+      "bundleID": "com.1password.1password8",
+      "origin": "other",
+      "category": "security"
+    }
+  ]
+}
