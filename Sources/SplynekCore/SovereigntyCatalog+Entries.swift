@@ -13,7 +13,6 @@ extension SovereigntyCatalog {
 
     /// The full catalog — generated from Scripts/sovereignty-catalog.json.
     static let entries: [Entry] = [
-
         Entry(
             targetBundleID: "com.google.Chrome",
             targetDisplayName: "Google Chrome",
