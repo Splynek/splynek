@@ -33894,6 +33894,174 @@
       "targetBundleID": "com.apple.Arcade.Mac",
       "targetDisplayName": "Apple Arcade (alt)",
       "targetOrigin": "unitedStates"
+    },
+    {
+      "targetBundleID": "com.apple.garageband10",
+      "targetDisplayName": "GarageBand",
+      "targetOrigin": "unitedStates",
+      "alternatives": [
+        {
+          "id": "garageband:lmms",
+          "origin": "europeAndOSS",
+          "name": "LMMS",
+          "homepage": "https://lmms.io",
+          "note": "LMMS (Germany/OSS). GPL. Free, cross-platform music production studio."
+        },
+        {
+          "id": "garageband:ardour",
+          "origin": "oss",
+          "name": "Ardour",
+          "homepage": "https://ardour.org",
+          "note": "Ardour (OSS). GPL. Professional DAW, runs natively on macOS."
+        }
+      ]
+    },
+    {
+      "targetBundleID": "com.sublimehq.SublimeMerge",
+      "targetDisplayName": "Sublime Merge",
+      "targetOrigin": "other",
+      "alternatives": [
+        {
+          "id": "sublime-merge:tower",
+          "origin": "europe",
+          "name": "Tower",
+          "homepage": "https://www.git-tower.com",
+          "note": "Fournova Software GmbH (Germany). Commercial. Full-featured Git GUI for Mac."
+        },
+        {
+          "id": "sublime-merge:gitup",
+          "origin": "oss",
+          "name": "GitUp",
+          "homepage": "https://gitup.co",
+          "note": "GitUp (OSS). BSD. Fast, native macOS Git GUI."
+        }
+      ]
+    },
+    {
+      "targetBundleID": "com.blackmagicdesign.DaVinciResolve",
+      "targetDisplayName": "DaVinci Resolve",
+      "targetOrigin": "other",
+      "alternatives": [
+        {
+          "id": "davinci-resolve:kdenlive",
+          "origin": "europeAndOSS",
+          "name": "Kdenlive",
+          "homepage": "https://kdenlive.org",
+          "note": "KDE project (Germany/OSS). GPL. Professional non-linear video editor for macOS."
+        },
+        {
+          "id": "davinci-resolve:openshot",
+          "origin": "oss",
+          "name": "OpenShot",
+          "homepage": "https://www.openshot.org",
+          "note": "OpenShot Video Editor (OSS). LGPL. Free, cross-platform video editor."
+        }
+      ]
+    },
+    {
+      "targetBundleID": "com.readdle.Spark",
+      "targetDisplayName": "Spark",
+      "targetOrigin": "other",
+      "alternatives": [
+        {
+          "id": "spark-readdle:thunderbird",
+          "origin": "oss",
+          "name": "Thunderbird",
+          "homepage": "https://www.thunderbird.net",
+          "note": "Mozilla Thunderbird (OSS). MPL. Free, cross-platform email client."
+        },
+        {
+          "id": "spark-readdle:proton-mail",
+          "origin": "europe",
+          "name": "Proton Mail",
+          "homepage": "https://proton.me/mail",
+          "note": "Proton AG (Switzerland). Free tier and paid plans. End-to-end encrypted email."
+        }
+      ]
+    },
+    {
+      "targetBundleID": "com.ringcentral.RingCentral",
+      "targetDisplayName": "RingCentral",
+      "targetOrigin": "unitedStates",
+      "alternatives": [
+        {
+          "id": "ringcentral:element",
+          "origin": "europe",
+          "name": "Element",
+          "homepage": "https://element.io",
+          "note": "Element (UK). Apache-2.0. Open, decentralised communication on the Matrix protocol."
+        },
+        {
+          "id": "ringcentral:nextcloud-talk",
+          "origin": "europeAndOSS",
+          "name": "Nextcloud Talk",
+          "homepage": "https://nextcloud.com/talk",
+          "note": "Nextcloud GmbH (Germany/OSS). AGPL. Self-hosted video calls and team chat."
+        }
+      ]
+    },
+    {
+      "targetBundleID": "com.tunnelbear.mac.TunnelBear",
+      "targetDisplayName": "TunnelBear VPN",
+      "targetOrigin": "other",
+      "alternatives": [
+        {
+          "id": "tunnelbear-vpn:protonvpn",
+          "origin": "europe",
+          "name": "ProtonVPN",
+          "homepage": "https://protonvpn.com",
+          "note": "Proton AG (Switzerland). Free tier and paid plans. Privacy-first, open-source clients."
+        },
+        {
+          "id": "tunnelbear-vpn:mullvad",
+          "origin": "europe",
+          "name": "Mullvad VPN",
+          "homepage": "https://mullvad.net",
+          "note": "Mullvad (Sweden). €5/month flat rate. No-logs policy, anonymous accounts."
+        }
+      ]
+    },
+    {
+      "targetBundleID": "com.adobe.Bridge",
+      "targetDisplayName": "Adobe Bridge",
+      "targetOrigin": "unitedStates",
+      "alternatives": [
+        {
+          "id": "adobe-bridge:digikam",
+          "origin": "europeAndOSS",
+          "name": "digiKam",
+          "homepage": "https://www.digikam.org",
+          "note": "KDE project (Germany/OSS). GPL. Professional photo management and asset browser."
+        },
+        {
+          "id": "adobe-bridge:xnviewmp",
+          "origin": "europe",
+          "name": "XnView MP",
+          "homepage": "https://www.xnview.com/en/xnviewmp/",
+          "note": "XnSoft (France). Freeware. Cross-platform media browser and batch converter."
+        }
+      ]
+    },
+    {
+      "targetBundleID": "com.1password.1password8",
+      "targetDisplayName": "1Password 8",
+      "targetOrigin": "other",
+      "alternatives": [
+        {
+          "id": "1password-8:keepassxc",
+          "origin": "oss",
+          "name": "KeePassXC",
+          "homepage": "https://keepassxc.org",
+          "note": "KeePassXC (OSS). GPL. Cross-platform password manager, local vault."
+        },
+        {
+          "id": "1password-8:proton-pass",
+          "origin": "europe",
+          "name": "Proton Pass",
+          "homepage": "https://proton.me/pass",
+          "note": "Proton AG (Switzerland). Free tier and paid plans. End-to-end encrypted password manager."
+        }
+      ]
     }
   ],
   "version": 1

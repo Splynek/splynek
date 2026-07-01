@@ -2,7 +2,7 @@
 //
 // Source:     Scripts/sovereignty-catalog.json
 // Generator:  swift Scripts/regenerate-sovereignty-catalog.swift
-// Count:      1155 entries
+// Count:      1163 entries
 //
 // To add, correct, or remove entries, edit the JSON source and
 // regenerate.  See SOVEREIGNTY-CONTRIBUTING.md for the pipeline.
@@ -26363,6 +26363,134 @@ extension SovereigntyCatalog {
                       homepage: URL(string: "https://www.f-secure.com")!,
                       note: "F-Secure (Finland). Commercial AV.",
                       deliveryKind: .purchaseRequired),
+            ]),
+        Entry(
+            targetBundleID: "com.apple.garageband10",
+            targetDisplayName: "GarageBand",
+            targetOrigin: .unitedStates,
+            alternatives: [
+                .init(id: "garageband:lmms",
+                      origin: .europeAndOSS,
+                      name: "LMMS",
+                      homepage: URL(string: "https://lmms.io")!,
+                      note: "LMMS (Germany/OSS). GPL. Free, cross-platform music production studio."),
+                .init(id: "garageband:ardour",
+                      origin: .oss,
+                      name: "Ardour",
+                      homepage: URL(string: "https://ardour.org")!,
+                      note: "Ardour (OSS). GPL. Professional DAW, runs natively on macOS."),
+            ]),
+        Entry(
+            targetBundleID: "com.sublimehq.SublimeMerge",
+            targetDisplayName: "Sublime Merge",
+            targetOrigin: .other,
+            alternatives: [
+                .init(id: "sublime-merge:tower",
+                      origin: .europe,
+                      name: "Tower",
+                      homepage: URL(string: "https://www.git-tower.com")!,
+                      note: "Fournova Software GmbH (Germany). Commercial. Full-featured Git GUI for Mac."),
+                .init(id: "sublime-merge:gitup",
+                      origin: .oss,
+                      name: "GitUp",
+                      homepage: URL(string: "https://gitup.co")!,
+                      note: "GitUp (OSS). BSD. Fast, native macOS Git GUI."),
+            ]),
+        Entry(
+            targetBundleID: "com.blackmagicdesign.DaVinciResolve",
+            targetDisplayName: "DaVinci Resolve",
+            targetOrigin: .other,
+            alternatives: [
+                .init(id: "davinci-resolve:kdenlive",
+                      origin: .europeAndOSS,
+                      name: "Kdenlive",
+                      homepage: URL(string: "https://kdenlive.org")!,
+                      note: "KDE project (Germany/OSS). GPL. Professional non-linear video editor for macOS."),
+                .init(id: "davinci-resolve:openshot",
+                      origin: .oss,
+                      name: "OpenShot",
+                      homepage: URL(string: "https://www.openshot.org")!,
+                      note: "OpenShot Video Editor (OSS). LGPL. Free, cross-platform video editor."),
+            ]),
+        Entry(
+            targetBundleID: "com.readdle.Spark",
+            targetDisplayName: "Spark",
+            targetOrigin: .other,
+            alternatives: [
+                .init(id: "spark-readdle:thunderbird",
+                      origin: .oss,
+                      name: "Thunderbird",
+                      homepage: URL(string: "https://www.thunderbird.net")!,
+                      note: "Mozilla Thunderbird (OSS). MPL. Free, cross-platform email client."),
+                .init(id: "spark-readdle:proton-mail",
+                      origin: .europe,
+                      name: "Proton Mail",
+                      homepage: URL(string: "https://proton.me/mail")!,
+                      note: "Proton AG (Switzerland). Free tier and paid plans. End-to-end encrypted email."),
+            ]),
+        Entry(
+            targetBundleID: "com.ringcentral.RingCentral",
+            targetDisplayName: "RingCentral",
+            targetOrigin: .unitedStates,
+            alternatives: [
+                .init(id: "ringcentral:element",
+                      origin: .europe,
+                      name: "Element",
+                      homepage: URL(string: "https://element.io")!,
+                      note: "Element (UK). Apache-2.0. Open, decentralised communication on the Matrix protocol."),
+                .init(id: "ringcentral:nextcloud-talk",
+                      origin: .europeAndOSS,
+                      name: "Nextcloud Talk",
+                      homepage: URL(string: "https://nextcloud.com/talk")!,
+                      note: "Nextcloud GmbH (Germany/OSS). AGPL. Self-hosted video calls and team chat."),
+            ]),
+        Entry(
+            targetBundleID: "com.tunnelbear.mac.TunnelBear",
+            targetDisplayName: "TunnelBear VPN",
+            targetOrigin: .other,
+            alternatives: [
+                .init(id: "tunnelbear-vpn:protonvpn",
+                      origin: .europe,
+                      name: "ProtonVPN",
+                      homepage: URL(string: "https://protonvpn.com")!,
+                      note: "Proton AG (Switzerland). Free tier and paid plans. Privacy-first, open-source clients."),
+                .init(id: "tunnelbear-vpn:mullvad",
+                      origin: .europe,
+                      name: "Mullvad VPN",
+                      homepage: URL(string: "https://mullvad.net")!,
+                      note: "Mullvad (Sweden). €5/month flat rate. No-logs policy, anonymous accounts."),
+            ]),
+        Entry(
+            targetBundleID: "com.adobe.Bridge",
+            targetDisplayName: "Adobe Bridge",
+            targetOrigin: .unitedStates,
+            alternatives: [
+                .init(id: "adobe-bridge:digikam",
+                      origin: .europeAndOSS,
+                      name: "digiKam",
+                      homepage: URL(string: "https://www.digikam.org")!,
+                      note: "KDE project (Germany/OSS). GPL. Professional photo management and asset browser."),
+                .init(id: "adobe-bridge:xnviewmp",
+                      origin: .europe,
+                      name: "XnView MP",
+                      homepage: URL(string: "https://www.xnview.com/en/xnviewmp/")!,
+                      note: "XnSoft (France). Freeware. Cross-platform media browser and batch converter."),
+            ]),
+        Entry(
+            targetBundleID: "com.1password.1password8",
+            targetDisplayName: "1Password 8",
+            targetOrigin: .other,
+            alternatives: [
+                .init(id: "1password-8:keepassxc",
+                      origin: .oss,
+                      name: "KeePassXC",
+                      homepage: URL(string: "https://keepassxc.org")!,
+                      note: "KeePassXC (OSS). GPL. Cross-platform password manager, local vault."),
+                .init(id: "1password-8:proton-pass",
+                      origin: .europe,
+                      name: "Proton Pass",
+                      homepage: URL(string: "https://proton.me/pass")!,
+                      note: "Proton AG (Switzerland). Free tier and paid plans. End-to-end encrypted password manager."),
             ]),
     ]
 }

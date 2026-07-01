@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-01T09:20:22Z",
+  "totalKnown": 1155,
+  "totalInputs": 9,
+  "candidates": [
+    {
+      "bundleID": "com.apple.garageband10",
+      "displayName": "GarageBand",
+      "source": "monthly-batch-2026-07-01",
+      "origin": "unitedStates",
+      "category": "creative"
+    },
+    {
+      "bundleID": "com.sublimehq.SublimeMerge",
+      "displayName": "Sublime Merge",
+      "source": "monthly-batch-2026-07-01",
+      "origin": "other",
+      "category": "dev"
+    },
+    {
+      "bundleID": "com.blackmagicdesign.DaVinciResolve",
+      "displayName": "DaVinci Resolve",
+      "source": "monthly-batch-2026-07-01",
+      "origin": "other",
+      "category": "creative"
+    },
+    {
+      "bundleID": "com.readdle.Spark",
+      "displayName": "Spark",
+      "source": "monthly-batch-2026-07-01",
+      "origin": "other",
+      "category": "communication"
+    },
+    {
+      "bundleID": "com.ringcentral.RingCentral",
+      "displayName": "RingCentral",
+      "source": "monthly-batch-2026-07-01",
+      "origin": "unitedStates",
+      "category": "communication"
+    },
+    {
+      "bundleID": "com.tunnelbear.mac.TunnelBear",
+      "displayName": "TunnelBear VPN",
+      "source": "monthly-batch-2026-07-01",
+      "origin": "other",
+      "category": "security"
+    },
+    {
+      "bundleID": "com.adobe.Bridge",
+      "displayName": "Adobe Bridge",
+      "source": "monthly-batch-2026-07-01",
+      "origin": "unitedStates",
+      "category": "creative"
+    },
+    {
+      "bundleID": "com.1password.1password8",
+      "displayName": "1Password 8",
+      "source": "monthly-batch-2026-07-01",
+      "origin": "other",
+      "category": "security"
+    },
+    {
+      "bundleID": "com.example.target",
+      "displayName": "Example Sovereignty Target",
+      "source": "example-batch-2026-04",
+      "origin": "unitedStates",
+      "category": "chat-personal",
+      "note": "If discover.swift sees this, the pipeline is wired correctly."
+    }
+  ]
+}
