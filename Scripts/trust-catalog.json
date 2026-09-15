@@ -15,7 +15,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "co.mona.app",
       "targetDisplayName": "Crypto.com"
     },
@@ -46,7 +46,7 @@
           "note": "GPL. Note-taking and PDF annotation."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.adobe.Acrobat.Pro",
       "targetDisplayName": "Adobe Acrobat Pro"
     },
@@ -77,7 +77,7 @@
           "note": "Capture One (Denmark). Pro-grade RAW."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.adobe.LightroomCC",
       "targetDisplayName": "Adobe Lightroom"
     },
@@ -108,7 +108,7 @@
           "note": "Serif (UK). One-time purchase."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.adobe.Photoshop",
       "targetDisplayName": "Adobe Photoshop"
     },
@@ -143,7 +143,7 @@
           "note": "Serif (UK). Photo + Designer + Publisher one-time."
         }
       ],
-      "lastReviewed": "2026-04-26",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.adobe.acc.AdobeCreativeCloud",
       "targetDisplayName": "Adobe Creative Cloud"
     },
@@ -161,7 +161,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.adobe.spark",
       "targetDisplayName": "Adobe Express"
     },
@@ -179,7 +179,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.airbnb.app",
       "targetDisplayName": "Airbnb"
     },
@@ -210,7 +210,7 @@
           "note": "Baserow (Netherlands). MIT."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.airtable.airtable",
       "targetDisplayName": "Airtable"
     },
@@ -228,7 +228,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.alibaba.iAliexpress",
       "targetDisplayName": "AliExpress"
     },
@@ -246,7 +246,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.amazon.Amazon",
       "targetDisplayName": "Amazon Shopping"
     },
@@ -283,7 +283,7 @@
           "note": "AGPL. E-book reader."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.amazon.Kindle",
       "targetDisplayName": "Amazon Kindle"
     },
@@ -314,7 +314,7 @@
           "note": "Qobuz (France). Studio-quality streaming, paid."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.amazon.music.mac",
       "targetDisplayName": "Amazon Music"
     },
@@ -332,7 +332,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.apple.FinalCut",
       "targetDisplayName": "Final Cut Pro"
     },
@@ -369,7 +369,7 @@
           "note": "GPL. Native multiplayer code editor."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.apple.dt.Xcode",
       "targetDisplayName": "Xcode"
     },
@@ -387,7 +387,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.apple.iWork.Keynote",
       "targetDisplayName": "Apple Keynote"
     },
@@ -405,7 +405,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.apple.iWork.Numbers",
       "targetDisplayName": "Apple Numbers"
     },
@@ -423,7 +423,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.apple.iWork.Pages",
       "targetDisplayName": "Apple Pages"
     },
@@ -441,7 +441,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.apple.logic10",
       "targetDisplayName": "Logic Pro"
     },
@@ -459,7 +459,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.apple.mobilegarageband",
       "targetDisplayName": "GarageBand"
     },
@@ -477,7 +477,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.asana.iPhone",
       "targetDisplayName": "Asana"
     },
@@ -495,7 +495,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.atebits.Tweetie2",
       "targetDisplayName": "X (Twitter)"
     },
@@ -513,7 +513,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.bofa.bofa",
       "targetDisplayName": "Bank of America Mobile"
     },
@@ -531,7 +531,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.booking.bookingapp",
       "targetDisplayName": "Booking.com"
     },
@@ -549,7 +549,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.box.iosapp",
       "targetDisplayName": "Box"
     },
@@ -567,7 +567,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.brave.ios.browser",
       "targetDisplayName": "Brave Browser (iOS)"
     },
@@ -585,7 +585,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.bumble.app",
       "targetDisplayName": "Bumble"
     },
@@ -603,7 +603,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.bunq.bunqapp",
       "targetDisplayName": "bunq"
     },
@@ -621,7 +621,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.burbn.barcelona",
       "targetDisplayName": "Threads"
     },
@@ -639,7 +639,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.burbn.instagram",
       "targetDisplayName": "Instagram"
     },
@@ -657,7 +657,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.calm.calmapp",
       "targetDisplayName": "Calm"
     },
@@ -675,7 +675,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.cardify.tinder",
       "targetDisplayName": "Tinder"
     },
@@ -693,7 +693,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.chase.sig.Chase",
       "targetDisplayName": "Chase Mobile"
     },
@@ -711,7 +711,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.citymapper.CityMapper",
       "targetDisplayName": "Citymapper"
     },
@@ -729,7 +729,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.contextlogic.wishweb",
       "targetDisplayName": "Wish"
     },
@@ -747,7 +747,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.crunchyroll.iphone",
       "targetDisplayName": "Crunchyroll"
     },
@@ -765,7 +765,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.culturedcode.ThingsMac",
       "targetDisplayName": "Things 3"
     },
@@ -783,7 +783,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.czzhao.binance",
       "targetDisplayName": "Binance"
     },
@@ -816,7 +816,7 @@
           "note": "Switzerland. E2E-encrypted."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.dashlane.dashlanephonefinal",
       "targetDisplayName": "Dashlane"
     },
@@ -834,7 +834,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.dd.doordash",
       "targetDisplayName": "DoorDash"
     },
@@ -852,7 +852,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.disney.disneyplus",
       "targetDisplayName": "Disney+"
     },
@@ -870,7 +870,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.duckduckgo.mobile.ios",
       "targetDisplayName": "DuckDuckGo"
     },
@@ -888,7 +888,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.duolingo.DuolingoMobile",
       "targetDisplayName": "Duolingo"
     },
@@ -906,7 +906,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.ebay.iphone",
       "targetDisplayName": "eBay"
     },
@@ -924,7 +924,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.einnovation.temu",
       "targetDisplayName": "Temu"
     },
@@ -942,7 +942,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.etsy.etsyforiphone",
       "targetDisplayName": "Etsy"
     },
@@ -973,7 +973,7 @@
           "note": "Local-first markdown."
         }
       ],
-      "lastReviewed": "2026-04-26",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.evernote.Evernote",
       "targetDisplayName": "Evernote"
     },
@@ -991,7 +991,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.evernote.iPhone.Evernote",
       "targetDisplayName": "Evernote (iOS)"
     },
@@ -1009,7 +1009,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.expedia.bookings",
       "targetDisplayName": "Expedia"
     },
@@ -1027,7 +1027,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.facebook.Facebook",
       "targetDisplayName": "Facebook"
     },
@@ -1045,7 +1045,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.facebook.Messenger",
       "targetDisplayName": "Messenger (iOS)"
     },
@@ -1096,7 +1096,7 @@
           "note": "Switzerland."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.facebook.archon.developerID",
       "targetDisplayName": "Messenger"
     },
@@ -1114,7 +1114,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.fitbit.FitbitMobile",
       "targetDisplayName": "Fitbit"
     },
@@ -1139,7 +1139,7 @@
           "note": "Switzerland. E2E-encrypted."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.flexibits.fantastical2.mac",
       "targetDisplayName": "Fantastical"
     },
@@ -1157,7 +1157,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.fogcreek.trello",
       "targetDisplayName": "Trello"
     },
@@ -1175,7 +1175,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.getdropbox.Dropbox",
       "targetDisplayName": "Dropbox (iOS)"
     },
@@ -1216,7 +1216,7 @@
           "note": "Switzerland. E2E-encrypted."
         }
       ],
-      "lastReviewed": "2026-04-26",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.getdropbox.dropbox",
       "targetDisplayName": "Dropbox"
     },
@@ -1234,7 +1234,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.getsomeheadspace.headspaceapp",
       "targetDisplayName": "Headspace"
     },
@@ -1252,7 +1252,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.goodreads.goodreadsapp",
       "targetDisplayName": "Goodreads"
     },
@@ -1297,7 +1297,7 @@
           "note": "Apple-built; on-device intelligence; default browser."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.Chrome",
       "targetDisplayName": "Google Chrome"
     },
@@ -1315,7 +1315,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.Docs",
       "targetDisplayName": "Google Docs"
     },
@@ -1333,7 +1333,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.Maps",
       "targetDisplayName": "Google Maps"
     },
@@ -1351,7 +1351,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.Sheets",
       "targetDisplayName": "Google Sheets"
     },
@@ -1388,7 +1388,7 @@
           "note": "AGPL. Self-hostable translation API."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.Translate",
       "targetDisplayName": "Google Translate"
     },
@@ -1406,7 +1406,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.chrome.ios",
       "targetDisplayName": "Chrome (iOS)"
     },
@@ -1437,7 +1437,7 @@
           "note": "Proton AG (Switzerland). E2E-encrypted."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.drivefs",
       "targetDisplayName": "Google Drive"
     },
@@ -1455,7 +1455,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.ios.youtube",
       "targetDisplayName": "YouTube"
     },
@@ -1473,7 +1473,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.google.ios.youtubemusic",
       "targetDisplayName": "YouTube Music"
     },
@@ -1498,7 +1498,7 @@
           "note": "LanguageTooler GmbH (Germany). LGPL. Self-hostable."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.grammarly.ProjectLlama",
       "targetDisplayName": "Grammarly"
     },
@@ -1516,7 +1516,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.grindrllc.grindr",
       "targetDisplayName": "Grindr"
     },
@@ -1534,7 +1534,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.hammerandchisel.discord",
       "targetDisplayName": "Discord (iOS)"
     },
@@ -1552,7 +1552,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.hbo.hbonow",
       "targetDisplayName": "Max (formerly HBO Max)"
     },
@@ -1570,7 +1570,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.hinge.app",
       "targetDisplayName": "Hinge"
     },
@@ -1602,7 +1602,7 @@
           "note": "Element (UK). Matrix protocol, federated chat."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.hnc.Discord",
       "targetDisplayName": "Discord"
     },
@@ -1620,7 +1620,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.hotels.HotelsNearMeApp",
       "targetDisplayName": "Hotels.com"
     },
@@ -1657,7 +1657,7 @@
           "note": "GPL. Self-hosted media."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.hulu.plus",
       "targetDisplayName": "Hulu"
     },
@@ -1675,7 +1675,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.ideashower.ReadItLaterPro",
       "targetDisplayName": "Pocket"
     },
@@ -1693,7 +1693,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.ing.diba.ingdibaapp",
       "targetDisplayName": "ING"
     },
@@ -1711,7 +1711,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.instacart.InstacartShopper",
       "targetDisplayName": "Instacart"
     },
@@ -1752,7 +1752,7 @@
           "note": "F-Secure (Finland). Commercial AV."
         }
       ],
-      "lastReviewed": "2026-04-26",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.kaspersky.kes",
       "targetDisplayName": "Kaspersky Endpoint Security"
     },
@@ -1770,7 +1770,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.khanacademy.Khan-Academy",
       "targetDisplayName": "Khan Academy"
     },
@@ -1788,7 +1788,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.kraken.kraken",
       "targetDisplayName": "Kraken Crypto"
     },
@@ -1830,7 +1830,7 @@
           "note": "GPL. Local-first .kdbx password manager."
         }
       ],
-      "lastReviewed": "2026-04-26",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.lastpass.LastPass",
       "targetDisplayName": "LastPass"
     },
@@ -1861,7 +1861,7 @@
           "note": "Kaleidos (Spain). Apache. Agile PM."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.linear",
       "targetDisplayName": "Linear"
     },
@@ -1908,7 +1908,7 @@
           "note": "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.linkedin.LinkedIn",
       "targetDisplayName": "LinkedIn"
     },
@@ -1926,7 +1926,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.lyft.iphone",
       "targetDisplayName": "Lyft"
     },
@@ -1944,7 +1944,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.medium.reader",
       "targetDisplayName": "Medium"
     },
@@ -1962,7 +1962,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.miHoYo.GenshinImpact",
       "targetDisplayName": "Genshin Impact"
     },
@@ -1993,7 +1993,7 @@
           "note": "Latvia. AGPL community edition."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.microsoft.Excel",
       "targetDisplayName": "Microsoft Excel"
     },
@@ -2024,7 +2024,7 @@
           "note": "Switzerland. E2E-encrypted."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.microsoft.OneDrive",
       "targetDisplayName": "Microsoft OneDrive"
     },
@@ -2042,7 +2042,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.microsoft.Outlook",
       "targetDisplayName": "Microsoft Outlook"
     },
@@ -2067,7 +2067,7 @@
           "note": "The Document Foundation (Germany). MPL."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.microsoft.Powerpoint",
       "targetDisplayName": "Microsoft PowerPoint"
     },
@@ -2098,7 +2098,7 @@
           "note": "Ascensio System (Latvia). AGPL community edition."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.microsoft.Word",
       "targetDisplayName": "Microsoft Word"
     },
@@ -2123,7 +2123,7 @@
           "note": "Apple-built; default macOS browser; no cross-app tracking on Apple ID."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.microsoft.edgemac",
       "targetDisplayName": "Microsoft Edge"
     },
@@ -2155,7 +2155,7 @@
           "note": "Apache-licensed, no account needed."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.microsoft.teams",
       "targetDisplayName": "Microsoft Teams"
     },
@@ -2173,7 +2173,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.mindnode.MindNode8",
       "targetDisplayName": "MindNode"
     },
@@ -2191,7 +2191,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.myfitnesspal.MyFitnessPal-tablet",
       "targetDisplayName": "MyFitnessPal"
     },
@@ -2228,7 +2228,7 @@
           "note": "GPL. Self-hosted media."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.netflix.Netflix",
       "targetDisplayName": "Netflix"
     },
@@ -2246,7 +2246,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.nike.nikeplus-gps",
       "targetDisplayName": "Nike Run Club"
     },
@@ -2277,7 +2277,7 @@
           "note": "AGPL. Local-first outliner."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.notion.id",
       "targetDisplayName": "Notion"
     },
@@ -2295,7 +2295,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.number26.iphone",
       "targetDisplayName": "N26"
     },
@@ -2313,7 +2313,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.nytimes.NYTimes",
       "targetDisplayName": "The New York Times"
     },
@@ -2331,7 +2331,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.onepeloton.peloton",
       "targetDisplayName": "Peloton"
     },
@@ -2379,7 +2379,7 @@
           "note": "Mistral AI (France). EU-hosted chat."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.openai.chat",
       "targetDisplayName": "ChatGPT Desktop"
     },
@@ -2397,7 +2397,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.operasoftware.OperaMini",
       "targetDisplayName": "Opera"
     },
@@ -2415,7 +2415,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.pandora",
       "targetDisplayName": "Pandora"
     },
@@ -2433,7 +2433,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.paypal.PPClient",
       "targetDisplayName": "PayPal"
     },
@@ -2470,7 +2470,7 @@
           "note": "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.pinterest.pinterest",
       "targetDisplayName": "Pinterest"
     },
@@ -2488,7 +2488,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.pixelmatorteam.pixelmator.x",
       "targetDisplayName": "Pixelmator Pro"
     },
@@ -2506,7 +2506,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.plexapp.plex",
       "targetDisplayName": "Plex"
     },
@@ -2524,7 +2524,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.quizlet.quizletapp",
       "targetDisplayName": "Quizlet"
     },
@@ -2542,7 +2542,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.reddit.Reddit",
       "targetDisplayName": "Reddit"
     },
@@ -2560,7 +2560,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.revolut.RevolutApp",
       "targetDisplayName": "Revolut"
     },
@@ -2578,7 +2578,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.robinhood.release.Robinhood",
       "targetDisplayName": "Robinhood"
     },
@@ -2596,7 +2596,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.roblox.robloxmobile",
       "targetDisplayName": "Roblox"
     },
@@ -2614,7 +2614,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.savage.Procreate-Pocket",
       "targetDisplayName": "Procreate Pocket"
     },
@@ -2632,7 +2632,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.shein.app",
       "targetDisplayName": "SHEIN"
     },
@@ -2663,7 +2663,7 @@
           "note": "Signal Foundation. E2E-encrypted calls."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.skype.skype",
       "targetDisplayName": "Skype"
     },
@@ -2681,7 +2681,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.snowmanlabs.alto.odyssey",
       "targetDisplayName": "Alto's Odyssey"
     },
@@ -2699,7 +2699,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.spotify.client",
       "targetDisplayName": "Spotify"
     },
@@ -2717,7 +2717,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.squareup.cash",
       "targetDisplayName": "Cash App"
     },
@@ -2735,7 +2735,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.strava.stravaride",
       "targetDisplayName": "Strava"
     },
@@ -2753,7 +2753,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.substack.app",
       "targetDisplayName": "Substack"
     },
@@ -2784,7 +2784,7 @@
           "note": "Switzerland."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.tencent.xinWeChat",
       "targetDisplayName": "WeChat"
     },
@@ -2802,7 +2802,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.tidal.iPhone",
       "targetDisplayName": "Tidal"
     },
@@ -2820,7 +2820,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.tinyspeck.chatlyio",
       "targetDisplayName": "Slack (iOS)"
     },
@@ -2862,7 +2862,7 @@
           "note": "MIT-licensed server + clients, team-chat."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.tinyspeck.slackmacgap",
       "targetDisplayName": "Slack"
     },
@@ -2893,7 +2893,7 @@
           "note": "MIT. Plus Continue.dev for AI."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.todesktop.230313mzl4w4u92",
       "targetDisplayName": "Cursor"
     },
@@ -2930,7 +2930,7 @@
           "note": "US-based but AGPL+protocol — a looser federation option. Note: US-hosted."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.toyopagroup.picaboo",
       "targetDisplayName": "Snapchat"
     },
@@ -2948,7 +2948,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.transferwise.TransferWise",
       "targetDisplayName": "Wise"
     },
@@ -2966,7 +2966,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.ubercab.UberClient",
       "targetDisplayName": "Uber"
     },
@@ -2984,7 +2984,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.ubercab.UberEats",
       "targetDisplayName": "Uber Eats"
     },
@@ -3002,7 +3002,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.udemy.UdemyiOS",
       "targetDisplayName": "Udemy"
     },
@@ -3020,7 +3020,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.ustwo.monumentvalley",
       "targetDisplayName": "Monument Valley"
     },
@@ -3051,7 +3051,7 @@
           "note": "CD Projekt (Poland). DRM-free PC games."
         }
       ],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.valvesoftware.steam",
       "targetDisplayName": "Steam"
     },
@@ -3069,7 +3069,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.venmo.Venmo",
       "targetDisplayName": "Venmo"
     },
@@ -3087,7 +3087,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.vilcsak.bitcoins2",
       "targetDisplayName": "Coinbase"
     },
@@ -3105,7 +3105,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.visualsupply.cam",
       "targetDisplayName": "VSCO"
     },
@@ -3123,7 +3123,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.waze.iphone",
       "targetDisplayName": "Waze"
     },
@@ -3141,7 +3141,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.wf.WellsFargoMobile",
       "targetDisplayName": "Wells Fargo Mobile"
     },
@@ -3182,7 +3182,7 @@
           "note": "Threema GmbH (Switzerland). Paid, no phone-number required."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.whatsapp.WhatsApp",
       "targetDisplayName": "WhatsApp"
     },
@@ -3227,7 +3227,7 @@
           "note": "Framasoft (France). AGPL. Federated video."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "com.zhiliaoapp.musically",
       "targetDisplayName": "TikTok"
     },
@@ -3245,7 +3245,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "net.whatsapp.WhatsAppSMB",
       "targetDisplayName": "WhatsApp Business"
     },
@@ -3263,7 +3263,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "org.coursera.coursera",
       "targetDisplayName": "Coursera"
     },
@@ -3281,7 +3281,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "org.mozilla.ios.Firefox",
       "targetDisplayName": "Firefox (iOS)"
     },
@@ -3299,7 +3299,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "org.whispersystems.signal",
       "targetDisplayName": "Signal (iOS)"
     },
@@ -3317,7 +3317,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "ph.telegra.Telegraph",
       "targetDisplayName": "Telegram"
     },
@@ -3349,7 +3349,7 @@
           "note": "Norway. Freeware."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "ru.yandex.desktop.yandex-browser",
       "targetDisplayName": "Yandex Browser"
     },
@@ -3367,7 +3367,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "tv.twitch",
       "targetDisplayName": "Twitch"
     },
@@ -3385,7 +3385,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "uk.co.bbc.news",
       "targetDisplayName": "BBC News"
     },
@@ -3403,7 +3403,7 @@
         }
       ],
       "fallbackAlternatives": [],
-      "lastReviewed": "2026-04-30",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "us.zoom.videomeetings",
       "targetDisplayName": "Zoom (iOS)"
     },
@@ -3444,7 +3444,7 @@
           "note": "Signal Foundation. E2E-encrypted video calls."
         }
       ],
-      "lastReviewed": "2026-04-25",
+      "lastReviewed": "2026-09-15",
       "targetBundleID": "us.zoom.xos",
       "targetDisplayName": "Zoom"
     }

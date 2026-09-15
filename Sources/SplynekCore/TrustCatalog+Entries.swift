@@ -18,7 +18,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "co.mona.app",
             targetDisplayName: "Crypto.com",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "crypto-com:appstore-tracking",
@@ -36,7 +36,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.adobe.Acrobat.Pro",
             targetDisplayName: "Adobe Acrobat Pro",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "acrobat:cve-2024-recurring",
@@ -66,7 +66,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.adobe.LightroomCC",
             targetDisplayName: "Adobe Lightroom",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "adobe-lightroom:appstore-linked",
@@ -96,7 +96,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.adobe.Photoshop",
             targetDisplayName: "Adobe Photoshop",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "adobe-photoshop:appstore-linked",
@@ -126,7 +126,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.adobe.acc.AdobeCreativeCloud",
             targetDisplayName: "Adobe Creative Cloud",
-            lastReviewed: "2026-04-26",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "adobe:breach-2013",
@@ -160,7 +160,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.adobe.spark",
             targetDisplayName: "Adobe Express",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "adobe-express:appstore-linked",
@@ -178,7 +178,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.airbnb.app",
             targetDisplayName: "Airbnb",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "airbnb:appstore-tracking",
@@ -196,7 +196,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.airtable.airtable",
             targetDisplayName: "Airtable",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "airtable:appstore-linked",
@@ -226,7 +226,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.alibaba.iAliexpress",
             targetDisplayName: "AliExpress",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "aliexpress:appstore-tracking",
@@ -244,7 +244,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.amazon.Amazon",
             targetDisplayName: "Amazon Shopping",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "amazon-shopping:appstore-tracking",
@@ -262,7 +262,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.amazon.Kindle",
             targetDisplayName: "Amazon Kindle",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "kindle:appstore-linked",
@@ -298,7 +298,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.amazon.music.mac",
             targetDisplayName: "Amazon Music",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "amazon-music:appstore-linked",
@@ -328,7 +328,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.apple.FinalCut",
             targetDisplayName: "Final Cut Pro",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "apple-finalcut:appstore-unlinked",
@@ -346,7 +346,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.apple.dt.Xcode",
             targetDisplayName: "Xcode",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "apple-xcode:appstore-unlinked",
@@ -382,7 +382,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.apple.iWork.Keynote",
             targetDisplayName: "Apple Keynote",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "apple-keynote:appstore-unlinked",
@@ -400,7 +400,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.apple.iWork.Numbers",
             targetDisplayName: "Apple Numbers",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "apple-numbers:appstore-unlinked",
@@ -418,7 +418,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.apple.iWork.Pages",
             targetDisplayName: "Apple Pages",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "apple-pages:appstore-unlinked",
@@ -436,7 +436,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.apple.logic10",
             targetDisplayName: "Logic Pro",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "apple-logicpro:appstore-unlinked",
@@ -454,7 +454,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.apple.mobilegarageband",
             targetDisplayName: "GarageBand",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "garageband:appstore-unlinked",
@@ -472,7 +472,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.asana.iPhone",
             targetDisplayName: "Asana",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "asana:appstore-linked",
@@ -490,7 +490,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.atebits.Tweetie2",
             targetDisplayName: "X (Twitter)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "twitter-x:appstore-tracking",
@@ -508,7 +508,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.bofa.bofa",
             targetDisplayName: "Bank of America Mobile",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "bofa:appstore-linked",
@@ -526,7 +526,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.booking.bookingapp",
             targetDisplayName: "Booking.com",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "booking:appstore-tracking",
@@ -544,7 +544,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.box.iosapp",
             targetDisplayName: "Box",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "box-ios:appstore-linked",
@@ -562,7 +562,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.brave.ios.browser",
             targetDisplayName: "Brave Browser (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "brave-ios:appstore-unlinked",
@@ -580,7 +580,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.bumble.app",
             targetDisplayName: "Bumble",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "bumble:appstore-tracking",
@@ -598,7 +598,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.bunq.bunqapp",
             targetDisplayName: "bunq",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "bunq:appstore-linked",
@@ -616,7 +616,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.burbn.barcelona",
             targetDisplayName: "Threads",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "threads:appstore-tracking",
@@ -634,7 +634,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.burbn.instagram",
             targetDisplayName: "Instagram",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "instagram:appstore-tracking",
@@ -652,7 +652,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.calm.calmapp",
             targetDisplayName: "Calm",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "calm:appstore-linked",
@@ -670,7 +670,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.cardify.tinder",
             targetDisplayName: "Tinder",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "tinder:appstore-tracking",
@@ -688,7 +688,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.chase.sig.Chase",
             targetDisplayName: "Chase Mobile",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "chase:appstore-linked",
@@ -706,7 +706,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.citymapper.CityMapper",
             targetDisplayName: "Citymapper",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "citymapper:appstore-linked",
@@ -724,7 +724,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.contextlogic.wishweb",
             targetDisplayName: "Wish",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "wish:appstore-tracking",
@@ -742,7 +742,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.crunchyroll.iphone",
             targetDisplayName: "Crunchyroll",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "crunchyroll:appstore-tracking",
@@ -760,7 +760,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.culturedcode.ThingsMac",
             targetDisplayName: "Things 3",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "things3:appstore-unlinked",
@@ -778,7 +778,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.czzhao.binance",
             targetDisplayName: "Binance",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "binance:appstore-tracking",
@@ -796,7 +796,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.dashlane.dashlanephonefinal",
             targetDisplayName: "Dashlane",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "dashlane:appstore-linked",
@@ -828,7 +828,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.dd.doordash",
             targetDisplayName: "DoorDash",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "doordash:appstore-tracking",
@@ -846,7 +846,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.disney.disneyplus",
             targetDisplayName: "Disney+",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "disney-plus:appstore-linked",
@@ -864,7 +864,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.duckduckgo.mobile.ios",
             targetDisplayName: "DuckDuckGo",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "duckduckgo:appstore-unlinked",
@@ -882,7 +882,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.duolingo.DuolingoMobile",
             targetDisplayName: "Duolingo",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "duolingo:appstore-tracking",
@@ -900,7 +900,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.ebay.iphone",
             targetDisplayName: "eBay",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "ebay:appstore-tracking",
@@ -918,7 +918,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.einnovation.temu",
             targetDisplayName: "Temu",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "temu:appstore-tracking",
@@ -936,7 +936,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.etsy.etsyforiphone",
             targetDisplayName: "Etsy",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "etsy:appstore-tracking",
@@ -954,7 +954,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.evernote.Evernote",
             targetDisplayName: "Evernote",
-            lastReviewed: "2026-04-26",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "evernote:breach-2013",
@@ -984,7 +984,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.evernote.iPhone.Evernote",
             targetDisplayName: "Evernote (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "evernote-ios:appstore-linked",
@@ -1002,7 +1002,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.expedia.bookings",
             targetDisplayName: "Expedia",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "expedia:appstore-tracking",
@@ -1020,7 +1020,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.facebook.Facebook",
             targetDisplayName: "Facebook",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "facebook:appstore-tracking",
@@ -1038,7 +1038,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.facebook.Messenger",
             targetDisplayName: "Messenger (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "messenger-ios:appstore-tracking",
@@ -1056,7 +1056,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.facebook.archon.developerID",
             targetDisplayName: "Messenger",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "messenger:appstore-tracking",
@@ -1106,7 +1106,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.fitbit.FitbitMobile",
             targetDisplayName: "Fitbit",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "fitbit:appstore-linked",
@@ -1124,7 +1124,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.flexibits.fantastical2.mac",
             targetDisplayName: "Fantastical",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "fantastical:appstore-linked",
@@ -1148,7 +1148,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.fogcreek.trello",
             targetDisplayName: "Trello",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "trello:appstore-linked",
@@ -1166,7 +1166,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.getdropbox.Dropbox",
             targetDisplayName: "Dropbox (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "dropbox-ios:appstore-linked",
@@ -1184,7 +1184,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.getdropbox.dropbox",
             targetDisplayName: "Dropbox",
-            lastReviewed: "2026-04-26",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "dropbox:breach-2012",
@@ -1224,7 +1224,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.getsomeheadspace.headspaceapp",
             targetDisplayName: "Headspace",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "headspace:appstore-linked",
@@ -1242,7 +1242,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.goodreads.goodreadsapp",
             targetDisplayName: "Goodreads",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "goodreads:appstore-tracking",
@@ -1260,7 +1260,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.Chrome",
             targetDisplayName: "Google Chrome",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "chrome:appstore-tracking",
@@ -1304,7 +1304,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.Docs",
             targetDisplayName: "Google Docs",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "google-docs:appstore-linked",
@@ -1322,7 +1322,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.Maps",
             targetDisplayName: "Google Maps",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "google-maps:appstore-tracking",
@@ -1340,7 +1340,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.Sheets",
             targetDisplayName: "Google Sheets",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "google-sheets:appstore-linked",
@@ -1358,7 +1358,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.Translate",
             targetDisplayName: "Google Translate",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "google-translate:appstore-linked",
@@ -1394,7 +1394,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.chrome.ios",
             targetDisplayName: "Chrome (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "chrome-ios:appstore-tracking",
@@ -1412,7 +1412,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.drivefs",
             targetDisplayName: "Google Drive",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "gdrive:appstore-linked",
@@ -1442,7 +1442,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.ios.youtube",
             targetDisplayName: "YouTube",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "youtube:appstore-tracking",
@@ -1460,7 +1460,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.google.ios.youtubemusic",
             targetDisplayName: "YouTube Music",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "youtube-music:appstore-tracking",
@@ -1478,7 +1478,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.grammarly.ProjectLlama",
             targetDisplayName: "Grammarly",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "grammarly:appstore-linked",
@@ -1502,7 +1502,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.grindrllc.grindr",
             targetDisplayName: "Grindr",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "grindr:appstore-tracking",
@@ -1520,7 +1520,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.hammerandchisel.discord",
             targetDisplayName: "Discord (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "discord-ios:appstore-linked",
@@ -1538,7 +1538,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.hbo.hbonow",
             targetDisplayName: "Max (formerly HBO Max)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "hbo-max:appstore-linked",
@@ -1556,7 +1556,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.hinge.app",
             targetDisplayName: "Hinge",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "hinge:appstore-tracking",
@@ -1574,7 +1574,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.hnc.Discord",
             targetDisplayName: "Discord",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "discord:appstore-tracking",
@@ -1605,7 +1605,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.hotels.HotelsNearMeApp",
             targetDisplayName: "Hotels.com",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "hotels-com:appstore-tracking",
@@ -1623,7 +1623,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.hulu.plus",
             targetDisplayName: "Hulu",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "hulu:appstore-tracking",
@@ -1659,7 +1659,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.ideashower.ReadItLaterPro",
             targetDisplayName: "Pocket",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "pocket:appstore-linked",
@@ -1677,7 +1677,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.ing.diba.ingdibaapp",
             targetDisplayName: "ING",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "ing:appstore-linked",
@@ -1695,7 +1695,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.instacart.InstacartShopper",
             targetDisplayName: "Instacart",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "instacart:appstore-tracking",
@@ -1713,7 +1713,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.kaspersky.kes",
             targetDisplayName: "Kaspersky Endpoint Security",
-            lastReviewed: "2026-04-26",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "kaspersky:cisa-2017",
@@ -1753,7 +1753,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.khanacademy.Khan-Academy",
             targetDisplayName: "Khan Academy",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "khan-academy:appstore-linked",
@@ -1771,7 +1771,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.kraken.kraken",
             targetDisplayName: "Kraken Crypto",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "kraken:appstore-linked",
@@ -1789,7 +1789,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.lastpass.LastPass",
             targetDisplayName: "LastPass",
-            lastReviewed: "2026-04-26",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "lastpass:breach-2022",
@@ -1830,7 +1830,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.linear",
             targetDisplayName: "Linear",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "linear:appstore-linked",
@@ -1860,7 +1860,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.linkedin.LinkedIn",
             targetDisplayName: "LinkedIn",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "linkedin:appstore-tracking",
@@ -1906,7 +1906,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.lyft.iphone",
             targetDisplayName: "Lyft",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "lyft:appstore-linked",
@@ -1924,7 +1924,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.medium.reader",
             targetDisplayName: "Medium",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "medium:appstore-tracking",
@@ -1942,7 +1942,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.miHoYo.GenshinImpact",
             targetDisplayName: "Genshin Impact",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "genshin-impact:appstore-linked",
@@ -1960,7 +1960,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.microsoft.Excel",
             targetDisplayName: "Microsoft Excel",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "ms-excel:appstore-linked",
@@ -1990,7 +1990,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.microsoft.OneDrive",
             targetDisplayName: "Microsoft OneDrive",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "onedrive:appstore-linked",
@@ -2020,7 +2020,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.microsoft.Outlook",
             targetDisplayName: "Microsoft Outlook",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "ms-outlook:appstore-linked",
@@ -2038,7 +2038,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.microsoft.Powerpoint",
             targetDisplayName: "Microsoft PowerPoint",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "ms-powerpoint:appstore-linked",
@@ -2062,7 +2062,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.microsoft.Word",
             targetDisplayName: "Microsoft Word",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "ms-word:appstore-linked",
@@ -2092,7 +2092,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.microsoft.edgemac",
             targetDisplayName: "Microsoft Edge",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "edge:appstore-linked",
@@ -2116,7 +2116,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.microsoft.teams",
             targetDisplayName: "Microsoft Teams",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "teams:appstore-linked",
@@ -2147,7 +2147,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.mindnode.MindNode8",
             targetDisplayName: "MindNode",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "mindnode:appstore-linked",
@@ -2165,7 +2165,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.myfitnesspal.MyFitnessPal-tablet",
             targetDisplayName: "MyFitnessPal",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "myfitnesspal:appstore-tracking",
@@ -2183,7 +2183,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.netflix.Netflix",
             targetDisplayName: "Netflix",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "netflix:appstore-linked",
@@ -2219,7 +2219,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.nike.nikeplus-gps",
             targetDisplayName: "Nike Run Club",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "nike-run-club:appstore-tracking",
@@ -2237,7 +2237,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.notion.id",
             targetDisplayName: "Notion",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "notion:appstore-linked",
@@ -2267,7 +2267,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.number26.iphone",
             targetDisplayName: "N26",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "n26:appstore-linked",
@@ -2285,7 +2285,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.nytimes.NYTimes",
             targetDisplayName: "The New York Times",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "nyt:appstore-tracking",
@@ -2303,7 +2303,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.onepeloton.peloton",
             targetDisplayName: "Peloton",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "peloton:appstore-tracking",
@@ -2321,7 +2321,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.openai.chat",
             targetDisplayName: "ChatGPT Desktop",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "chatgpt:garante-2023",
@@ -2368,7 +2368,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.operasoftware.OperaMini",
             targetDisplayName: "Opera",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "opera-mini:appstore-tracking",
@@ -2386,7 +2386,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.pandora",
             targetDisplayName: "Pandora",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "pandora:appstore-tracking",
@@ -2404,7 +2404,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.paypal.PPClient",
             targetDisplayName: "PayPal",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "paypal:appstore-linked",
@@ -2422,7 +2422,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.pinterest.pinterest",
             targetDisplayName: "Pinterest",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "pinterest:appstore-tracking",
@@ -2458,7 +2458,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.pixelmatorteam.pixelmator.x",
             targetDisplayName: "Pixelmator Pro",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "pixelmator-pro:appstore-unlinked",
@@ -2476,7 +2476,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.plexapp.plex",
             targetDisplayName: "Plex",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "plex:appstore-linked",
@@ -2494,7 +2494,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.quizlet.quizletapp",
             targetDisplayName: "Quizlet",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "quizlet:appstore-linked",
@@ -2512,7 +2512,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.reddit.Reddit",
             targetDisplayName: "Reddit",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "reddit:appstore-tracking",
@@ -2530,7 +2530,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.revolut.RevolutApp",
             targetDisplayName: "Revolut",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "revolut:appstore-linked",
@@ -2548,7 +2548,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.robinhood.release.Robinhood",
             targetDisplayName: "Robinhood",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "robinhood:appstore-linked",
@@ -2566,7 +2566,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.roblox.robloxmobile",
             targetDisplayName: "Roblox",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "roblox:appstore-tracking",
@@ -2584,7 +2584,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.savage.Procreate-Pocket",
             targetDisplayName: "Procreate Pocket",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "procreate-pocket:appstore-unlinked",
@@ -2602,7 +2602,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.shein.app",
             targetDisplayName: "SHEIN",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "shein:appstore-tracking",
@@ -2620,7 +2620,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.skype.skype",
             targetDisplayName: "Skype",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "skype:appstore-linked",
@@ -2650,7 +2650,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.snowmanlabs.alto.odyssey",
             targetDisplayName: "Alto's Odyssey",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "alto-odyssey:appstore-linked",
@@ -2668,7 +2668,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.spotify.client",
             targetDisplayName: "Spotify",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "spotify:appstore-tracking",
@@ -2686,7 +2686,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.squareup.cash",
             targetDisplayName: "Cash App",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "cashapp:appstore-linked",
@@ -2704,7 +2704,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.strava.stravaride",
             targetDisplayName: "Strava",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "strava:appstore-tracking",
@@ -2722,7 +2722,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.substack.app",
             targetDisplayName: "Substack",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "substack:appstore-linked",
@@ -2740,7 +2740,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.tencent.xinWeChat",
             targetDisplayName: "WeChat",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "wechat:appstore-tracking",
@@ -2770,7 +2770,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.tidal.iPhone",
             targetDisplayName: "Tidal",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "tidal:appstore-linked",
@@ -2788,7 +2788,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.tinyspeck.chatlyio",
             targetDisplayName: "Slack (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "slack-ios:appstore-linked",
@@ -2806,7 +2806,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.tinyspeck.slackmacgap",
             targetDisplayName: "Slack",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "slack:appstore-linked",
@@ -2847,7 +2847,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.todesktop.230313mzl4w4u92",
             targetDisplayName: "Cursor",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "cursor:business-model",
@@ -2877,7 +2877,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.toyopagroup.picaboo",
             targetDisplayName: "Snapchat",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "snapchat:appstore-tracking",
@@ -2913,7 +2913,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.transferwise.TransferWise",
             targetDisplayName: "Wise",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "wise:appstore-linked",
@@ -2931,7 +2931,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.ubercab.UberClient",
             targetDisplayName: "Uber",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "uber:appstore-linked",
@@ -2949,7 +2949,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.ubercab.UberEats",
             targetDisplayName: "Uber Eats",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "uber-eats:appstore-tracking",
@@ -2967,7 +2967,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.udemy.UdemyiOS",
             targetDisplayName: "Udemy",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "udemy:appstore-tracking",
@@ -2985,7 +2985,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.ustwo.monumentvalley",
             targetDisplayName: "Monument Valley",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "monument-valley:appstore-unlinked",
@@ -3003,7 +3003,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.valvesoftware.steam",
             targetDisplayName: "Steam",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "steam:appstore-linked",
@@ -3033,7 +3033,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.venmo.Venmo",
             targetDisplayName: "Venmo",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "venmo:appstore-tracking",
@@ -3051,7 +3051,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.vilcsak.bitcoins2",
             targetDisplayName: "Coinbase",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "coinbase:appstore-linked",
@@ -3069,7 +3069,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.visualsupply.cam",
             targetDisplayName: "VSCO",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "vsco:appstore-tracking",
@@ -3087,7 +3087,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.waze.iphone",
             targetDisplayName: "Waze",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "waze:appstore-tracking",
@@ -3105,7 +3105,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.wf.WellsFargoMobile",
             targetDisplayName: "Wells Fargo Mobile",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "wellsfargo:appstore-linked",
@@ -3123,7 +3123,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.whatsapp.WhatsApp",
             targetDisplayName: "WhatsApp",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "whatsapp:appstore-linked",
@@ -3163,7 +3163,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "com.zhiliaoapp.musically",
             targetDisplayName: "TikTok",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "tiktok:dpc-ireland-2023",
@@ -3207,7 +3207,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "net.whatsapp.WhatsAppSMB",
             targetDisplayName: "WhatsApp Business",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "whatsapp-business:appstore-linked",
@@ -3225,7 +3225,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "org.coursera.coursera",
             targetDisplayName: "Coursera",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "coursera:appstore-linked",
@@ -3243,7 +3243,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "org.mozilla.ios.Firefox",
             targetDisplayName: "Firefox (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "firefox-ios:appstore-linked",
@@ -3261,7 +3261,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "org.whispersystems.signal",
             targetDisplayName: "Signal (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "signal-ios:appstore-unlinked",
@@ -3279,7 +3279,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "ph.telegra.Telegraph",
             targetDisplayName: "Telegram",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "telegram:appstore-linked",
@@ -3297,7 +3297,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "ru.yandex.desktop.yandex-browser",
             targetDisplayName: "Yandex Browser",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "yandex:ofac",
@@ -3328,7 +3328,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "tv.twitch",
             targetDisplayName: "Twitch",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "twitch:appstore-tracking",
@@ -3346,7 +3346,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "uk.co.bbc.news",
             targetDisplayName: "BBC News",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "bbc-news:appstore-linked",
@@ -3364,7 +3364,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "us.zoom.videomeetings",
             targetDisplayName: "Zoom (iOS)",
-            lastReviewed: "2026-04-30",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "zoom-ios:appstore-linked",
@@ -3382,7 +3382,7 @@ extension TrustCatalog {
         Entry(
             targetBundleID: "us.zoom.xos",
             targetDisplayName: "Zoom",
-            lastReviewed: "2026-04-25",
+            lastReviewed: "2026-09-15",
             concerns: [
                 Concern(
                     id: "zoom:ftc-2020",
